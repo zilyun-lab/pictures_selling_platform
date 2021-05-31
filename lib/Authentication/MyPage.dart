@@ -462,6 +462,26 @@ class _MyPageState extends State<MyPage> {
                     child: ListTile(
                       onTap: () {
                         Route route = MaterialPageRoute(
+                          builder: (c) => MyUploadItems(),
+                        );
+                        Navigator.pushReplacement(
+                          context,
+                          route,
+                        );
+                      },
+                      leading: Icon(Icons.notifications_active_outlined),
+                      title: Text("お知らせ"),
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                  Card(
+                    color: HexColor("e5e2df").withOpacity(0.6),
+                    child: ListTile(
+                      onTap: () {
+                        Route route = MaterialPageRoute(
                           builder: (c) => AddAddress(),
                         );
                         Navigator.pushReplacement(

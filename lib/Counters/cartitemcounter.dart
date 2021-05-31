@@ -23,14 +23,14 @@ class CartItemCounter extends ChangeNotifier {
 }
 
 class LikeItemCounter extends ChangeNotifier {
-  int _counter = EcommerceApp.sharedPreferences
+  int counter = EcommerceApp.sharedPreferences
           .getStringList(EcommerceApp.userLikeList)
           .length -
       1;
-  int get count => _counter;
+  int get count => counter;
 
   Future<void> displayResult() async {
-    int _counter = EcommerceApp.sharedPreferences
+    int counter = EcommerceApp.sharedPreferences
             .getStringList(EcommerceApp.userLikeList)
             .length -
         1;
