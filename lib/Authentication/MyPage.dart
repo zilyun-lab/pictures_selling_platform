@@ -9,6 +9,7 @@ import 'package:selling_pictures_platform/Address/addAddress.dart';
 import 'package:selling_pictures_platform/Admin/MyUploadItems.dart';
 import 'package:selling_pictures_platform/Admin/uploadItems.dart';
 import 'package:selling_pictures_platform/Authentication/updateProfile.dart';
+import 'package:selling_pictures_platform/Authentication/Notification.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Counters/cartitemcounter.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
@@ -462,7 +463,7 @@ class _MyPageState extends State<MyPage> {
                     child: ListTile(
                       onTap: () {
                         Route route = MaterialPageRoute(
-                          builder: (c) => MyUploadItems(),
+                          builder: (c) => UserNotification(),
                         );
                         Navigator.pushReplacement(
                           context,

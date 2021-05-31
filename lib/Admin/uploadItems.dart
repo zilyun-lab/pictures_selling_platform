@@ -733,7 +733,7 @@ class _UploadPageState extends State<UploadPage>
     );
     String imageDownLoadUrl = await uploadingItemImageOriginal(file);
 
-    saveItemInfoOriginal(imageDownLoadUrl);
+    saveItemInfoOriginalToItems(imageDownLoadUrl);
     Route route = MaterialPageRoute(builder: (c) => StoreHome());
     Navigator.pushReplacement(context, route);
   }
@@ -754,7 +754,7 @@ class _UploadPageState extends State<UploadPage>
     return downloadUrl;
   }
 
-  saveItemInfoOriginal(
+  saveItemInfoOriginalToItems(
     String downloadUrl,
   ) {
     final itemRef = FirebaseFirestore.instance.collection("items");
@@ -771,6 +771,7 @@ class _UploadPageState extends State<UploadPage>
             EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
         "attribute": "Original",
         "Stock": 1,
+        "id": DateTime.now().millisecondsSinceEpoch,
       },
     );
     EcommerceApp.firestore
@@ -791,6 +792,7 @@ class _UploadPageState extends State<UploadPage>
             EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
         "attribute": "Original",
         "Stock": 1,
+        "id": DateTime.now().millisecondsSinceEpoch,
       },
     );
     setState(
@@ -851,6 +853,7 @@ class _UploadPageState extends State<UploadPage>
         "postBy":
             EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
         "attribute": "Copy",
+        "id": DateTime.now().millisecondsSinceEpoch,
       },
     );
     EcommerceApp.firestore
@@ -870,6 +873,7 @@ class _UploadPageState extends State<UploadPage>
         "postBy":
             EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
         "attribute": "Copy",
+        "id": DateTime.now().millisecondsSinceEpoch,
       },
     );
     setState(

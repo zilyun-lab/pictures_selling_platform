@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:selling_pictures_platform/Authentication/MyPage.dart';
 import 'package:selling_pictures_platform/Authentication/publicUserPage.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
+import 'package:selling_pictures_platform/Counters/cartitemcounter.dart';
 import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
-import 'package:selling_pictures_platform/Orders/placeOrderPayment.dart';
-import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
-import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
-import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
+
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:flutter/material.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
+
+import 'like.dart';
 
 class ProductPage extends StatefulWidget {
   final ItemModel itemModel;
@@ -47,7 +49,112 @@ class _ProductPageState extends State<ProductPage> {
 
     return SafeArea(
       child: Scaffold(
-        appBar: MyAppBar(),
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Route route = MaterialPageRoute(
+                builder: (c) => MyPage(),
+              );
+              Navigator.pushReplacement(context, route);
+            },
+            icon: CircleAvatar(
+              backgroundImage:
+                  NetworkImage(EcommerceApp.sharedPreferences.getString(
+                EcommerceApp.userAvatarUrl,
+              )),
+            ),
+          ),
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: Colors.white,
+          title: Center(
+            child: InkWell(
+              onTap: () {
+                Route route = MaterialPageRoute(
+                  builder: (c) => StoreHome(),
+                );
+                Navigator.pushReplacement(context, route);
+              },
+              child: Text(
+                "LEEWAY",
+                style: GoogleFonts.sortsMillGoudy(
+                  color: Colors.black,
+                  fontSize: 35,
+                  fontWeight: FontWeight.w100,
+                ),
+              ),
+            ),
+          ),
+          centerTitle: true,
+          actions: [
+            widget.itemModel.postBy ==
+                    EcommerceApp.sharedPreferences
+                        .getString(EcommerceApp.userUID)
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: InkWell(
+                        onTap: () {
+                          return beforeDeleteDialog();
+                        },
+                        child: Text(
+                          "削除する",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  )
+                : Stack(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.favorite_outline_outlined,
+                          color: Colors.black,
+                          size: 35,
+                        ),
+                        onPressed: () {
+                          Route route =
+                              MaterialPageRoute(builder: (c) => LikePage());
+                          Navigator.pushReplacement(context, route);
+                        },
+                      ),
+                      Positioned(
+                        child: Stack(
+                          children: [
+                            Icon(
+                              Icons.brightness_1_outlined,
+                              size: 20,
+                              color: Colors.black,
+                            ),
+                            //todo: アイテムカウントの可視化
+                            Positioned(
+                              top: 3,
+                              bottom: 4,
+                              left: 6,
+                              child: Consumer<LikeItemCounter>(
+                                builder: (context, counter, _) {
+                                  return Text(
+                                    (EcommerceApp.sharedPreferences
+                                                .getStringList(
+                                                    EcommerceApp.userLikeList)
+                                                .length -
+                                            1)
+                                        .toString(),
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+          ],
+        ),
         body: ListView(
           children: [
             Container(
@@ -506,6 +613,92 @@ class _ProductPageState extends State<ProductPage> {
           ],
         ),
       ),
+    );
+  }
+
+  // Future deleteItem() async {
+  //   FirebaseFirestore.instance
+  //       .collection("items")
+  //       .doc(widget.itemModel.id.toString())
+  //       .delete();
+  //   await afterDeleteDialog();
+  // }
+  deleteItem() {
+    // FirebaseFirestore.instance
+    //     .collection("items")
+    //     .doc("${widget.itemModel.id}")
+    //     .delete();
+  }
+
+  beforeDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: Text(
+            "最終確認",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          content: Container(
+              child:
+                  Text("${widget.itemModel.shortInfo} を削除します。\n本当によろしいですか？")),
+          actions: <Widget>[
+            // ボタン領域
+            FlatButton(
+              child: Text("キャンセル"),
+              onPressed: () => Navigator.pop(context),
+            ),
+            FlatButton(
+              child: Text("確認しました。"),
+              onPressed: () {
+                deleteItem();
+                Route route = MaterialPageRoute(
+                  // fullscreenDialog: true,
+                  builder: (c) => StoreHome(),
+                );
+                Navigator.pushReplacement(
+                  context,
+                  route,
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  afterDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: Text(
+            "削除完了",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          content: Container(
+              child: Text(
+                  "${widget.itemModel.shortInfo} を削除しました。\n引き続きLEEWAYをお楽しみください。")),
+          actions: <Widget>[
+            // ボタン領域
+
+            FlatButton(
+              child: Text("確認しました。"),
+              onPressed: () {
+                Route route = MaterialPageRoute(
+                  fullscreenDialog: true,
+                  builder: (c) => StoreHome(),
+                );
+                Navigator.pushReplacement(
+                  context,
+                  route,
+                );
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

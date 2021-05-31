@@ -11,6 +11,7 @@ class ItemModel {
   int price;
   String attribute;
   int Stock;
+  int id;
 
   ItemModel({
     this.title,
@@ -23,6 +24,7 @@ class ItemModel {
     this.postBy,
     this.attribute,
     this.Stock,
+    this.id,
   });
 
   ItemModel.fromJson(Map<String, dynamic> json) {
@@ -36,6 +38,7 @@ class ItemModel {
     price = json['price'];
     attribute = json['attribute'];
     Stock = json['Stock'];
+    id = json["id"];
   }
 
   Map<String, dynamic> toJson() {
@@ -52,6 +55,7 @@ class ItemModel {
     data['status'] = this.status;
     data['attribute'] = this.attribute;
     data['Stock'] = this.Stock;
+    data["id"] = this.id;
     return data;
   }
 }
