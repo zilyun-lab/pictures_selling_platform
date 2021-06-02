@@ -14,7 +14,7 @@ packages:
       name: arkit_plugin
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-nullsafety.0"
+    version: "0.6.2"
   async:
     dependency: transitive
     description:
@@ -330,7 +330,7 @@ packages:
       name: json_annotation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.1"
+    version: "3.1.1"
   like_button:
     dependency: "direct main"
     description:

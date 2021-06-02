@@ -55,8 +55,10 @@ class _ProductPageState extends State<ProductPage> {
             ElevatedButton(
                 onPressed: () {
                   Route route = MaterialPageRoute(
-                      builder: (c) => NetworkImageDetectionPage(
-                          imageURL: widget.itemModel.thumbnailUrl));
+                    builder: (c) => ARPage(
+                        imageURL: widget.itemModel.thumbnailUrl,
+                        ),
+                  );
                   Navigator.pushReplacement(context, route);
                 },
                 child: Text("AR体験へ")),
