@@ -427,8 +427,28 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                         ),
                                                       ),
                                                       onPressed: () {
-                                                        writeOrderDetailsForUser(
+                                                        final ref = EcommerceApp
+                                                            .firestore
+                                                            .collection(EcommerceApp
+                                                                .collectionUser)
+                                                            .doc(EcommerceApp
+                                                                .sharedPreferences
+                                                                .getString(
+                                                                    EcommerceApp
+                                                                        .userUID))
+                                                            .collection(EcommerceApp
+                                                                .collectionOrders)
+                                                            .doc(EcommerceApp
+                                                                    .sharedPreferences
+                                                                    .getString(
+                                                                        EcommerceApp
+                                                                            .userUID) +
+                                                                DateTime.now()
+                                                                    .millisecondsSinceEpoch
+                                                                    .toString());
+                                                        ref.set(
                                                           {
+                                                            "id": ref.id,
                                                             "imageURL":
                                                                 widget.imageURL,
                                                             EcommerceApp
@@ -472,56 +492,66 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                             "itemPrice":
                                                                 widget.price,
                                                           },
-                                                        );
-                                                        notifyToSeller(
-                                                          {
-                                                            EcommerceApp
-                                                                    .addressID:
-                                                                snapshot
-                                                                    .data
-                                                                    .docs[index]
-                                                                    .id,
-                                                            "orderBy": EcommerceApp
-                                                                .sharedPreferences
-                                                                .getString(
-                                                                    EcommerceApp
-                                                                        .userName),
-                                                            EcommerceApp
-                                                                    .productID:
-                                                                widget
-                                                                    .shortInfo,
-                                                            EcommerceApp
-                                                                    .paymentDetails:
-                                                                "代金引換",
-                                                            EcommerceApp
-                                                                    .orderTime:
-                                                                DateTime.now()
-                                                                    .millisecondsSinceEpoch
-                                                                    .toString(),
-                                                            EcommerceApp
-                                                                    .isSuccess:
-                                                                true,
-                                                            "boughtFrom":
-                                                                widget.postBy,
-                                                            "totalPrice": widget
-                                                                    .price +
-                                                                shipsPayment +
-                                                                gValue,
-                                                            "NotifyMessage":
-                                                                "${EcommerceApp.sharedPreferences.getString(
-                                                              EcommerceApp
-                                                                  .userName,
-                                                            )} さんが${widget.shortInfo}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
-                                                            "isTransactionFinished":
-                                                                "inComplete",
-                                                            "isBuyerPayment":
-                                                                "inComplete",
-                                                            "isBuyerDelivery":
-                                                                "inComplete",
-                                                            "itemPrice":
-                                                                widget.price,
+                                                        ).whenComplete(
+                                                          () => {
+                                                            finishedCheckOut(),
                                                           },
                                                         );
+                                                        EcommerceApp.firestore
+                                                            .collection(EcommerceApp
+                                                                .collectionUser)
+                                                            .doc(widget.postBy)
+                                                            .collection(
+                                                                "Notify")
+                                                            .doc(ref.id)
+                                                            .set({
+                                                          "id": ref.id,
+                                                          "imageURL":
+                                                              widget.imageURL,
+                                                          EcommerceApp
+                                                                  .addressID:
+                                                              snapshot
+                                                                  .data
+                                                                  .docs[index]
+                                                                  .id,
+                                                          "orderBy": EcommerceApp
+                                                              .sharedPreferences
+                                                              .getString(
+                                                                  EcommerceApp
+                                                                      .userName),
+                                                          EcommerceApp
+                                                                  .productID:
+                                                              widget.shortInfo,
+                                                          EcommerceApp
+                                                                  .paymentDetails:
+                                                              "代金引換",
+                                                          EcommerceApp
+                                                              .orderTime: DateTime
+                                                                  .now()
+                                                              .millisecondsSinceEpoch
+                                                              .toString(),
+                                                          EcommerceApp
+                                                              .isSuccess: true,
+                                                          "boughtFrom":
+                                                              widget.postBy,
+                                                          "totalPrice":
+                                                              widget.price +
+                                                                  shipsPayment +
+                                                                  gValue,
+                                                          "NotifyMessage":
+                                                              "${EcommerceApp.sharedPreferences.getString(
+                                                            EcommerceApp
+                                                                .userName,
+                                                          )} さんが${widget.shortInfo}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
+                                                          "isTransactionFinished":
+                                                              "inComplete",
+                                                          "isBuyerPayment":
+                                                              "inComplete",
+                                                          "isBuyerDelivery":
+                                                              "inComplete",
+                                                          "itemPrice":
+                                                              widget.price,
+                                                        });
                                                       },
                                                     ),
                                                   ],
@@ -536,14 +566,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                         ),
                                       ),
                                     );
-                                    // BuyStepButton(
-                                    //   currentIndex: address.counter,
-                                    //   value: index,
-                                    //   model: AddressModel.fromJson(
-                                    //     snapshot.data.docs[index].data(),
-                                    //   ),
-                                    //   addressId: snapshot.data.docs[index].id,
-                                    // );
                                   },
                                 );
                     },
@@ -574,22 +596,16 @@ class _CheckOutPageState extends State<CheckOutPage> {
         .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID) +
             data["orderTime"])
         .set(data);
-    // .whenComplete(
-    //   () => {
-    //     finishedPayment(),
-    //   },
-    // );
   }
 
   Future writeOrderDetailsForUser(Map<String, dynamic> data) async {
-    await EcommerceApp.firestore
+    final ref = EcommerceApp.firestore
         .collection(EcommerceApp.collectionUser)
         .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
         .collection(EcommerceApp.collectionOrders)
         .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID) +
-            data["orderTime"])
-        .set(data)
-        .whenComplete(
+            data["orderTime"]);
+    await ref.set(data).whenComplete(
           () => {
             finishedCheckOut(),
           },

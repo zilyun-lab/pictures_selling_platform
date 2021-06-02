@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 String getOrderId = "";
+String getNotifyID = "";
 
 class OrderDetails extends StatelessWidget {
   final String orderID;
@@ -175,12 +176,7 @@ class StatusBanner extends StatelessWidget {
                 SystemNavigator.pop();
               },
               child: Center(
-                child: Container(
-                    // child: Icon(
-                    //   Icons.arrow_drop_down_circle,
-                    //   color: Colors.black,
-                    // ),
-                    ),
+                child: Container(),
               ),
             ),
             SizedBox(
@@ -217,6 +213,7 @@ class ShippingDetails extends StatelessWidget {
   final String orderID;
   final int proceeds;
   final String postBy;
+  final String notifyID;
 
   ShippingDetails({
     Key key,
@@ -225,10 +222,12 @@ class ShippingDetails extends StatelessWidget {
     this.orderID,
     this.proceeds,
     this.postBy,
+    this.notifyID,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     getOrderId = orderID;
+    getNotifyID = notifyID;
 
     double screenWidth = MediaQuery.of(context).size.width;
     return Column(
@@ -408,7 +407,7 @@ class ShippingDetails extends StatelessWidget {
         .collection(EcommerceApp.collectionOrders)
         .doc(mOrderId)
         .get();
-    final proceeds = order.then((value) => value.data()["itemPrice"]);
+
     EcommerceApp.firestore
         .collection(EcommerceApp.collectionUser)
         .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
