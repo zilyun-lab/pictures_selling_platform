@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 
+import 'ARPage.dart';
 import 'like.dart';
 
 class ProductPage extends StatefulWidget {
@@ -23,6 +24,7 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  //ArCoreController arCoreController;
   int quantityOfItems = 1;
   List<DocumentSnapshot> documentList = [];
   @override
@@ -50,6 +52,14 @@ class _ProductPageState extends State<ProductPage> {
         appBar: MyAppBar(),
         body: ListView(
           children: [
+            ElevatedButton(
+                onPressed: () {
+                  Route route = MaterialPageRoute(
+                      builder: (c) => NetworkImageDetectionPage(
+                          imageURL: widget.itemModel.thumbnailUrl));
+                  Navigator.pushReplacement(context, route);
+                },
+                child: Text("AR体験へ")),
             Container(
               padding: EdgeInsets.all(
                 8,
