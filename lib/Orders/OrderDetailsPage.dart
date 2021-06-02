@@ -12,7 +12,6 @@ import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:selling_pictures_platform/main.dart';
 
 String getOrderId = "";
 
@@ -128,6 +127,8 @@ class OrderDetails extends StatelessWidget {
                                     ? ShippingDetails(
                                         model: AddressModel.fromJson(
                                             snap.data.data()),
+                                        orderID: orderID,
+                                        postBy: dataMap["boughtFrom"],
                                       )
                                     : Center(
                                         child: circularProgress(),
@@ -213,10 +214,22 @@ class StatusBanner extends StatelessWidget {
 class ShippingDetails extends StatelessWidget {
   final AddressModel model;
   final ItemModel itemModel;
+  final String orderID;
+  final int proceeds;
+  final String postBy;
 
-  ShippingDetails({Key key, this.model, this.itemModel}) : super(key: key);
+  ShippingDetails({
+    Key key,
+    this.model,
+    this.itemModel,
+    this.orderID,
+    this.proceeds,
+    this.postBy,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    getOrderId = orderID;
+
     double screenWidth = MediaQuery.of(context).size.width;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,7 +248,7 @@ class ShippingDetails extends StatelessWidget {
           ),
         ),
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 90, vertical: 5),
+          padding: EdgeInsets.symmetric(horizontal: 80, vertical: 5),
           width: screenWidth,
           child: Table(
             children: [
@@ -299,28 +312,66 @@ class ShippingDetails extends StatelessWidget {
         SizedBox(
           height: 15,
         ),
-        Padding(
-          padding: EdgeInsets.all(10),
-          child: InkWell(
-            onTap: () {
-              confirmedUserOrderReceived(context, getOrderId);
-              //print(itemModel.postBy);
-            },
-            child: Container(
-              color: Colors.black,
-              width: MediaQuery.of(context).size.width,
-              height: 50,
-              child: Center(
-                child: Text(
-                  "商品を確認・受け取りました",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                  ),
-                ),
-              ),
-            ),
-          ),
+        StreamBuilder<DocumentSnapshot>(
+          stream: EcommerceApp.firestore
+              .collection(EcommerceApp.collectionUser)
+              .doc(EcommerceApp.sharedPreferences
+                  .getString(EcommerceApp.userUID))
+              .collection(EcommerceApp.collectionOrders)
+              .doc(orderID)
+              .snapshots(),
+          builder: (c, snapshot) {
+            Map dataMap;
+            if (snapshot.hasData) {
+              dataMap = snapshot.data.data();
+            }
+            return dataMap["isPayment"] != "inComplete"
+                ? Padding(
+                    padding: EdgeInsets.all(10),
+                    child: InkWell(
+                      onTap: () {
+                        completeTransactionAndNotifySellar(context, getOrderId);
+                        // print(proceeds);
+                      },
+                      child: Container(
+                        color: Colors.black,
+                        width: MediaQuery.of(context).size.width,
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            "商品を確認・受け取りました",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : Padding(
+                    padding: EdgeInsets.all(10),
+                    child: InkWell(
+                      onTap: () {
+                        completePaymentAndNotifyToSellar();
+                      },
+                      child: Container(
+                        color: Colors.black,
+                        width: MediaQuery.of(context).size.width,
+                        height: 50,
+                        child: Center(
+                          child: Text(
+                            "作品料金：${dataMap["totalPrice"]}円の支払いを完了しました。",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+          },
         ),
         SizedBox(
           height: 15,
@@ -329,16 +380,72 @@ class ShippingDetails extends StatelessWidget {
     );
   }
 
-  confirmedUserOrderReceived(BuildContext context, String mOrderId) {
+  completePaymentAndNotifyToSellar() {
+    EcommerceApp.firestore
+        .collection(EcommerceApp.collectionUser)
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection(EcommerceApp.collectionOrders)
+        .doc(orderID)
+        .update({
+      "isPayment": "complete",
+    });
+    EcommerceApp.firestore
+        .collection(EcommerceApp.collectionUser)
+        .doc(postBy)
+        .collection("Notify")
+        .doc(orderID)
+        .update(
+      {
+        "isBuyerPayment": "Complete",
+      },
+    );
+  }
+
+  completeTransactionAndNotifySellar(BuildContext context, String mOrderId) {
+    final order = EcommerceApp.firestore
+        .collection(EcommerceApp.collectionUser)
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection(EcommerceApp.collectionOrders)
+        .doc(mOrderId)
+        .get();
+    final proceeds = order.then((value) => value.data()["itemPrice"]);
     EcommerceApp.firestore
         .collection(EcommerceApp.collectionUser)
         .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
         .collection(EcommerceApp.collectionOrders)
         .doc(mOrderId)
-        .delete();
+        .update(
+      {
+        "isTransactionFinished": "Complete",
+        "isDelivery": "Complete",
+      },
+    );
+    EcommerceApp.firestore
+        .collection(EcommerceApp.collectionUser)
+        .doc(postBy)
+        .collection("Notify")
+        .doc(orderID)
+        .update(
+      {
+        "isTransactionFinished": "Complete",
+        "isBuyerDelivery": "Complete",
+      },
+    );
+
+    // EcommerceApp.firestore
+    //     .collection(EcommerceApp.collectionUser)
+    //     .doc(postBy)
+    //     .collection("MyProceeds")
+    //     .doc()
+    //     .update(
+    //   {
+    //     "Proceeds": FieldValue.increment(proceeds),
+    //   },
+    // );
+
     getOrderId = "";
     Route route = MaterialPageRoute(builder: (c) => StoreHome());
     Navigator.pushReplacement(context, route);
-    Fluttertoast.showToast(msg: "商品を確認しました");
+    Fluttertoast.showToast(msg: "取引が完了しました。\n引き続きLEEWAYをお楽しみください。");
   }
 }

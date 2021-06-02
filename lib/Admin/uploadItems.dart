@@ -35,105 +35,8 @@ class _UploadPageState extends State<UploadPage>
 
   @override
   Widget build(BuildContext context) {
-    //return file == null ? displayAdminHomeScreen() : displayUploadFormScreen();
     return file == null ? displayUploadFormScreen() : displayUploadFormScreen();
   }
-
-  // displayAdminHomeScreen() {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       backgroundColor: Colors.white,
-  //       leading: IconButton(
-  //         icon: Icon(
-  //           Icons.border_color,
-  //           color: Colors.black,
-  //         ),
-  //         onPressed: () {
-  //           Route route = MaterialPageRoute(
-  //             builder: (c) => AdminShiftOrders(),
-  //           );
-  //           Navigator.pushReplacement(
-  //             context,
-  //             route,
-  //           );
-  //         },
-  //       ),
-  //       actions: [
-  //         Padding(
-  //           padding: const EdgeInsets.only(
-  //             right: 15.0,
-  //           ),
-  //           child: Row(
-  //             mainAxisAlignment: MainAxisAlignment.end,
-  //             crossAxisAlignment: CrossAxisAlignment.center,
-  //             children: [
-  //               InkWell(
-  //                 child: Text(
-  //                   "ログアウト",
-  //                   style: TextStyle(
-  //                     color: Colors.black,
-  //                   ),
-  //                 ),
-  //                 onTap: () {
-  //                   Route route = MaterialPageRoute(
-  //                     builder: (c) => SplashScreen(),
-  //                   );
-  //                   Navigator.pushReplacement(
-  //                     context,
-  //                     route,
-  //                   );
-  //                 },
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //     body: getAdminHomeScreenBody(),
-  //   );
-  // }
-
-  // getAdminHomeScreenBody() {
-  //   return Container(
-  //     child: Center(
-  //       child: Column(
-  //         mainAxisAlignment: MainAxisAlignment.center,
-  //         children: [
-  //           Icon(
-  //             Icons.shop_two,
-  //             color: Colors.black,
-  //             size: 200,
-  //           ),
-  //           Padding(
-  //             padding: EdgeInsets.only(
-  //               top: 20.0,
-  //             ),
-  //             child: ElevatedButton(
-  //               onPressed: () => takeImage(context),
-  //               child: Text(
-  //                 "出品する",
-  //                 style: TextStyle(
-  //                   fontSize: 20,
-  //                   color: Colors.white,
-  //                 ),
-  //               ),
-  //               style: ElevatedButton.styleFrom(
-  //                 primary: Colors.white,
-  //                 shape: const RoundedRectangleBorder(
-  //                   borderRadius: BorderRadius.all(
-  //                     Radius.circular(
-  //                       9,
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   takeImage(mContext) {
     return showDialog(
@@ -264,26 +167,6 @@ class _UploadPageState extends State<UploadPage>
                 fontWeight: FontWeight.w100,
               ),
             ),
-            // actions: [
-            //   Center(
-            //     child: InkWell(
-            //       onTap: uploading
-            //           ? null
-            //           : () => confirmItem(), //uploadImageAndSaveItemInfo(),
-            //       child: Padding(
-            //         padding: const EdgeInsets.only(right: 15.0),
-            //         child: Text(
-            //           "出品する",
-            //           style: TextStyle(
-            //             color: Colors.black,
-            //             fontSize: 16,
-            //             fontWeight: FontWeight.w500,
-            //           ),
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ],
           ),
           body: TabBarView(children: [
             original(),
@@ -362,7 +245,6 @@ class _UploadPageState extends State<UploadPage>
             ),
           ),
         ),
-
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: ListTile(
@@ -384,7 +266,6 @@ class _UploadPageState extends State<UploadPage>
             ),
           ),
         ),
-
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: ListTile(
@@ -406,10 +287,6 @@ class _UploadPageState extends State<UploadPage>
             ),
           ),
         ),
-        // Divider(
-        //   color: Colors.black,
-        //   thickness: 3,
-        // ),
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: ListTile(
@@ -515,10 +392,6 @@ class _UploadPageState extends State<UploadPage>
             ),
           ),
         ),
-        // Divider(
-        //   color: Colors.black,
-        //   thickness: 3,
-        // ),
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: ListTile(
@@ -540,10 +413,6 @@ class _UploadPageState extends State<UploadPage>
             ),
           ),
         ),
-        // Divider(
-        //   color: Colors.black,
-        //   thickness: 3,
-        // ),
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: ListTile(
@@ -565,10 +434,6 @@ class _UploadPageState extends State<UploadPage>
             ),
           ),
         ),
-        // Divider(
-        //   color: Colors.black,
-        //   thickness: 3,
-        // ),
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: ListTile(
@@ -594,10 +459,6 @@ class _UploadPageState extends State<UploadPage>
             ),
           ),
         ),
-        // Divider(
-        //   color: Colors.black,
-        //   thickness: 3,
-        // ),
         Align(
           alignment: Alignment.bottomCenter,
           child: ElevatedButton(
@@ -609,40 +470,6 @@ class _UploadPageState extends State<UploadPage>
       ],
     );
   }
-
-  // confirmItem() {
-  //   showDialog(
-  //     context: context,
-  //     builder: (_) {
-  //       return AlertDialog(
-  //         title: Row(
-  //           children: [
-  //             Text(
-  //               "*",
-  //               style: TextStyle(color: Colors.red),
-  //             ),
-  //             Text(
-  //               "出品に関する規約について",
-  //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-  //             ),
-  //           ],
-  //         ),
-  //         content: Container(child: Text("悪いけど権利はぜーーーーーんぶ俺らのモンだから（笑）")),
-  //         actions: <Widget>[
-  //           // ボタン領域
-  //           FlatButton(
-  //             child: Text("Cancel"),
-  //             onPressed: () => Navigator.pop(context),
-  //           ),
-  //           FlatButton(
-  //             child: Text("OK"),
-  //             onPressed: () => uploadImageAndSaveItemInfo(),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
 
   confirmItemOfCopy() {
     showDialog(
@@ -670,7 +497,9 @@ class _UploadPageState extends State<UploadPage>
             ),
             FlatButton(
               child: Text("OK"),
-              onPressed: () => uploadImageAndSaveItemInfoCopy(),
+              onPressed: () {
+                uploadImageAndSaveItemInfoCopy();
+              },
             ),
           ],
         );
@@ -705,7 +534,9 @@ class _UploadPageState extends State<UploadPage>
             ),
             FlatButton(
               child: Text("OK"),
-              onPressed: () => uploadImageAndSaveItemInfoOriginal(),
+              onPressed: () {
+                uploadImageAndSaveItemInfoOriginal();
+              },
             ),
           ],
         );
@@ -734,52 +565,111 @@ class _UploadPageState extends State<UploadPage>
     String imageDownLoadUrl = await uploadingItemImageOriginal(file);
 
     saveItemInfoOriginalToItems(imageDownLoadUrl);
+    saveItemInfoOriginalToUsers(imageDownLoadUrl);
     Route route = MaterialPageRoute(builder: (c) => StoreHome());
     Navigator.pushReplacement(context, route);
   }
 
   Future<String> uploadingItemImageOriginal(mFileImage) async {
-    final Reference storageReference = FirebaseStorage.instance.ref().child(
-          "Items",
-        );
-    UploadTask uploadTask = storageReference
-        .child(
-          "product_$productID.jpg",
-        )
-        .putFile(
-          mFileImage,
-        );
+    final Reference storageReference =
+        FirebaseStorage.instance.ref().child("Items");
+    UploadTask uploadTask =
+        storageReference.child("product_$productID.jpg").putFile(mFileImage);
     TaskSnapshot taskSnapshot = await uploadTask;
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
     return downloadUrl;
   }
 
-  saveItemInfoOriginalToItems(
-    String downloadUrl,
-  ) {
-    final itemRef = FirebaseFirestore.instance.collection("items");
-    itemRef.doc(productID).set(
-      {
-        "shortInfo": _shortInfoTextEditingController.text.trim(),
-        "longDescription": _descriptiontextEditingController.text.trim(),
-        "price": int.parse(_pricetextEditingController.text),
-        "publishedDate": DateTime.now(),
-        "status": "available",
-        "thumbnailUrl": downloadUrl,
-        "title": _titletextEditingController.text.trim(),
-        "postBy":
-            EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-        "attribute": "Original",
-        "Stock": 1,
-        "id": DateTime.now().millisecondsSinceEpoch,
-      },
-    );
-    EcommerceApp.firestore
+  saveItemInfoOriginalToItems(String downloadUrl) {
+    final itemRef =
+        FirebaseFirestore.instance.collection("items").doc(productID);
+    itemRef.set({
+      "shortInfo": _shortInfoTextEditingController.text.trim(),
+      "longDescription": _descriptiontextEditingController.text.trim(),
+      "price": int.parse(_pricetextEditingController.text),
+      "publishedDate": DateTime.now(),
+      "status": "available",
+      "thumbnailUrl": downloadUrl,
+      "title": _titletextEditingController.text.trim(),
+      "postBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+      "attribute": "Original",
+      "Stock": 1,
+      "id": itemRef.id,
+    });
+
+    // setState(() {
+    //   file = null;
+    //   uploading = false;
+    //   productID = DateTime.now().millisecondsSinceEpoch.toString();
+    //   _descriptiontextEditingController.clear();
+    //   _titletextEditingController.clear();
+    //   _shortInfoTextEditingController.clear();
+    //   _pricetextEditingController.clear();
+    // });
+  }
+
+  saveItemInfoOriginalToUsers(String downloadUrl) {
+    final userItemRef = EcommerceApp.firestore
         .collection(EcommerceApp.collectionUser)
         .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
         .collection("MyUploadItems")
-        .doc(DateTime.now().millisecondsSinceEpoch.toString())
-        .set(
+        .doc(productID);
+    userItemRef.set({
+      "shortInfo": _shortInfoTextEditingController.text.trim(),
+      "longDescription": _descriptiontextEditingController.text.trim(),
+      "price": int.parse(_pricetextEditingController.text),
+      "publishedDate": DateTime.now(),
+      "status": "available",
+      "thumbnailUrl": downloadUrl,
+      "title": _titletextEditingController.text.trim(),
+      "postBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+      "attribute": "Original",
+      "Stock": 1,
+      "id": userItemRef.id,
+      "isPayment": "inComplete",
+      "isDelivery": "inComplete",
+    });
+    setState(() {
+      file = null;
+      uploading = false;
+      productID = DateTime.now().millisecondsSinceEpoch.toString();
+      _descriptiontextEditingController.clear();
+      _titletextEditingController.clear();
+      _shortInfoTextEditingController.clear();
+      _pricetextEditingController.clear();
+    });
+  }
+
+  uploadImageAndSaveItemInfoCopy() async {
+    setState(
+      () {
+        uploading = true;
+      },
+    );
+    String imageDownLoadUrl = await uploadingItemImageCopy(file);
+
+    saveItemInfoCopyToItems(imageDownLoadUrl);
+    saveItemInfoCopyToUsers(imageDownLoadUrl);
+    Route route = MaterialPageRoute(builder: (c) => StoreHome());
+    Navigator.pushReplacement(context, route);
+  }
+
+  Future<String> uploadingItemImageCopy(mFileImage) async {
+    final Reference storageReference =
+        FirebaseStorage.instance.ref().child("Items");
+    UploadTask uploadTask =
+        storageReference.child("product_$productID.jpg").putFile(mFileImage);
+    TaskSnapshot taskSnapshot = await uploadTask;
+    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  saveItemInfoCopyToItems(
+    String downloadUrl,
+  ) {
+    final itemRef =
+        FirebaseFirestore.instance.collection("items").doc(productID);
+    itemRef.set(
       {
         "shortInfo": _shortInfoTextEditingController.text.trim(),
         "longDescription": _descriptiontextEditingController.text.trim(),
@@ -790,11 +680,11 @@ class _UploadPageState extends State<UploadPage>
         "title": _titletextEditingController.text.trim(),
         "postBy":
             EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-        "attribute": "Original",
-        "Stock": 1,
-        "id": DateTime.now().millisecondsSinceEpoch,
+        "attribute": "Copy",
+        "id": itemRef.id,
       },
     );
+
     setState(
       () {
         file = null;
@@ -808,60 +698,15 @@ class _UploadPageState extends State<UploadPage>
     );
   }
 
-  uploadImageAndSaveItemInfoCopy() async {
-    setState(
-      () {
-        uploading = true;
-      },
-    );
-    String imageDownLoadUrl = await uploadingItemImageCopy(file);
-
-    saveItemInfoCopy(imageDownLoadUrl);
-    Route route = MaterialPageRoute(builder: (c) => StoreHome());
-    Navigator.pushReplacement(context, route);
-  }
-
-  Future<String> uploadingItemImageCopy(mFileImage) async {
-    final Reference storageReference = FirebaseStorage.instance.ref().child(
-          "Items",
-        );
-    UploadTask uploadTask = storageReference
-        .child(
-          "product_$productID.jpg",
-        )
-        .putFile(
-          mFileImage,
-        );
-    TaskSnapshot taskSnapshot = await uploadTask;
-    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-    return downloadUrl;
-  }
-
-  saveItemInfoCopy(
+  saveItemInfoCopyToUsers(
     String downloadUrl,
   ) {
-    final itemRef = FirebaseFirestore.instance.collection("items");
-    itemRef.doc(productID).set(
-      {
-        "shortInfo": _shortInfoTextEditingController.text.trim(),
-        "longDescription": _descriptiontextEditingController.text.trim(),
-        "price": int.parse(_pricetextEditingController.text),
-        "publishedDate": DateTime.now(),
-        "status": "available",
-        "thumbnailUrl": downloadUrl,
-        "title": _titletextEditingController.text.trim(),
-        "postBy":
-            EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-        "attribute": "Copy",
-        "id": DateTime.now().millisecondsSinceEpoch,
-      },
-    );
-    EcommerceApp.firestore
+    final userItemRef = EcommerceApp.firestore
         .collection(EcommerceApp.collectionUser)
         .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
         .collection("MyUploadItems")
-        .doc(DateTime.now().millisecondsSinceEpoch.toString())
-        .set(
+        .doc(productID);
+    userItemRef.set(
       {
         "shortInfo": _shortInfoTextEditingController.text.trim(),
         "longDescription": _descriptiontextEditingController.text.trim(),
@@ -873,7 +718,9 @@ class _UploadPageState extends State<UploadPage>
         "postBy":
             EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
         "attribute": "Copy",
-        "id": DateTime.now().millisecondsSinceEpoch,
+        "id": userItemRef.id,
+        "isPayment": "inComplete",
+        "isDelivery": "inComplete",
       },
     );
     setState(

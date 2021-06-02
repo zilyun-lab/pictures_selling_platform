@@ -17,6 +17,8 @@ import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:selling_pictures_platform/Widgets/wideButton.dart';
 
+import 'OrderDetailsPage.dart';
+
 class CheckOutPage extends StatefulWidget {
   const CheckOutPage({
     Key key,
@@ -55,7 +57,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   @override
   Widget build(BuildContext context) {
-    double screenwidth = MediaQuery.of(context).size.width;
+    //ShippingDetails(proceeds: int.parse(widget.price));
+    //ShippingDetails(proceeds: int.parse(widget.price + shipsPayment + gValue));
+
     String _type = 'サイズ料金';
     String _payment = '中';
     void _handleRadioButton(String payment) => setState(() {
@@ -425,6 +429,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                       onPressed: () {
                                                         writeOrderDetailsForUser(
                                                           {
+                                                            "imageURL":
+                                                                widget.imageURL,
                                                             EcommerceApp
                                                                     .addressID:
                                                                 snapshot
@@ -456,7 +462,15 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                             "totalPrice": widget
                                                                     .price +
                                                                 shipsPayment +
-                                                                gValue
+                                                                gValue,
+                                                            "isTransactionFinished":
+                                                                "inComplete",
+                                                            "isPayment":
+                                                                "inComplete",
+                                                            "isDelivery":
+                                                                "inComplete",
+                                                            "itemPrice":
+                                                                widget.price,
                                                           },
                                                         );
                                                         notifyToSeller(
@@ -489,13 +503,23 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                 true,
                                                             "boughtFrom":
                                                                 widget.postBy,
-                                                            "totalPrice":
-                                                                widget.price,
+                                                            "totalPrice": widget
+                                                                    .price +
+                                                                shipsPayment +
+                                                                gValue,
                                                             "NotifyMessage":
                                                                 "${EcommerceApp.sharedPreferences.getString(
                                                               EcommerceApp
                                                                   .userName,
-                                                            )} さんが${widget.shortInfo}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。"
+                                                            )} さんが${widget.shortInfo}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
+                                                            "isTransactionFinished":
+                                                                "inComplete",
+                                                            "isBuyerPayment":
+                                                                "inComplete",
+                                                            "isBuyerDelivery":
+                                                                "inComplete",
+                                                            "itemPrice":
+                                                                widget.price,
                                                           },
                                                         );
                                                       },
@@ -567,12 +591,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
         .set(data)
         .whenComplete(
           () => {
-            finishedPayment(),
+            finishedCheckOut(),
           },
         );
   }
 
-  finishedPayment() {
+  finishedCheckOut() {
     Fluttertoast.showToast(msg: "注文を承りました");
     Route route = MaterialPageRoute(builder: (c) => MyOrders());
     Navigator.pushReplacement(context, route);

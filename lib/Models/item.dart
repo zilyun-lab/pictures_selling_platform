@@ -11,7 +11,9 @@ class ItemModel {
   int price;
   String attribute;
   int Stock;
-  int id;
+  String id;
+  // String isPayment;
+  // String isDelivery;
 
   ItemModel({
     this.title,
@@ -56,6 +58,7 @@ class ItemModel {
     data['attribute'] = this.attribute;
     data['Stock'] = this.Stock;
     data["id"] = this.id;
+
     return data;
   }
 }

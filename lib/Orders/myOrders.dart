@@ -66,11 +66,6 @@ class _MyOrdersState extends State<MyOrders> {
               .snapshots(),
           builder: (c, snapshot) {
             return snapshot.hasData
-                // ? ElevatedButton(
-                //     onPressed: () {
-                //       print(snapshot.data.docs[1]["productIDs"]);
-                //     },
-                //     child: Text(""))
                 ? ListView.builder(
                     itemCount: snapshot.data.docs.length,
                     itemBuilder: (c, index) {

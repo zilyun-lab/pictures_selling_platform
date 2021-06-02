@@ -11,6 +11,7 @@ import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:flutter/material.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
+import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 
 import 'like.dart';
 
@@ -44,117 +45,9 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-    //PaymentPage(postBy: widget.itemModel.postBy);
-
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              Route route = MaterialPageRoute(
-                builder: (c) => MyPage(),
-              );
-              Navigator.pushReplacement(context, route);
-            },
-            icon: CircleAvatar(
-              backgroundImage:
-                  NetworkImage(EcommerceApp.sharedPreferences.getString(
-                EcommerceApp.userAvatarUrl,
-              )),
-            ),
-          ),
-          iconTheme: IconThemeData(color: Colors.black),
-          backgroundColor: Colors.white,
-          title: Center(
-            child: InkWell(
-              onTap: () {
-                Route route = MaterialPageRoute(
-                  builder: (c) => StoreHome(),
-                );
-                Navigator.pushReplacement(context, route);
-              },
-              child: Text(
-                "LEEWAY",
-                style: GoogleFonts.sortsMillGoudy(
-                  color: Colors.black,
-                  fontSize: 35,
-                  fontWeight: FontWeight.w100,
-                ),
-              ),
-            ),
-          ),
-          centerTitle: true,
-          actions: [
-            widget.itemModel.postBy ==
-                    EcommerceApp.sharedPreferences
-                        .getString(EcommerceApp.userUID)
-                ? Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: InkWell(
-                        onTap: () {
-                          return beforeDeleteDialog();
-                        },
-                        child: Text(
-                          "削除する",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    ),
-                  )
-                : Stack(
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.favorite_outline_outlined,
-                          color: Colors.black,
-                          size: 35,
-                        ),
-                        onPressed: () {
-                          Route route =
-                              MaterialPageRoute(builder: (c) => LikePage());
-                          Navigator.pushReplacement(context, route);
-                        },
-                      ),
-                      Positioned(
-                        child: Stack(
-                          children: [
-                            Icon(
-                              Icons.brightness_1_outlined,
-                              size: 20,
-                              color: Colors.black,
-                            ),
-                            //todo: アイテムカウントの可視化
-                            Positioned(
-                              top: 3,
-                              bottom: 4,
-                              left: 6,
-                              child: Consumer<LikeItemCounter>(
-                                builder: (context, counter, _) {
-                                  return Text(
-                                    (EcommerceApp.sharedPreferences
-                                                .getStringList(
-                                                    EcommerceApp.userLikeList)
-                                                .length -
-                                            1)
-                                        .toString(),
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500),
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-          ],
-        ),
+        appBar: MyAppBar(),
         body: ListView(
           children: [
             Container(
@@ -175,19 +68,11 @@ class _ProductPageState extends State<ProductPage> {
                           padding: const EdgeInsets.only(top: 15.0),
                           child: Stack(
                             children: [
-                              // Container(
-                              //   color: Colors.black.withOpacity(0.2),
-                              //   width: MediaQuery.of(context).size.width,
-                              //   height: 315,
-                              // ),
                               Center(
                                 child: Image.network(
                                   widget.itemModel.thumbnailUrl,
                                   height: 300,
                                   width: MediaQuery.of(context).size.width,
-                                  // height:
-                                  //     MediaQuery.of(context).size.height * 0.7,
-                                  // width: MediaQuery.of(context).size.width,
                                   fit: BoxFit.scaleDown,
                                 ),
                               ),
@@ -428,25 +313,12 @@ class _ProductPageState extends State<ProductPage> {
                                   )
                                   .snapshots(),
                               builder: (context, snapshot) {
-                                return widget.itemModel.attribute != "Original"
+                                return widget.itemModel.postBy ==
+                                        EcommerceApp.sharedPreferences
+                                            .getString(EcommerceApp.userUID)
                                     ? InkWell(
                                         onTap: () {
-                                          //print(widget.itemModel.thumbnailUrl);
-                                          Route route = MaterialPageRoute(
-                                            fullscreenDialog: true,
-                                            builder: (c) => CheckOutPage(
-                                                imageURL: widget
-                                                    .itemModel.thumbnailUrl,
-                                                shortInfo:
-                                                    widget.itemModel.shortInfo,
-                                                price: widget.itemModel.price,
-                                                postBy:
-                                                    widget.itemModel.postBy),
-                                          );
-                                          Navigator.pushReplacement(
-                                            context,
-                                            route,
-                                          );
+                                          beforeDeleteDialog();
                                         },
                                         // onTap: () => checkItemInCart(
                                         //     widget.itemModel.shortInfo, context),
@@ -480,7 +352,7 @@ class _ProductPageState extends State<ProductPage> {
                                                         const EdgeInsets.only(
                                                             right: 45),
                                                     child: Text(
-                                                      "購入する",
+                                                      "削除する",
                                                       style: TextStyle(
                                                         color: Colors.white,
                                                       ),
@@ -492,23 +364,20 @@ class _ProductPageState extends State<ProductPage> {
                                           ),
                                         ),
                                       )
-                                    : widget.itemModel.Stock != 0
+                                    : widget.itemModel.attribute != "Original"
                                         ? InkWell(
                                             onTap: () {
-                                              //print(widget.itemModel.thumbnailUrl);
                                               Route route = MaterialPageRoute(
                                                 fullscreenDialog: true,
                                                 builder: (c) => CheckOutPage(
-                                                  imageURL: widget
-                                                      .itemModel.thumbnailUrl,
-                                                  shortInfo: widget
-                                                      .itemModel.shortInfo,
-                                                  price: widget.itemModel.price,
-                                                  postBy:
-                                                      widget.itemModel.postBy,
-                                                  attribute: widget
-                                                      .itemModel.attribute,
-                                                ),
+                                                    imageURL: widget
+                                                        .itemModel.thumbnailUrl,
+                                                    shortInfo: widget
+                                                        .itemModel.shortInfo,
+                                                    price:
+                                                        widget.itemModel.price,
+                                                    postBy: widget
+                                                        .itemModel.postBy),
                                               );
                                               Navigator.pushReplacement(
                                                 context,
@@ -561,47 +430,125 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ),
                                           )
-                                        : Container(
-                                            color: Colors.black54,
-                                            width: MediaQuery.of(
-                                                  context,
-                                                ).size.width *
-                                                0.47,
-                                            height: 50,
-                                            child: Center(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Padding(
+                                        : widget.itemModel.Stock != 0
+                                            ? InkWell(
+                                                onTap: () {
+                                                  Route route =
+                                                      MaterialPageRoute(
+                                                    fullscreenDialog: true,
+                                                    builder: (c) =>
+                                                        CheckOutPage(
+                                                      imageURL: widget.itemModel
+                                                          .thumbnailUrl,
+                                                      shortInfo: widget
+                                                          .itemModel.shortInfo,
+                                                      price: widget
+                                                          .itemModel.price,
+                                                      postBy: widget
+                                                          .itemModel.postBy,
+                                                      attribute: widget
+                                                          .itemModel.attribute,
+                                                    ),
+                                                  );
+                                                  Navigator.pushReplacement(
+                                                    context,
+                                                    route,
+                                                  );
+                                                },
+                                                // onTap: () => checkItemInCart(
+                                                //     widget.itemModel.shortInfo, context),
+                                                child: Container(
+                                                  color: Colors.black,
+                                                  width: MediaQuery.of(
+                                                        context,
+                                                      ).size.width *
+                                                      0.47,
+                                                  height: 50,
+                                                  child: Center(
+                                                    child: Padding(
                                                       padding:
-                                                          const EdgeInsets.only(
-                                                              left: 6.0),
-                                                      child: Icon(
-                                                        Icons.check,
-                                                        color: Colors.white,
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 6.0),
+                                                            child: Icon(
+                                                              Icons.check,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right: 45),
+                                                            child: Text(
+                                                              "購入する",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 45),
-                                                      child: Text(
-                                                        "売り切れ",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                          );
+                                              )
+                                            : Container(
+                                                color: Colors.black54,
+                                                width: MediaQuery.of(
+                                                      context,
+                                                    ).size.width *
+                                                    0.47,
+                                                height: 50,
+                                                child: Center(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 6.0),
+                                                          child: Icon(
+                                                            Icons.check,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 45),
+                                                          child: Text(
+                                                            "売り切れ",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
                               }),
                         ],
                       ),
@@ -616,18 +563,17 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
-  // Future deleteItem() async {
-  //   FirebaseFirestore.instance
-  //       .collection("items")
-  //       .doc(widget.itemModel.id.toString())
-  //       .delete();
-  //   await afterDeleteDialog();
-  // }
   deleteItem() {
-    // FirebaseFirestore.instance
-    //     .collection("items")
-    //     .doc("${widget.itemModel.id}")
-    //     .delete();
+    FirebaseFirestore.instance
+        .collection("items")
+        .doc(widget.itemModel.id)
+        .delete();
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("MyUploadItems")
+        .doc(widget.itemModel.id)
+        .delete();
   }
 
   beforeDeleteDialog() {
