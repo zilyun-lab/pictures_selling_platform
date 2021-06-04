@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:selling_pictures_platform/Widgets/customTextField.dart';
 import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
 import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
@@ -35,87 +36,220 @@ class _RegisterState extends State<Register> {
         _screenHeight = MediaQuery.of(context).size.height;
     return SafeArea(
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                InkWell(
-                  onTap: _selectAndPickImage,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 15.0,
-                    ),
-                    child: CircleAvatar(
-                      radius: _screenWidth * 0.15,
-                      backgroundColor: Colors.white,
-                      backgroundImage:
-                          _imageFile == null ? null : FileImage(_imageFile),
-                      child: _imageFile == null
-                          ? Icon(
-                              Icons.add_a_photo_outlined,
-                              size: _screenWidth * 0.15,
-                              color: Colors.grey,
-                            )
-                          : null,
-                    ),
-                  ),
+        body: Stack(children: [
+          Container(
+            decoration: new BoxDecoration(
+              image: new DecorationImage(
+                image: new NetworkImage(
+                  "https://images.unsplash.com/photo-1605462398512-51e939d2d21d?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NTh8fG9yYW5nZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=60",
                 ),
-                SizedBox(
-                  height: 8.0,
-                ),
-                Form(
-                  key: _formkey,
-                  child: Column(
-                    children: [
-                      CustomTextField(
-                        controller: _nameEditingController,
-                        data: Icons.person,
-                        hintText: "ユーザーネーム",
-                        isObsecure: false,
-                      ),
-                      CustomTextField(
-                        controller: _emailEditingController,
-                        data: Icons.email,
-                        hintText: "メールアドレス",
-                        isObsecure: false,
-                      ),
-                      CustomTextField(
-                        controller: _passwordEditingController,
-                        data: FontAwesomeIcons.userLock,
-                        hintText: "パスワード",
-                        isObsecure: true,
-                      ),
-                      CustomTextField(
-                        controller: _cPasswordEditingController,
-                        data: FontAwesomeIcons.userLock,
-                        hintText: "パスワード(確認用)",
-                        isObsecure: true,
-                      ),
-                    ],
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.black,
-                  ),
-                  onPressed: () {
-                    uploadAndSaveImage();
-                  },
-                  child: Text(
-                    "登録する",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-              ],
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: SingleChildScrollView(
+              child: Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 25.0),
+                      child: Container(
+                        child: Center(
+                          child: Stack(
+                            children: [
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 3.0,
+                                    left: 7,
+                                  ),
+                                  child: Text(
+                                    "LEEWAY",
+                                    style: TextStyle(
+                                      color: Colors.black.withOpacity(0.8),
+                                      fontSize: 50,
+                                      fontWeight: FontWeight.w200,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Center(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    left: 15,
+                                  ),
+                                  child: Text(
+                                    "LEEWAY",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 50,
+                                      fontWeight: FontWeight.w200,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: _selectAndPickImage,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 15.0,
+                        ),
+                        child: CircleAvatar(
+                          radius: _screenWidth * 0.15,
+                          backgroundColor: Colors.white,
+                          backgroundImage:
+                              _imageFile == null ? null : FileImage(_imageFile),
+                          child: _imageFile == null
+                              ? Icon(
+                                  Icons.add_a_photo_outlined,
+                                  size: _screenWidth * 0.15,
+                                  color: Colors.grey,
+                                )
+                              : null,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 20.0, left: 20, right: 20),
+                      child: Form(
+                        key: _formkey,
+                        child: Column(
+                          children: [
+                            CustomTextField(
+                              controller: _nameEditingController,
+                              data: Icons.person,
+                              hintText: "ユーザーネーム",
+                              isObsecure: false,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 12,
+                                right: 12,
+                              ),
+                              child: Divider(
+                                thickness: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                            CustomTextField(
+                              controller: _emailEditingController,
+                              data: Icons.email,
+                              hintText: "メールアドレス",
+                              isObsecure: false,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 12,
+                                right: 12,
+                              ),
+                              child: Divider(
+                                thickness: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                            CustomTextField(
+                              controller: _passwordEditingController,
+                              data: FontAwesomeIcons.userLock,
+                              hintText: "パスワード",
+                              isObsecure: true,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 12,
+                                right: 12,
+                              ),
+                              child: Divider(
+                                thickness: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                            CustomTextField(
+                              controller: _cPasswordEditingController,
+                              data: FontAwesomeIcons.userLock,
+                              hintText: "パスワード(確認用)",
+                              isObsecure: true,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 12,
+                                right: 12,
+                              ),
+                              child: Divider(
+                                thickness: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.black,
+                      ),
+                      onPressed: () {
+                        uploadAndSaveImage();
+                      },
+                      child: Text(
+                        "登録する",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45.0, right: 45),
+                      child: Divider(
+                        color: Colors.white,
+                        thickness: 2,
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.black,
+                      ),
+                      onPressed: () {
+                        Route route = MaterialPageRoute(
+                          builder: (_) => Login(),
+                        );
+                        Navigator.pushReplacement(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.leftToRightWithFade,
+                            child: Login(),
+                            inheritTheme: true,
+                            ctx: context,
+                            duration: Duration(
+                              milliseconds: 500,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "ログイン",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ]),
       ),
     );
   }

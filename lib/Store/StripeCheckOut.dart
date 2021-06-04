@@ -32,7 +32,7 @@ class StripeCheckOutPage extends StatefulWidget {
 class _StripeCheckOutPageState extends State<StripeCheckOutPage> {
   final formKey = GlobalKey<FormState>();
   final card = new StripeCard();
-  final url = "http://localhost:8888/sample_stripe";
+  final url = "localhost:8888/sample_stripe";
 
   @override
   Widget build(BuildContext context) {

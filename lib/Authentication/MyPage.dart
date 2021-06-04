@@ -23,6 +23,7 @@ import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 
+import 'authenication.dart';
 import 'login.dart';
 
 class MyPage extends StatefulWidget {
@@ -522,12 +523,16 @@ class _MyPageState extends State<MyPage> {
                     color: HexColor("e5e2df").withOpacity(0.6),
                     child: ListTile(
                       onTap: () {
-                        Route route = MaterialPageRoute(
-                          builder: (c) => MyOrders(),
-                        );
-                        Navigator.pushReplacement(
-                          context,
-                          route,
+                        EcommerceApp.auth.signOut().then(
+                          (c) {
+                            Route route = MaterialPageRoute(
+                              builder: (c) => Login(),
+                            );
+                            Navigator.pushReplacement(
+                              context,
+                              route,
+                            );
+                          },
                         );
                       },
                       leading: Icon(Icons.login_outlined),

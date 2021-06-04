@@ -170,7 +170,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                   );
                                 }
                                 list.add(model.shortInfo);
-                                return sourceInfo(
+                                return sourceInfoForMain(
                                   model,
                                   context,
                                   removeCartFunction: () =>

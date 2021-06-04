@@ -2,7 +2,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:selling_pictures_platform/Authentication/MyPage.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Store/cart.dart';
+
 import 'package:selling_pictures_platform/Counters/cartitemcounter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +12,7 @@ import 'package:selling_pictures_platform/Store/storehome.dart';
 class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   final PreferredSizeWidget bottom;
   MyAppBar({this.bottom});
+  final mainColor = HexColor("E67928");
 
   @override
   Widget build(BuildContext context) {
@@ -24,21 +25,25 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
           Navigator.pushReplacement(context, route);
         },
         icon: CircleAvatar(
-          backgroundImage:
-              NetworkImage(EcommerceApp.sharedPreferences.getString(
-            EcommerceApp.userAvatarUrl,
-          )),
+          backgroundImage: NetworkImage(
+            EcommerceApp.sharedPreferences.getString(
+              EcommerceApp.userAvatarUrl,
+            ),
+          ),
         ),
       ),
       iconTheme: IconThemeData(color: Colors.black),
-      backgroundColor: Colors.white,
+      backgroundColor: HexColor("E5E2E0"),
       title: Center(
         child: InkWell(
           onTap: () {
             Route route = MaterialPageRoute(
               builder: (c) => StoreHome(),
             );
-            Navigator.pushReplacement(context, route);
+            Navigator.pushReplacement(
+              context,
+              route,
+            );
           },
           child: Text(
             "LEEWAY",
@@ -56,8 +61,8 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
           children: [
             IconButton(
               icon: Icon(
-                Icons.favorite_outline_outlined,
-                color: Colors.black,
+                Icons.favorite,
+                color: mainColor,
                 size: 35,
               ),
               onPressed: () {
@@ -80,6 +85,8 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
                     left: 6,
                     child: Consumer<LikeItemCounter>(
                       builder: (context, counter, _) {
+                        Provider.of<LikeItemCounter>(context, listen: false)
+                            .displayResult();
                         return Text(
                           (EcommerceApp.sharedPreferences
                                       .getStringList(EcommerceApp.userLikeList)

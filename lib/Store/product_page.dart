@@ -14,6 +14,7 @@ import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 
 import 'ARPage.dart';
+import 'StripeCheckOut.dart';
 import 'like.dart';
 
 class ProductPage extends StatefulWidget {
@@ -55,8 +56,8 @@ class _ProductPageState extends State<ProductPage> {
             ElevatedButton(
                 onPressed: () {
                   Route route = MaterialPageRoute(
-                    builder: (c) => ARPage(
-                        imageURL: widget.itemModel.thumbnailUrl,
+                    builder: (c) => StripeCheckOut(
+                        //imageURL: widget.itemModel.thumbnailUrl,
                         ),
                   );
                   Navigator.pushReplacement(context, route);

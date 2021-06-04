@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Counters/ItemQuantity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -80,16 +82,29 @@ class _SplashScreenState extends State<SplashScreen> {
           );
           Navigator.pushReplacement(
             context,
-            route,
+            PageTransition(
+              type: PageTransitionType.fade,
+              child: StoreHome(),
+              inheritTheme: true,
+              ctx: context,
+            ),
           );
         } else {
           //todo:もしログインしていなかったら以下
           Route route = MaterialPageRoute(
-            builder: (_) => AuthenticScreen(),
+            builder: (_) => Login(),
           );
           Navigator.pushReplacement(
             context,
-            route,
+            PageTransition(
+              type: PageTransitionType.fade,
+              child: Login(),
+              inheritTheme: true,
+              ctx: context,
+              duration: Duration(
+                milliseconds: 1500,
+              ),
+            ),
           );
         }
         ;

@@ -132,7 +132,7 @@ class _CartPageState extends State<CartPage> {
                                       },
                                     );
                                   }
-                                  return sourceInfo(
+                                  return sourceInfoForMain(
                                     model,
                                     context,
                                     removeCartFunction: () =>

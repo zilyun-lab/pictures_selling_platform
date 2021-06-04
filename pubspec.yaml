@@ -26,7 +26,7 @@ dependencies:
   intl: ^0.17.0
   font_awesome_flutter: ^9.0.0
   flutter_neumorphic: ^3.1.0
-  page_transition: ^1.1.7+6
+  page_transition: ^2.0.2
   google_fonts: ^2.1.0
   like_button: ^2.0.2
   stripe_payment: ^1.1.0
@@ -34,6 +34,7 @@ dependencies:
   url_launcher: ^6.0.3
   carousel_slider: ^3.0.0
   arkit_plugin: ^0.6.2
+
 
 dev_dependencies:
   flutter_test:

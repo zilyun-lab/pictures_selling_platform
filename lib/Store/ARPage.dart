@@ -3,12 +3,12 @@ import 'package:arkit_plugin/arkit_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
-class WidgetProjectionPage extends StatefulWidget {
+class ARPage extends StatefulWidget {
   @override
-  _WidgetProjectionPageState createState() => _WidgetProjectionPageState();
+  _ARPageState createState() => _ARPageState();
 }
 
-class _WidgetProjectionPageState extends State<WidgetProjectionPage> {
+class _ARPageState extends State<ARPage> {
   ARKitController arkitController;
   String anchorId;
   double x, y;
@@ -99,7 +99,7 @@ class _WidgetProjectionPageState extends State<WidgetProjectionPage> {
     final pointsWorldSpace = [topRight, bottomRight, bottomLeft, topLeft];
 
     final pointsViewportSpace = pointsWorldSpace.map(
-            (p) => arkitController.projectPoint(vector.Vector3(p.x, p.y, p.z)));
+        (p) => arkitController.projectPoint(vector.Vector3(p.x, p.y, p.z)));
     final pointsViewportSpaceResults = await Future.wait(pointsViewportSpace);
 
     setState(() {

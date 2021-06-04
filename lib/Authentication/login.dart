@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:selling_pictures_platform/Admin/adminLogin.dart';
 import 'package:selling_pictures_platform/Authentication/register.dart';
 import 'package:selling_pictures_platform/Authentication/registoration.dart';
@@ -40,112 +41,210 @@ class _LoginState extends State<Login> {
     double _screenWidth = MediaQuery.of(context).size.width,
         _screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              // Container(
-              //   alignment: Alignment.bottomCenter,
-              //   child: Padding(
-              //     padding: const EdgeInsets.all(50.0),
-              //     child: ClipRRect(
-              //       borderRadius: BorderRadius.circular(0.0),
-              //       child: Image.network(
-              //           "https://images.unsplash.com/photo-1618060931775-18ed14951776?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2100&q=80"),
-              //     ),
-              //   ),
-              // child: Image.asset(
-              //   "images/login.png",
-              //   height: 240,
-              //   width: 240,
-              // ),
-              // ),
-              Padding(
-                padding: EdgeInsets.only(
-                  bottom: 25,
-                  right: 8,
-                  left: 8,
-                  top: 30,
-                ),
-                child: Text(
-                  "ログイン",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w100,
-                      fontSize: 18),
-                ),
+      body: Stack(children: <Widget>[
+        Container(
+          decoration: new BoxDecoration(
+            image: new DecorationImage(
+              image: new NetworkImage(
+                "https://images.unsplash.com/photo-1605462398512-51e939d2d21d?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NTh8fG9yYW5nZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=60",
               ),
-              Form(
-                key: _formkey,
-                child: Column(
-                  children: [
-                    CustomTextField(
-                      controller: _emailEditingController,
-                      data: Icons.email,
-                      hintText: "メールアドレス",
-                      isObsecure: false,
-                    ),
-                    CustomTextField(
-                      controller: _passwordEditingController,
-                      data: FontAwesomeIcons.userLock,
-                      hintText: "パスワード",
-                      isObsecure: true,
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.black,
-                      ),
-                      onPressed: () {
-                        if (_emailEditingController.text.isEmpty) {
-                          showDialog(
-                            context: context,
-                            builder: (c) {
-                              return ErrorAlertDialog(
-                                message: "メールアドレスを入力してください。",
-                              );
-                            },
-                          );
-                        }
-                        if (_passwordEditingController.text.isEmpty) {
-                          showDialog(
-                            context: context,
-                            builder: (c) {
-                              return ErrorAlertDialog(
-                                message: "パスワードを入力してください。",
-                              );
-                            },
-                          );
-                        }
-                        _emailEditingController.text.isNotEmpty &&
-                                _passwordEditingController.text.isNotEmpty
-                            ? loginUser()
-                            : showDialog(
-                                context: context,
-                                builder: (c) {
-                                  return ErrorAlertDialog(
-                                    message: "未記入の項目があります。",
-                                  );
-                                });
-                      },
-                      child: Text(
-                        "ログイン",
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 50,
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              fit: BoxFit.cover,
+            ),
           ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  //color: Colors.white.withOpacity(0.9),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 25.0),
+                        child: Container(
+                          child: Center(
+                            child: Stack(
+                              children: [
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 3.0,
+                                      left: 7,
+                                    ),
+                                    child: Text(
+                                      "LEEWAY",
+                                      style: TextStyle(
+                                        color: Colors.black.withOpacity(0.8),
+                                        fontSize: 50,
+                                        fontWeight: FontWeight.w200,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      left: 15,
+                                    ),
+                                    child: Text(
+                                      "LEEWAY",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 50,
+                                        fontWeight: FontWeight.w200,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 60.0, left: 20, right: 20),
+                        child: Form(
+                          key: _formkey,
+                          child: Column(
+                            children: [
+                              CustomTextField(
+                                controller: _emailEditingController,
+                                data: Icons.email,
+                                hintText: "メールアドレス",
+                                isObsecure: false,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 12,
+                                  right: 12,
+                                ),
+                                child: Divider(
+                                  thickness: 2,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 25,
+                              ),
+                              CustomTextField(
+                                controller: _passwordEditingController,
+                                data: Icons.lock,
+                                hintText: "パスワード",
+                                isObsecure: true,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 12,
+                                  right: 12,
+                                ),
+                                child: Divider(
+                                  thickness: 2,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 40,
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  //border: Border.all(),
+                                ),
+                                width: 175,
+                                height: 50,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    if (_emailEditingController.text.isEmpty) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (c) {
+                                          return ErrorAlertDialog(
+                                            message: "メールアドレスを入力してください。",
+                                          );
+                                        },
+                                      );
+                                    }
+                                    if (_passwordEditingController
+                                        .text.isEmpty) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (c) {
+                                          return ErrorAlertDialog(
+                                            message: "パスワードを入力してください。",
+                                          );
+                                        },
+                                      );
+                                    }
+                                    _emailEditingController.text.isNotEmpty &&
+                                            _passwordEditingController
+                                                .text.isNotEmpty
+                                        ? loginUser()
+                                        : showDialog(
+                                            context: context,
+                                            builder: (c) {
+                                              return ErrorAlertDialog(
+                                                message: "未記入の項目があります。",
+                                              );
+                                            });
+                                  },
+                                  child: Text(
+                                    "ログイン",
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 80.0),
+                                child: SizedBox(
+                                  height: 25,
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Route route = MaterialPageRoute(
+                                    builder: (_) => Register(),
+                                  );
+                                  Navigator.pushReplacement(
+                                    context,
+                                    PageTransition(
+                                      type: PageTransitionType
+                                          .rightToLeftWithFade,
+                                      child: Register(),
+                                      inheritTheme: true,
+                                      ctx: context,
+                                      duration: Duration(
+                                        milliseconds: 500,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  "新規登録",
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ]),
     );
   }
 
@@ -190,7 +289,18 @@ class _LoginState extends State<Login> {
           Route route = MaterialPageRoute(
             builder: (c) => StoreHome(),
           );
-          Navigator.pushReplacement(context, route);
+          Navigator.pushReplacement(
+            context,
+            PageTransition(
+              type: PageTransitionType.fade,
+              child: StoreHome(),
+              inheritTheme: true,
+              ctx: context,
+              duration: Duration(
+                milliseconds: 1000,
+              ),
+            ),
+          );
         },
       );
     }

@@ -36,7 +36,7 @@ class _SearchProductState extends State<SearchProduct> {
                     itemBuilder: (context, index) {
                       ItemModel model =
                           ItemModel.fromJson(snap.data.docs[index].data());
-                      return sourceInfo(model, context);
+                      return sourceInfoForMain(model, context);
                     },
                   )
                 : Text(

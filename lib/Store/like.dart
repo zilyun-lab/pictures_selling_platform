@@ -21,6 +21,7 @@ class LikePage extends StatefulWidget {
 }
 
 class _LikePageState extends State<LikePage> {
+  final mainColor = HexColor("E67928");
   double totalAmount;
   @override
   void initState() {
@@ -38,19 +39,19 @@ class _LikePageState extends State<LikePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: HexColor("e5e2df"),
+        backgroundColor: HexColor("E5E2E0"),
         appBar: MyAppBar(),
         drawer: MyDrawer(),
         body: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: Consumer2<TotalAmount, CartItemCounter>(
-                builder: (context, amountProvider, cartProvider, c) {
+              child: Consumer2<TotalAmount, LikeItemCounter>(
+                builder: (context, amountProvider, likeProvider, c) {
                   return Padding(
                     padding: EdgeInsets.all(
                       8,
                     ),
-                    child: cartProvider.count == 0
+                    child: likeProvider.count == 0
                         ? Container()
                         : Text(
                             "いいねした作品",
@@ -117,7 +118,7 @@ class _LikePageState extends State<LikePage> {
                                             color: Colors.black,
                                             icon: Icon(Icons.delete),
                                             onPressed: () => removeItemFromLike(
-                                                model.shortInfo),
+                                                model.shortInfo, context),
                                           ),
                                           title: Text(
                                             model.shortInfo.toString(),

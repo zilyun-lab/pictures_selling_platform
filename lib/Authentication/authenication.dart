@@ -18,47 +18,32 @@ class _AuthenticScreenState extends State<AuthenticScreen> {
       length: 2,
       child: SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            flexibleSpace: Container(
-              decoration: new BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.white, Colors.white],
-                  //colors: [HexColor("#f39800"), HexColor("#eb6101")],
-                ),
-              ),
-            ),
-            title: Padding(
-              padding: const EdgeInsets.only(top: 10.0),
-              child: Text(
-                "LEEWAY",
-                style: GoogleFonts.sortsMillGoudy(
-                  color: Colors.black,
-                  fontSize: 35,
-                  fontWeight: FontWeight.w100,
-                ),
-              ),
-            ),
-            centerTitle: true,
-            bottom: new TabBar(
-              labelColor: Colors.black,
-              tabs: [
-                Tab(
-                  icon: Icon(
-                    Icons.login,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(74.0),
+            child: AppBar(
+              backgroundColor: Colors.white,
+              bottom: new TabBar(
+                labelStyle: TextStyle(fontSize: 15),
+                labelColor: Colors.black,
+                tabs: [
+                  Tab(
+                    icon: Icon(
+                      Icons.login,
+                      size: 20,
+                    ),
+                    text: "ログイン",
                   ),
-                  text: "ログイン",
-                ),
-                Tab(
-                  icon: Icon(
-                    Icons.person_add,
+                  Tab(
+                    icon: Icon(
+                      Icons.person_add,
+                      size: 20,
+                    ),
+                    text: "新規登録",
                   ),
-                  text: "新規登録",
-                ),
-              ],
-              indicatorColor: Colors.black,
-              indicatorWeight: 2.5,
+                ],
+                indicatorColor: Colors.black,
+                indicatorWeight: 2,
+              ),
             ),
           ),
           body: Container(
