@@ -34,7 +34,7 @@ class OrderCard extends StatelessWidget {
           height: 90,
           child: ListView.builder(
             itemBuilder: (c, index) {
-              ItemModel model = ItemModel.fromJson(data[index].data());
+              ItemGridModel model = ItemGridModel.fromJson(data[index].data());
               return sourceOrderInfo(model, context);
             },
             itemCount: itemCount,
@@ -45,7 +45,7 @@ class OrderCard extends StatelessWidget {
     );
   }
 
-  Widget sourceOrderInfo(ItemModel model, BuildContext context,
+  Widget sourceOrderInfo(ItemGridModel model, BuildContext context,
       {Color background}) {
     width = MediaQuery.of(context).size.width;
 

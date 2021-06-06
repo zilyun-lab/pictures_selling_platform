@@ -407,6 +407,16 @@ class _RegisterState extends State<Register> {
         EcommerceApp.userLikeList: ["garbageValue"],
       },
     );
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc()
+        .collection("MyProceeds")
+        .doc()
+        .set(
+      {
+        "Proceeds": 0,
+      },
+    );
 
     await EcommerceApp.sharedPreferences.setString(
       "uid",

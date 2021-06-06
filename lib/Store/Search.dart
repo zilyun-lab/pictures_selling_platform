@@ -34,8 +34,8 @@ class _SearchProductState extends State<SearchProduct> {
                 ? ListView.builder(
                     itemCount: snap.data.docs.length,
                     itemBuilder: (context, index) {
-                      ItemModel model =
-                          ItemModel.fromJson(snap.data.docs[index].data());
+                      ItemGridModel model =
+                          ItemGridModel.fromJson(snap.data.docs[index].data());
                       return sourceInfoForMain(model, context);
                     },
                   )

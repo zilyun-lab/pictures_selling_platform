@@ -18,7 +18,7 @@ import 'StripeCheckOut.dart';
 import 'like.dart';
 
 class ProductPage extends StatefulWidget {
-  final ItemModel itemModel;
+  final ItemGridModel itemModel;
   ProductPage({this.itemModel});
   @override
   _ProductPageState createState() => _ProductPageState();
@@ -56,9 +56,7 @@ class _ProductPageState extends State<ProductPage> {
             ElevatedButton(
                 onPressed: () {
                   Route route = MaterialPageRoute(
-                    builder: (c) => StripeCheckOut(
-                        //imageURL: widget.itemModel.thumbnailUrl,
-                        ),
+                    builder: (c) => ItemsGridPage(),
                   );
                   Navigator.pushReplacement(context, route);
                 },
@@ -130,7 +128,7 @@ class _ProductPageState extends State<ProductPage> {
                           style: TextStyle(fontSize: 12),
                         ),
                         Text(
-                          widget.itemModel.title,
+                          widget.itemModel.shortInfo,
                           style: boldTextStyle,
                         ),
                         Divider(

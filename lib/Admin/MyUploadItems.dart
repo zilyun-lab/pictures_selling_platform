@@ -78,7 +78,8 @@ class MyUploadItems extends StatelessWidget {
                                       crossAxisCount: 3,
                                     ),
                                     itemBuilder: (context, index) {
-                                      ItemModel model = ItemModel.fromJson(
+                                      ItemGridModel model =
+                                          ItemGridModel.fromJson(
                                         dataSnapshot.data.docs[index].data(),
                                       );
                                       return sourceInfoForMain(model, context);

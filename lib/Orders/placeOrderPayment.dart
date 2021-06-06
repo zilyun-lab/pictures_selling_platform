@@ -18,7 +18,7 @@ import 'OrderDetailsPage.dart';
 class PaymentPage extends StatefulWidget {
   final String addressId;
   final double totalAmount;
-  final ItemModel itemModel;
+  final ItemGridModel itemModel;
   final String postBy;
 
   PaymentPage(
@@ -32,7 +32,7 @@ class PaymentPage extends StatefulWidget {
 class _PaymentPageState extends State<PaymentPage> {
   _PaymentPageState({Key key, this.itemModel, this.totalAmount, this.postBy});
   double totalAmount;
-  final ItemModel itemModel;
+  final ItemGridModel itemModel;
   final String postBy;
 
   @override
@@ -150,7 +150,7 @@ class _PaymentPageState extends State<PaymentPage> {
                         : SliverList(
                             delegate: SliverChildBuilderDelegate(
                               (context, index) {
-                                ItemModel model = ItemModel.fromJson(
+                                ItemGridModel model = ItemGridModel.fromJson(
                                   snapshot.data.docs[index].data(),
                                 );
                                 if (index == 0) {

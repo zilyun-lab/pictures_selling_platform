@@ -139,7 +139,8 @@ class _StoreHomeState extends State<StoreHome> {
                                   ),
                                   itemBuilder:
                                       (BuildContext context, int index, _) {
-                                    ItemModel model = ItemModel.fromJson(
+                                    ItemGridModel model =
+                                        ItemGridModel.fromJson(
                                       dataSnapshot.data.docs[index].data(),
                                     );
                                     return InkWell(
@@ -171,36 +172,36 @@ class _StoreHomeState extends State<StoreHome> {
               ),
             ),
             StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection(
-                      "items",
-                    )
-                    .orderBy(
-                      "publishedDate",
-                      descending: true,
-                    )
-                    .snapshots(),
-                builder: (context, dataSnapshot) {
-                  return !dataSnapshot.hasData
-                      ? SliverToBoxAdapter(
-                          child: Container(),
-                        )
-                      : SliverGrid(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                          ),
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              ItemModel model = ItemModel.fromJson(
-                                dataSnapshot.data.docs[index].data(),
-                              );
-                              return sourceInfoForMain(model, context);
-                            },
-                            childCount: dataSnapshot.data.docs.length,
-                          ),
-                        );
-                })
+              stream: FirebaseFirestore.instance
+                  .collection(
+                    "items",
+                  )
+                  .orderBy(
+                    "publishedDate",
+                    descending: true,
+                  )
+                  .snapshots(),
+              builder: (context, dataSnapshot) {
+                return !dataSnapshot.hasData
+                    ? SliverToBoxAdapter(
+                        child: Container(),
+                      )
+                    : SliverGrid(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            ItemGridModel model = ItemGridModel.fromJson(
+                              dataSnapshot.data.docs[index].data(),
+                            );
+                            return sourceInfoForMain(model, context);
+                          },
+                          childCount: dataSnapshot.data.docs.length,
+                        ),
+                      );
+              },
+            )
           ],
         ),
       ),
@@ -208,7 +209,7 @@ class _StoreHomeState extends State<StoreHome> {
   }
 }
 
-Widget sourceInfoOnlyImage(ItemModel model, BuildContext context,
+Widget sourceInfoOnlyImage(ItemGridModel model, BuildContext context,
     {Color background, removeCartFunction}) {
   Color iconColor = Colors.grey;
   PaymentPage(
@@ -239,7 +240,7 @@ Widget sourceInfoOnlyImage(ItemModel model, BuildContext context,
   );
 }
 
-Widget sourceInfoForMain(ItemModel model, BuildContext context,
+Widget sourceInfoForMain(ItemGridModel model, BuildContext context,
     {Color background, removeCartFunction}) {
   Color iconColor = Colors.grey;
   PaymentPage(

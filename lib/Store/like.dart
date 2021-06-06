@@ -87,7 +87,7 @@ class _LikePageState extends State<LikePage> {
                           : SliverList(
                               delegate: SliverChildBuilderDelegate(
                                 (context, index) {
-                                  ItemModel model = ItemModel.fromJson(
+                                  ItemGridModel model = ItemGridModel.fromJson(
                                     snapshot.data.docs[index].data(),
                                   );
                                   if (index == 0) {

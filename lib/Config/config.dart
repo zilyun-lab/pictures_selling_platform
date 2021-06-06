@@ -30,4 +30,7 @@ class EcommerceApp {
   static final String paymentDetails = 'paymentDetails';
   static final String orderTime = 'orderTime';
   static final String isSuccess = 'isSuccess';
+  static final String FaceBookURL = 'FaceBookURL';
+  static final String TwitterURL = 'TwitterURL';
+  static final String InstagramURL = 'InstagramURL';
 }

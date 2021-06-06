@@ -105,7 +105,7 @@ class PublicUserPage extends StatelessWidget {
                                   crossAxisCount: 2,
                                 ),
                                 itemBuilder: (context, index) {
-                                  ItemModel model = ItemModel.fromJson(
+                                  ItemGridModel model = ItemGridModel.fromJson(
                                     dataSnapshot.data.docs[index].data(),
                                   );
                                   return Card(

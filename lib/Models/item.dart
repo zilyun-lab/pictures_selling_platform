@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ItemModel {
+class ItemGridModel {
   String title;
   String shortInfo;
   Timestamp publishedDate;
@@ -15,7 +15,7 @@ class ItemModel {
   // String isPayment;
   // String isDelivery;
 
-  ItemModel({
+  ItemGridModel({
     this.title,
     this.shortInfo,
     this.publishedDate,
@@ -29,7 +29,7 @@ class ItemModel {
     this.id,
   });
 
-  ItemModel.fromJson(Map<String, dynamic> json) {
+  ItemGridModel.fromJson(Map<String, dynamic> json) {
     title = json['title'];
     shortInfo = json['shortInfo'];
     publishedDate = json['publishedDate'];

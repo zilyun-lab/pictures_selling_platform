@@ -2,19 +2,17 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:selling_pictures_platform/Models/user.dart';
-import 'package:selling_pictures_platform/Widgets/customTextField.dart';
+
 import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
 import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../Store/storehome.dart';
+
 import 'package:selling_pictures_platform/Config/config.dart';
 
 import 'MyPage.dart';
-import 'login.dart';
 
 class ChangeProfile extends StatefulWidget {
   @override
@@ -35,19 +33,26 @@ class _ChangeProfileState extends State<ChangeProfile> {
               .trim()
               .toString());
   final TextEditingController _facebookEditingController =
-      TextEditingController();
+      TextEditingController(
+          text: EcommerceApp.sharedPreferences
+              .getString(EcommerceApp.FaceBookURL)
+              .toString());
   final TextEditingController _instagramEditingController =
-      TextEditingController();
-  final TextEditingController _twitterEditingController =
-      TextEditingController();
+      TextEditingController(
+          text: EcommerceApp.sharedPreferences
+              .getString(EcommerceApp.InstagramURL)
+              .toString());
+  final TextEditingController _twitterEditingController = TextEditingController(
+      text: EcommerceApp.sharedPreferences
+          .getString(EcommerceApp.TwitterURL)
+          .toString());
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   String userImageUrl = "";
   File _imageFile;
 
   @override
   Widget build(BuildContext context) {
-    double _screenWidth = MediaQuery.of(context).size.width,
-        _screenHeight = MediaQuery.of(context).size.height;
+    double _screenWidth = MediaQuery.of(context).size.width;
 
     // setState(() {
     //   userImageUrl = EcommerceApp.sharedPreferences
@@ -84,7 +89,6 @@ class _ChangeProfileState extends State<ChangeProfile> {
                     ),
                     child: CircleAvatar(
                       radius: _screenWidth * 0.15,
-                      backgroundColor: Colors.white,
                       backgroundImage: _imageFile == null
                           ? NetworkImage(EcommerceApp.sharedPreferences
                               .getString(EcommerceApp.userAvatarUrl))
@@ -121,7 +125,7 @@ class _ChangeProfileState extends State<ChangeProfile> {
                           obscureText: false,
                           controller:
                               _descriptionEditingController, //..text = descriptionData,
-                          onChanged: (text) => {},
+
                           decoration: InputDecoration(
                               hintText: "自己紹介",
                               prefixIcon: Icon(
@@ -134,9 +138,7 @@ class _ChangeProfileState extends State<ChangeProfile> {
                         padding: const EdgeInsets.all(15.0),
                         child: TextFormField(
                           obscureText: false,
-                          controller:
-                              _facebookEditingController, //..text = descriptionData,
-                          onChanged: (text) => {},
+                          controller: _facebookEditingController,
                           decoration: InputDecoration(
                               hintText: "FaceBook",
                               prefixIcon: Padding(
@@ -156,17 +158,17 @@ class _ChangeProfileState extends State<ChangeProfile> {
                         padding: const EdgeInsets.all(15.0),
                         child: TextFormField(
                           obscureText: false,
-                          controller:
-                              _twitterEditingController, //..text = descriptionData,
+                          controller: _twitterEditingController,
                           onChanged: (text) => {},
                           decoration: InputDecoration(
                               hintText: "Twitter",
                               prefixIcon: Padding(
                                 padding: const EdgeInsets.only(
-                                    top: 8.0,
-                                    bottom: 8.0,
-                                    right: 8.0,
-                                    left: 14),
+                                  top: 8.0,
+                                  bottom: 8.0,
+                                  right: 8.0,
+                                  left: 14,
+                                ),
                                 child: FaIcon(
                                   FontAwesomeIcons.twitterSquare,
                                   color: Colors.black,
@@ -179,16 +181,17 @@ class _ChangeProfileState extends State<ChangeProfile> {
                         child: TextFormField(
                           obscureText: false,
                           controller:
-                              _twitterEditingController, //..text = descriptionData,
+                              _instagramEditingController, //..text = descriptionData,
                           onChanged: (text) => {},
                           decoration: InputDecoration(
                               hintText: "Instagram",
                               prefixIcon: Padding(
                                 padding: const EdgeInsets.only(
-                                    top: 8.0,
-                                    bottom: 8.0,
-                                    right: 8.0,
-                                    left: 14),
+                                  top: 8.0,
+                                  bottom: 8.0,
+                                  right: 8.0,
+                                  left: 14,
+                                ),
                                 child: FaIcon(
                                   FontAwesomeIcons.instagramSquare,
                                   color: Colors.black,
@@ -199,45 +202,56 @@ class _ChangeProfileState extends State<ChangeProfile> {
                     ],
                   ),
                 ),
-                Wrap(children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.black,
+                Wrap(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.black,
+                      ),
+                      onPressed: () {
+                        Route route = MaterialPageRoute(
+                          builder: (c) => MyPage(),
+                        );
+                        Navigator.pushReplacement(context, route);
+                      },
+                      child: Text(
+                        "キャンセル",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
                     ),
-                    onPressed: () {
-                      Route route = MaterialPageRoute(
-                        builder: (c) => MyPage(),
-                      );
-                      Navigator.pushReplacement(context, route);
-                    },
-                    child: Text(
-                      "キャンセル",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    SizedBox(
+                      width: 10,
                     ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.black,
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.black,
+                      ),
+                      onPressed: () {
+                        print(EcommerceApp.sharedPreferences
+                            .getString(EcommerceApp.FaceBookURL));
+                        uploadAndSaveImage();
+                      },
+                      child: Text(
+                        "  更新する  ",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
                     ),
-                    onPressed: () {
-                      print(_nameEditingController.text);
-                      uploadAndSaveImage();
-                    },
-                    child: Text(
-                      "  更新する  ",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                  ),
-                ]),
+                  ],
+                ),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  void getData(subcollection) async {
+    final data = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get();
+    return data.data()[subcollection];
   }
 
   //todo:!?
@@ -318,8 +332,6 @@ class _ChangeProfileState extends State<ChangeProfile> {
     );
   }
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
-
   Future saveUserInfoToFirestore() async {
     FirebaseFirestore.instance
         .collection("users")
@@ -329,6 +341,9 @@ class _ChangeProfileState extends State<ChangeProfile> {
         "name": _nameEditingController.text.trim(),
         "url": userImageUrl,
         "description": _descriptionEditingController.text.trim(),
+        "InstagramURL": _instagramEditingController.text.trim(),
+        "FaceBookURL": _facebookEditingController.text.trim(),
+        "TwitterURL": _twitterEditingController.text.trim(),
       },
     );
 
@@ -343,6 +358,18 @@ class _ChangeProfileState extends State<ChangeProfile> {
     await EcommerceApp.sharedPreferences.setString(
       "description",
       _descriptionEditingController.text,
+    );
+    await EcommerceApp.sharedPreferences.setString(
+      "TwitterURL",
+      _twitterEditingController.text,
+    );
+    await EcommerceApp.sharedPreferences.setString(
+      "InstagramURL",
+      _instagramEditingController.text,
+    );
+    await EcommerceApp.sharedPreferences.setString(
+      "FaceBookURL",
+      _facebookEditingController.text,
     );
     Route route = MaterialPageRoute(builder: (c) => MyPage());
     Navigator.pushReplacement(context, route);

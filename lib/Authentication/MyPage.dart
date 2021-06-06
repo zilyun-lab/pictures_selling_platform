@@ -23,7 +23,7 @@ import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 
-import 'authenication.dart';
+import 'ProceedsRequests.dart';
 import 'login.dart';
 
 class MyPage extends StatefulWidget {
@@ -34,6 +34,7 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
+  final mainColor = HexColor("E67928");
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -43,7 +44,7 @@ class _MyPageState extends State<MyPage> {
           width: 100,
           height: 100,
           child: FloatingActionButton(
-            backgroundColor: HexColor("E5694E"),
+            backgroundColor: mainColor,
             onPressed: () {
               Route route = MaterialPageRoute(
                 builder: (c) => UploadPage(),
@@ -104,8 +105,8 @@ class _MyPageState extends State<MyPage> {
               children: [
                 IconButton(
                   icon: Icon(
-                    Icons.favorite_outline_outlined,
-                    color: Colors.black,
+                    Icons.favorite,
+                    color: mainColor,
                     size: 35,
                   ),
                   onPressed: () {
@@ -116,11 +117,6 @@ class _MyPageState extends State<MyPage> {
                 Positioned(
                   child: Stack(
                     children: [
-                      Icon(
-                        Icons.brightness_1,
-                        size: 20,
-                        color: Colors.black,
-                      ),
                       //todo: アイテムカウントの可視化
                       Positioned(
                         top: 3,
@@ -136,12 +132,17 @@ class _MyPageState extends State<MyPage> {
                                       1)
                                   .toString(),
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.black,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500),
                             );
                           },
                         ),
+                      ),
+                      Icon(
+                        Icons.brightness_1_outlined,
+                        size: 20,
+                        color: Colors.black,
                       ),
                     ],
                   ),
@@ -184,7 +185,7 @@ class _MyPageState extends State<MyPage> {
                         children: [
                           Padding(
                             padding:
-                                const EdgeInsets.only(left: 5.0, bottom: 35),
+                                const EdgeInsets.only(left: 15.0, bottom: 35),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -416,15 +417,15 @@ class _MyPageState extends State<MyPage> {
                         Card(
                           color: HexColor("e5e2df").withOpacity(0.9),
                           child: ListTile(
-                            // onTap: () {
-                            //   Route route = MaterialPageRoute(
-                            //     builder: (c) => MyUploadItems(),
-                            //   );
-                            //   Navigator.pushReplacement(
-                            //     context,
-                            //     route,
-                            //   );
-                            // },
+                            onTap: () {
+                              Route route = MaterialPageRoute(
+                                builder: (c) => ProceedsRequests(),
+                              );
+                              Navigator.pushReplacement(
+                                context,
+                                route,
+                              );
+                            },
                             leading: Icon(Icons.atm_outlined),
                             title: Text("売上振り込み申請"),
                             trailing: Icon(
@@ -626,7 +627,7 @@ class _MyPageState extends State<MyPage> {
   }
 }
 
-Widget sourceInfo(ItemModel model, BuildContext context,
+Widget sourceInfo(ItemGridModel model, BuildContext context,
     {Color background, removeCartFunction}) {
   Color iconColor = Colors.grey;
   final _screenSize = MediaQuery.of(context).size;
