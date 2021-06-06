@@ -14,7 +14,7 @@ import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 
 import 'ARPage.dart';
-import 'StripeCheckOut.dart';
+import 'providerGrid.dart';
 import 'like.dart';
 
 class ProductPage extends StatefulWidget {

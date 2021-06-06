@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'HomeItem.dart';
+import 'HomeItem(provider).dart';
 
 class ItemGridModel extends ChangeNotifier {
   //List<クラス名>　○○ = [];
