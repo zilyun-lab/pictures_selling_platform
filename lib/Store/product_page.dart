@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Authentication/MyPage.dart';
+import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Authentication/publicUserPage.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Counters/cartitemcounter.dart';
@@ -14,20 +15,54 @@ import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 
 import 'ARPage.dart';
-import 'providerGrid.dart';
+import 'SomethingTestPage.dart';
 import 'like.dart';
 
 class ProductPage extends StatefulWidget {
-  final ItemGridModel itemModel;
-  ProductPage({this.itemModel});
+  final String shortInfo;
+  final String thumbnailURL;
+  final String longDescription;
+  final int price;
+  final int Stock;
+  final String attribute;
+  final String postBy;
+  final String id;
+  ProductPage(
+      {this.thumbnailURL,
+      this.shortInfo,
+      this.longDescription,
+      this.price,
+      this.Stock,
+      this.attribute,
+      this.postBy,
+      this.id});
   @override
-  _ProductPageState createState() => _ProductPageState();
+  _ProductPageState createState() => _ProductPageState(
+      this.thumbnailURL,
+      this.shortInfo,
+      this.longDescription,
+      this.price,
+      this.attribute,
+      this.postBy,
+      this.Stock,
+      this.id);
 }
 
 class _ProductPageState extends State<ProductPage> {
+  final String thumbnailURL;
+  final String shortInfo;
+  final String longDescription;
+  final int price;
+  final int Stock;
+  final String attribute;
+  final String postBy;
+  final String id;
   //ArCoreController arCoreController;
   int quantityOfItems = 1;
   List<DocumentSnapshot> documentList = [];
+
+  _ProductPageState(this.thumbnailURL, this.shortInfo, this.longDescription,
+      this.price, this.attribute, this.postBy, this.Stock, this.id);
   @override
   void initState() {
     // TODO: implement initState
@@ -38,7 +73,7 @@ class _ProductPageState extends State<ProductPage> {
   void showUser() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('users')
-        .where("uid", isEqualTo: widget.itemModel.postBy)
+        .where("uid", isEqualTo: postBy)
         .get();
 
     setState(() {
@@ -56,11 +91,11 @@ class _ProductPageState extends State<ProductPage> {
             ElevatedButton(
                 onPressed: () {
                   Route route = MaterialPageRoute(
-                    builder: (c) => ItemsGridPage(),
+                    builder: (c) => TestPage(),
                   );
                   Navigator.pushReplacement(context, route);
                 },
-                child: Text("AR体験へ")),
+                child: Text("waaaaaa")),
             Container(
               padding: EdgeInsets.all(
                 8,
@@ -81,7 +116,7 @@ class _ProductPageState extends State<ProductPage> {
                             children: [
                               Center(
                                 child: Image.network(
-                                  widget.itemModel.thumbnailUrl,
+                                  thumbnailURL,
                                   height: 300,
                                   width: MediaQuery.of(context).size.width,
                                   fit: BoxFit.scaleDown,
@@ -128,7 +163,7 @@ class _ProductPageState extends State<ProductPage> {
                           style: TextStyle(fontSize: 12),
                         ),
                         Text(
-                          widget.itemModel.shortInfo,
+                          shortInfo,
                           style: boldTextStyle,
                         ),
                         Divider(
@@ -146,7 +181,7 @@ class _ProductPageState extends State<ProductPage> {
                           height: 5,
                         ),
                         Text(
-                          widget.itemModel.longDescription,
+                          longDescription,
                           style: TextStyle(
                               color: Colors.black, fontWeight: FontWeight.bold),
                         ),
@@ -162,7 +197,7 @@ class _ProductPageState extends State<ProductPage> {
                           style: TextStyle(fontSize: 12),
                         ),
                         Text(
-                          "${widget.itemModel.price.toString()} 円",
+                          "${price.toString()} 円",
                           style: boldTextStyle,
                         ),
                         Divider(
@@ -187,7 +222,7 @@ class _ProductPageState extends State<ProductPage> {
                                 ? SliverToBoxAdapter(
                                     child: Container(),
                                   )
-                                : widget.itemModel.attribute == "Original"
+                                : attribute == "Original"
                                     ? Text(
                                         "こちらは原画の為、１点限りとなります。",
                                         style: boldTextStyle,
@@ -205,47 +240,72 @@ class _ProductPageState extends State<ProductPage> {
                         SizedBox(
                           height: 10,
                         ),
-                        Column(
-                          children: documentList.map((document) {
-                            return InkWell(
-                              onTap: () {
-                                Route route = MaterialPageRoute(
-                                  builder: (c) => PublicUserPage(
-                                    uid: document.data()["uid"],
-                                    imageUrl: document.data()["url"],
-                                    name: document.data()["name"],
-                                    description: document.data()["description"],
-                                  ),
-                                );
-                                Navigator.pushReplacement(context, route);
-                              },
-                              child: ListTile(
-                                  leading: Container(
-                                    height: 80,
-                                    width: 80,
-                                    child: CircleAvatar(
-                                      backgroundImage: NetworkImage(
-                                          document.data()["url"].toString()),
-                                    ),
-                                  ),
-                                  title: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${document.data()["name"]}',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        '${document.data()["description"]}',
-                                        style: TextStyle(fontSize: 12),
-                                      ),
-                                    ],
-                                  ) //["PostBy"]}\nshortInfo:${document.data()["shortInfo"]}'),
-                                  ),
-                            );
-                          }).toList(),
+                        Center(
+                          child: Card(
+                            color: HexColor("E67928"),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: documentList.map((document) {
+                                  return InkWell(
+                                    onTap: () {
+                                      Route route = MaterialPageRoute(
+                                        builder: (c) => PublicUserPage(
+                                          uid: document.data()["uid"],
+                                          imageUrl: document.data()["url"],
+                                          name: document.data()["name"],
+                                          description:
+                                              document.data()["description"],
+                                        ),
+                                      );
+                                      Navigator.pushReplacement(context, route);
+                                    },
+                                    child: ListTile(
+                                        leading: Container(
+                                          height: 80,
+                                          width: 80,
+                                          child: CircleAvatar(
+                                            backgroundImage: NetworkImage(
+                                                document
+                                                    .data()["url"]
+                                                    .toString()),
+                                          ),
+                                        ),
+                                        title: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${document.data()["name"]}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 5.0,
+                                                horizontal: 10.0,
+                                              ),
+                                              child: Text(
+                                                '${document.data()["description"]}',
+                                                style: TextStyle(fontSize: 12),
+                                              ),
+                                              decoration: ShapeDecoration(
+                                                color: Colors.white,
+                                                shape: BubbleBorder(
+                                                  width: 1,
+                                                  radius: 10,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ) //["PostBy"]}\nshortInfo:${document.data()["shortInfo"]}'),
+                                        ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -259,8 +319,7 @@ class _ProductPageState extends State<ProductPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           InkWell(
-                            onTap: () => checkItemInLike(
-                                widget.itemModel.shortInfo, context),
+                            onTap: () => checkItemInLike(shortInfo, context),
                             child: Container(
                               color: Colors.black,
                               width: MediaQuery.of(
@@ -295,8 +354,7 @@ class _ProductPageState extends State<ProductPage> {
                                                       .getStringList(
                                                           EcommerceApp
                                                               .userLikeList)
-                                                      .contains(widget
-                                                          .itemModel.shortInfo)
+                                                      .contains(shortInfo)
                                                   ? Text(
                                                       "いいねに追加する",
                                                       style: TextStyle(
@@ -324,7 +382,7 @@ class _ProductPageState extends State<ProductPage> {
                                   )
                                   .snapshots(),
                               builder: (context, snapshot) {
-                                return widget.itemModel.postBy ==
+                                return postBy ==
                                         EcommerceApp.sharedPreferences
                                             .getString(EcommerceApp.userUID)
                                     ? InkWell(
@@ -354,7 +412,7 @@ class _ProductPageState extends State<ProductPage> {
                                                         const EdgeInsets.only(
                                                             left: 6.0),
                                                     child: Icon(
-                                                      Icons.check,
+                                                      Icons.delete,
                                                       color: Colors.white,
                                                     ),
                                                   ),
@@ -375,20 +433,16 @@ class _ProductPageState extends State<ProductPage> {
                                           ),
                                         ),
                                       )
-                                    : widget.itemModel.attribute != "Original"
+                                    : attribute != "Original"
                                         ? InkWell(
                                             onTap: () {
                                               Route route = MaterialPageRoute(
                                                 fullscreenDialog: true,
                                                 builder: (c) => CheckOutPage(
-                                                    imageURL: widget
-                                                        .itemModel.thumbnailUrl,
-                                                    shortInfo: widget
-                                                        .itemModel.shortInfo,
-                                                    price:
-                                                        widget.itemModel.price,
-                                                    postBy: widget
-                                                        .itemModel.postBy),
+                                                    imageURL: thumbnailURL,
+                                                    shortInfo: shortInfo,
+                                                    price: price,
+                                                    postBy: postBy),
                                               );
                                               Navigator.pushReplacement(
                                                 context,
@@ -441,7 +495,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ),
                                           )
-                                        : widget.itemModel.Stock != 0
+                                        : Stock != 0
                                             ? InkWell(
                                                 onTap: () {
                                                   Route route =
@@ -449,16 +503,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     fullscreenDialog: true,
                                                     builder: (c) =>
                                                         CheckOutPage(
-                                                      imageURL: widget.itemModel
-                                                          .thumbnailUrl,
-                                                      shortInfo: widget
-                                                          .itemModel.shortInfo,
-                                                      price: widget
-                                                          .itemModel.price,
-                                                      postBy: widget
-                                                          .itemModel.postBy,
-                                                      attribute: widget
-                                                          .itemModel.attribute,
+                                                      imageURL: thumbnailURL,
+                                                      shortInfo: shortInfo,
+                                                      price: price,
+                                                      postBy: postBy,
+                                                      attribute: attribute,
                                                     ),
                                                   );
                                                   Navigator.pushReplacement(
@@ -575,15 +624,12 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   deleteItem() {
-    FirebaseFirestore.instance
-        .collection("items")
-        .doc(widget.itemModel.id)
-        .delete();
+    FirebaseFirestore.instance.collection("items").doc(id).delete();
     FirebaseFirestore.instance
         .collection("users")
         .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
         .collection("MyUploadItems")
-        .doc(widget.itemModel.id)
+        .doc(id)
         .delete();
   }
 
@@ -596,16 +642,14 @@ class _ProductPageState extends State<ProductPage> {
             "最終確認",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          content: Container(
-              child:
-                  Text("${widget.itemModel.shortInfo} を削除します。\n本当によろしいですか？")),
+          content: Container(child: Text("${shortInfo} を削除します。\n本当によろしいですか？")),
           actions: <Widget>[
             // ボタン領域
-            FlatButton(
+            ElevatedButton(
               child: Text("キャンセル"),
               onPressed: () => Navigator.pop(context),
             ),
-            FlatButton(
+            ElevatedButton(
               child: Text("確認しました。"),
               onPressed: () {
                 deleteItem();
@@ -635,8 +679,7 @@ class _ProductPageState extends State<ProductPage> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           content: Container(
-              child: Text(
-                  "${widget.itemModel.shortInfo} を削除しました。\n引き続きLEEWAYをお楽しみください。")),
+              child: Text("${shortInfo} を削除しました。\n引き続きLEEWAYをお楽しみください。")),
           actions: <Widget>[
             // ボタン領域
 
@@ -703,10 +746,10 @@ class _ProductPageState extends State<ProductPage> {
         Route route = MaterialPageRoute(
           fullscreenDialog: true,
           builder: (c) => CheckOutPage(
-              imageURL: widget.itemModel.thumbnailUrl,
-              shortInfo: widget.itemModel.shortInfo,
-              price: widget.itemModel.price,
-              postBy: widget.itemModel.postBy),
+              imageURL: thumbnailURL,
+              shortInfo: shortInfo,
+              price: price,
+              postBy: postBy),
         );
         Navigator.pushReplacement(
           context,
@@ -751,6 +794,73 @@ class _ProductPageState extends State<ProductPage> {
       ),
     );
   }
+}
+
+class BubbleBorder extends ShapeBorder {
+  BubbleBorder({
+    @required this.width,
+    @required this.radius,
+  });
+
+  final double width;
+  final double radius;
+
+  @override
+  EdgeInsetsGeometry get dimensions {
+    return EdgeInsets.all(width);
+  }
+
+  @override
+  Path getInnerPath(Rect rect, {TextDirection textDirection}) {
+    return getOuterPath(
+      rect.deflate(width / 2.0),
+      textDirection: textDirection,
+    );
+  }
+
+  @override
+  Path getOuterPath(Rect rect, {TextDirection textDirection}) {
+    final r = radius;
+    final rs = radius / 2;
+    final w = rect.size.width;
+    final h = rect.size.height;
+
+    return Path()
+      ..addPath(
+        Path()
+          ..moveTo(r, 0)
+          ..lineTo(w - r, 0)
+          ..arcToPoint(Offset(w, r), radius: Radius.circular(r))
+          ..lineTo(w, h - rs)
+          ..arcToPoint(Offset(w - r, h), radius: Radius.circular(r))
+          ..lineTo(r, h)
+          ..arcToPoint(Offset(0, h - r), radius: Radius.circular(r))
+          ..lineTo(0, h / 2)
+          ..relativeLineTo(-12, -12)
+          ..lineTo(0, h / 2 - 10)
+          ..lineTo(0, r)
+          ..arcToPoint(Offset(r, 0), radius: Radius.circular(r)),
+        Offset(rect.left, rect.top),
+      );
+  }
+
+  @override
+  void paint(Canvas canvas, Rect rect, {TextDirection textDirection}) {
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = Colors.black;
+    canvas.drawPath(
+      getOuterPath(
+        rect.deflate(width / 2.0),
+        textDirection: textDirection,
+      ),
+      paint,
+    );
+  }
+
+  @override
+  ShapeBorder scale(double t) => this;
 }
 
 const boldTextStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 20);

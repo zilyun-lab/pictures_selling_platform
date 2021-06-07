@@ -1,12 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Models/item.dart';
-import 'package:selling_pictures_platform/Store/storehome.dart';
+import 'package:provider/provider.dart';
+import 'package:selling_pictures_platform/Authentication/login.dart';
+import 'package:selling_pictures_platform/Models/UploadItemModel.dart';
+import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
-import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
-import 'package:selling_pictures_platform/main.dart';
 
 class MyUploadItems extends StatelessWidget {
   const MyUploadItems({Key key}) : super(key: key);
@@ -14,82 +12,117 @@ class MyUploadItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: Scaffold(
-            appBar: MyAppBar(),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5.0, bottom: 8),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      child: StreamBuilder<QuerySnapshot>(
-                        stream: EcommerceApp.firestore
-                            .collection(EcommerceApp.collectionUser)
-                            .doc(EcommerceApp.sharedPreferences
-                                .getString(EcommerceApp.userUID))
-                            .collection("MyUploadItems")
-                            .snapshots(),
-                        builder: (context, dataSnapshot) {
-                          return !dataSnapshot.hasData
-                              ? Center(
-                                  child: circularProgress(),
-                                )
-                              : Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 10.0, top: 1),
-                                  child: Text(
-                                    "出品数：" +
-                                        dataSnapshot.data.docs.length
-                                            .toString(),
-                                    style: TextStyle(fontSize: 25),
-                                  ),
-                                );
-                        },
+      child: Scaffold(
+        appBar: MyAppBar(),
+        body: ChangeNotifierProvider<UploadItemModel>(
+          create: (_) => UploadItemModel()..fetchItems(),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 5.0, bottom: 8),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CustomScrollView(
+                slivers: [
+                  Consumer<UploadItemModel>(builder: (context, model, child) {
+                    final items = model.items;
+                    return SliverToBoxAdapter(
+                        child: Padding(
+                      padding: const EdgeInsets.only(top: 5.0, bottom: 8),
+                      child: Text(
+                        "出品数：" + items.length.toString(),
+                        style: TextStyle(fontSize: 25),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 5.0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      child: StreamBuilder<QuerySnapshot>(
-                          stream: EcommerceApp.firestore
-                              .collection(EcommerceApp.collectionUser)
-                              .doc(EcommerceApp.sharedPreferences
-                                  .getString(EcommerceApp.userUID))
-                              .collection("MyUploadItems")
-                              .orderBy(
-                                "publishedDate",
-                                descending: true,
-                              )
-                              .snapshots(),
-                          builder: (context, dataSnapshot) {
-                            return !dataSnapshot.hasData
-                                ? Center(
-                                    child: circularProgress(),
-                                  )
-                                : GridView.builder(
-                                    itemCount: dataSnapshot.data.docs.length,
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                    ),
-                                    itemBuilder: (context, index) {
-                                      ItemGridModel model =
-                                          ItemGridModel.fromJson(
-                                        dataSnapshot.data.docs[index].data(),
+                    ));
+                  }),
+                  Consumer<UploadItemModel>(
+                    builder: (context, model, child) {
+                      final items = model.items;
+                      return SliverGrid.count(
+                        crossAxisCount: 3,
+                        children: items
+                            .map((item) => Card(
+                                  color: HexColor("e5e2df"),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Route route = MaterialPageRoute(
+                                        builder: (c) => ProductPage(
+                                          thumbnailURL: item.thumbnailUrl,
+                                          shortInfo: item.shortInfo,
+                                          longDescription: item.longDescription,
+                                          price: item.price,
+                                          attribute: item.attribute,
+                                          postBy: item.postBy,
+                                          Stock: item.Stock,
+                                          id: item.id,
+                                        ),
                                       );
-                                      return sourceInfoForMain(model, context);
+                                      Navigator.pushReplacement(
+                                        context,
+                                        route,
+                                      );
                                     },
-                                  );
-                          }),
-                    ),
+                                    splashColor: Colors.black,
+                                    child: Column(
+                                      children: [
+                                        Stack(
+                                          children: [
+                                            Center(
+                                              child: SizedBox(
+                                                child: Container(
+                                                  child: Image.network(
+                                                    item.thumbnailUrl,
+                                                    fit: BoxFit.scaleDown,
+                                                    width: 100,
+                                                    height: 111.5,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 65.0),
+                                              child: Align(
+                                                alignment:
+                                                    Alignment.bottomRight,
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 8.0, right: 8),
+                                                  child: Container(
+                                                    color: Colors.black
+                                                        .withOpacity(0.7),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(
+                                                        "¥" +
+                                                            (item.price)
+                                                                .toString(),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                      );
+                    },
                   ),
                 ],
               ),
-            )));
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

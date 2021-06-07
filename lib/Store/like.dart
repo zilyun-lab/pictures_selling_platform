@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Address/address.dart';
+import 'package:selling_pictures_platform/Models/GetLikeItemsModel.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
@@ -41,11 +42,11 @@ class _LikePageState extends State<LikePage> {
       child: Scaffold(
         backgroundColor: HexColor("E5E2E0"),
         appBar: MyAppBar(),
-        drawer: MyDrawer(),
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Consumer2<TotalAmount, LikeItemCounter>(
+        body: ChangeNotifierProvider<GetLikeItemsModel>(
+          create: (_) => GetLikeItemsModel()..fetchItems(),
+          child: Column(
+            children: [
+              Consumer2<TotalAmount, LikeItemCounter>(
                 builder: (context, amountProvider, likeProvider, c) {
                   return Padding(
                     padding: EdgeInsets.all(
@@ -64,126 +65,74 @@ class _LikePageState extends State<LikePage> {
                   );
                 },
               ),
-            ),
-            StreamBuilder<QuerySnapshot>(
-                stream: EcommerceApp.firestore
-                    .collection("items")
-                    .where("shortInfo",
-                        whereIn: EcommerceApp.sharedPreferences
-                            .getStringList(EcommerceApp.userLikeList))
-                    .snapshots(),
-                builder: (
-                  context,
-                  snapshot,
-                ) {
-                  return !snapshot.hasData
-                      ? SliverToBoxAdapter(
-                          child: Center(
-                            child: circularProgress(),
-                          ),
-                        )
-                      : snapshot.data.docs.length == 0
-                          ? beginBuildingCart()
-                          : SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  ItemGridModel model = ItemGridModel.fromJson(
-                                    snapshot.data.docs[index].data(),
-                                  );
-                                  if (index == 0) {
-                                    totalAmount = 0;
-                                    totalAmount = model.price + totalAmount;
-                                  } else {
-                                    totalAmount = totalAmount + model.price;
-                                  }
-                                  if (snapshot.data.docs.length - 1 == index) {
-                                    WidgetsBinding.instance
-                                        .addPostFrameCallback(
-                                      (t) {
-                                        Provider.of<TotalAmount>(
-                                          context,
-                                          listen: false,
-                                        ).display(totalAmount);
-                                      },
-                                    );
-                                  }
-                                  return Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 12,
-                                        ),
-                                        child: ListTile(
-                                          trailing: IconButton(
-                                            color: Colors.black,
-                                            icon: Icon(Icons.delete),
-                                            onPressed: () => removeItemFromLike(
-                                                model.shortInfo, context),
-                                          ),
-                                          title: Text(
-                                            model.shortInfo.toString(),
-                                          ),
-                                          leading:
-                                              Image.network(model.thumbnailUrl),
-                                          onTap: () {
-                                            Route route = MaterialPageRoute(
-                                              builder: (c) =>
-                                                  ProductPage(itemModel: model),
-                                            );
-                                            Navigator.pushReplacement(
-                                              context,
-                                              route,
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 8.0,
-                                          right: 8,
-                                        ),
-                                        child: Divider(),
-                                      ),
-                                    ],
-                                  );
-
-                                  // return sourceInfo(
-                                  //   model,
-                                  //   context,
-                                  //   removeCartFunction: () =>
-                                  //       removeItemFromCart(model.shortInfo),
-                                  // );
-                                },
-                                childCount: snapshot.hasData
-                                    ? snapshot.data.docs.length
-                                    : 0,
-                              ),
-                            );
-                })
-          ],
+              SingleChildScrollView(
+                child: Consumer<GetLikeItemsModel>(
+                    builder: (context, model, child) {
+                  final items = model.items;
+                  final listTiles = items
+                      .map((item) => ListTile(
+                            onTap: () {
+                              Route route = MaterialPageRoute(
+                                builder: (c) => ProductPage(
+                                  thumbnailURL: item.thumbnailUrl,
+                                  shortInfo: item.shortInfo,
+                                  longDescription: item.longDescription,
+                                  price: item.price,
+                                  attribute: item.attribute,
+                                  postBy: item.postBy,
+                                  Stock: item.Stock,
+                                  id: item.id,
+                                ),
+                              );
+                              Navigator.pushReplacement(
+                                context,
+                                route,
+                              );
+                            },
+                            leading: Image.network(item.thumbnailUrl),
+                            title: Text(item.shortInfo.toString()),
+                            trailing: IconButton(
+                              color: Colors.black,
+                              icon: Icon(Icons.delete),
+                              onPressed: () =>
+                                  removeItemFromLike(item.shortInfo, context),
+                            ),
+                          ))
+                      .toList();
+                  return items.length == 0
+                      ? beginBuildingCart()
+                      : ListView(
+                          shrinkWrap: true,
+                          children: listTiles,
+                        );
+                }),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   beginBuildingCart() {
-    return SliverToBoxAdapter(
-      child: Card(
-        color: Theme.of(context).primaryColor.withOpacity(
-              0.5,
+    return Center(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        child: Card(
+          color: HexColor("E67928").withOpacity(0.8),
+          child: Container(
+            height: 100,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.insert_emoticon,
+                  color: Colors.black,
+                ),
+                Text("まだいいねしていません"),
+                Text("何かいいねしてみませんか？"),
+              ],
             ),
-        child: Container(
-          height: 100,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.insert_emoticon,
-                color: Colors.black,
-              ),
-              Text("まだいいねしていません"),
-              Text("何かいいねしてみましょう"),
-            ],
           ),
         ),
       ),

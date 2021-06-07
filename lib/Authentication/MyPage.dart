@@ -552,73 +552,6 @@ class _MyPageState extends State<MyPage> {
               SizedBox(
                 height: 10,
               ),
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 5.0, bottom: 8),
-              //   child: Container(
-              //     width: MediaQuery.of(context).size.width,
-              //     height: MediaQuery.of(context).size.height * 0.05,
-              //     child: StreamBuilder<QuerySnapshot>(
-              //       stream: EcommerceApp.firestore
-              //           .collection(EcommerceApp.collectionUser)
-              //           .doc(EcommerceApp.sharedPreferences
-              //               .getString(EcommerceApp.userUID))
-              //           .collection("MyUploadItems")
-              //           .snapshots(),
-              //       builder: (context, dataSnapshot) {
-              //         return !dataSnapshot.hasData
-              //             ? Center(
-              //                 child: circularProgress(),
-              //               )
-              //             : Padding(
-              //                 padding:
-              //                     const EdgeInsets.only(left: 10.0, top: 1),
-              //                 child: Text(
-              //                   "出品数：" +
-              //                       dataSnapshot.data.docs.length.toString(),
-              //                   style: TextStyle(fontSize: 25),
-              //                 ),
-              //               );
-              //       },
-              //     ),
-              //   ),
-              // ),
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 5.0),
-              //   child: Container(
-              //     width: MediaQuery.of(context).size.width,
-              //     height: MediaQuery.of(context).size.height,
-              //     child: StreamBuilder<QuerySnapshot>(
-              //         stream: EcommerceApp.firestore
-              //             .collection(EcommerceApp.collectionUser)
-              //             .doc(EcommerceApp.sharedPreferences
-              //                 .getString(EcommerceApp.userUID))
-              //             .collection("MyUploadItems")
-              //             .orderBy(
-              //               "publishedDate",
-              //               descending: true,
-              //             )
-              //             .snapshots(),
-              //         builder: (context, dataSnapshot) {
-              //           return !dataSnapshot.hasData
-              //               ? Center(
-              //                   child: circularProgress(),
-              //                 )
-              //               : GridView.builder(
-              //                   itemCount: dataSnapshot.data.docs.length,
-              //                   gridDelegate:
-              //                       SliverGridDelegateWithFixedCrossAxisCount(
-              //                     crossAxisCount: 3,
-              //                   ),
-              //                   itemBuilder: (context, index) {
-              //                     ItemModel model = ItemModel.fromJson(
-              //                       dataSnapshot.data.docs[index].data(),
-              //                     );
-              //                     return sourceInfoForMain(model, context);
-              //                   },
-              //                 );
-              //         }),
-              //   ),
-              // ),
             ],
           ),
         ),
@@ -627,7 +560,7 @@ class _MyPageState extends State<MyPage> {
   }
 }
 
-Widget sourceInfo(ItemGridModel model, BuildContext context,
+Widget sourceInfo(ItemModel model, BuildContext context,
     {Color background, removeCartFunction}) {
   Color iconColor = Colors.grey;
   final _screenSize = MediaQuery.of(context).size;
@@ -635,7 +568,16 @@ Widget sourceInfo(ItemGridModel model, BuildContext context,
   return InkWell(
     onTap: () {
       Route route = MaterialPageRoute(
-        builder: (c) => ProductPage(itemModel: model),
+        builder: (c) => ProductPage(
+          thumbnailURL: model.thumbnailUrl,
+          shortInfo: model.shortInfo,
+          longDescription: model.longDescription,
+          price: model.price,
+          attribute: model.attribute,
+          postBy: model.postBy,
+          Stock: model.Stock,
+          id: model.id,
+        ),
       );
       Navigator.pushReplacement(
         context,
@@ -678,36 +620,6 @@ Widget sourceInfo(ItemGridModel model, BuildContext context,
                           child: Text("¥" + (model.price).toString()),
                         )),
                   ),
-                  // Align(
-                  //   alignment: Alignment.centerRight,
-                  //   child: removeCartFunction == null
-                  //       ? Padding(
-                  //           padding: const EdgeInsets.only(top: 8.0),
-                  //           child: IconButton(
-                  //             icon: Icon(
-                  //               Icons.add_shopping_cart,
-                  //               color: Colors.black,
-                  //             ),
-                  //             onPressed: () {
-                  //               checkItemInCart(model.shortInfo, context);
-                  //             },
-                  //           ),
-                  //         )
-                  //       : IconButton(
-                  //           onPressed: () {
-                  //             removeCartFunction();
-                  //             Route route = MaterialPageRoute(
-                  //               builder: (_) => StoreHome(),
-                  //             );
-                  //             Navigator.pushReplacement(
-                  //               context,
-                  //               route,
-                  //             );
-                  //           },
-                  //           icon: Icon(Icons.delete),
-                  //           color: Colors.black,
-                  //         ),
-                  // ),
                 ],
               ),
             ],

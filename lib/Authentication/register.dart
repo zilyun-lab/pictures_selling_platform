@@ -409,7 +409,7 @@ class _RegisterState extends State<Register> {
     );
     FirebaseFirestore.instance
         .collection("users")
-        .doc()
+        .doc(fUser.uid)
         .collection("MyProceeds")
         .doc()
         .set(

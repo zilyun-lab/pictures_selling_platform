@@ -77,9 +77,7 @@ class _SplashScreenState extends State<SplashScreen> {
       () async {
         if (await EcommerceApp.auth.currentUser != null) {
           //todo:もしログインしていたら以下
-          Route route = MaterialPageRoute(
-            builder: (_) => StoreHome(),
-          );
+
           Navigator.pushReplacement(
             context,
             PageTransition(
@@ -87,13 +85,14 @@ class _SplashScreenState extends State<SplashScreen> {
               child: StoreHome(),
               inheritTheme: true,
               ctx: context,
+              duration: Duration(
+                milliseconds: 1500,
+              ),
             ),
           );
         } else {
           //todo:もしログインしていなかったら以下
-          Route route = MaterialPageRoute(
-            builder: (_) => Login(),
-          );
+
           Navigator.pushReplacement(
             context,
             PageTransition(
@@ -102,7 +101,7 @@ class _SplashScreenState extends State<SplashScreen> {
               inheritTheme: true,
               ctx: context,
               duration: Duration(
-                milliseconds: 1500,
+                milliseconds: 500,
               ),
             ),
           );

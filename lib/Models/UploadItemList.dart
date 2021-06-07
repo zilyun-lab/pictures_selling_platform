@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Items {
+class UploadItems {
   //クラス名(引数){
   // init内容
   // }
-  Items(QueryDocumentSnapshot doc) {
-    documentID = doc.id;
+  UploadItems(QueryDocumentSnapshot doc) {
     shortInfo = doc['shortInfo'];
     thumbnailUrl = doc['thumbnailUrl'];
     price = doc["price"];
@@ -16,7 +15,6 @@ class Items {
     id = doc["id"];
   }
 
-  String documentID;
   String shortInfo;
   String thumbnailUrl;
   int price;

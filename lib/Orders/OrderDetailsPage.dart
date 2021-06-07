@@ -209,7 +209,7 @@ class StatusBanner extends StatelessWidget {
 
 class ShippingDetails extends StatelessWidget {
   final AddressModel model;
-  final ItemGridModel itemModel;
+  final ItemModel itemModel;
   final String orderID;
   final int proceeds;
   final String postBy;
