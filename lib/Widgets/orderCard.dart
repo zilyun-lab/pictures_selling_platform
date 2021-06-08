@@ -8,10 +8,11 @@ int counter = 0;
 
 class OrderCard extends StatelessWidget {
   final int itemCount;
+  final int totalPrice;
   final List<DocumentSnapshot> data;
   final String orderID;
 
-  OrderCard({Key key, this.data, this.itemCount, this.orderID})
+  OrderCard({Key key, this.data, this.itemCount, this.orderID, this.totalPrice})
       : super(key: key);
 
   @override
@@ -23,8 +24,11 @@ class OrderCard extends StatelessWidget {
           counter = counter + 1;
           //todo:ここが怪しい
         }
-        route =
-            MaterialPageRoute(builder: (c) => OrderDetails(orderID: orderID));
+        route = MaterialPageRoute(
+            builder: (c) => OrderDetails(
+                  orderID: orderID,
+                  totalPrice: totalPrice,
+                ));
         Navigator.push(context, route);
       },
       child: Padding(
@@ -72,7 +76,7 @@ class OrderCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          model.title,
+                          model.shortInfo,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 14,
@@ -89,7 +93,7 @@ class OrderCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          model.shortInfo,
+                          model.longDescription,
                           style: TextStyle(
                             color: Colors.black54,
                             fontSize: 12,
@@ -116,7 +120,7 @@ class OrderCard extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                (model.price).toString(),
+                                (totalPrice).toString(),
                                 style: TextStyle(
                                   fontSize: 15,
                                   color: Colors.grey,

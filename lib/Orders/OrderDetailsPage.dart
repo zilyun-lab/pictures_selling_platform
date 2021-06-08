@@ -18,10 +18,12 @@ String getNotifyID = "";
 
 class OrderDetails extends StatelessWidget {
   final String orderID;
+  final int totalPrice;
 
   OrderDetails({
     Key key,
     this.orderID,
+    this.totalPrice,
   }) : super(key: key);
 
   @override
@@ -103,6 +105,7 @@ class OrderDetails extends StatelessWidget {
                               builder: (c, dataSnapshot) {
                                 return dataSnapshot.hasData
                                     ? OrderCard(
+                                        totalPrice: totalPrice,
                                         itemCount:
                                             dataSnapshot.data.docs.length,
                                         data: dataSnapshot.data.docs,

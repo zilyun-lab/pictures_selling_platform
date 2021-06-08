@@ -21,10 +21,7 @@ class _SearchProductState extends State<SearchProduct> {
         appBar: MyAppBar(
           bottom: PreferredSize(
             child: searchWidget(),
-            preferredSize: Size(
-              56,
-              56,
-            ),
+            preferredSize: Size(56.0, 56.0),
           ),
         ),
         body: FutureBuilder<QuerySnapshot>(
@@ -39,9 +36,14 @@ class _SearchProductState extends State<SearchProduct> {
                       return sourceInfoForMain(model, context);
                     },
                   )
-                : Text(
-                    "検索した商品が見つかりませんでした",
-                    style: TextStyle(color: Colors.black),
+                : Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "検索した商品が見つかりませんでした",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
                   );
           },
         ),
@@ -58,7 +60,7 @@ class _SearchProductState extends State<SearchProduct> {
         width: MediaQuery.of(context).size.width - 40,
         height: 50,
         decoration: BoxDecoration(
-          color: Colors.grey,
+          color: Colors.grey.withOpacity(0.5),
           borderRadius: BorderRadius.circular(6),
         ),
         child: Row(

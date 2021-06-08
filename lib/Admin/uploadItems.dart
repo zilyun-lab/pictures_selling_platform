@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
@@ -62,7 +63,6 @@ class _UploadPageState extends State<UploadPage>
   TextEditingController _heighttextEditingController = TextEditingController();
   TextEditingController _descriptiontextEditingController =
       TextEditingController();
-  //TextEditingController _titletextEditingController = TextEditingController();
   TextEditingController _shortInfoTextEditingController =
       TextEditingController();
   String productID = DateTime.now().millisecondsSinceEpoch.toString();
@@ -160,6 +160,7 @@ class _UploadPageState extends State<UploadPage>
       length: 2,
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: HexColor("e5e2df"),
           appBar: AppBar(
             bottom: new TabBar(
               labelColor: Colors.black,
@@ -180,7 +181,7 @@ class _UploadPageState extends State<UploadPage>
               indicatorColor: Colors.black,
               indicatorWeight: 2.5,
             ),
-            backgroundColor: Colors.white,
+            backgroundColor: HexColor("E5E2E0"),
             leading: IconButton(
               icon: Icon(
                 Icons.arrow_back_sharp,
@@ -472,6 +473,9 @@ class _UploadPageState extends State<UploadPage>
             child: Text("出品する"),
             style: ElevatedButton.styleFrom(primary: Colors.black),
           ),
+        ),
+        SizedBox(
+          height: 50,
         )
       ],
     );
@@ -660,7 +664,10 @@ class _UploadPageState extends State<UploadPage>
             child: Text("出品する"),
             style: ElevatedButton.styleFrom(primary: Colors.black),
           ),
-        )
+        ),
+        SizedBox(
+          height: 50,
+        ),
       ],
     );
   }

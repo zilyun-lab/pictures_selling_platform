@@ -67,45 +67,62 @@ class _LikePageState extends State<LikePage> {
               ),
               SingleChildScrollView(
                 child: Consumer<GetLikeItemsModel>(
-                    builder: (context, model, child) {
-                  final items = model.items;
-                  final listTiles = items
-                      .map((item) => ListTile(
-                            onTap: () {
-                              Route route = MaterialPageRoute(
-                                builder: (c) => ProductPage(
-                                  thumbnailURL: item.thumbnailUrl,
-                                  shortInfo: item.shortInfo,
-                                  longDescription: item.longDescription,
-                                  price: item.price,
-                                  attribute: item.attribute,
-                                  postBy: item.postBy,
-                                  Stock: item.Stock,
-                                  id: item.id,
-                                ),
-                              );
-                              Navigator.pushReplacement(
-                                context,
-                                route,
-                              );
-                            },
-                            leading: Image.network(item.thumbnailUrl),
-                            title: Text(item.shortInfo.toString()),
-                            trailing: IconButton(
-                              color: Colors.black,
-                              icon: Icon(Icons.delete),
-                              onPressed: () =>
-                                  removeItemFromLike(item.shortInfo, context),
-                            ),
-                          ))
-                      .toList();
-                  return items.length == 0
-                      ? beginBuildingCart()
-                      : ListView(
-                          shrinkWrap: true,
-                          children: listTiles,
-                        );
-                }),
+                  builder: (context, model, child) {
+                    final items = model.items;
+                    final listTiles = items
+                        .map((item) => Padding(
+                              padding: const EdgeInsets.all(3.0),
+                              child: Column(
+                                children: [
+                                  ListTile(
+                                    onTap: () {
+                                      Route route = MaterialPageRoute(
+                                        builder: (c) => ProductPage(
+                                          thumbnailURL: item.thumbnailUrl,
+                                          shortInfo: item.shortInfo,
+                                          longDescription: item.longDescription,
+                                          price: item.price,
+                                          attribute: item.attribute,
+                                          postBy: item.postBy,
+                                          Stock: item.Stock,
+                                          id: item.id,
+                                        ),
+                                      );
+                                      Navigator.pushReplacement(
+                                        context,
+                                        route,
+                                      );
+                                    },
+                                    leading: Image.network(
+                                      item.thumbnailUrl,
+                                      height: 50,
+                                      fit: BoxFit.scaleDown,
+                                    ),
+                                    title: Text(item.shortInfo.toString()),
+                                    trailing: IconButton(
+                                      color: Colors.black,
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () => removeItemFromLike(
+                                          item.shortInfo, context),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 10.0, right: 10),
+                                    child: Divider(),
+                                  )
+                                ],
+                              ),
+                            ))
+                        .toList();
+                    return items.length == 0
+                        ? beginBuildingCart()
+                        : ListView(
+                            shrinkWrap: true,
+                            children: listTiles,
+                          );
+                  },
+                ),
               ),
             ],
           ),

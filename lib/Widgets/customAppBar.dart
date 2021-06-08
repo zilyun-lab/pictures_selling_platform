@@ -17,6 +17,7 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      bottom: bottom,
       leading: IconButton(
         onPressed: () {
           Route route = MaterialPageRoute(

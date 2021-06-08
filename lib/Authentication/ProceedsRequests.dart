@@ -169,9 +169,12 @@ class _ProceedsRequestsState extends State<ProceedsRequests> {
               );
             },
             child: Center(
-              child: Text(
-                "戻る",
-                style: TextStyle(color: Colors.black, fontSize: 20),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Text(
+                  "戻る",
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
               ),
             )),
         backgroundColor: Colors.white,

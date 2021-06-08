@@ -128,7 +128,7 @@ class _StoreHomeState extends State<StoreHome> {
                               .snapshots(),
                           builder: (context, dataSnapshot) {
                             return !dataSnapshot.hasData
-                                ? Container(child: Text("aaa"))
+                                ? Container()
                                 : CarouselSlider.builder(
                                     carouselController:
                                         _buttonCarouselController,

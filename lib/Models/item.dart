@@ -12,6 +12,8 @@ class ItemModel {
   String attribute;
   int Stock;
   String id;
+  int totalPrice;
+
   // String isPayment;
   // String isDelivery;
 
@@ -27,6 +29,7 @@ class ItemModel {
     this.attribute,
     this.Stock,
     this.id,
+    this.totalPrice,
   });
 
   ItemModel.fromJson(Map<String, dynamic> json) {
@@ -41,6 +44,7 @@ class ItemModel {
     attribute = json['attribute'];
     Stock = json['Stock'];
     id = json["id"];
+    totalPrice = json["totalPrice"];
   }
 
   Map<String, dynamic> toJson() {
@@ -58,6 +62,7 @@ class ItemModel {
     data['attribute'] = this.attribute;
     data['Stock'] = this.Stock;
     data["id"] = this.id;
+    data["totalPrice"] = this.totalPrice;
 
     return data;
   }

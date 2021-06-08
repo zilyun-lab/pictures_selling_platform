@@ -79,6 +79,8 @@ class _MyOrdersState extends State<MyOrders> {
                         builder: (c, snap) {
                           return snap.hasData
                               ? OrderCard(
+                                  totalPrice: snapshot.data.docs[index]
+                                      ["totalPrice"],
                                   itemCount: snap.data.docs.length,
                                   data: snap.data.docs,
                                   orderID: snapshot.data.docs[index].id,
