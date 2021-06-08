@@ -88,14 +88,14 @@ class _ProductPageState extends State<ProductPage> {
         appBar: MyAppBar(),
         body: ListView(
           children: [
-            ElevatedButton(
-                onPressed: () {
-                  Route route = MaterialPageRoute(
-                    builder: (c) => TestPage(),
-                  );
-                  Navigator.pushReplacement(context, route);
-                },
-                child: Text("waaaaaa")),
+            // ElevatedButton(
+            //     onPressed: () {
+            //       Route route = MaterialPageRoute(
+            //         builder: (c) => TestPage(),
+            //       );
+            //       Navigator.pushReplacement(context, route);
+            //     },
+            //     child: Text("テストページへ")),
             Container(
               padding: EdgeInsets.all(
                 8,
