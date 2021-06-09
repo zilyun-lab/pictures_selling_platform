@@ -1,4 +1,6 @@
+import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
+import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -33,7 +35,43 @@ class _SearchProductState extends State<SearchProduct> {
                     itemBuilder: (context, index) {
                       ItemModel model =
                           ItemModel.fromJson(snap.data.docs[index].data());
-                      return sourceInfoForMain(model, context);
+                      return SizedBox(
+                        height: 75,
+                        child: Card(
+                          color: HexColor("e5e2df"),
+                          child: ListTile(
+                            onTap: () {
+                              Route route = MaterialPageRoute(
+                                builder: (c) => ProductPage(
+                                  thumbnailURL: model.thumbnailUrl,
+                                  shortInfo: model.shortInfo,
+                                  longDescription: model.longDescription,
+                                  price: model.price,
+                                  attribute: model.attribute,
+                                  postBy: model.postBy,
+                                  Stock: model.Stock,
+                                  id: model.id,
+                                ),
+                              );
+                              Navigator.pushReplacement(
+                                context,
+                                route,
+                              );
+                            },
+                            trailing: Text(
+                              model.price.toString() + "円",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            title: Text(model.shortInfo),
+                            subtitle: Text(model.longDescription),
+                            leading: Image.network(
+                              model.thumbnailUrl,
+                              height: 75,
+                              fit: BoxFit.scaleDown,
+                            ),
+                          ),
+                        ),
+                      );
                     },
                   )
                 : Center(

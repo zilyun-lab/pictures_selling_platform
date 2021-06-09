@@ -296,9 +296,6 @@ class _StoreHomeState extends State<StoreHome> {
 Widget sourceInfoForMain(ItemModel model, BuildContext context,
     {Color background, removeCartFunction}) {
   Color iconColor = Colors.grey;
-  PaymentPage(
-    postBy: model.postBy,
-  );
 
   return Card(
     color: HexColor("e5e2df"),
@@ -333,7 +330,7 @@ Widget sourceInfoForMain(ItemModel model, BuildContext context,
                       model.thumbnailUrl,
                       fit: BoxFit.scaleDown,
                       width: 100,
-                      height: 111.5,
+                      height: 108,
                     ),
                   ),
                 ),

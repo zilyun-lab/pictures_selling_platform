@@ -244,8 +244,9 @@ class _ProductPageState extends State<ProductPage> {
                           child: Card(
                             color: HexColor("E67928"),
                             child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(1.0),
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: documentList.map((document) {
                                   return InkWell(
                                     onTap: () {
@@ -261,46 +262,38 @@ class _ProductPageState extends State<ProductPage> {
                                       Navigator.pushReplacement(context, route);
                                     },
                                     child: ListTile(
-                                        leading: Container(
-                                          height: 80,
-                                          width: 80,
-                                          child: CircleAvatar(
-                                            backgroundImage: NetworkImage(
-                                                document
-                                                    .data()["url"]
-                                                    .toString()),
+                                      leading: Container(
+                                        height: 80,
+                                        width: 80,
+                                        child: CircleAvatar(
+                                          backgroundImage: NetworkImage(document
+                                              .data()["url"]
+                                              .toString()),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        '${document.data()["name"]}',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      subtitle: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 5.0,
+                                          horizontal: 10.0,
+                                        ),
+                                        child: Text(
+                                          '${document.data()["description"]}',
+                                          style: TextStyle(fontSize: 12),
+                                        ),
+                                        decoration: ShapeDecoration(
+                                          color: Colors.white,
+                                          shape: BubbleBorder(
+                                            width: 1,
+                                            radius: 10,
                                           ),
                                         ),
-                                        title: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              '${document.data()["name"]}',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 5.0,
-                                                horizontal: 10.0,
-                                              ),
-                                              child: Text(
-                                                '${document.data()["description"]}',
-                                                style: TextStyle(fontSize: 12),
-                                              ),
-                                              decoration: ShapeDecoration(
-                                                color: Colors.white,
-                                                shape: BubbleBorder(
-                                                  width: 1,
-                                                  radius: 10,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ) //["PostBy"]}\nshortInfo:${document.data()["shortInfo"]}'),
-                                        ),
+                                      ), //["PostBy"]}\nshortInfo:${document.data()["shortInfo"]}'),
+                                    ),
                                   );
                                 }).toList(),
                               ),
