@@ -23,6 +23,7 @@ import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 
+import 'PrivacyPolicyEtc.dart';
 import 'ProceedsRequests.dart';
 import 'login.dart';
 
@@ -197,111 +198,6 @@ class _MyPageState extends State<MyPage> {
                                     fontSize: 25,
                                   ),
                                 ),
-                                // Padding(
-                                //   padding: const EdgeInsets.all(8.0),
-                                //   child: Row(
-                                //     mainAxisAlignment: MainAxisAlignment.start,
-                                //     children: [
-                                //       StreamBuilder<DocumentSnapshot>(
-                                //         stream: EcommerceApp.firestore
-                                //             .collection(
-                                //                 EcommerceApp.collectionUser)
-                                //             .doc(FirebaseAuth
-                                //                 .instance.currentUser.uid)
-                                //             .snapshots(),
-                                //         builder: (context, dataSnapshot) {
-                                //           return !dataSnapshot.hasData
-                                //               ? Center(
-                                //                   child: circularProgress(),
-                                //                 )
-                                //               : Padding(
-                                //                   padding:
-                                //                       const EdgeInsets.only(
-                                //                           left: 10.0, top: 1),
-                                //                   child: InkWell(
-                                //                     onTap: () {
-                                //                       launch(dataSnapshot
-                                //                           .data["InstagramURL"]
-                                //                           .toString());
-                                //                     },
-                                //                     child: FaIcon(
-                                //                       FontAwesomeIcons
-                                //                           .instagram,
-                                //                       size: 40,
-                                //                     ),
-                                //                   ));
-                                //         },
-                                //       ),
-                                //       StreamBuilder<DocumentSnapshot>(
-                                //         stream: EcommerceApp.firestore
-                                //             .collection(
-                                //                 EcommerceApp.collectionUser)
-                                //             .doc(FirebaseAuth
-                                //                 .instance.currentUser.uid)
-                                //             .snapshots(),
-                                //         builder: (context, dataSnapshot) {
-                                //           return !dataSnapshot.hasData
-                                //               ? Center(
-                                //                   child: circularProgress(),
-                                //                 )
-                                //               : Padding(
-                                //                   padding:
-                                //                       const EdgeInsets.only(
-                                //                           left: 10.0, top: 1),
-                                //                   child: InkWell(
-                                //                     onTap: () {
-                                //                       launch(dataSnapshot
-                                //                           .data["TwitterURL"]
-                                //                           .toString());
-                                //                     },
-                                //                     child: FaIcon(
-                                //                       FontAwesomeIcons.twitter,
-                                //                       size: 40,
-                                //                     ),
-                                //                   ));
-                                //         },
-                                //       ),
-                                //       StreamBuilder<DocumentSnapshot>(
-                                //         stream: EcommerceApp.firestore
-                                //             .collection(
-                                //                 EcommerceApp.collectionUser)
-                                //             .doc(FirebaseAuth
-                                //                 .instance.currentUser.uid)
-                                //             .snapshots(),
-                                //         builder: (context, dataSnapshot) {
-                                //           return !dataSnapshot.hasData
-                                //               ? Center(
-                                //                   child: circularProgress(),
-                                //                 )
-                                //               : Padding(
-                                //                   padding:
-                                //                       const EdgeInsets.only(
-                                //                           left: 10.0, top: 1),
-                                //                   child: InkWell(
-                                //                     onTap: () {
-                                //                       launch(dataSnapshot
-                                //                           .data["FaceBookURL"]
-                                //                           .toString());
-                                //                     },
-                                //                     child: FaIcon(
-                                //                       FontAwesomeIcons.facebook,
-                                //                       size: 40,
-                                //                     ),
-                                //                   ));
-                                //         },
-                                //       ),
-                                //       // InkWell(
-                                //       //   onTap: () {
-                                //       //     launch('https://www.facebook.com');
-                                //       //   },
-                                //       //   child: FaIcon(
-                                //       //     FontAwesomeIcons.facebook,
-                                //       //     size: 40,
-                                //       //   ),
-                                //       // )
-                                //     ],
-                                //   ),
-                                // ),
                               ],
                             ),
                           ),
@@ -333,56 +229,6 @@ class _MyPageState extends State<MyPage> {
                   ),
                 ),
               ),
-              //Padding(
-              //padding: EdgeInsets.only(left: 15.0),
-              //child: Row(
-              //children: [
-              // Text(
-              //   "自己紹介",
-              //   style: TextStyle(
-              //       fontSize: 18, color: Colors.black.withOpacity(0.7)),
-              // ),
-              //],
-              //),
-              //),
-              // Container(
-              //   width: MediaQuery.of(context).size.width * 0.95,
-              //   decoration:
-              //       BoxDecoration(border: Border.all(color: Colors.black)),
-              //   child: Padding(
-              //     padding: const EdgeInsets.only(left: 5.0, bottom: 50),
-              //     child: Row(
-              //       children: [
-              //         Flexible(
-              //           child: Padding(
-              //             padding: const EdgeInsets.all(5.0),
-              //             child: StreamBuilder<DocumentSnapshot>(
-              //               stream: EcommerceApp.firestore
-              //                   .collection(EcommerceApp.collectionUser)
-              //                   .doc(FirebaseAuth.instance.currentUser.uid)
-              //                   .snapshots(),
-              //               builder: (context, dataSnapshot) {
-              //                 return !dataSnapshot.hasData
-              //                     ? Center(
-              //                         child: circularProgress(),
-              //                       )
-              //                     : Padding(
-              //                         padding: const EdgeInsets.only(
-              //                             left: 10.0, top: 1),
-              //                         child: Text(
-              //                           dataSnapshot.data["description"]
-              //                               .toString(),
-              //                           style: TextStyle(fontSize: 25),
-              //                         ),
-              //                       );
-              //               },
-              //             ),
-              //           ),
-              //         ),
-              //       ],
-              //     ),
-              //   ),
-              // ),
               Column(
                 children: [
                   Container(
@@ -514,6 +360,26 @@ class _MyPageState extends State<MyPage> {
                       },
                       leading: Icon(Icons.history_outlined),
                       title: Text("注文履歴"),
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                  Card(
+                    color: HexColor("e5e2df").withOpacity(0.6),
+                    child: ListTile(
+                      onTap: () {
+                        Route route = MaterialPageRoute(
+                          builder: (c) => PrivacyPolicyPage(),
+                        );
+                        Navigator.pushReplacement(
+                          context,
+                          route,
+                        );
+                      },
+                      leading: Icon(Icons.privacy_tip_outlined),
+                      title: Text("利用規約等"),
                       trailing: Icon(
                         Icons.arrow_forward_ios,
                         size: 18,

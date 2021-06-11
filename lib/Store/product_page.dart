@@ -1,22 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:selling_pictures_platform/Authentication/MyPage.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Authentication/publicUserPage.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Counters/cartitemcounter.dart';
 import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
-
-import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:flutter/material.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
-
-import 'ARPage.dart';
 import 'StripeCheckOutSystem.dart';
-import 'like.dart';
 
 class ProductPage extends StatefulWidget {
   final String shortInfo;
@@ -637,7 +629,7 @@ class _ProductPageState extends State<ProductPage> {
             "最終確認",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          content: Container(child: Text("${shortInfo} を削除します。\n本当によろしいですか？")),
+          content: Container(child: Text("$shortInfo を削除します。\n本当によろしいですか？")),
           actions: <Widget>[
             // ボタン領域
             ElevatedButton(
@@ -674,11 +666,11 @@ class _ProductPageState extends State<ProductPage> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           content: Container(
-              child: Text("${shortInfo} を削除しました。\n引き続きLEEWAYをお楽しみください。")),
+              child: Text("$shortInfo を削除しました。\n引き続きLEEWAYをお楽しみください。")),
           actions: <Widget>[
             // ボタン領域
 
-            FlatButton(
+            ElevatedButton(
               child: Text("確認しました。"),
               onPressed: () {
                 Route route = MaterialPageRoute(

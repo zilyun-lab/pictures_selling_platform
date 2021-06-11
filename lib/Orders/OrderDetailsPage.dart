@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:selling_pictures_platform/Address/address.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
@@ -327,9 +328,12 @@ class ShippingDetails extends StatelessWidget {
             if (snapshot.hasData) {
               dataMap = snapshot.data.data();
             }
-            return dataMap["isPayment"] != "inComplete"
+            return DateTime.now().millisecondsSinceEpoch >=
+                    int.parse(dataMap["orderTime"]) + 86400
                 ? Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: EdgeInsets.all(
+                      10,
+                    ),
                     child: InkWell(
                       onTap: () {
                         completeTransactionAndNotifySellar(context, getOrderId);
@@ -351,27 +355,117 @@ class ShippingDetails extends StatelessWidget {
                       ),
                     ),
                   )
-                : Padding(
-                    padding: EdgeInsets.all(10),
-                    child: InkWell(
-                      onTap: () {
-                        completePaymentAndNotifyToSellar();
-                      },
-                      child: Container(
-                        color: Colors.black,
-                        width: MediaQuery.of(context).size.width,
-                        height: 50,
-                        child: Center(
-                          child: Text(
-                            "作品料金：${dataMap["totalPrice"]}円の支払いを完了しました。",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 13,
+                : Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 10,
+                          right: 10,
+                          left: 10,
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return AlertDialog(
+                                  title: Row(
+                                    children: [
+                                      Text(
+                                        "*",
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                      Text(
+                                        "商品キャンセルについて",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  content: Container(
+                                      child:
+                                          Text("ご注文をキャンセルします。\n本当によろしいですか？")),
+                                  actions: <Widget>[
+                                    // ボタン領域
+                                    ElevatedButton(
+                                      child: Text("いいえ"),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                    ElevatedButton(
+                                      child: Text("はい"),
+                                      onPressed: () {
+                                        FirebaseFirestore.instance
+                                            .collection("users")
+                                            .doc(EcommerceApp.sharedPreferences
+                                                .getString(
+                                                    EcommerceApp.userUID))
+                                            .collection("orders")
+                                            .doc(orderID)
+                                            .delete();
+                                        FirebaseFirestore.instance
+                                            .collection("users")
+                                            .doc(postBy)
+                                            .collection("Notify")
+                                            .doc(orderID)
+                                            .delete();
+                                        Route route = MaterialPageRoute(
+                                          builder: (c) => StoreHome(),
+                                        );
+                                        Navigator.pushReplacement(
+                                            context, route);
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            color: Colors.redAccent,
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            child: Center(
+                              child: Text(
+                                "商品をキャンセルする(24時間以内有効)",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 10,
+                          right: 10,
+                          left: 10,
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            completeTransactionAndNotifySellar(
+                                context, getOrderId);
+                            // print(proceeds);
+                          },
+                          child: Container(
+                            color: Colors.black,
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            child: Center(
+                              child: Text(
+                                "商品を確認・受け取りました",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   );
           },
         ),

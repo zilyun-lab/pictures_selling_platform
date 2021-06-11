@@ -11,7 +11,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
-import '../main.dart';
 
 class CartPage extends StatefulWidget {
   @override

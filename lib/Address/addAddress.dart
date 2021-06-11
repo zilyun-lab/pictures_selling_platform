@@ -1,17 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:image/image.dart';
 import 'package:selling_pictures_platform/Address/address.dart';
-import 'package:selling_pictures_platform/Address/searchAddress.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Store/cart.dart';
-import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:flutter/material.dart';
-import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
 import 'package:http/http.dart';
 
 class AddAddress extends StatefulWidget {

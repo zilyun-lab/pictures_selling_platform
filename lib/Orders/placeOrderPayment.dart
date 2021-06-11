@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Address/address.dart';
-import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
@@ -12,8 +10,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
-import '../main.dart';
-import 'OrderDetailsPage.dart';
 
 class PaymentPage extends StatefulWidget {
   final String addressId;

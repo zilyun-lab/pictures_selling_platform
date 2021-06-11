@@ -1,4 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
+import 'package:flutter_credit_card/credit_card_form.dart';
+import 'package:flutter_credit_card/credit_card_model.dart';
+import 'package:flutter_credit_card/credit_card_widget.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -58,6 +63,10 @@ enum RadioValue { FIRST, SECOND, THIRD }
 class _CheckOutPageState extends State<CheckOutPage> {
   var gValue = 0;
   final shipsPayment = 1200;
+  TextEditingController _cardNumberEditingController = TextEditingController();
+  TextEditingController _expMonthEditingController = TextEditingController();
+  TextEditingController _expYearEditingController = TextEditingController();
+  TextEditingController _cvcNumberEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -406,164 +415,322 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                             showDialog(
                                               context: context,
                                               builder: (_) {
-                                                return CupertinoAlertDialog(
+                                                return AlertDialog(
                                                   title: Center(
                                                     child: Text(
-                                                      "購入確認",
+                                                      "決済画面",
                                                       style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.bold),
                                                     ),
                                                   ),
-                                                  content: Container(
-                                                    child: Text(
-                                                      "${widget.shortInfo} を購入します。\nよろしいですか？",
-                                                    ),
+                                                  content:
+                                                      SingleChildScrollView(
+                                                    child: Expanded(
+                                                        // child:
+                                                        // _buildPayViaNewCardButton(
+                                                        //     context),
+
+                                                        child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(5.0),
+                                                          child: TextFormField(
+                                                            inputFormatters: [
+                                                              LengthLimitingTextInputFormatter(
+                                                                  16),
+                                                            ],
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            validator:
+                                                                (String value) {
+                                                              return value.isEmpty ||
+                                                                      value.length >=
+                                                                          16
+                                                                  ? '正しいカードナンバーを入力して下さい'
+                                                                  : null;
+                                                            },
+                                                            decoration:
+                                                                InputDecoration(
+                                                              labelText:
+                                                                  "カードナンバー",
+                                                              icon: Icon(Icons
+                                                                  .credit_card),
+                                                              hintText:
+                                                                  "カードナンバー",
+                                                              hintStyle:
+                                                                  TextStyle(
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                            ),
+                                                            controller:
+                                                                _cardNumberEditingController,
+                                                          ),
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        5.0),
+                                                                child:
+                                                                    TextFormField(
+                                                                  validator:
+                                                                      (String
+                                                                          value) {
+                                                                    return value
+                                                                            .isEmpty
+                                                                        ? '正しいカード有効期限を入力して下さい'
+                                                                        : null;
+                                                                  },
+                                                                  inputFormatters: [
+                                                                    LengthLimitingTextInputFormatter(
+                                                                        2),
+                                                                  ],
+                                                                  keyboardType:
+                                                                      TextInputType
+                                                                          .number,
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    labelText:
+                                                                        "MM",
+                                                                    hintText:
+                                                                        "MM",
+                                                                    hintStyle:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .grey,
+                                                                    ),
+                                                                  ),
+                                                                  controller:
+                                                                      _expMonthEditingController,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        5.0),
+                                                                child:
+                                                                    TextFormField(
+                                                                  validator:
+                                                                      (String
+                                                                          value) {
+                                                                    return value
+                                                                            .isEmpty
+                                                                        ? '正しいカード有効期限を入力して下さい'
+                                                                        : null;
+                                                                  },
+                                                                  inputFormatters: [
+                                                                    LengthLimitingTextInputFormatter(
+                                                                        2),
+                                                                  ],
+                                                                  keyboardType:
+                                                                      TextInputType
+                                                                          .number,
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    labelText:
+                                                                        "YY",
+                                                                    hintText:
+                                                                        "YY",
+                                                                    hintStyle:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .grey,
+                                                                    ),
+                                                                  ),
+                                                                  controller:
+                                                                      _expYearEditingController,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(5.0),
+                                                          child: TextFormField(
+                                                            validator:
+                                                                (String value) {
+                                                              return value.isEmpty ||
+                                                                      value.length >=
+                                                                          3
+                                                                  ? '正しいセキュリティーコードを入力して下さい'
+                                                                  : null;
+                                                            },
+                                                            inputFormatters: [
+                                                              LengthLimitingTextInputFormatter(
+                                                                  3),
+                                                            ],
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              labelText:
+                                                                  "セキュリティーコード",
+                                                              hintText: "CVC",
+                                                              hintStyle:
+                                                                  TextStyle(
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                            ),
+                                                            controller:
+                                                                _cvcNumberEditingController,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )),
                                                   ),
                                                   actions: <Widget>[
                                                     // ボタン領域
-                                                    FlatButton(
-                                                      child: Text("キャンセル"),
-                                                      onPressed: () =>
-                                                          Navigator.pop(
-                                                              context),
-                                                    ),
-                                                    FlatButton(
-                                                      child: Text(
-                                                        "購入する",
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+                                                    Expanded(
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 15.0),
+                                                            child:
+                                                                ElevatedButton(
+                                                              child: Text(
+                                                                  " キャンセル "),
+                                                              onPressed: () =>
+                                                                  Navigator.pop(
+                                                                      context),
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    right:
+                                                                        15.0),
+                                                            child:
+                                                                ElevatedButton(
+                                                              child: Text(
+                                                                  "   購入する   "),
+                                                              onPressed: () {
+                                                                showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder: (_) {
+                                                                    return CupertinoAlertDialog(
+                                                                      title:
+                                                                          Center(
+                                                                        child:
+                                                                            Text(
+                                                                          "購入確認",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontWeight:
+                                                                                FontWeight.bold,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      content:
+                                                                          Container(
+                                                                        child:
+                                                                            Text(
+                                                                          "${widget.shortInfo} を購入します。\nよろしいですか？",
+                                                                        ),
+                                                                      ),
+                                                                      actions: <
+                                                                          Widget>[
+                                                                        // ボタン領域
+                                                                        ElevatedButton(
+                                                                          child:
+                                                                              Text("キャンセル"),
+                                                                          onPressed: () =>
+                                                                              Navigator.pop(context),
+                                                                        ),
+                                                                        ElevatedButton(
+                                                                          child:
+                                                                              Text(
+                                                                            "購入する",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontWeight: FontWeight.bold,
+                                                                            ),
+                                                                          ),
+                                                                          onPressed:
+                                                                              () {
+                                                                            final creditCard = CreditCard(
+                                                                                number: _cardNumberEditingController.text.toString(),
+                                                                                expMonth: int.parse(_expMonthEditingController.text),
+                                                                                expYear: int.parse(_expYearEditingController.text),
+                                                                                cvc: _cvcNumberEditingController.text.toString());
+                                                                            StripeService(price: widget.price + shipsPayment + gValue).payViaExistingCard(creditCard);
+                                                                            final ref =
+                                                                                EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID)).collection(EcommerceApp.collectionOrders).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID) + DateTime.now().millisecondsSinceEpoch.toString());
+                                                                            ref.set(
+                                                                              {
+                                                                                "id": ref.id,
+                                                                                "imageURL": widget.imageURL,
+                                                                                EcommerceApp.addressID: snapshot.data.docs[index].id,
+                                                                                "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+                                                                                EcommerceApp.productID: widget.shortInfo,
+                                                                                EcommerceApp.paymentDetails: "クレジットカード",
+                                                                                EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
+                                                                                EcommerceApp.isSuccess: true,
+                                                                                "boughtFrom": widget.postBy,
+                                                                                "totalPrice": widget.price + shipsPayment + gValue,
+                                                                                "isTransactionFinished": "inComplete",
+                                                                                "isPayment": "inComplete",
+                                                                                "isDelivery": "inComplete",
+                                                                                "itemPrice": widget.price,
+                                                                              },
+                                                                            ).whenComplete(
+                                                                              () => {
+                                                                                finishedCheckOut(),
+                                                                              },
+                                                                            );
+                                                                            EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(widget.postBy).collection("Notify").doc(ref.id).set({
+                                                                              "id": ref.id,
+                                                                              "imageURL": widget.imageURL,
+                                                                              EcommerceApp.addressID: snapshot.data.docs[index].id,
+                                                                              "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+                                                                              EcommerceApp.productID: widget.shortInfo,
+                                                                              EcommerceApp.paymentDetails: "代金引換",
+                                                                              EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
+                                                                              EcommerceApp.isSuccess: true,
+                                                                              "boughtFrom": widget.postBy,
+                                                                              "totalPrice": widget.price + shipsPayment + gValue,
+                                                                              "NotifyMessage": "${EcommerceApp.sharedPreferences.getString(
+                                                                                EcommerceApp.userName,
+                                                                              )} さんが${widget.shortInfo}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
+                                                                              "isTransactionFinished": "inComplete",
+                                                                              "isBuyerPayment": "inComplete",
+                                                                              "isBuyerDelivery": "inComplete",
+                                                                              "itemPrice": widget.price,
+                                                                            });
+                                                                          },
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  },
+                                                                );
+                                                              },
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                      onPressed: () {
-                                                        final ref = EcommerceApp
-                                                            .firestore
-                                                            .collection(EcommerceApp
-                                                                .collectionUser)
-                                                            .doc(EcommerceApp
-                                                                .sharedPreferences
-                                                                .getString(
-                                                                    EcommerceApp
-                                                                        .userUID))
-                                                            .collection(EcommerceApp
-                                                                .collectionOrders)
-                                                            .doc(EcommerceApp
-                                                                    .sharedPreferences
-                                                                    .getString(
-                                                                        EcommerceApp
-                                                                            .userUID) +
-                                                                DateTime.now()
-                                                                    .millisecondsSinceEpoch
-                                                                    .toString());
-                                                        ref.set(
-                                                          {
-                                                            "id": ref.id,
-                                                            "imageURL":
-                                                                widget.imageURL,
-                                                            EcommerceApp
-                                                                    .addressID:
-                                                                snapshot
-                                                                    .data
-                                                                    .docs[index]
-                                                                    .id,
-                                                            "orderBy": EcommerceApp
-                                                                .sharedPreferences
-                                                                .getString(
-                                                                    EcommerceApp
-                                                                        .userUID),
-                                                            EcommerceApp
-                                                                    .productID:
-                                                                widget
-                                                                    .shortInfo,
-                                                            EcommerceApp
-                                                                    .paymentDetails:
-                                                                "代金引換",
-                                                            EcommerceApp
-                                                                    .orderTime:
-                                                                DateTime.now()
-                                                                    .millisecondsSinceEpoch
-                                                                    .toString(),
-                                                            EcommerceApp
-                                                                    .isSuccess:
-                                                                true,
-                                                            "boughtFrom":
-                                                                widget.postBy,
-                                                            "totalPrice": widget
-                                                                    .price +
-                                                                shipsPayment +
-                                                                gValue,
-                                                            "isTransactionFinished":
-                                                                "inComplete",
-                                                            "isPayment":
-                                                                "inComplete",
-                                                            "isDelivery":
-                                                                "inComplete",
-                                                            "itemPrice":
-                                                                widget.price,
-                                                          },
-                                                        ).whenComplete(
-                                                          () => {
-                                                            finishedCheckOut(),
-                                                          },
-                                                        );
-                                                        EcommerceApp.firestore
-                                                            .collection(EcommerceApp
-                                                                .collectionUser)
-                                                            .doc(widget.postBy)
-                                                            .collection(
-                                                                "Notify")
-                                                            .doc(ref.id)
-                                                            .set({
-                                                          "id": ref.id,
-                                                          "imageURL":
-                                                              widget.imageURL,
-                                                          EcommerceApp
-                                                                  .addressID:
-                                                              snapshot
-                                                                  .data
-                                                                  .docs[index]
-                                                                  .id,
-                                                          "orderBy": EcommerceApp
-                                                              .sharedPreferences
-                                                              .getString(
-                                                                  EcommerceApp
-                                                                      .userName),
-                                                          EcommerceApp
-                                                                  .productID:
-                                                              widget.shortInfo,
-                                                          EcommerceApp
-                                                                  .paymentDetails:
-                                                              "代金引換",
-                                                          EcommerceApp
-                                                              .orderTime: DateTime
-                                                                  .now()
-                                                              .millisecondsSinceEpoch
-                                                              .toString(),
-                                                          EcommerceApp
-                                                              .isSuccess: true,
-                                                          "boughtFrom":
-                                                              widget.postBy,
-                                                          "totalPrice":
-                                                              widget.price +
-                                                                  shipsPayment +
-                                                                  gValue,
-                                                          "NotifyMessage":
-                                                              "${EcommerceApp.sharedPreferences.getString(
-                                                            EcommerceApp
-                                                                .userName,
-                                                          )} さんが${widget.shortInfo}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
-                                                          "isTransactionFinished":
-                                                              "inComplete",
-                                                          "isBuyerPayment":
-                                                              "inComplete",
-                                                          "isBuyerDelivery":
-                                                              "inComplete",
-                                                          "itemPrice":
-                                                              widget.price,
-                                                        });
-                                                      },
                                                     ),
                                                   ],
                                                 );
@@ -632,7 +799,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
   /// 登録済みのカードで決済をするボタン
   Widget _buildPayViaExistingCardButton(BuildContext context) {
     final creditCard = CreditCard(
-        number: '4242424242424242', expMonth: 5, expYear: 24, cvc: '424');
+        number: _cardNumberEditingController.text.trim().toString(),
+        expMonth: int.parse(_expMonthEditingController.text.trim().toString()),
+        expYear: int.parse(_expYearEditingController.text.trim().toString()),
+        cvc: _cvcNumberEditingController.text.trim().toString());
     return InkWell(
       child: ListTile(
         leading: Icon(
@@ -801,6 +971,9 @@ class StripeService {
       'amount': price.toString(),
       'currency': 'jpy',
       'payment_method_types[]': 'card',
+      "description": "ユーザーID：${EcommerceApp.sharedPreferences.getString(
+        EcommerceApp.userUID,
+      )}",
     };
 
     final response = await http.post(
@@ -844,3 +1017,114 @@ class StripeService {
     }
   }
 }
+
+// class MySample extends StatefulWidget {
+//   @override
+//   State<StatefulWidget> createState() {
+//     return MySampleState();
+//   }
+// }
+//
+// class MySampleState extends State<MySample> {
+//   String cardNumber = '';
+//   String expiryDate = '';
+//   // String cardHolderName = '';
+//   String cvvCode = '';
+//   bool isCvvFocused = false;
+//   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       resizeToAvoidBottomInset: true,
+//       body: Column(
+//         children: <Widget>[
+//           // CreditCardWidget(
+//           //   cardNumber: cardNumber,
+//           //   expiryDate: expiryDate,
+//           //   cardHolderName: cardHolderName,
+//           //   cvvCode: cvvCode,
+//           //   showBackView: isCvvFocused,
+//           //   obscureCardNumber: true,
+//           //   obscureCardCvv: true,
+//           // ),
+//           Expanded(
+//             child: SingleChildScrollView(
+//               child: Column(
+//                 children: <Widget>[
+//                   CreditCardForm(
+//                     formKey: formKey,
+//                     obscureCvv: false,
+//                     obscureNumber: false,
+//                     cardNumber: cardNumber,
+//                     cvvCode: cvvCode,
+//                     // cardHolderName: cardHolderName,
+//                     expiryDate: expiryDate,
+//                     themeColor: Colors.blue,
+//                     cardNumberDecoration: const InputDecoration(
+//                       border: OutlineInputBorder(),
+//                       labelText: 'カードナンバー',
+//                       hintText: 'XXXX XXXX XXXX XXXX',
+//                     ),
+//                     expiryDateDecoration: const InputDecoration(
+//                       border: OutlineInputBorder(),
+//                       labelText: 'MM/YY',
+//                       hintText: 'XX/XX',
+//                     ),
+//                     cvvCodeDecoration: const InputDecoration(
+//                       border: OutlineInputBorder(),
+//                       labelText: 'CVV',
+//                       hintText: 'XXX',
+//                     ),
+//                     // cardHolderDecoration: const InputDecoration(
+//                     //   border: OutlineInputBorder(),
+//                     //   labelText: 'Card Holder',
+//                     // ),
+//                     onCreditCardModelChange: onCreditCardModelChange,
+//                   ),
+//                   ElevatedButton(
+//                     style: ElevatedButton.styleFrom(
+//                       shape: RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.circular(8.0),
+//                       ),
+//                       primary: const Color(0xff1b447b),
+//                     ),
+//                     child: Container(
+//                       margin: const EdgeInsets.all(8),
+//                       child: const Text(
+//                         'Validate',
+//                         style: TextStyle(
+//                           color: Colors.white,
+//                           fontFamily: 'halter',
+//                           fontSize: 14,
+//                           package: 'flutter_credit_card',
+//                         ),
+//                       ),
+//                     ),
+//                     onPressed: () {
+//                       if (formKey.currentState.validate()) {
+//                         print('valid!');
+//                       } else {
+//                         print('invalid!');
+//                       }
+//                     },
+//                   )
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   void onCreditCardModelChange(CreditCardModel creditCardModel) {
+//     setState(() {
+//       cardNumber = creditCardModel.cardNumber;
+//       expiryDate = creditCardModel.expiryDate;
+//       // cardHolderName = creditCardModel.cardHolderName;
+//       cvvCode = creditCardModel.cvvCode;
+//       isCvvFocused = creditCardModel.isCvvFocused;
+//     });
+//   }
+// }

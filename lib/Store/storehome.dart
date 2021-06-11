@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Models/HomeItemsModel(provider).dart';
-import 'package:selling_pictures_platform/Orders/placeOrderPayment.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Counters/cartitemcounter.dart';
@@ -14,7 +13,6 @@ import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/searchBox.dart';
-import '../Widgets/loadingWidget.dart';
 import '../Models/item.dart';
 
 double width;
@@ -295,8 +293,6 @@ class _StoreHomeState extends State<StoreHome> {
 
 Widget sourceInfoForMain(ItemModel model, BuildContext context,
     {Color background, removeCartFunction}) {
-  Color iconColor = Colors.grey;
-
   return Card(
     color: HexColor("e5e2df"),
     child: InkWell(

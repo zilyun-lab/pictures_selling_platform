@@ -4,13 +4,9 @@ import 'package:selling_pictures_platform/Authentication/authenication.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Address/addAddress.dart';
 import 'package:selling_pictures_platform/Store/Search.dart';
-import 'package:selling_pictures_platform/Store/StripeCheckOutSystem.dart';
-import 'package:selling_pictures_platform/Store/cart.dart';
 import 'package:selling_pictures_platform/Orders/myOrders.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
-import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class MyDrawer extends StatelessWidget {
   @override

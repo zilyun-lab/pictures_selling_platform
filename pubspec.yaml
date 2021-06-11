@@ -36,6 +36,7 @@ dependencies:
   arkit_plugin: ^0.6.2
   flutter_email_sender: ^5.0.0
   flutter_gradient_colors: ^1.0.0
+  flutter_credit_card: ^2.0.0
 
 
 dev_dependencies:
