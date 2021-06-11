@@ -87,9 +87,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
             child: Text(
               "キャンセル",
               style: TextStyle(
-                color: Colors.black.withOpacity(0.8), //文字の色を白にする
-                //fontWeight: FontWeight.bold, //文字を太字する
-                fontSize: 15.0, //文字のサイズを調整する
+                color: Colors.black.withOpacity(0.8),
+
+                fontSize: 15.0,
               ),
             ),
             onPressed: () {
