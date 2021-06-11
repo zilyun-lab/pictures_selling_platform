@@ -10,8 +10,6 @@ import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'MyPage.dart';
 import 'login.dart';
 
 class PublicUserPage extends StatelessWidget {
@@ -72,7 +70,7 @@ class PublicUserPage extends StatelessWidget {
                                   fontWeight: FontWeight.bold, fontSize: 20),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 3.0, left: 5),
+                              padding: const EdgeInsets.only(top: .0, left: 5),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 5.0,

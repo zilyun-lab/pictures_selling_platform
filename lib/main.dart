@@ -122,8 +122,8 @@ class _SplashScreenState extends State<SplashScreen> {
               //Image.asset("images/welcome.png"),
               Padding(
                 padding: const EdgeInsets.all(50.0),
-                child: Image.network(
-                  "https://images.unsplash.com/photo-1586105251261-72a756497a11?ixid=MnwxMjA3fDB8MHxzZWFyY2h8N3x8cGljdHVyZXMlMjBvbiUyMHdhbGx8ZW58MHx8MHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=60",
+                child: Image.asset(
+                  "images/home_image.png",
                 ),
               ),
               SizedBox(

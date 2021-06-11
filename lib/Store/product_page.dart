@@ -15,7 +15,7 @@ import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 
 import 'ARPage.dart';
-import 'SomethingTestPage.dart';
+import 'StripeCheckOutSystem.dart';
 import 'like.dart';
 
 class ProductPage extends StatefulWidget {
@@ -58,6 +58,7 @@ class _ProductPageState extends State<ProductPage> {
   final String postBy;
   final String id;
   //ArCoreController arCoreController;
+
   int quantityOfItems = 1;
   List<DocumentSnapshot> documentList = [];
 
@@ -83,19 +84,20 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    // StripeService(price: price);
     return SafeArea(
       child: Scaffold(
         appBar: MyAppBar(),
         body: ListView(
           children: [
-            // ElevatedButton(
-            //     onPressed: () {
-            //       Route route = MaterialPageRoute(
-            //         builder: (c) => TestPage(),
-            //       );
-            //       Navigator.pushReplacement(context, route);
-            //     },
-            //     child: Text("テストページへ")),
+            ElevatedButton(
+                onPressed: () {
+                  Route route = MaterialPageRoute(
+                    builder: (c) => App(price: price),
+                  );
+                  Navigator.pushReplacement(context, route);
+                },
+                child: Text("テストページへ")),
             Container(
               padding: EdgeInsets.all(
                 8,
@@ -858,3 +860,13 @@ class BubbleBorder extends ShapeBorder {
 
 const boldTextStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 20);
 const largeTextStyle = TextStyle(fontWeight: FontWeight.normal, fontSize: 20);
+
+class StripeTransactionResponse {
+  StripeTransactionResponse({
+    @required this.message,
+    @required this.success,
+  });
+
+  String message;
+  bool success;
+}
