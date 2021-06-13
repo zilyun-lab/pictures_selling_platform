@@ -123,9 +123,9 @@ class _AddAddressState extends State<AddAddress> {
                 FocusScope.of(context).requestFocus(FocusNode());
                 formKey.currentState.reset();
               });
-
-              Route route = MaterialPageRoute(builder: (c) => Address());
-              Navigator.pushReplacement(context, route);
+              Navigator.pop(context);
+              // Route route = MaterialPageRoute(builder: (c) => Address());
+              // Navigator.pushReplacement(context, route);
             }
           },
           label: Text("追加する"),

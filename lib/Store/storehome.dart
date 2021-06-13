@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Models/HomeItemsModel(provider).dart';
 import 'package:selling_pictures_platform/Store/like.dart';
@@ -23,9 +24,34 @@ class StoreHome extends StatefulWidget {
 }
 
 class _StoreHomeState extends State<StoreHome> {
+  void initAd() {
+    BannerAd bannerAd = BannerAd(
+      adUnitId: "ca-app-pub-3940256099942544/2934735716",
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: BannerAdListener(),
+    )..load();
+    //items.add(bannerAd);
+  }
+
+  List items = [
+    "images/painter1.png",
+    "images/painter2.png",
+    "",
+    "images/painter4.png",
+    "images/painter5.png",
+    "",
+  ];
   //final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final CarouselController _buttonCarouselController = CarouselController();
   final mainColor = HexColor("E67928");
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initAd();
+  }
+
   @override
   Widget build(
     BuildContext context,
@@ -51,26 +77,45 @@ class _StoreHomeState extends State<StoreHome> {
                       height: 100,
                       autoPlay: true,
                     ),
-                    items: [
-                      "images/painter1.png",
-                      "images/painter2.png",
-                      "images/painter4.png",
-                      "images/painter5.png"
-                    ].map(
+                    items: items.map(
                       (i) {
                         return Builder(
                           builder: (BuildContext context) {
-                            return Container(
-                              width: MediaQuery.of(context).size.width,
-                              margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15.0),
-                                child: Image.asset(
-                                  i,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            );
+                            return i == ""
+                                ? Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 5.0),
+                                    child: ClipRRect(
+                                      child: AdWidget(
+                                          ad: BannerAd(
+                                        adUnitId:
+                                            "ca-app-pub-3940256099942544/2934735716",
+                                        size: AdSize.banner,
+                                        request: AdRequest(),
+                                        listener: BannerAdListener(),
+                                      )..load()),
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                  )
+                                : InkWell(
+                                    onTap: () {
+                                      print(items.indexOf(i));
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 5.0),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                        child: Image.asset(
+                                          i,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  );
                           },
                         );
                       },
@@ -136,8 +181,6 @@ class _StoreHomeState extends State<StoreHome> {
                                       height: 99,
                                       enableInfiniteScroll: false,
                                       enlargeCenterPage: true,
-
-                                      //autoPlay: true,
                                     ),
                                     itemBuilder:
                                         (BuildContext context, int index, _) {
@@ -165,12 +208,13 @@ class _StoreHomeState extends State<StoreHome> {
                                           );
                                         },
                                         child: Card(
-                                            child: Image.network(
-                                          model.thumbnailUrl,
-                                          height: 125,
-                                          width: 125,
-                                          fit: BoxFit.scaleDown,
-                                        )),
+                                          child: Image.network(
+                                            model.thumbnailUrl,
+                                            height: 125,
+                                            width: 125,
+                                            fit: BoxFit.scaleDown,
+                                          ),
+                                        ),
                                       );
                                     },
                                   );
@@ -188,7 +232,9 @@ class _StoreHomeState extends State<StoreHome> {
                     crossAxisCount: 3,
                     children: items
                         .map((item) => Card(
-                              color: HexColor("e5e2df"),
+                              color: HexColor(
+                                "e5e2df",
+                              ),
                               child: InkWell(
                                 onTap: () {
                                   Route route = MaterialPageRoute(

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:selling_pictures_platform/Authentication/MyPage.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
@@ -18,21 +19,30 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       bottom: bottom,
-      leading: IconButton(
-        onPressed: () {
-          Route route = MaterialPageRoute(
-            builder: (c) => MyPage(),
-          );
-          Navigator.pushReplacement(context, route);
-        },
-        icon: CircleAvatar(
-          backgroundImage: NetworkImage(
-            EcommerceApp.sharedPreferences.getString(
-              EcommerceApp.userAvatarUrl,
-            ),
-          ),
-        ),
-      ),
+      leading: FirebaseAuth.instance.currentUser != null
+          ? IconButton(
+              onPressed: () {
+                Route route = MaterialPageRoute(
+                  builder: (c) => MyPage(),
+                );
+                Navigator.pushReplacement(context, route);
+              },
+              icon: CircleAvatar(
+                backgroundImage: NetworkImage(
+                  EcommerceApp.sharedPreferences.getString(
+                    EcommerceApp.userAvatarUrl,
+                  ),
+                ),
+              ),
+            )
+          : IconButton(
+              onPressed: () {
+                Route route = MaterialPageRoute(
+                  builder: (c) => MyPage(),
+                );
+                Navigator.pushReplacement(context, route);
+              },
+              icon: Icon(Icons.perm_identity)),
       iconTheme: IconThemeData(color: Colors.black),
       backgroundColor: HexColor("E5E2E0"),
       title: Center(

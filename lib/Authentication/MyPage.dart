@@ -190,14 +190,22 @@ class _MyPageState extends State<MyPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  EcommerceApp.sharedPreferences
-                                      .getString(EcommerceApp.userName),
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 25,
-                                  ),
-                                ),
+                                EcommerceApp.auth.currentUser != null
+                                    ? Text(
+                                        EcommerceApp.sharedPreferences
+                                            .getString(EcommerceApp.userName),
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 25,
+                                        ),
+                                      )
+                                    : Text(
+                                        "ゲスト",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 25,
+                                        ),
+                                      ),
                               ],
                             ),
                           ),
@@ -212,7 +220,7 @@ class _MyPageState extends State<MyPage> {
                                         fullscreenDialog: true,
                                         builder: (c) => ChangeProfile(),
                                       );
-                                      Navigator.pushReplacement(
+                                      Navigator.push(
                                         context,
                                         route,
                                       );
@@ -234,138 +242,151 @@ class _MyPageState extends State<MyPage> {
                   Container(
                     child: Column(
                       children: [
-                        Card(
-                          color: HexColor("e5e2df").withOpacity(0.9),
-                          child: ListTile(
-                            leading: FaIcon(FontAwesomeIcons.yenSign),
-                            title: Text(EcommerceApp.sharedPreferences
-                                    .getString(EcommerceApp.userName) +
-                                " さんの売上金"),
-                            trailing: StreamBuilder<QuerySnapshot>(
-                              stream: EcommerceApp.firestore
-                                  .collection(EcommerceApp.collectionUser)
-                                  .doc(EcommerceApp.sharedPreferences
-                                      .getString(EcommerceApp.userUID))
-                                  .collection("MyProceeds")
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                return Text(
-                                  snapshot.data.docs[0]["Proceeds"].toString() +
-                                      "円",
-                                  style: TextStyle(
-                                    fontSize: 20,
+                        EcommerceApp.auth.currentUser != null
+                            ? Card(
+                                color: HexColor("e5e2df").withOpacity(0.9),
+                                child: ListTile(
+                                  leading: FaIcon(FontAwesomeIcons.yenSign),
+                                  title: Text(EcommerceApp.sharedPreferences
+                                          .getString(EcommerceApp.userName) +
+                                      " さんの売上金"),
+                                  trailing: StreamBuilder<QuerySnapshot>(
+                                    stream: EcommerceApp.firestore
+                                        .collection(EcommerceApp.collectionUser)
+                                        .doc(EcommerceApp.sharedPreferences
+                                            .getString(EcommerceApp.userUID))
+                                        .collection("MyProceeds")
+                                        .snapshots(),
+                                    builder: (context, snapshot) {
+                                      return Text(
+                                        snapshot.data.docs[0]["Proceeds"]
+                                                .toString() +
+                                            "円",
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        Card(
-                          color: HexColor("e5e2df").withOpacity(0.9),
-                          child: ListTile(
-                            onTap: () {
-                              Route route = MaterialPageRoute(
-                                builder: (c) => ProceedsRequests(),
-                              );
-                              Navigator.pushReplacement(
-                                context,
-                                route,
-                              );
-                            },
-                            leading: Icon(Icons.atm_outlined),
-                            title: Text("売上振り込み申請"),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 18,
-                            ),
-                          ),
-                        ),
+                                ),
+                              )
+                            : Container(),
+                        EcommerceApp.auth.currentUser != null
+                            ? Card(
+                                color: HexColor("e5e2df").withOpacity(0.9),
+                                child: ListTile(
+                                  onTap: () {
+                                    Route route = MaterialPageRoute(
+                                      builder: (c) => ProceedsRequests(),
+                                    );
+                                    Navigator.push(
+                                      context,
+                                      route,
+                                    );
+                                  },
+                                  leading: Icon(Icons.atm_outlined),
+                                  title: Text("売上振り込み申請"),
+                                  trailing: Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 18,
+                                  ),
+                                ),
+                              )
+                            : Container(),
                       ],
                     ),
                   ),
                   SizedBox(
                     height: 20,
                   ),
-                  Card(
-                    color: HexColor("e5e2df").withOpacity(0.6),
-                    child: ListTile(
-                      onTap: () {
-                        Route route = MaterialPageRoute(
-                          builder: (c) => MyUploadItems(),
-                        );
-                        Navigator.pushReplacement(
-                          context,
-                          route,
-                        );
-                      },
-                      leading: Icon(Icons.brush),
-                      title: Text("出品した商品"),
-                      trailing: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                  Card(
-                    color: HexColor("e5e2df").withOpacity(0.6),
-                    child: ListTile(
-                      onTap: () {
-                        Route route = MaterialPageRoute(
-                          builder: (c) => UserNotification(),
-                        );
-                        Navigator.pushReplacement(
-                          context,
-                          route,
-                        );
-                      },
-                      leading: Icon(Icons.notifications_active_outlined),
-                      title: Text("お知らせ"),
-                      trailing: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                  Card(
-                    color: HexColor("e5e2df").withOpacity(0.6),
-                    child: ListTile(
-                      onTap: () {
-                        Route route = MaterialPageRoute(
-                          builder: (c) => AddAddress(),
-                        );
-                        Navigator.pushReplacement(
-                          context,
-                          route,
-                        );
-                      },
-                      leading: Icon(Icons.add_location_alt_outlined),
-                      title: Text("お届け先の追加"),
-                      trailing: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                  Card(
-                    color: HexColor("e5e2df").withOpacity(0.6),
-                    child: ListTile(
-                      onTap: () {
-                        Route route = MaterialPageRoute(
-                          builder: (c) => MyOrders(),
-                        );
-                        Navigator.pushReplacement(
-                          context,
-                          route,
-                        );
-                      },
-                      leading: Icon(Icons.history_outlined),
-                      title: Text("注文履歴"),
-                      trailing: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 18,
-                      ),
-                    ),
-                  ),
+                  EcommerceApp.auth.currentUser != null
+                      ? Card(
+                          color: HexColor("e5e2df").withOpacity(0.6),
+                          child: ListTile(
+                            onTap: () {
+                              Route route = MaterialPageRoute(
+                                builder: (c) => MyUploadItems(),
+                              );
+                              Navigator.push(
+                                context,
+                                route,
+                              );
+                            },
+                            leading: Icon(Icons.brush),
+                            title: Text("出品した商品"),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 18,
+                            ),
+                          ),
+                        )
+                      : Container(),
+                  EcommerceApp.auth.currentUser != null
+                      ? Card(
+                          color: HexColor("e5e2df").withOpacity(0.6),
+                          child: ListTile(
+                            onTap: () {
+                              Route route = MaterialPageRoute(
+                                builder: (c) => UserNotification(),
+                              );
+                              Navigator.push(
+                                context,
+                                route,
+                              );
+                            },
+                            leading: Icon(Icons.notifications_active_outlined),
+                            title: Text("お知らせ"),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 18,
+                            ),
+                          ),
+                        )
+                      : Container(),
+                  EcommerceApp.auth.currentUser != null
+                      ? Card(
+                          color: HexColor("e5e2df").withOpacity(0.6),
+                          child: ListTile(
+                            onTap: () {
+                              Route route = MaterialPageRoute(
+                                builder: (c) => AddAddress(),
+                              );
+                              Navigator.push(
+                                context,
+                                route,
+                              );
+                            },
+                            leading: Icon(Icons.add_location_alt_outlined),
+                            title: Text("お届け先の追加"),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 18,
+                            ),
+                          ),
+                        )
+                      : Container(),
+                  EcommerceApp.auth.currentUser != null
+                      ? Card(
+                          color: HexColor("e5e2df").withOpacity(0.6),
+                          child: ListTile(
+                            onTap: () {
+                              Route route = MaterialPageRoute(
+                                builder: (c) => MyOrders(),
+                              );
+                              Navigator.push(
+                                context,
+                                route,
+                              );
+                            },
+                            leading: Icon(Icons.history_outlined),
+                            title: Text("注文履歴"),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 18,
+                            ),
+                          ),
+                        )
+                      : Container(),
                   Card(
                     color: HexColor("e5e2df").withOpacity(0.6),
                     child: ListTile(
@@ -373,7 +394,7 @@ class _MyPageState extends State<MyPage> {
                         Route route = MaterialPageRoute(
                           builder: (c) => PrivacyPolicyPage(),
                         );
-                        Navigator.pushReplacement(
+                        Navigator.push(
                           context,
                           route,
                         );
@@ -386,33 +407,57 @@ class _MyPageState extends State<MyPage> {
                       ),
                     ),
                   ),
-                  Card(
-                    color: HexColor("e5e2df").withOpacity(0.6),
-                    child: ListTile(
-                      onTap: () {
-                        EcommerceApp.auth.signOut().then(
-                          (c) {
-                            Route route = MaterialPageRoute(
-                              builder: (c) => Login(),
-                            );
-                            Navigator.pushReplacement(
-                              context,
-                              route,
-                            );
-                          },
-                        );
-                      },
-                      leading: Icon(Icons.login_outlined),
-                      title: Text(
-                        "ログアウト",
-                        //style: TextStyle(color: Colors.pink),
-                      ),
-                      trailing: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 18,
-                      ),
-                    ),
-                  ),
+                  EcommerceApp.auth.currentUser != null
+                      ? Card(
+                          color: HexColor("e5e2df").withOpacity(0.6),
+                          child: ListTile(
+                            onTap: () {
+                              EcommerceApp.auth.signOut().then(
+                                (c) {
+                                  Route route = MaterialPageRoute(
+                                    builder: (c) => Login(),
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    route,
+                                  );
+                                },
+                              );
+                            },
+                            leading: Icon(Icons.login_outlined),
+                            title: Text(
+                              "ログアウト",
+                              //style: TextStyle(color: Colors.pink),
+                            ),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 18,
+                            ),
+                          ),
+                        )
+                      : Card(
+                          color: HexColor("e5e2df").withOpacity(0.6),
+                          child: ListTile(
+                            onTap: () {
+                              Route route = MaterialPageRoute(
+                                builder: (c) => Login(),
+                              );
+                              Navigator.pushReplacement(
+                                context,
+                                route,
+                              );
+                            },
+                            leading: Icon(Icons.login_outlined),
+                            title: Text(
+                              "ログインまたは新規登録",
+                              //style: TextStyle(color: Colors.pink),
+                            ),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 18,
+                            ),
+                          ),
+                        ),
                 ],
               ),
               SizedBox(

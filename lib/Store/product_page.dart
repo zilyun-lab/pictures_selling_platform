@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
@@ -363,149 +364,254 @@ class _ProductPageState extends State<ProductPage> {
                             ),
                           ),
                           StreamBuilder<QuerySnapshot>(
-                              stream: FirebaseFirestore.instance
-                                  .collection(
-                                    "items",
-                                  )
-                                  .snapshots(),
-                              builder: (context, snapshot) {
-                                return postBy ==
-                                        EcommerceApp.sharedPreferences
-                                            .getString(EcommerceApp.userUID)
-                                    ? InkWell(
-                                        onTap: () {
-                                          beforeDeleteDialog();
-                                        },
-                                        // onTap: () => checkItemInCart(
-                                        //     widget.itemModel.shortInfo, context),
-                                        child: Container(
-                                          color: Colors.black,
-                                          width: MediaQuery.of(
-                                                context,
-                                              ).size.width *
-                                              0.47,
-                                          height: 50,
-                                          child: Center(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 6.0),
-                                                    child: Icon(
-                                                      Icons.delete,
+                            stream: FirebaseFirestore.instance
+                                .collection(
+                                  "items",
+                                )
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              return FirebaseAuth.instance.currentUser == null
+                                  ? InkWell(
+                                      onTap: () {
+                                        Route route = MaterialPageRoute(
+                                            fullscreenDialog: true,
+                                            builder: (c) => Login());
+                                        Navigator.pushReplacement(
+                                          context,
+                                          route,
+                                        );
+                                      },
+                                      // onTap: () => checkItemInCart(
+                                      //     widget.itemModel.shortInfo, context),
+                                      child: Container(
+                                        color: Colors.black,
+                                        width: MediaQuery.of(
+                                              context,
+                                            ).size.width *
+                                            0.47,
+                                        height: 50,
+                                        child: Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 6.0),
+                                                  child: Icon(
+                                                    Icons.delete,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 45),
+                                                  child: Text(
+                                                    "ログインして購入",
+                                                    style: TextStyle(
                                                       color: Colors.white,
                                                     ),
                                                   ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            right: 45),
-                                                    child: Text(
-                                                      "削除する",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
-                                      )
-                                    : attribute != "Original"
-                                        ? InkWell(
-                                            onTap: () {
-                                              Route route = MaterialPageRoute(
-                                                fullscreenDialog: true,
-                                                builder: (c) => CheckOutPage(
-                                                    imageURL: thumbnailURL,
-                                                    shortInfo: shortInfo,
-                                                    price: price,
-                                                    postBy: postBy),
-                                              );
-                                              Navigator.pushReplacement(
-                                                context,
-                                                route,
-                                              );
-                                            },
-                                            // onTap: () => checkItemInCart(
-                                            //     widget.itemModel.shortInfo, context),
-                                            child: Container(
-                                              color: Colors.black,
-                                              width: MediaQuery.of(
-                                                    context,
-                                                  ).size.width *
-                                                  0.47,
-                                              height: 50,
-                                              child: Center(
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 6.0),
-                                                        child: Icon(
-                                                          Icons.check,
+                                      ),
+                                    )
+                                  : postBy ==
+                                          EcommerceApp.sharedPreferences
+                                              .getString(EcommerceApp.userUID)
+                                      ? InkWell(
+                                          onTap: () {
+                                            beforeDeleteDialog();
+                                          },
+                                          // onTap: () => checkItemInCart(
+                                          //     widget.itemModel.shortInfo, context),
+                                          child: Container(
+                                            color: Colors.black,
+                                            width: MediaQuery.of(
+                                                  context,
+                                                ).size.width *
+                                                0.47,
+                                            height: 50,
+                                            child: Center(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 6.0),
+                                                      child: Icon(
+                                                        Icons.delete,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 45),
+                                                      child: Text(
+                                                        "削除する",
+                                                        style: TextStyle(
                                                           color: Colors.white,
                                                         ),
                                                       ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                right: 45),
-                                                        child: Text(
-                                                          "購入する",
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
-                                          )
-                                        : Stock != 0
-                                            ? InkWell(
-                                                onTap: () {
-                                                  Route route =
-                                                      MaterialPageRoute(
-                                                    fullscreenDialog: true,
-                                                    builder: (c) =>
-                                                        CheckOutPage(
+                                          ),
+                                        )
+                                      : attribute != "Original"
+                                          ? InkWell(
+                                              onTap: () {
+                                                Route route = MaterialPageRoute(
+                                                  fullscreenDialog: true,
+                                                  builder: (c) => CheckOutPage(
+                                                      id: id,
                                                       imageURL: thumbnailURL,
                                                       shortInfo: shortInfo,
                                                       price: price,
-                                                      postBy: postBy,
-                                                      attribute: attribute,
+                                                      postBy: postBy),
+                                                );
+                                                Navigator.pushReplacement(
+                                                  context,
+                                                  route,
+                                                );
+                                              },
+                                              // onTap: () => checkItemInCart(
+                                              //     widget.itemModel.shortInfo, context),
+                                              child: Container(
+                                                color: Colors.black,
+                                                width: MediaQuery.of(
+                                                      context,
+                                                    ).size.width *
+                                                    0.47,
+                                                height: 50,
+                                                child: Center(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 6.0),
+                                                          child: Icon(
+                                                            Icons.check,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 45),
+                                                          child: Text(
+                                                            "購入する",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  );
-                                                  Navigator.pushReplacement(
-                                                    context,
-                                                    route,
-                                                  );
-                                                },
-                                                // onTap: () => checkItemInCart(
-                                                //     widget.itemModel.shortInfo, context),
-                                                child: Container(
-                                                  color: Colors.black,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : Stock != 0
+                                              ? InkWell(
+                                                  onTap: () {
+                                                    Route route =
+                                                        MaterialPageRoute(
+                                                      fullscreenDialog: true,
+                                                      builder: (c) =>
+                                                          CheckOutPage(
+                                                        imageURL: thumbnailURL,
+                                                        shortInfo: shortInfo,
+                                                        price: price,
+                                                        postBy: postBy,
+                                                        attribute: attribute,
+                                                      ),
+                                                    );
+                                                    Navigator.pushReplacement(
+                                                      context,
+                                                      route,
+                                                    );
+                                                  },
+                                                  child: Container(
+                                                    color: Colors.black,
+                                                    width: MediaQuery.of(
+                                                          context,
+                                                        ).size.width *
+                                                        0.47,
+                                                    height: 50,
+                                                    child: Center(
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left:
+                                                                          6.0),
+                                                              child: Icon(
+                                                                Icons.check,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      right:
+                                                                          45),
+                                                              child: Text(
+                                                                "購入する",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Container(
+                                                  color: Colors.black54,
                                                   width: MediaQuery.of(
                                                         context,
                                                       ).size.width *
@@ -538,7 +644,7 @@ class _ProductPageState extends State<ProductPage> {
                                                                         .only(
                                                                     right: 45),
                                                             child: Text(
-                                                              "購入する",
+                                                              "売り切れ",
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white,
@@ -549,54 +655,9 @@ class _ProductPageState extends State<ProductPage> {
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                              )
-                                            : Container(
-                                                color: Colors.black54,
-                                                width: MediaQuery.of(
-                                                      context,
-                                                    ).size.width *
-                                                    0.47,
-                                                height: 50,
-                                                child: Center(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 6.0),
-                                                          child: Icon(
-                                                            Icons.check,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 45),
-                                                          child: Text(
-                                                            "売り切れ",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                              }),
+                                                );
+                            },
+                          ),
                         ],
                       ),
                     ),

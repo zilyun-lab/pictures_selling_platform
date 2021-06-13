@@ -41,6 +41,7 @@ class CheckOutPage extends StatefulWidget {
     this.addressId,
     this.V,
     this.attribute,
+    this.id,
   });
 
   final shortInfo;
@@ -53,6 +54,7 @@ class CheckOutPage extends StatefulWidget {
   final V;
   final AddressModel model;
   final String attribute;
+  final String id;
 
   @override
   State<CheckOutPage> createState() => _CheckOutPageState();
@@ -88,7 +90,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
               "キャンセル",
               style: TextStyle(
                 color: Colors.black.withOpacity(0.8),
-
                 fontSize: 15.0,
               ),
             ),
@@ -119,11 +120,13 @@ class _CheckOutPageState extends State<CheckOutPage> {
                               top: 3.0, left: 3, bottom: 3),
                           child: Row(
                             children: [
-                              Image.network(
-                                widget.imageURL,
-                                //width: 100,
-                                height: 100,
-                                fit: BoxFit.scaleDown,
+                              Expanded(
+                                child: Image.network(
+                                  widget.imageURL,
+                                  //width: 100,
+                                  height: 100,
+                                  fit: BoxFit.scaleDown,
+                                ),
                               ),
                               Container(
                                 height: 90,
@@ -328,7 +331,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                   onTap: () {
                     Route route =
                         MaterialPageRoute(builder: (c) => AddAddress());
-                    Navigator.pushReplacement(context, route);
+                    Navigator.push(context, route);
                   },
                   leading: Icon(Icons.add),
                   title: Text("新規お届け先を追加"),
@@ -351,27 +354,36 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           : snapshot.data.docs.length == 0
                               ? Container()
                               // ? noAddressCard()
-                              : ListView.builder(
-                                  itemCount: snapshot.data.docs.length,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    BuyStepButton(
-                                      currentIndex: address.counter,
-                                      value: index,
-                                      model: AddressModel.fromJson(
-                                        snapshot.data.docs[index].data(),
-                                      ),
-                                      addressId: snapshot.data.docs[index].id,
-                                    );
-                                    return AddressCard(
-                                      currentIndex: address.counter,
-                                      value: index,
-                                      model: AddressModel.fromJson(
-                                        snapshot.data.docs[index].data(),
-                                      ),
-                                      addressId: snapshot.data.docs[index].id,
-                                    );
-                                  },
+                              : ExpansionTile(
+                                  collapsedBackgroundColor: Colors.white,
+                                  leading: Icon(Icons.location_on_outlined),
+                                  title: Text("マイアドレス"),
+                                  children: [
+                                    ListView.builder(
+                                      itemCount: snapshot.data.docs.length,
+                                      shrinkWrap: true,
+                                      itemBuilder: (context, index) {
+                                        BuyStepButton(
+                                          currentIndex: address.counter,
+                                          value: index,
+                                          model: AddressModel.fromJson(
+                                            snapshot.data.docs[index].data(),
+                                          ),
+                                          addressId:
+                                              snapshot.data.docs[index].id,
+                                        );
+                                        return AddressCard(
+                                          currentIndex: address.counter,
+                                          value: index,
+                                          model: AddressModel.fromJson(
+                                            snapshot.data.docs[index].data(),
+                                          ),
+                                          addressId:
+                                              snapshot.data.docs[index].id,
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 );
                     },
                   );
@@ -677,6 +689,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                                 expYear: int.parse(_expYearEditingController.text),
                                                                                 cvc: _cvcNumberEditingController.text.toString());
                                                                             StripeService(price: widget.price + shipsPayment + gValue).payViaExistingCard(creditCard);
+                                                                            widget.attribute == "Original"
+                                                                                ? FirebaseFirestore.instance.collection("items").doc(widget.id).update({
+                                                                                    "Stock": 0,
+                                                                                  })
+                                                                                : null;
                                                                             final ref =
                                                                                 EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID)).collection(EcommerceApp.collectionOrders).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID) + DateTime.now().millisecondsSinceEpoch.toString());
                                                                             ref.set(
