@@ -76,7 +76,7 @@ class _StoreHomeState extends State<StoreHome> {
     return SafeArea(
       child: Scaffold(
         //key: _scaffoldKey,
-        // backgroundColor: HexColor("E5E2E0"),
+
         backgroundColor: Colors.white,
 
         body: ChangeNotifierProvider<ItemGridModel>(
