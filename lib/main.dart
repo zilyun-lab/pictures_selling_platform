@@ -4,16 +4,21 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:selling_pictures_platform/Authentication/MyPage.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Counters/ItemQuantity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:selling_pictures_platform/Models/bottom_navigation.dart';
+import 'package:selling_pictures_platform/Store/like.dart';
+import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'Counters/cartitemcounter.dart';
 import 'Counters/changeAddresss.dart';
 import 'Counters/totalMoney.dart';
+import 'Store/Search.dart';
 import 'Store/storehome.dart';
 
 Future<void> main() async {
@@ -83,7 +88,7 @@ class _SplashScreenState extends State<SplashScreen> {
             context,
             PageTransition(
               type: PageTransitionType.fade,
-              child: StoreHome(),
+              child: MainPage(),
               inheritTheme: true,
               ctx: context,
               duration: Duration(
@@ -169,5 +174,112 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
+  }
+}
+
+class MainPage extends StatefulWidget {
+  const MainPage({Key key}) : super(key: key);
+
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  List<BottomNavigationEntity> navigationList = [
+    BottomNavigationEntity(
+        title: "ホーム", icon: Icons.home_outlined, page: StoreHome()),
+    BottomNavigationEntity(
+        title: "いいね", icon: Icons.favorite_outline_outlined, page: LikePage()),
+    BottomNavigationEntity(
+        title: "検索", icon: Icons.search, page: SearchProduct()),
+    BottomNavigationEntity(
+        title: "マイページ", icon: Icons.perm_identity, page: MyPage()),
+  ];
+  int selectedIndex = 0;
+  Future<QuerySnapshot> docList;
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        appBar: MyAppBar(
+          bottom: selectedIndex == 2
+              ? PreferredSize(
+                  child: searchWidget(),
+                  preferredSize: Size(56.0, 56.0),
+                )
+              : null,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          fixedColor: Colors.black,
+          selectedLabelStyle:
+              TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          unselectedLabelStyle: TextStyle(color: Colors.black),
+          currentIndex: selectedIndex,
+          onTap: (int newIndex) {
+            setState(() {
+              selectedIndex = newIndex;
+            });
+          },
+          items: navigationList
+              .map((item) => BottomNavigationBarItem(
+                    icon: Icon(
+                      item.icon,
+                      color: Colors.black,
+                    ),
+                    label: item.title,
+                  ))
+              .toList(),
+        ),
+        body: navigationList[selectedIndex].page,
+      ),
+    );
+  }
+
+  Widget searchWidget() {
+    return Container(
+      alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width,
+      height: 80,
+      child: Container(
+        width: MediaQuery.of(context).size.width - 40,
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                left: 8,
+              ),
+              child: Icon(
+                Icons.search,
+                color: Colors.blueGrey,
+              ),
+            ),
+            Flexible(
+                child: Padding(
+              padding: EdgeInsets.only(
+                left: 8,
+              ),
+              child: TextField(
+                onChanged: (val) {
+                  startSearching(val);
+                },
+                decoration: InputDecoration.collapsed(hintText: "検索する"),
+              ),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future startSearching(String query) async {
+    docList = FirebaseFirestore.instance
+        .collection("items")
+        .where("shortInfo", isGreaterThanOrEqualTo: query)
+        .get();
   }
 }

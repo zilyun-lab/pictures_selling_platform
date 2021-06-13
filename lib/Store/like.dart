@@ -35,7 +35,6 @@ class _LikePageState extends State<LikePage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: HexColor("E5E2E0"),
-        appBar: MyAppBar(),
         body: ChangeNotifierProvider<GetLikeItemsModel>(
           create: (_) => GetLikeItemsModel()..fetchItems(),
           child: Column(

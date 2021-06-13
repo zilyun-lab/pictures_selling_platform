@@ -1,10 +1,14 @@
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:selling_pictures_platform/Authentication/MyPage.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Models/HomeItemsModel(provider).dart';
+import 'package:selling_pictures_platform/Models/bottom_navigation.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Counters/cartitemcounter.dart';
@@ -15,6 +19,7 @@ import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/searchBox.dart';
 import '../Models/item.dart';
+import 'Search.dart';
 
 double width;
 
@@ -45,6 +50,17 @@ class _StoreHomeState extends State<StoreHome> {
   //final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final CarouselController _buttonCarouselController = CarouselController();
   final mainColor = HexColor("E67928");
+  List<BottomNavigationEntity> navigationList = [
+    BottomNavigationEntity(
+        title: "ホーム", icon: Icons.home_outlined, page: StoreHome()),
+    BottomNavigationEntity(
+        title: "いいね", icon: Icons.favorite_outline_outlined, page: LikePage()),
+    BottomNavigationEntity(
+        title: "検索", icon: Icons.search, page: SearchProduct()),
+    BottomNavigationEntity(
+        title: "マイページ", icon: Icons.perm_identity, page: MyPage()),
+  ];
+  int selectedIndex = 0;
   @override
   void initState() {
     // TODO: implement initState
@@ -62,7 +78,7 @@ class _StoreHomeState extends State<StoreHome> {
         //key: _scaffoldKey,
         // backgroundColor: HexColor("E5E2E0"),
         backgroundColor: Colors.white,
-        appBar: MyAppBar(),
+
         body: ChangeNotifierProvider<ItemGridModel>(
           create: (_) => ItemGridModel()..fetchItems(),
           child: CustomScrollView(

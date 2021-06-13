@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 
+import '../main.dart';
+
 class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   final PreferredSizeWidget bottom;
   MyAppBar({this.bottom});
@@ -49,7 +51,7 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
         child: InkWell(
           onTap: () {
             Route route = MaterialPageRoute(
-              builder: (c) => StoreHome(),
+              builder: (c) => MainPage(),
             );
             Navigator.pushReplacement(
               context,
