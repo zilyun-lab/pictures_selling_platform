@@ -816,10 +816,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
   /// 登録済みのカードで決済をするボタン
   Widget _buildPayViaExistingCardButton(BuildContext context) {
     final creditCard = CreditCard(
-        number: _cardNumberEditingController.text.trim().toString(),
-        expMonth: int.parse(_expMonthEditingController.text.trim().toString()),
-        expYear: int.parse(_expYearEditingController.text.trim().toString()),
-        cvc: _cvcNumberEditingController.text.trim().toString());
+      number: _cardNumberEditingController.text.trim().toString(),
+      expMonth: int.parse(_expMonthEditingController.text.trim().toString()),
+      expYear: int.parse(_expYearEditingController.text.trim().toString()),
+      cvc: _cvcNumberEditingController.text.trim().toString(),
+    );
     return InkWell(
       child: ListTile(
         leading: Icon(
