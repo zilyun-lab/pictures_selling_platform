@@ -9,6 +9,7 @@ import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
 import 'package:flutter/material.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
+import '../main.dart';
 import 'StripeCheckOutSystem.dart';
 
 class ProductPage extends StatefulWidget {
@@ -80,17 +81,39 @@ class _ProductPageState extends State<ProductPage> {
     // StripeService(price: price);
     return SafeArea(
       child: Scaffold(
-        appBar: MyAppBar(),
+        backgroundColor: HexColor("E5E2E0"),
+        appBar: AppBar(
+          backgroundColor: HexColor("E5E2E0"),
+          title: Text(
+            shortInfo,
+            style: TextStyle(color: Colors.black),
+          ),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios_outlined,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Route route = MaterialPageRoute(
+                builder: (c) => MainPage(),
+              );
+              Navigator.pushReplacement(
+                context,
+                route,
+              );
+            },
+          ),
+        ),
         body: ListView(
           children: [
-            ElevatedButton(
-                onPressed: () {
-                  Route route = MaterialPageRoute(
-                    builder: (c) => App(price: price),
-                  );
-                  Navigator.pushReplacement(context, route);
-                },
-                child: Text("テストページへ")),
+            // ElevatedButton(
+            //     onPressed: () {
+            //       Route route = MaterialPageRoute(
+            //         builder: (c) => App(price: price),
+            //       );
+            //       Navigator.pushReplacement(context, route);
+            //     },
+            //     child: Text("テストページへ")),
             Container(
               padding: EdgeInsets.all(
                 8,
@@ -703,7 +726,7 @@ class _ProductPageState extends State<ProductPage> {
                 deleteItem();
                 Route route = MaterialPageRoute(
                   // fullscreenDialog: true,
-                  builder: (c) => StoreHome(),
+                  builder: (c) => MainPage(),
                 );
                 Navigator.pushReplacement(
                   context,

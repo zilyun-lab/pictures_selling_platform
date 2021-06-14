@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:selling_pictures_platform/Authentication/MyPage.dart';
@@ -187,29 +188,154 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   List<BottomNavigationEntity> navigationList = [
     BottomNavigationEntity(
-        title: "ホーム", icon: Icons.home_outlined, page: StoreHome()),
+        title: "ホーム", icon: Icon(Icons.home_outlined), page: StoreHome()),
     BottomNavigationEntity(
-        title: "いいね", icon: Icons.favorite_outline_outlined, page: LikePage()),
+        title: "いいね",
+        icon: new Stack(
+          children: [
+            Icon(
+              Icons.favorite_outline_outlined,
+            ),
+            Positioned(
+              //top: 0.1,
+              //bottom: 3,
+              left: 10,
+              child: Stack(
+                children: [
+                  Icon(
+                    Icons.brightness_1,
+                    size: 15,
+                    color: HexColor("E67928"),
+                  ),
+                  //todo: アイテムカウントの可視化
+                  Positioned(
+                    //top: 0.1,
+                    //bottom: 0.1,
+                    left: 5,
+                    child: Consumer<LikeItemCounter>(
+                      builder: (context, counter, _) {
+                        Provider.of<LikeItemCounter>(context, listen: false)
+                            .displayResult();
+                        return Text(
+                          (EcommerceApp.sharedPreferences
+                                      .getStringList(EcommerceApp.userLikeList)
+                                      .length -
+                                  1)
+                              .toString(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+        page: LikePage()),
     BottomNavigationEntity(
-        title: "検索", icon: Icons.search, page: SearchProduct()),
+        title: "検索", icon: Icon(Icons.search), page: SearchProduct()),
     BottomNavigationEntity(
-        title: "マイページ", icon: Icons.perm_identity, page: MyPage()),
+        title: "マイページ", icon: Icon(Icons.perm_identity), page: MyPage()),
   ];
   int selectedIndex = 0;
   Future<QuerySnapshot> docList;
+  var _sliderValue = 0.0;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         appBar: MyAppBar(
+          title: (() {
+            if (selectedIndex == 0) {
+              return Center(
+                child: InkWell(
+                  onTap: () {
+                    Route route = MaterialPageRoute(
+                      builder: (c) => MainPage(),
+                    );
+                    Navigator.pushReplacement(
+                      context,
+                      route,
+                    );
+                  },
+                  child: Text(
+                    "LEEWAY",
+                    style: GoogleFonts.sortsMillGoudy(
+                      color: Colors.black,
+                      fontSize: 35,
+                      fontWeight: FontWeight.w100,
+                    ),
+                  ),
+                ),
+              );
+            } else if (selectedIndex == 1) {
+              return Center(
+                child: Text(
+                  "LIKE",
+                  style: GoogleFonts.sortsMillGoudy(
+                    color: Colors.black,
+                    fontSize: 35,
+                    fontWeight: FontWeight.w100,
+                  ),
+                ),
+              );
+            } else if (selectedIndex == 2) {
+              return Center(
+                child: Text(
+                  "SEARCH",
+                  style: GoogleFonts.sortsMillGoudy(
+                    color: Colors.black,
+                    fontSize: 35,
+                    fontWeight: FontWeight.w100,
+                  ),
+                ),
+              );
+            } else {
+              return Center(
+                child: Text(
+                  "MY PAGE",
+                  style: GoogleFonts.sortsMillGoudy(
+                    color: Colors.black,
+                    fontSize: 35,
+                    fontWeight: FontWeight.w100,
+                  ),
+                ),
+              );
+            }
+          })(),
+          // centerTitle: true,
           bottom: selectedIndex == 2
               ? PreferredSize(
-                  child: searchWidget(),
+                  child: Column(
+                    children: [
+                      searchWidget(),
+                      Row(
+                        children: [
+                          // Slider(
+                          //   value: _sliderValue,
+                          //   min: 0,
+                          //   max: 100,
+                          //   divisions: 5,
+                          //   onChanged: (double value) {
+                          //     setState(() {
+                          //       _sliderValue = value.roundToDouble();
+                          //     });
+                          //   },
+                          // )
+                        ],
+                      ),
+                    ],
+                  ),
                   preferredSize: Size(56.0, 56.0),
                 )
               : null,
         ),
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           fixedColor: Colors.black,
           selectedLabelStyle:
               TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -222,10 +348,7 @@ class _MainPageState extends State<MainPage> {
           },
           items: navigationList
               .map((item) => BottomNavigationBarItem(
-                    icon: Icon(
-                      item.icon,
-                      color: Colors.black,
-                    ),
+                    icon: item.icon,
                     label: item.title,
                   ))
               .toList(),

@@ -10,6 +10,7 @@ import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:selling_pictures_platform/main.dart';
 
 class UploadPage extends StatefulWidget {
   @override
@@ -18,34 +19,101 @@ class UploadPage extends StatefulWidget {
 
 class _UploadPageState extends State<UploadPage>
     with AutomaticKeepAliveClientMixin<UploadPage> {
-  List<String> color1 = [
-    "レッド",
-    "ブルー",
-    "グリーン",
-    "イエロー",
-    "ホワイト",
-    "ブラック",
-    "パープル",
-    "グレー",
-    "ピンク",
-    "オレンジ",
-    "ブラウン",
-    "カラフル",
+  List<MapEntry<String, Color>> color1 = [
+    MapEntry("レッド", Colors.redAccent),
+    MapEntry(
+      "ブルー",
+      Colors.blueAccent,
+    ),
+    MapEntry(
+      "グリーン",
+      Colors.green,
+    ),
+    MapEntry(
+      "イエロー",
+      Colors.yellowAccent,
+    ),
+    MapEntry(
+      "ホワイト",
+      Colors.white,
+    ),
+    MapEntry(
+      "ブラック",
+      Colors.black,
+    ),
+    MapEntry(
+      "パープル",
+      Colors.deepPurple,
+    ),
+    MapEntry(
+      "グレー",
+      Colors.grey,
+    ),
+    MapEntry(
+      "ピンク",
+      Colors.pinkAccent,
+    ),
+    MapEntry(
+      "オレンジ",
+      Colors.deepOrangeAccent,
+    ),
+    MapEntry(
+      "ブラウン",
+      Colors.brown,
+    ),
+    MapEntry(
+      "その他",
+      Colors.black54,
+    ),
   ];
-  List<String> color2 = [
-    "レッド",
-    "ブルー",
-    "グリーン",
-    "イエロー",
-    "ホワイト",
-    "ブラック",
-    "パープル",
-    "グレー",
-    "ピンク",
-    "オレンジ",
-    "ブラウン",
-    "無し",
+  List<MapEntry<String, Color>> color2 = [
+    MapEntry("レッド", Colors.redAccent),
+    MapEntry(
+      "ブルー",
+      Colors.blueAccent,
+    ),
+    MapEntry(
+      "グリーン",
+      Colors.green,
+    ),
+    MapEntry(
+      "イエロー",
+      Colors.yellowAccent,
+    ),
+    MapEntry(
+      "ホワイト",
+      Colors.white54,
+    ),
+    MapEntry(
+      "ブラック",
+      Colors.black,
+    ),
+    MapEntry(
+      "パープル",
+      Colors.deepPurple,
+    ),
+    MapEntry(
+      "グレー",
+      Colors.grey,
+    ),
+    MapEntry(
+      "ピンク",
+      Colors.pinkAccent,
+    ),
+    MapEntry(
+      "オレンジ",
+      Colors.deepOrangeAccent,
+    ),
+    MapEntry(
+      "ブラウン",
+      Colors.brown,
+    ),
+    MapEntry(
+      "無し",
+      Colors.black54,
+    ),
   ];
+
   String selectedItem1 = "レッド";
   String selectedItem2 = "無し";
   String holder = "";
@@ -68,6 +136,7 @@ class _UploadPageState extends State<UploadPage>
   String productID = DateTime.now().millisecondsSinceEpoch.toString();
   bool uploading = false;
 
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return file == null ? displayUploadFormScreen() : displayUploadFormScreen();
@@ -190,7 +259,7 @@ class _UploadPageState extends State<UploadPage>
               onPressed: () {
                 clearFormInfo();
                 Route route = MaterialPageRoute(
-                  builder: (c) => StoreHome(),
+                  builder: (c) => MainPage(),
                 );
                 Navigator.pushReplacement(context, route);
               },
@@ -204,10 +273,15 @@ class _UploadPageState extends State<UploadPage>
               ),
             ),
           ),
-          body: TabBarView(children: [
-            original(),
-            copy(),
-          ]),
+          body: Form(
+            key: _formKey,
+            child: TabBarView(
+              children: [
+                original(),
+                copy(),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -268,7 +342,10 @@ class _UploadPageState extends State<UploadPage>
               color: Colors.black,
             ),
             title: Container(
-              child: TextField(
+              child: TextFormField(
+                validator: (val) => _shortInfoTextEditingController.text.isEmpty
+                    ? "未記入の項目があります。"
+                    : null,
                 style: TextStyle(color: Colors.deepPurpleAccent),
                 controller: _shortInfoTextEditingController,
                 decoration: InputDecoration(
@@ -289,7 +366,11 @@ class _UploadPageState extends State<UploadPage>
               color: Colors.black,
             ),
             title: Container(
-              child: TextField(
+              child: TextFormField(
+                validator: (val) =>
+                    _descriptiontextEditingController.text.isEmpty
+                        ? "未記入の項目があります。"
+                        : null,
                 style: TextStyle(color: Colors.deepPurpleAccent),
                 controller: _descriptiontextEditingController,
                 decoration: InputDecoration(
@@ -305,6 +386,7 @@ class _UploadPageState extends State<UploadPage>
         Padding(
           padding: const EdgeInsets.only(left: 86.0, right: 30),
           child: DropdownButtonFormField<String>(
+            dropdownColor: HexColor("#e5e2df"),
             isExpanded: true,
             value: selectedItem1,
             onChanged: (String newValue) {
@@ -313,21 +395,25 @@ class _UploadPageState extends State<UploadPage>
               });
             },
             selectedItemBuilder: (context) {
-              return color1.map((String item) {
+              return color1.map((item) {
                 return Text(
-                  item,
-                  style: TextStyle(color: Colors.black),
+                  item.key,
+                  style: TextStyle(color: item.value),
                 );
               }).toList();
             },
-            items: color1.map((String item) {
+            items: color1.map((item) {
               return DropdownMenuItem(
-                value: item,
-                child: Text(
-                  item,
-                  style: item == selectedItem1
-                      ? TextStyle(fontWeight: FontWeight.bold)
-                      : TextStyle(fontWeight: FontWeight.normal),
+                value: item.key,
+                child: ListTile(
+                  title: Text(
+                    item.key,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Icon(
+                    Icons.waves,
+                    color: item.value,
+                  ),
                 ),
               );
             }).toList(),
@@ -336,6 +422,7 @@ class _UploadPageState extends State<UploadPage>
         Padding(
           padding: const EdgeInsets.only(left: 86.0, right: 30, top: 30),
           child: DropdownButtonFormField<String>(
+            dropdownColor: HexColor("#e5e2df"),
             isExpanded: true,
             value: selectedItem2,
             onChanged: (String newValue) {
@@ -344,21 +431,25 @@ class _UploadPageState extends State<UploadPage>
               });
             },
             selectedItemBuilder: (context) {
-              return color2.map((String item) {
+              return color2.map((item) {
                 return Text(
-                  item,
-                  style: TextStyle(color: Colors.black),
+                  item.key,
+                  style: TextStyle(color: item.value),
                 );
               }).toList();
             },
-            items: color2.map((String item) {
+            items: color2.map((item) {
               return DropdownMenuItem(
-                value: item,
-                child: Text(
-                  item,
-                  style: item == selectedItem2
-                      ? TextStyle(fontWeight: FontWeight.bold)
-                      : TextStyle(fontWeight: FontWeight.normal),
+                value: item.key,
+                child: ListTile(
+                  title: Text(
+                    item.key,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Icon(
+                    Icons.waves,
+                    color: item.value,
+                  ),
                 ),
               );
             }).toList(),
@@ -382,7 +473,12 @@ class _UploadPageState extends State<UploadPage>
                             ),
                           ),
                           title: Container(
-                            child: TextField(
+                            child: TextFormField(
+                              validator: (val) =>
+                                  int.parse(_heighttextEditingController.text) <
+                                          1
+                                      ? "未記入の項目があります。"
+                                      : null,
                               keyboardType: TextInputType.number,
                               style: TextStyle(color: Colors.black),
                               controller: _heighttextEditingController,
@@ -418,7 +514,12 @@ class _UploadPageState extends State<UploadPage>
                             ),
                           ),
                           title: Container(
-                            child: TextField(
+                            child: TextFormField(
+                              validator: (val) =>
+                                  int.parse(_widthtextEditingController.text) <
+                                          1
+                                      ? "未記入の項目があります。"
+                                      : null,
                               keyboardType: TextInputType.number,
                               style: TextStyle(color: Colors.black),
                               controller: _widthtextEditingController,
@@ -452,7 +553,11 @@ class _UploadPageState extends State<UploadPage>
               ),
             ),
             title: Container(
-              child: TextField(
+              child: TextFormField(
+                validator: (val) =>
+                    int.parse(_pricetextEditingController.text) < 5000
+                        ? "原画は5000円からの出品となります。"
+                        : null,
                 keyboardType: TextInputType.number,
                 style: TextStyle(color: Colors.black),
                 controller: _pricetextEditingController,
@@ -469,7 +574,11 @@ class _UploadPageState extends State<UploadPage>
         Align(
           alignment: Alignment.bottomCenter,
           child: ElevatedButton(
-            onPressed: () => confirmItemOfOriginal(),
+            onPressed: () {
+              if (_formKey.currentState.validate()) {
+                confirmItemOfOriginal();
+              }
+            },
             child: Text("出品する"),
             style: ElevatedButton.styleFrom(primary: Colors.black),
           ),
@@ -536,7 +645,10 @@ class _UploadPageState extends State<UploadPage>
               color: Colors.black,
             ),
             title: Container(
-              child: TextField(
+              child: TextFormField(
+                validator: (val) => _shortInfoTextEditingController.text.isEmpty
+                    ? "未記入の項目があります。"
+                    : null,
                 style: TextStyle(color: Colors.deepPurpleAccent),
                 controller: _shortInfoTextEditingController,
                 decoration: InputDecoration(
@@ -557,7 +669,11 @@ class _UploadPageState extends State<UploadPage>
               color: Colors.black,
             ),
             title: Container(
-              child: TextField(
+              child: TextFormField(
+                validator: (val) =>
+                    _descriptiontextEditingController.text.isEmpty
+                        ? "未記入の項目があります。"
+                        : null,
                 style: TextStyle(color: Colors.deepPurpleAccent),
                 controller: _descriptiontextEditingController,
                 decoration: InputDecoration(
@@ -573,6 +689,7 @@ class _UploadPageState extends State<UploadPage>
         Padding(
           padding: const EdgeInsets.only(left: 86.0, right: 30),
           child: DropdownButtonFormField<String>(
+            dropdownColor: HexColor("#e5e2df"),
             isExpanded: true,
             value: selectedItem1,
             onChanged: (String newValue) {
@@ -581,21 +698,25 @@ class _UploadPageState extends State<UploadPage>
               });
             },
             selectedItemBuilder: (context) {
-              return color1.map((String item) {
+              return color1.map((item) {
                 return Text(
-                  item,
-                  style: TextStyle(color: Colors.black),
+                  item.key,
+                  style: TextStyle(color: item.value),
                 );
               }).toList();
             },
-            items: color1.map((String item) {
+            items: color1.map((item) {
               return DropdownMenuItem(
-                value: item,
-                child: Text(
-                  item,
-                  style: item == selectedItem1
-                      ? TextStyle(fontWeight: FontWeight.bold)
-                      : TextStyle(fontWeight: FontWeight.normal),
+                value: item.key,
+                child: ListTile(
+                  title: Text(
+                    item.key,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Icon(
+                    Icons.waves,
+                    color: item.value,
+                  ),
                 ),
               );
             }).toList(),
@@ -604,6 +725,7 @@ class _UploadPageState extends State<UploadPage>
         Padding(
           padding: const EdgeInsets.only(left: 86.0, right: 30, top: 30),
           child: DropdownButtonFormField<String>(
+            dropdownColor: HexColor("#e5e2df"),
             isExpanded: true,
             value: selectedItem2,
             onChanged: (String newValue) {
@@ -612,21 +734,25 @@ class _UploadPageState extends State<UploadPage>
               });
             },
             selectedItemBuilder: (context) {
-              return color2.map((String item) {
+              return color2.map((item) {
                 return Text(
-                  item,
-                  style: TextStyle(color: Colors.black),
+                  item.key,
+                  style: TextStyle(color: item.value),
                 );
               }).toList();
             },
-            items: color2.map((String item) {
+            items: color2.map((item) {
               return DropdownMenuItem(
-                value: item,
-                child: Text(
-                  item,
-                  style: item == selectedItem2
-                      ? TextStyle(fontWeight: FontWeight.bold)
-                      : TextStyle(fontWeight: FontWeight.normal),
+                value: item.key,
+                child: ListTile(
+                  title: Text(
+                    item.key,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  trailing: Icon(
+                    Icons.waves,
+                    color: item.value,
+                  ),
                 ),
               );
             }).toList(),
@@ -643,7 +769,11 @@ class _UploadPageState extends State<UploadPage>
               ),
             ),
             title: Container(
-              child: TextField(
+              child: TextFormField(
+                validator: (val) =>
+                    int.parse(_pricetextEditingController.text) < 4000
+                        ? "コピーは4000円からの出品となります。"
+                        : null,
                 keyboardType: TextInputType.number,
                 style: TextStyle(color: Colors.black),
                 controller: _pricetextEditingController,
@@ -660,7 +790,11 @@ class _UploadPageState extends State<UploadPage>
         Align(
           alignment: Alignment.bottomCenter,
           child: ElevatedButton(
-            onPressed: () => confirmItemOfCopy(),
+            onPressed: () {
+              if (_formKey.currentState.validate()) {
+                confirmItemOfCopy();
+              }
+            },
             child: Text("出品する"),
             style: ElevatedButton.styleFrom(primary: Colors.black),
           ),
@@ -845,7 +979,7 @@ class _UploadPageState extends State<UploadPage>
 
     saveItemInfoCopyToItems(imageDownLoadUrl);
     saveItemInfoCopyToUsers(imageDownLoadUrl);
-    Route route = MaterialPageRoute(builder: (c) => StoreHome());
+    Route route = MaterialPageRoute(builder: (c) => MainPage());
     Navigator.pushReplacement(context, route);
   }
 
@@ -877,7 +1011,8 @@ class _UploadPageState extends State<UploadPage>
         "attribute": "Copy",
         "id": itemRef.id,
         "color1": selectedItem1.trim(),
-        "color2": selectedItem2.trim()
+        "color2": selectedItem2.trim(),
+        "Stock": 50000,
       },
     );
 
@@ -917,6 +1052,7 @@ class _UploadPageState extends State<UploadPage>
         "isDelivery": "inComplete",
         "color1": selectedItem1.trim(),
         "color2": selectedItem2.trim(),
+        "Stock": 50000,
       },
     );
     setState(

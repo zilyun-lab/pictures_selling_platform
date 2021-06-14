@@ -50,17 +50,7 @@ class _StoreHomeState extends State<StoreHome> {
   //final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final CarouselController _buttonCarouselController = CarouselController();
   final mainColor = HexColor("E67928");
-  List<BottomNavigationEntity> navigationList = [
-    BottomNavigationEntity(
-        title: "ホーム", icon: Icons.home_outlined, page: StoreHome()),
-    BottomNavigationEntity(
-        title: "いいね", icon: Icons.favorite_outline_outlined, page: LikePage()),
-    BottomNavigationEntity(
-        title: "検索", icon: Icons.search, page: SearchProduct()),
-    BottomNavigationEntity(
-        title: "マイページ", icon: Icons.perm_identity, page: MyPage()),
-  ];
-  int selectedIndex = 0;
+
   @override
   void initState() {
     // TODO: implement initState
