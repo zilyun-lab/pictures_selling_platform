@@ -101,7 +101,9 @@ class _StoreHomeState extends State<StoreHome> {
                                         request: AdRequest(),
                                         listener: BannerAdListener(),
                                       )..load()),
-                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderRadius: BorderRadius.circular(
+                                        15.0,
+                                      ),
                                     ),
                                   )
                                 : InkWell(
