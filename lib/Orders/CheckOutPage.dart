@@ -794,7 +794,9 @@ class _CheckOutPageState extends State<CheckOutPage> {
         context,
         index,
       ) =>
-          Divider(color: Theme.of(context).primaryColor),
+          Divider(
+        color: Theme.of(context).primaryColor,
+      ),
     );
   }
 
