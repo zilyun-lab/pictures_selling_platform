@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:selling_pictures_platform/Admin/test.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Authentication/publicUserPage.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
@@ -86,7 +87,9 @@ class _ProductPageState extends State<ProductPage> {
           backgroundColor: HexColor("E5E2E0"),
           title: Text(
             shortInfo,
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(
+              color: Colors.black,
+            ),
           ),
           leading: IconButton(
             icon: Icon(
@@ -97,10 +100,11 @@ class _ProductPageState extends State<ProductPage> {
               Route route = MaterialPageRoute(
                 builder: (c) => MainPage(),
               );
-              Navigator.pushReplacement(
-                context,
-                route,
-              );
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (c) => MainPage(),
+                  ));
             },
           ),
         ),
@@ -109,7 +113,7 @@ class _ProductPageState extends State<ProductPage> {
             // ElevatedButton(
             //     onPressed: () {
             //       Route route = MaterialPageRoute(
-            //         builder: (c) => App(price: price),
+            //         builder: (c) => BSTransaction(),
             //       );
             //       Navigator.pushReplacement(context, route);
             //     },

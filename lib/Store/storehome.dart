@@ -1,14 +1,10 @@
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:selling_pictures_platform/Authentication/MyPage.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Models/HomeItemsModel(provider).dart';
-import 'package:selling_pictures_platform/Models/bottom_navigation.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Counters/cartitemcounter.dart';
@@ -16,10 +12,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/searchBox.dart';
+import '../LEEWAY.dart';
 import '../Models/item.dart';
-import 'Search.dart';
+import '../main.dart';
+import 'BSTransaction.dart';
 
 double width;
 
@@ -39,13 +36,13 @@ class _StoreHomeState extends State<StoreHome> {
     //items.add(bannerAd);
   }
 
-  List items = [
-    "images/painter1.png",
-    "images/painter2.png",
-    "",
-    "images/painter4.png",
-    "images/painter5.png",
-    "",
+  List<MapEntry<String, Widget>> items = [
+    MapEntry("images/painter1.png", BSTransaction()),
+    MapEntry("images/painter2.png", LEEWAY()),
+    MapEntry("", null),
+    MapEntry("images/painter4.png", MainPage()),
+    MapEntry("images/painter5.png", MainPage()),
+    MapEntry("", null),
   ];
   //final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final CarouselController _buttonCarouselController = CarouselController();
@@ -87,8 +84,9 @@ class _StoreHomeState extends State<StoreHome> {
                       (i) {
                         return Builder(
                           builder: (BuildContext context) {
-                            return i == ""
+                            return i.key == ""
                                 ? Container(
+                                    //color: Colors.red,
                                     width: MediaQuery.of(context).size.width,
                                     margin:
                                         EdgeInsets.symmetric(horizontal: 5.0),
@@ -108,7 +106,13 @@ class _StoreHomeState extends State<StoreHome> {
                                   )
                                 : InkWell(
                                     onTap: () {
-                                      print(items.indexOf(i));
+                                      Route route = MaterialPageRoute(
+                                        builder: (c) => i.value,
+                                      );
+                                      Navigator.push(
+                                        context,
+                                        route,
+                                      );
                                     },
                                     child: Container(
                                       width: MediaQuery.of(context).size.width,
@@ -118,7 +122,7 @@ class _StoreHomeState extends State<StoreHome> {
                                         borderRadius:
                                             BorderRadius.circular(15.0),
                                         child: Image.asset(
-                                          i,
+                                          i.key,
                                           fit: BoxFit.cover,
                                         ),
                                       ),

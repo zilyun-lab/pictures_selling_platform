@@ -23,6 +23,7 @@ import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 
+import 'FAQ.dart';
 import 'PrivacyPolicyEtc.dart';
 import 'ProceedsRequests.dart';
 import 'login.dart';
@@ -316,6 +317,26 @@ class _MyPageState extends State<MyPage> {
                       },
                       leading: Icon(Icons.privacy_tip_outlined),
                       title: Text("利用規約等"),
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                  Card(
+                    color: HexColor("e5e2df").withOpacity(0.6),
+                    child: ListTile(
+                      onTap: () {
+                        Route route = MaterialPageRoute(
+                          builder: (c) => FAQ(),
+                        );
+                        Navigator.push(
+                          context,
+                          route,
+                        );
+                      },
+                      leading: Icon(Icons.question_answer_outlined),
+                      title: Text("よくある質問"),
                       trailing: Icon(
                         Icons.arrow_forward_ios,
                         size: 18,

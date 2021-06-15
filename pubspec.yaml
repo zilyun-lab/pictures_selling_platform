@@ -49,9 +49,13 @@ flutter:
 
   uses-material-design: true
   fonts:
-    - family: Signatra
+    - family: karakaze-R
       fonts:
-        - asset: assets/fonts/Signatra.ttf
+        - asset: assets/fonts/karakaze-R.ttf
+#    - family: Signatra
+#      fonts:
+#        - asset: assets/fonts/Signatra.ttf
+
   assets:
      - images/welcome.png
      - images/login.png
@@ -64,3 +68,15 @@ flutter:
      - images/painter5.png
      - images/LEEWAY_SAMPLE.png
      - images/home_image.png
+     - images/handshake.png
+     - images/CashPayment-pana.png
+     - images/Photos-bro.png
+     - images/Makingart-bro.png
+     - images/Images-bro.png
+     - images/Listing.png
+     - images/Revenue-cuate.png
+     - images/Delivery-rafiki.png
+     - images/Delivery-amico.png
+     - images/Online_Groceries-rafiki.png
+     - images/Credit_card-cuate.png
+     - images/Credit-card-pana.png
