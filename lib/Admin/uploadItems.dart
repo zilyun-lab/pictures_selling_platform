@@ -5,7 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
+import 'package:selling_pictures_platform/Widgets/CheckBox.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -113,14 +115,31 @@ class _UploadPageState extends State<UploadPage>
       Colors.black54,
     ),
   ];
+  List<String> frame = ["額縁の有無", "有り", "無し"];
 
   String selectedItem1 = "レッド";
   String selectedItem2 = "無し";
+  String selectedFrame = "額縁の有無";
   String holder = "";
 
   void getValue() {
     setState(() {
       holder = selectedItem1;
+    });
+  }
+
+  var _flag1 = false;
+  var _flag2 = false;
+
+  void _handleCheckbox1(bool e) {
+    setState(() {
+      _flag1 = e;
+    });
+  }
+
+  void _handleCheckbox2(bool e) {
+    setState(() {
+      _flag2 = e;
     });
   }
 
@@ -298,33 +317,36 @@ class _UploadPageState extends State<UploadPage>
                 "",
               ),
         Container(
-          height: 230,
-          width: MediaQuery.of(
-                context,
-              ).size.width *
-              0.8,
-          child: InkWell(
-            onTap: () {
-              takeImage(context);
-            },
-            child: Center(
-              child: Container(
-                decoration: file == null
-                    ? null
-                    : BoxDecoration(
-                        image: DecorationImage(
-                          image: FileImage(file),
-                          fit: BoxFit.scaleDown,
-                          //fit: BoxFit.cover,
+          height: 250,
+          // width: MediaQuery.of(
+          //       context,
+          //     ).size.width *
+          //     0.8,
+          child: Container(
+            color: Colors.red,
+            child: InkWell(
+              onTap: () {
+                takeImage(context);
+              },
+              child: Center(
+                child: Container(
+                  decoration: file == null
+                      ? null
+                      : BoxDecoration(
+                          image: DecorationImage(
+                            image: FileImage(file),
+                            fit: BoxFit.scaleDown,
+                            //fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
-                child: file == null
-                    ? Icon(
-                        Icons.add_a_photo_outlined,
-                        size: MediaQuery.of(context).size.width * 0.15,
-                        color: Colors.grey,
-                      )
-                    : null,
+                  child: file == null
+                      ? Icon(
+                          Icons.add_a_photo_outlined,
+                          size: MediaQuery.of(context).size.width * 0.15,
+                          color: Colors.grey,
+                        )
+                      : null,
+                ),
               ),
             ),
           ),
@@ -540,6 +562,40 @@ class _UploadPageState extends State<UploadPage>
                 ),
               ),
             ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 86.0, right: 30),
+          child: DropdownButtonFormField<String>(
+            validator: (val) =>
+                selectedFrame.trim() == "額縁の有無" ? "額縁の有無を選択してください。" : null,
+            dropdownColor: HexColor("#e5e2df"),
+            isExpanded: true,
+            value: selectedFrame,
+            onChanged: (String newValue) {
+              setState(() {
+                selectedFrame = newValue;
+              });
+            },
+            selectedItemBuilder: (context) {
+              return frame.map((String item) {
+                return Text(
+                  item,
+                  style: TextStyle(),
+                );
+              }).toList();
+            },
+            items: frame.map((String item) {
+              return DropdownMenuItem(
+                value: item,
+                child: ListTile(
+                  title: Text(
+                    item,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              );
+            }).toList(),
           ),
         ),
         Padding(
@@ -810,34 +866,18 @@ class _UploadPageState extends State<UploadPage>
     showDialog(
       context: context,
       builder: (_) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              Text(
-                "*",
-                style: TextStyle(color: Colors.red),
-              ),
-              Text(
-                "出品に関する規約について",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          content: Container(child: Text("悪いけど権利はぜーーーーーんぶ俺らのモンだから（笑）")),
-          actions: <Widget>[
-            // ボタン領域
-            ElevatedButton(
-              child: Text("Cancel"),
-              onPressed: () => Navigator.pop(context),
-            ),
-            ElevatedButton(
-              child: Text("OK"),
-              onPressed: () {
-                uploadImageAndSaveItemInfoCopy();
-              },
-            ),
-          ],
-        );
+        return CheckBoxDialog(
+            "出品に関する規約について",
+            "利用規約の確認",
+            "利用規約の確認の確認は行いましたか？\nまた規約に同意しますか？",
+            "OK",
+            () {
+              uploadImageAndSaveItemInfoCopy();
+            },
+            "キャンセル",
+            () {
+              Navigator.pop(context);
+            });
       },
     );
   }
@@ -846,35 +886,18 @@ class _UploadPageState extends State<UploadPage>
     showDialog(
       context: context,
       builder: (_) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              Text(
-                "*",
-                style: TextStyle(color: Colors.red),
-              ),
-              Text(
-                "出品に関する規約について",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          content: Container(
-              child: Text("悪いけど権利はぜーーーーーんぶ俺らのモンだから（笑）\n原画は一枚のみの出品になります。")),
-          actions: <Widget>[
-            // ボタン領域
-            ElevatedButton(
-              child: Text("Cancel"),
-              onPressed: () => Navigator.pop(context),
-            ),
-            ElevatedButton(
-              child: Text("OK"),
-              onPressed: () {
-                uploadImageAndSaveItemInfoOriginal();
-              },
-            ),
-          ],
-        );
+        return CheckBoxDialog(
+            "出品に関する規約について",
+            "利用規約の確認",
+            "利用規約の確認の確認は行いましたか？\nまた規約に同意しますか？",
+            "OK",
+            () {
+              uploadImageAndSaveItemInfoOriginal();
+            },
+            "キャンセル",
+            () {
+              Navigator.pop(context);
+            });
       },
     );
   }
@@ -900,7 +923,7 @@ class _UploadPageState extends State<UploadPage>
 
     saveItemInfoOriginalToItems(imageDownLoadUrl);
     saveItemInfoOriginalToUsers(imageDownLoadUrl);
-    Route route = MaterialPageRoute(builder: (c) => StoreHome());
+    Route route = MaterialPageRoute(builder: (c) => MainPage());
     Navigator.pushReplacement(context, route);
   }
 
@@ -931,7 +954,10 @@ class _UploadPageState extends State<UploadPage>
       "color1": selectedItem1.trim(),
       "color2": selectedItem2.trim(),
       "itemWidth": _widthtextEditingController.text,
-      "itemHeight": _heighttextEditingController.text
+      "itemHeight": _heighttextEditingController.text,
+      "Frame": selectedFrame.trim(),
+      "postName":
+          EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
     });
   }
 
@@ -957,7 +983,10 @@ class _UploadPageState extends State<UploadPage>
       "color1": selectedItem1.trim(),
       "color2": selectedItem2.trim(),
       "itemWidth": _widthtextEditingController.text,
-      "itemHeight": _heighttextEditingController.text
+      "itemHeight": _heighttextEditingController.text,
+      "Frame": selectedFrame.trim(),
+      "postName":
+          EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
     });
     setState(() {
       file = null;
@@ -1013,6 +1042,8 @@ class _UploadPageState extends State<UploadPage>
         "color1": selectedItem1.trim(),
         "color2": selectedItem2.trim(),
         "Stock": 50000,
+        "postName":
+            EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
       },
     );
 
@@ -1053,6 +1084,8 @@ class _UploadPageState extends State<UploadPage>
         "color1": selectedItem1.trim(),
         "color2": selectedItem2.trim(),
         "Stock": 50000,
+        "postName":
+            EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
       },
     );
     setState(

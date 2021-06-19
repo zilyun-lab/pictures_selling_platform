@@ -14,6 +14,7 @@ class Items {
     postBy = doc["postBy"];
     Stock = doc["Stock"];
     id = doc["id"];
+    postName = doc["postName"];
   }
 
   String documentID;
@@ -25,4 +26,5 @@ class Items {
   String postBy;
   int Stock;
   String id;
+  String postName;
 }

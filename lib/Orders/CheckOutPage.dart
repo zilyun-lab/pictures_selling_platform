@@ -15,34 +15,32 @@ import 'package:selling_pictures_platform/Address/addAddress.dart';
 import 'package:selling_pictures_platform/Address/address.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Counters/SizePriceChanger.dart';
 import 'package:selling_pictures_platform/Counters/changeAddresss.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Orders/myOrders.dart';
-import 'package:selling_pictures_platform/Orders/placeOrderPayment.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
-import 'package:selling_pictures_platform/Widgets/wideButton.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
-import 'OrderDetailsPage.dart';
+import '../main.dart';
 
 class CheckOutPage extends StatefulWidget {
-  const CheckOutPage({
-    Key key,
-    this.model,
-    this.shortInfo,
-    this.imageURL,
-    this.price,
-    this.postBy,
-    this.value,
-    this.currentIndex,
-    this.addressId,
-    this.V,
-    this.attribute,
-    this.id,
-  });
+  const CheckOutPage(
+      {Key key,
+      this.model,
+      this.shortInfo,
+      this.imageURL,
+      this.price,
+      this.postBy,
+      this.value,
+      this.currentIndex,
+      this.addressId,
+      this.V,
+      this.attribute,
+      this.id,
+      this.userName});
 
   final shortInfo;
   final imageURL;
@@ -55,6 +53,7 @@ class CheckOutPage extends StatefulWidget {
   final AddressModel model;
   final String attribute;
   final String id;
+  final String userName;
 
   @override
   State<CheckOutPage> createState() => _CheckOutPageState();
@@ -72,14 +71,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   @override
   Widget build(BuildContext context) {
-    //ShippingDetails(proceeds: int.parse(widget.price));
-    //ShippingDetails(proceeds: int.parse(widget.price + shipsPayment + gValue));
-
-    String _type = 'サイズ料金';
-    String _payment = '中';
-    void _handleRadioButton(String payment) => setState(() {
-          _payment = payment;
-        });
     return SafeArea(
       child: Scaffold(
         backgroundColor: HexColor("e5e2df"),
@@ -94,7 +85,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
               ),
             ),
             onPressed: () {
-              Route route = MaterialPageRoute(builder: (c) => StoreHome());
+              Route route = MaterialPageRoute(builder: (c) => MainPage());
               Navigator.pushReplacement(context, route);
             },
           ),
@@ -440,10 +431,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                   content:
                                                       SingleChildScrollView(
                                                     child: Expanded(
-                                                        // child:
-                                                        // _buildPayViaNewCardButton(
-                                                        //     context),
-
                                                         child: Column(
                                                       children: [
                                                         Padding(
@@ -876,6 +863,39 @@ class _CheckOutPageState extends State<CheckOutPage> {
     Fluttertoast.showToast(msg: "注文を承りました");
     Route route = MaterialPageRoute(builder: (c) => MyOrders());
     Navigator.pushReplacement(context, route);
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          title: Center(
+            child: Text(
+              "注文を承りました。",
+            ),
+          ),
+          content: Text(
+              "よろしければ「${widget.shortInfo}」の作者である\n「${widget.userName}」さんをフォローして応援しませんか？"),
+          actions: [
+            ElevatedButton(
+              child: Text("フォローしない"),
+              onPressed: () => Navigator.pop(context),
+            ),
+            ElevatedButton(
+              child: Text("フォローする"),
+              onPressed: () {
+                FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(widget.postBy)
+                    .collection("Followers")
+                    .doc(EcommerceApp.sharedPreferences
+                        .getString(EcommerceApp.userUID))
+                    .set({"isFollow": true});
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -1009,7 +1029,7 @@ class StripeService {
   /// confirm payment intent
   Future<PaymentIntentResult> confirmPaymentIntent(
       dynamic paymentIntent, PaymentMethod paymentMethod) async {
-    print(paymentIntent);
+    //print(paymentIntent);
     final confirmResult = await StripePayment.confirmPaymentIntent(
       PaymentIntent(
         clientSecret: paymentIntent['client_secret'],
@@ -1022,7 +1042,7 @@ class StripeService {
   /// handle payment intent result
   StripeTransactionResponse handlePaymentResult(
       PaymentIntentResult confirmResult) {
-    print("完了");
+    //print("完了");
 
     if (confirmResult.status == 'succeeded') {
       return StripeTransactionResponse(
@@ -1037,114 +1057,3 @@ class StripeService {
     }
   }
 }
-
-// class MySample extends StatefulWidget {
-//   @override
-//   State<StatefulWidget> createState() {
-//     return MySampleState();
-//   }
-// }
-//
-// class MySampleState extends State<MySample> {
-//   String cardNumber = '';
-//   String expiryDate = '';
-//   // String cardHolderName = '';
-//   String cvvCode = '';
-//   bool isCvvFocused = false;
-//   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       resizeToAvoidBottomInset: true,
-//       body: Column(
-//         children: <Widget>[
-//           // CreditCardWidget(
-//           //   cardNumber: cardNumber,
-//           //   expiryDate: expiryDate,
-//           //   cardHolderName: cardHolderName,
-//           //   cvvCode: cvvCode,
-//           //   showBackView: isCvvFocused,
-//           //   obscureCardNumber: true,
-//           //   obscureCardCvv: true,
-//           // ),
-//           Expanded(
-//             child: SingleChildScrollView(
-//               child: Column(
-//                 children: <Widget>[
-//                   CreditCardForm(
-//                     formKey: formKey,
-//                     obscureCvv: false,
-//                     obscureNumber: false,
-//                     cardNumber: cardNumber,
-//                     cvvCode: cvvCode,
-//                     // cardHolderName: cardHolderName,
-//                     expiryDate: expiryDate,
-//                     themeColor: Colors.blue,
-//                     cardNumberDecoration: const InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       labelText: 'カードナンバー',
-//                       hintText: 'XXXX XXXX XXXX XXXX',
-//                     ),
-//                     expiryDateDecoration: const InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       labelText: 'MM/YY',
-//                       hintText: 'XX/XX',
-//                     ),
-//                     cvvCodeDecoration: const InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       labelText: 'CVV',
-//                       hintText: 'XXX',
-//                     ),
-//                     // cardHolderDecoration: const InputDecoration(
-//                     //   border: OutlineInputBorder(),
-//                     //   labelText: 'Card Holder',
-//                     // ),
-//                     onCreditCardModelChange: onCreditCardModelChange,
-//                   ),
-//                   ElevatedButton(
-//                     style: ElevatedButton.styleFrom(
-//                       shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(8.0),
-//                       ),
-//                       primary: const Color(0xff1b447b),
-//                     ),
-//                     child: Container(
-//                       margin: const EdgeInsets.all(8),
-//                       child: const Text(
-//                         'Validate',
-//                         style: TextStyle(
-//                           color: Colors.white,
-//                           fontFamily: 'halter',
-//                           fontSize: 14,
-//                           package: 'flutter_credit_card',
-//                         ),
-//                       ),
-//                     ),
-//                     onPressed: () {
-//                       if (formKey.currentState.validate()) {
-//                         print('valid!');
-//                       } else {
-//                         print('invalid!');
-//                       }
-//                     },
-//                   )
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   void onCreditCardModelChange(CreditCardModel creditCardModel) {
-//     setState(() {
-//       cardNumber = creditCardModel.cardNumber;
-//       expiryDate = creditCardModel.expiryDate;
-//       // cardHolderName = creditCardModel.cardHolderName;
-//       cvvCode = creditCardModel.cvvCode;
-//       isCvvFocused = creditCardModel.isCvvFocused;
-//     });
-//   }
-// }

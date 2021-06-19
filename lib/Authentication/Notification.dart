@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:selling_pictures_platform/Authentication/Transaction.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Orders/OrderDetailsPage.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 
@@ -34,14 +32,14 @@ class UserNotification extends StatelessWidget {
                             return Card(
                               child: ListTile(
                                 onTap: () {
-                                  Route route = MaterialPageRoute(
-                                      builder: (c) => TransactionDetailsPage(
-                                            notifyID: dataSnapshot
-                                                .data.docs[index].id,
-                                            imageURL: dataSnapshot
-                                                .data.docs[index]["imageURL"],
-                                          ));
-                                  Navigator.pushReplacement(context, route);
+                                  // Route route = MaterialPageRoute(
+                                  //     builder: (c) => TransactionDetailsPage(
+                                  //           notifyID: dataSnapshot
+                                  //               .data.docs[index].id,
+                                  //           imageURL: dataSnapshot
+                                  //               .data.docs[index]["imageURL"],
+                                  //         ));
+                                  // Navigator.pushReplacement(context, route);
                                 },
                                 title: Flexible(
                                   child: Text(

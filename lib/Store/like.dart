@@ -1,9 +1,10 @@
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/GetLikeItemsModel.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
-import 'package:selling_pictures_platform/Counters/cartitemcounter.dart';
+import 'package:selling_pictures_platform/Counters/Likeitemcounter.dart';
 import 'package:selling_pictures_platform/Counters/totalMoney.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -146,45 +147,6 @@ class _LikePageState extends State<LikePage> {
           ),
         ),
       ),
-    );
-  }
-
-  removeItemFromCart(String shortInfoAsID) {
-    List tempCartList = EcommerceApp.sharedPreferences.getStringList(
-      EcommerceApp.userCartList,
-    );
-    tempCartList.remove(
-      shortInfoAsID,
-    );
-    EcommerceApp.firestore
-        .collection(
-          EcommerceApp.collectionUser,
-        )
-        .doc(
-          EcommerceApp.sharedPreferences.getString(
-            EcommerceApp.userUID,
-          ),
-        )
-        .update(
-      {
-        EcommerceApp.userCartList: tempCartList,
-      },
-    ).then(
-      (v) {
-        Fluttertoast.showToast(
-          msg: "マイカートから削除しました",
-        );
-        EcommerceApp.sharedPreferences.setStringList(
-          EcommerceApp.userCartList,
-          tempCartList,
-        );
-        Provider.of<CartItemCounter>(
-          context,
-          listen: true,
-        ).displayResult();
-
-        totalAmount = 0;
-      },
     );
   }
 }

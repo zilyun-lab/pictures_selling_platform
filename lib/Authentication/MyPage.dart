@@ -11,16 +11,12 @@ import 'package:selling_pictures_platform/Admin/uploadItems.dart';
 import 'package:selling_pictures_platform/Authentication/updateProfile.dart';
 import 'package:selling_pictures_platform/Authentication/Notification.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Counters/cartitemcounter.dart';
+import 'package:selling_pictures_platform/Counters/Likeitemcounter.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Orders/myOrders.dart';
-import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
-import 'package:selling_pictures_platform/Store/storehome.dart';
-import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
-import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
-import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 import 'dart:io';
 
 import 'FAQ.dart';
@@ -378,7 +374,7 @@ class _MyPageState extends State<MyPage> {
                               Route route = MaterialPageRoute(
                                 builder: (c) => Login(),
                               );
-                              Navigator.pushReplacement(
+                              Navigator.push(
                                 context,
                                 route,
                               );

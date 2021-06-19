@@ -417,6 +417,14 @@ class _RegisterState extends State<Register> {
         "Proceeds": 0,
       },
     );
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(fUser.uid)
+        .collection("Followers")
+        .doc()
+        .set(
+      {},
+    );
 
     await EcommerceApp.sharedPreferences.setString(
       "uid",

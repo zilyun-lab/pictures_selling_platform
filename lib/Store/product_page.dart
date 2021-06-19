@@ -6,12 +6,13 @@ import 'package:selling_pictures_platform/Admin/test.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Authentication/publicUserPage.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
 import 'package:flutter/material.dart';
+import 'package:selling_pictures_platform/Orders/myOrders.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
-import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import '../main.dart';
-import 'StripeCheckOutSystem.dart';
+import 'ARPage.dart';
 
 class ProductPage extends StatefulWidget {
   final String shortInfo;
@@ -22,6 +23,7 @@ class ProductPage extends StatefulWidget {
   final String attribute;
   final String postBy;
   final String id;
+  final String postName;
   ProductPage(
       {this.thumbnailURL,
       this.shortInfo,
@@ -30,7 +32,8 @@ class ProductPage extends StatefulWidget {
       this.Stock,
       this.attribute,
       this.postBy,
-      this.id});
+      this.id,
+      this.postName});
   @override
   _ProductPageState createState() => _ProductPageState(
       this.thumbnailURL,
@@ -40,7 +43,8 @@ class ProductPage extends StatefulWidget {
       this.attribute,
       this.postBy,
       this.Stock,
-      this.id);
+      this.id,
+      this.postName);
 }
 
 class _ProductPageState extends State<ProductPage> {
@@ -52,13 +56,22 @@ class _ProductPageState extends State<ProductPage> {
   final String attribute;
   final String postBy;
   final String id;
+  final String postName;
   //ArCoreController arCoreController;
 
   int quantityOfItems = 1;
   List<DocumentSnapshot> documentList = [];
 
-  _ProductPageState(this.thumbnailURL, this.shortInfo, this.longDescription,
-      this.price, this.attribute, this.postBy, this.Stock, this.id);
+  _ProductPageState(
+      this.thumbnailURL,
+      this.shortInfo,
+      this.longDescription,
+      this.price,
+      this.attribute,
+      this.postBy,
+      this.Stock,
+      this.id,
+      this.postName);
   @override
   void initState() {
     // TODO: implement initState
@@ -80,109 +93,29 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     // StripeService(price: price);
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: HexColor("E5E2E0"),
-        appBar: AppBar(
-          backgroundColor: HexColor("E5E2E0"),
-          title: Text(
-            shortInfo,
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          ),
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_outlined,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Route route = MaterialPageRoute(
-                builder: (c) => MainPage(),
-              );
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (c) => MainPage(),
-                  ));
-            },
-          ),
-        ),
-        body: ListView(
-          children: [
-            // ElevatedButton(
-            //     onPressed: () {
-            //       Route route = MaterialPageRoute(
-            //         builder: (c) => BSTransaction(),
-            //       );
-            //       Navigator.pushReplacement(context, route);
-            //     },
-            //     child: Text("テストページへ")),
-            Container(
-              padding: EdgeInsets.all(
-                8,
+    return Scaffold(
+      bottomNavigationBar: InkWell(
+          onTap: () async {
+            await showModalBottomSheet(
+              enableDrag: true,
+              isDismissible: true,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25.0),
+                    topRight: Radius.circular(25.0)),
               ),
-              width: MediaQuery.of(
-                context,
-              ).size.width,
-              color: Colors.white,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Stack(
-                    children: [
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 15.0),
-                          child: Stack(
-                            children: [
-                              Center(
-                                child: Image.network(
-                                  thumbnailURL,
-                                  height: 300,
-                                  width: MediaQuery.of(context).size.width,
-                                  fit: BoxFit.scaleDown,
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment(0.0, 1.0),
-                                child: Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(top: 115.0),
-                                    child: Text(
-                                      "LEEWAY",
-                                      style: GoogleFonts.sortsMillGoudy(
-                                        color: Colors.blueGrey.withOpacity(0.8),
-                                        fontSize: 35,
-                                        fontWeight: FontWeight.w100,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        color: Colors.grey[300],
-                        child: SizedBox(
-                          height: 1,
-                          width: double.infinity,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(
-                      20,
-                    ),
+              backgroundColor: HexColor("#E67928"),
+              context: context,
+              builder: (BuildContext context) {
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         Text(
                           "作品名",
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 12, color: Colors.white),
                         ),
                         Text(
                           shortInfo,
@@ -190,14 +123,17 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                         Divider(
                           thickness: 1,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                         SizedBox(
                           height: 10,
                         ),
                         Text(
                           "作品説明",
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
                         ),
                         SizedBox(
                           height: 5,
@@ -205,18 +141,21 @@ class _ProductPageState extends State<ProductPage> {
                         Text(
                           longDescription,
                           style: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
+                              color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                         Divider(
                           thickness: 1,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                         SizedBox(
                           height: 10,
                         ),
                         Text(
                           "金額",
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
                         ),
                         Text(
                           "${price.toString()} 円",
@@ -224,14 +163,17 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                         Divider(
                           thickness: 1,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                         SizedBox(
                           height: 10,
                         ),
                         Text(
                           "在庫",
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
                         ),
                         StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
@@ -241,13 +183,14 @@ class _ProductPageState extends State<ProductPage> {
                               .snapshots(),
                           builder: (context, dataSnapshot) {
                             return !dataSnapshot.hasData
-                                ? SliverToBoxAdapter(
-                                    child: Container(),
-                                  )
+                                ? null
                                 : attribute == "Original"
                                     ? Text(
                                         "こちらは原画の為、１点限りとなります。",
-                                        style: boldTextStyle,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.white,
+                                        ),
                                       )
                                     : Text(
                                         "こちらは複製画の為、受注生産となります。",
@@ -257,392 +200,240 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                         Divider(
                           thickness: 1,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                         SizedBox(
                           height: 10,
                         ),
-                        Center(
-                          child: Card(
-                            color: HexColor("E67928"),
-                            child: Padding(
-                              padding: const EdgeInsets.all(1.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: documentList.map((document) {
-                                  return InkWell(
-                                    onTap: () {
-                                      Route route = MaterialPageRoute(
-                                        builder: (c) => PublicUserPage(
-                                          uid: document.data()["uid"],
-                                          imageUrl: document.data()["url"],
-                                          name: document.data()["name"],
-                                          description:
-                                              document.data()["description"],
-                                        ),
-                                      );
-                                      Navigator.pushReplacement(context, route);
-                                    },
-                                    child: ListTile(
-                                      leading: Container(
-                                        height: 80,
-                                        width: 80,
-                                        child: CircleAvatar(
-                                          backgroundImage: NetworkImage(document
-                                              .data()["url"]
-                                              .toString()),
-                                        ),
-                                      ),
-                                      title: Text(
-                                        '${document.data()["name"]}',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      subtitle: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 5.0,
-                                          horizontal: 10.0,
-                                        ),
-                                        child: Text(
-                                          '${document.data()["description"]}',
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                        decoration: ShapeDecoration(
-                                          color: Colors.white,
-                                          shape: BubbleBorder(
-                                            width: 1,
-                                            radius: 10,
-                                          ),
-                                        ),
-                                      ), //["PostBy"]}\nshortInfo:${document.data()["shortInfo"]}'),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
+                        Container(
+                          padding: EdgeInsets.all(
+                            12,
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: 8,
-                    ),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: () => checkItemInLike(shortInfo, context),
-                            child: Container(
-                              color: Colors.black,
-                              width: MediaQuery.of(
-                                    context,
-                                  ).size.width *
-                                  0.47,
-                              height: 50,
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 6.0),
-                                        child: Icon(
-                                          Icons.favorite,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      StreamBuilder<QuerySnapshot>(
-                                          stream: null,
-                                          builder: (context, snapshot) {
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                right: 17,
-                                              ),
-                                              child: !EcommerceApp
-                                                      .sharedPreferences
-                                                      .getStringList(
-                                                          EcommerceApp
-                                                              .userLikeList)
-                                                      .contains(shortInfo)
-                                                  ? Text(
-                                                      "いいねに追加する",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    )
-                                                  : Text(
-                                                      "いいねから外す",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Center(
+                                child: Container(
+                                  color: HexColor("#481DE2"),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(1.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: documentList.map((document) {
+                                        return InkWell(
+                                          onTap: () {
+                                            CheckOutPage(
+                                              userName: document.data()["name"],
                                             );
-                                          }),
-                                    ],
+                                            Route route = MaterialPageRoute(
+                                              builder: (c) => PublicUserPage(
+                                                uid: document.data()["uid"],
+                                                imageUrl:
+                                                    document.data()["url"],
+                                                name: document.data()["name"],
+                                                description: document
+                                                    .data()["description"],
+                                              ),
+                                            );
+                                            Navigator.pushReplacement(
+                                                context, route);
+                                          },
+                                          child: ListTile(
+                                            leading: Container(
+                                              height: 80,
+                                              width: 80,
+                                              child: CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                    document
+                                                        .data()["url"]
+                                                        .toString()),
+                                              ),
+                                            ),
+                                            title: Text(
+                                              '${document.data()["name"]}',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            subtitle: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 5.0,
+                                                horizontal: 10.0,
+                                              ),
+                                              child: Text(
+                                                '${document.data()["description"]}',
+                                                style: TextStyle(fontSize: 12),
+                                              ),
+                                              decoration: ShapeDecoration(
+                                                color: Colors.white,
+                                                shape: BubbleBorder(
+                                                  width: 1,
+                                                  radius: 10,
+                                                ),
+                                              ),
+                                            ), //["PostBy"]}\nshortInfo:${document.data()["shortInfo"]}'),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                          StreamBuilder<QuerySnapshot>(
-                            stream: FirebaseFirestore.instance
-                                .collection(
-                                  "items",
-                                )
-                                .snapshots(),
-                            builder: (context, snapshot) {
-                              return FirebaseAuth.instance.currentUser == null
-                                  ? InkWell(
-                                      onTap: () {
-                                        Route route = MaterialPageRoute(
-                                            fullscreenDialog: true,
-                                            builder: (c) => Login());
-                                        Navigator.pushReplacement(
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: 8,
+                          ),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                InkWell(
+                                  onTap: () =>
+                                      checkItemInLike(shortInfo, context),
+                                  child: Container(
+                                    color: Colors.black,
+                                    width: MediaQuery.of(
                                           context,
-                                          route,
-                                        );
-                                      },
-                                      // onTap: () => checkItemInCart(
-                                      //     widget.itemModel.shortInfo, context),
-                                      child: Container(
-                                        color: Colors.black,
-                                        width: MediaQuery.of(
-                                              context,
-                                            ).size.width *
-                                            0.47,
-                                        height: 50,
-                                        child: Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 6.0),
-                                                  child: Icon(
-                                                    Icons.delete,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          right: 45),
-                                                  child: Text(
-                                                    "ログインして購入",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : postBy ==
-                                          EcommerceApp.sharedPreferences
-                                              .getString(EcommerceApp.userUID)
-                                      ? InkWell(
-                                          onTap: () {
-                                            beforeDeleteDialog();
-                                          },
-                                          // onTap: () => checkItemInCart(
-                                          //     widget.itemModel.shortInfo, context),
-                                          child: Container(
-                                            color: Colors.black,
-                                            width: MediaQuery.of(
-                                                  context,
-                                                ).size.width *
-                                                0.47,
-                                            height: 50,
-                                            child: Center(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Padding(
+                                        ).size.width *
+                                        0.46,
+                                    height: 50,
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            TextButton.icon(
+                                              icon: Icon(
+                                                Icons.favorite,
+                                                color: Colors.white,
+                                              ),
+                                              label: StreamBuilder<
+                                                      QuerySnapshot>(
+                                                  stream: null,
+                                                  builder: (context, snapshot) {
+                                                    return Padding(
                                                       padding:
                                                           const EdgeInsets.only(
-                                                              left: 6.0),
-                                                      child: Icon(
-                                                        Icons.delete,
-                                                        color: Colors.white,
+                                                        right: 0.5,
                                                       ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 45),
-                                                      child: Text(
-                                                        "削除する",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      : attribute != "Original"
-                                          ? InkWell(
-                                              onTap: () {
-                                                Route route = MaterialPageRoute(
-                                                  fullscreenDialog: true,
-                                                  builder: (c) => CheckOutPage(
-                                                      id: id,
-                                                      imageURL: thumbnailURL,
-                                                      shortInfo: shortInfo,
-                                                      price: price,
-                                                      postBy: postBy),
-                                                );
-                                                Navigator.pushReplacement(
-                                                  context,
-                                                  route,
-                                                );
-                                              },
-                                              // onTap: () => checkItemInCart(
-                                              //     widget.itemModel.shortInfo, context),
-                                              child: Container(
-                                                color: Colors.black,
-                                                width: MediaQuery.of(
-                                                      context,
-                                                    ).size.width *
-                                                    0.47,
-                                                height: 50,
-                                                child: Center(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 6.0),
-                                                          child: Icon(
-                                                            Icons.check,
-                                                            color: Colors.white,
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  right: 45),
-                                                          child: Text(
-                                                            "購入する",
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          : Stock != 0
-                                              ? InkWell(
-                                                  onTap: () {
-                                                    Route route =
-                                                        MaterialPageRoute(
-                                                      fullscreenDialog: true,
-                                                      builder: (c) =>
-                                                          CheckOutPage(
-                                                        imageURL: thumbnailURL,
-                                                        shortInfo: shortInfo,
-                                                        price: price,
-                                                        postBy: postBy,
-                                                        attribute: attribute,
-                                                      ),
-                                                    );
-                                                    Navigator.pushReplacement(
-                                                      context,
-                                                      route,
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    color: Colors.black,
-                                                    width: MediaQuery.of(
-                                                          context,
-                                                        ).size.width *
-                                                        0.47,
-                                                    height: 50,
-                                                    child: Center(
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      left:
-                                                                          6.0),
-                                                              child: Icon(
-                                                                Icons.check,
+                                                      child: !EcommerceApp
+                                                              .sharedPreferences
+                                                              .getStringList(
+                                                                  EcommerceApp
+                                                                      .userLikeList)
+                                                              .contains(
+                                                                  shortInfo)
+                                                          ? Text(
+                                                              "いいねに追加",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            )
+                                                          : Text(
+                                                              "いいねから外す",
+                                                              style: TextStyle(
                                                                 color: Colors
                                                                     .white,
                                                               ),
                                                             ),
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      right:
-                                                                          45),
-                                                              child: Text(
-                                                                "購入する",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
+                                                    );
+                                                  }),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                StreamBuilder<QuerySnapshot>(
+                                  stream: FirebaseFirestore.instance
+                                      .collection(
+                                        "items",
+                                      )
+                                      .snapshots(),
+                                  builder: (context, snapshot) {
+                                    return FirebaseAuth.instance.currentUser ==
+                                            null
+                                        ? InkWell(
+                                            onTap: () {
+                                              Route route = MaterialPageRoute(
+                                                  fullscreenDialog: true,
+                                                  builder: (c) => Login());
+                                              Navigator.pushReplacement(
+                                                context,
+                                                route,
+                                              );
+                                            },
+                                            // onTap: () => checkItemInCart(
+                                            //     widget.itemModel.shortInfo, context),
+                                            child: Container(
+                                              color: Colors.black,
+                                              width: MediaQuery.of(
+                                                    context,
+                                                  ).size.width *
+                                                  0.46,
+                                              height: 50,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 6.0),
+                                                        child: Icon(
+                                                          Icons.delete,
+                                                          color: Colors.white,
                                                         ),
                                                       ),
-                                                    ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                right: 45),
+                                                        child: Text(
+                                                          "ログインして購入",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                )
-                                              : Container(
-                                                  color: Colors.black54,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : postBy ==
+                                                EcommerceApp.sharedPreferences
+                                                    .getString(
+                                                        EcommerceApp.userUID)
+                                            ? InkWell(
+                                                onTap: () {
+                                                  beforeDeleteDialog();
+                                                },
+                                                // onTap: () => checkItemInCart(
+                                                //     widget.itemModel.shortInfo, context),
+                                                child: Container(
+                                                  color: Colors.black,
                                                   width: MediaQuery.of(
                                                         context,
                                                       ).size.width *
-                                                      0.47,
+                                                      0.46,
                                                   height: 50,
                                                   child: Center(
                                                     child: Padding(
@@ -660,7 +451,7 @@ class _ProductPageState extends State<ProductPage> {
                                                                         .only(
                                                                     left: 6.0),
                                                             child: Icon(
-                                                              Icons.check,
+                                                              Icons.delete,
                                                               color:
                                                                   Colors.white,
                                                             ),
@@ -671,7 +462,7 @@ class _ProductPageState extends State<ProductPage> {
                                                                         .only(
                                                                     right: 45),
                                                             child: Text(
-                                                              "売り切れ",
+                                                              "削除する",
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white,
@@ -682,18 +473,274 @@ class _ProductPageState extends State<ProductPage> {
                                                       ),
                                                     ),
                                                   ),
-                                                );
-                            },
+                                                ),
+                                              )
+                                            : attribute != "Original"
+                                                ? InkWell(
+                                                    onTap: () {
+                                                      Route route =
+                                                          MaterialPageRoute(
+                                                        fullscreenDialog: true,
+                                                        builder: (c) =>
+                                                            CheckOutPage(
+                                                                id: id,
+                                                                imageURL:
+                                                                    thumbnailURL,
+                                                                shortInfo:
+                                                                    shortInfo,
+                                                                price: price,
+                                                                postBy: postBy),
+                                                      );
+                                                      Navigator.pushReplacement(
+                                                        context,
+                                                        route,
+                                                      );
+                                                    },
+                                                    // onTap: () => checkItemInCart(
+                                                    //     widget.itemModel.shortInfo, context),
+                                                    child: Container(
+                                                      color: Colors.black,
+                                                      width: MediaQuery.of(
+                                                            context,
+                                                          ).size.width *
+                                                          0.46,
+                                                      height: 50,
+                                                      child: Center(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            6.0),
+                                                                child: Icon(
+                                                                  Icons.check,
+                                                                  color: Colors
+                                                                      .white,
+                                                                ),
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        right:
+                                                                            45),
+                                                                child: Text(
+                                                                  "購入する",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : Stock != 0
+                                                    ? InkWell(
+                                                        onTap: () {
+                                                          Route route =
+                                                              MaterialPageRoute(
+                                                            fullscreenDialog:
+                                                                true,
+                                                            builder: (c) =>
+                                                                CheckOutPage(
+                                                              imageURL:
+                                                                  thumbnailURL,
+                                                              shortInfo:
+                                                                  shortInfo,
+                                                              price: price,
+                                                              postBy: postBy,
+                                                              attribute:
+                                                                  attribute,
+                                                              userName:
+                                                                  postName,
+                                                            ),
+                                                          );
+                                                          Navigator
+                                                              .pushReplacement(
+                                                            context,
+                                                            route,
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          color: Colors.black,
+                                                          width: MediaQuery.of(
+                                                                context,
+                                                              ).size.width *
+                                                              0.47,
+                                                          height: 50,
+                                                          child: Center(
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            6.0),
+                                                                    child: Icon(
+                                                                      Icons
+                                                                          .check,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        right:
+                                                                            45),
+                                                                    child: Text(
+                                                                      "購入する",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : Container(
+                                                        color: Colors.black54,
+                                                        width: MediaQuery.of(
+                                                              context,
+                                                            ).size.width *
+                                                            0.47,
+                                                        height: 50,
+                                                        child: Center(
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .only(
+                                                                      left:
+                                                                          4.5),
+                                                                  child: Icon(
+                                                                    Icons.check,
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .only(
+                                                                      right:
+                                                                          40),
+                                                                  child: Text(
+                                                                    "売り切れ",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
+                );
+              },
+            );
+          },
+          child: buildFooter(context)),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          shortInfo,
+          style: TextStyle(
+            color: HexColor("#E67928"),
+          ),
+        ),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_outlined,
+            color: HexColor("#E67928"),
+          ),
+          onPressed: () {
+            Route route = MaterialPageRoute(
+              builder: (c) => MainPage(),
+            );
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (c) => MainPage(),
+                ));
+          },
+        ),
+      ),
+      body: Stack(
+        //alignment: AlignmentDirectional.center,
+        children: [
+          // ElevatedButton(
+          //   onPressed: () {
+          //     Navigator.push(
+          //         context, MaterialPageRoute(builder: (c) => ARPage()));
+          //   },
+          // ),
+          Center(
+            child: Image.network(
+              thumbnailURL,
+              // height: 300,
+              // width: MediaQuery.of(context).size.width,
+              fit: BoxFit.scaleDown,
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 115.0),
+              child: Text(
+                "LEEWAY",
+                style: GoogleFonts.sortsMillGoudy(
+                  color: Colors.blueGrey.withOpacity(0.8),
+                  fontSize: 35,
+                  fontWeight: FontWeight.w100,
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -775,6 +822,21 @@ class _ProductPageState extends State<ProductPage> {
         );
       },
     );
+  }
+
+  Widget buildFooter(BuildContext context) {
+    final visual = Container(
+      child: Icon(
+        Icons.keyboard_arrow_up_outlined,
+        color: Colors.white,
+      ),
+      height: 50,
+      decoration: BoxDecoration(
+          color: HexColor("#E67928"),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+    );
+    return visual;
   }
 
   disableCheckOutButton() {
@@ -938,7 +1000,8 @@ class BubbleBorder extends ShapeBorder {
   ShapeBorder scale(double t) => this;
 }
 
-const boldTextStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 20);
+const boldTextStyle =
+    TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white);
 const largeTextStyle = TextStyle(fontWeight: FontWeight.normal, fontSize: 20);
 
 class StripeTransactionResponse {

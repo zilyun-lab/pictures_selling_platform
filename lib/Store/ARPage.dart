@@ -25,31 +25,32 @@
 //
 //   @override
 //   Widget build(BuildContext context) => Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Widget Projection'),
-//       ),
-//       body: Stack(
-//         children: [
-//           ARKitSceneView(
-//             trackingImagesGroupName: 'AR Resources',
-//             onARKitViewCreated: onARKitViewCreated,
-//             worldAlignment: ARWorldAlignment.camera,
-//             configuration: ARKitConfiguration.imageTracking,
-//           ),
-//           Positioned(
-//             left: x,
-//             top: y,
-//             child: Container(
-//               transform: transform,
-//               width: width,
-//               height: height,
-//               child: const MyHomePage(
-//                 title: 'Widgets in AR',
+//         appBar: AppBar(
+//           title: const Text('Widget Projection'),
+//         ),
+//         body: Stack(
+//           children: [
+//             ARKitSceneView(
+//               trackingImagesGroupName: 'AR Resources',
+//               onARKitViewCreated: onARKitViewCreated,
+//               worldAlignment: ARWorldAlignment.camera,
+//               configuration: ARKitConfiguration.imageTracking,
+//             ),
+//             Positioned(
+//               left: x,
+//               top: y,
+//               child: Container(
+//                 transform: transform,
+//                 width: width,
+//                 height: height,
+//                 child: const MyHomePage(
+//                   title: 'Widgets in AR',
+//                 ),
 //               ),
 //             ),
-//           ),
-//         ],
-//       ));
+//           ],
+//         ),
+//       );
 //
 //   void onARKitViewCreated(ARKitController arkitController) {
 //     this.arkitController = arkitController;

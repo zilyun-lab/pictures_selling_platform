@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/UploadItemModel.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';

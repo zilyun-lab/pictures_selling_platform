@@ -3,30 +3,56 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
-import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
-import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'login.dart';
+import '../main.dart';
 
 class PublicUserPage extends StatelessWidget {
   final String uid;
   final String imageUrl;
   final String name;
   final String description;
-  PublicUserPage(
-      {Key key, this.uid, this.imageUrl, this.description, this.name})
-      : super(key: key);
+
+  PublicUserPage({
+    Key key,
+    this.uid,
+    this.imageUrl,
+    this.description,
+    this.name,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: MyAppBar(),
-      drawer: MyDrawer(),
+      appBar: AppBar(
+        backgroundColor: HexColor("E5E2E0"),
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back_ios_outlined,
+            color: Colors.black,
+          ),
+          onPressed: () {
+            Route route = MaterialPageRoute(
+              builder: (c) => MainPage(),
+            );
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (c) => MainPage(),
+                ));
+          },
+        ),
+        title: Text(
+          name,
+          style: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 20, color: Colors.black),
+        ),
+      ),
       body: Container(
         child: SingleChildScrollView(
           child: Column(
@@ -64,11 +90,6 @@ class PublicUserPage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              name,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ),
                             Padding(
                               padding: const EdgeInsets.only(top: .0, left: 5),
                               child: Container(
@@ -161,11 +182,38 @@ class PublicUserPage extends StatelessWidget {
                                           ),
                                   ),
                                 ),
+                                Padding(
+                                  padding: const EdgeInsets.all(3),
+                                  child: StreamBuilder<QuerySnapshot>(
+                                      stream: FirebaseFirestore.instance
+                                          .collection("users")
+                                          .doc(uid)
+                                          .collection("Followers")
+                                          .snapshots(),
+                                      builder: (context, snap) {
+                                        return Padding(
+                                          padding: const EdgeInsets.only(
+                                              right: 3, bottom: 5, left: 20),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                snap.data.docs.length
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    fontSize: 50,
+                                                    color: HexColor("#E67928")),
+                                              ),
+                                              Text("フォロワー"),
+                                            ],
+                                          ),
+                                        );
+                                      }),
+                                )
                               ],
                             ),
                           ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),

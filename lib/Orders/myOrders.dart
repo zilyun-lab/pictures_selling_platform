@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:flutter/services.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/main.dart';
 import '../Widgets/loadingWidget.dart';
 import '../Widgets/orderCard.dart';
 
 class MyOrders extends StatefulWidget {
+  final String name;
+
+  const MyOrders({Key key, this.name}) : super(key: key);
+
   @override
   _MyOrdersState createState() => _MyOrdersState();
 }

@@ -7,7 +7,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:selling_pictures_platform/Authentication/MyPage.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
-import 'package:selling_pictures_platform/Counters/ItemQuantity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,9 +15,10 @@ import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'Counters/cartitemcounter.dart';
+import 'Counters/Likeitemcounter.dart';
 import 'Counters/changeAddresss.dart';
 import 'Counters/totalMoney.dart';
+import 'Models/HEXCOLOR.dart';
 import 'Store/Search.dart';
 import 'Store/storehome.dart';
 
@@ -39,13 +39,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (c) => CartItemCounter(),
-        ),
-        ChangeNotifierProvider(
           create: (c) => LikeItemCounter(),
-        ),
-        ChangeNotifierProvider(
-          create: (c) => ItemQuantity(),
         ),
         ChangeNotifierProvider(
           create: (c) => AddressChanger(),
@@ -236,8 +230,8 @@ class _MainPageState extends State<MainPage> {
           ],
         ),
         page: LikePage()),
-    BottomNavigationEntity(
-        title: "検索", icon: Icon(Icons.search), page: SearchProduct()),
+    // BottomNavigationEntity(
+    //     title: "検索", icon: Icon(Icons.search), page: SearchProduct()),
     BottomNavigationEntity(
         title: "マイページ", icon: Icon(Icons.perm_identity), page: MyPage()),
   ];
@@ -246,115 +240,96 @@ class _MainPageState extends State<MainPage> {
   var _sliderValue = 0.0;
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: MyAppBar(
-          title: (() {
-            if (selectedIndex == 0) {
-              return Center(
-                child: InkWell(
-                  onTap: () {
-                    Route route = MaterialPageRoute(
-                      builder: (c) => MainPage(),
-                    );
-                    Navigator.pushReplacement(
-                      context,
-                      route,
-                    );
-                  },
-                  child: Text(
-                    "LEEWAY",
-                    style: GoogleFonts.sortsMillGoudy(
-                      color: Colors.black,
-                      fontSize: 35,
-                      fontWeight: FontWeight.w100,
-                    ),
-                  ),
-                ),
-              );
-            } else if (selectedIndex == 1) {
-              return Center(
+    return Scaffold(
+      appBar: MyAppBar(
+        title: (() {
+          if (selectedIndex == 0) {
+            return Center(
+              child: InkWell(
+                onTap: () {
+                  Route route = MaterialPageRoute(
+                    builder: (c) => MainPage(),
+                  );
+                  Navigator.pushReplacement(
+                    context,
+                    route,
+                  );
+                },
                 child: Text(
-                  "LIKE",
+                  "LEEWAY",
                   style: GoogleFonts.sortsMillGoudy(
-                    color: Colors.black,
+                    color: Colors.white,
                     fontSize: 35,
                     fontWeight: FontWeight.w100,
                   ),
                 ),
-              );
-            } else if (selectedIndex == 2) {
-              return Center(
-                child: Text(
-                  "SEARCH",
-                  style: GoogleFonts.sortsMillGoudy(
-                    color: Colors.black,
-                    fontSize: 35,
-                    fontWeight: FontWeight.w100,
-                  ),
+              ),
+            );
+          } else if (selectedIndex == 1) {
+            return Center(
+              child: Text(
+                "LIKE",
+                style: GoogleFonts.sortsMillGoudy(
+                  color: Colors.white,
+                  fontSize: 35,
+                  fontWeight: FontWeight.w100,
                 ),
-              );
-            } else {
-              return Center(
-                child: Text(
-                  "MY PAGE",
-                  style: GoogleFonts.sortsMillGoudy(
-                    color: Colors.black,
-                    fontSize: 35,
-                    fontWeight: FontWeight.w100,
-                  ),
+              ),
+            );
+          } else if (selectedIndex == 2) {
+            return Center(
+              child: Text(
+                "SEARCH",
+                style: GoogleFonts.sortsMillGoudy(
+                  color: Colors.white,
+                  fontSize: 35,
+                  fontWeight: FontWeight.w100,
                 ),
-              );
-            }
-          })(),
-          // centerTitle: true,
-          bottom: selectedIndex == 2
-              ? PreferredSize(
-                  child: Column(
-                    children: [
-                      searchWidget(),
-                      Row(
-                        children: [
-                          // Slider(
-                          //   value: _sliderValue,
-                          //   min: 0,
-                          //   max: 100,
-                          //   divisions: 5,
-                          //   onChanged: (double value) {
-                          //     setState(() {
-                          //       _sliderValue = value.roundToDouble();
-                          //     });
-                          //   },
-                          // )
-                        ],
-                      ),
-                    ],
-                  ),
-                  preferredSize: Size(56.0, 56.0),
-                )
-              : null,
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          fixedColor: Colors.black,
-          selectedLabelStyle:
-              TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          unselectedLabelStyle: TextStyle(color: Colors.black),
-          currentIndex: selectedIndex,
-          onTap: (int newIndex) {
-            setState(() {
-              selectedIndex = newIndex;
-            });
-          },
-          items: navigationList
-              .map((item) => BottomNavigationBarItem(
-                    icon: item.icon,
-                    label: item.title,
-                  ))
-              .toList(),
-        ),
-        body: navigationList[selectedIndex].page,
+              ),
+            );
+          } else {
+            return Center(
+              child: Text(
+                "MY PAGE",
+                style: GoogleFonts.sortsMillGoudy(
+                  color: Colors.white,
+                  fontSize: 35,
+                  fontWeight: FontWeight.w100,
+                ),
+              ),
+            );
+          }
+        })(),
+        // centerTitle: true,
+        bottom: selectedIndex == 3
+            ? PreferredSize(
+                child: searchWidget(),
+                preferredSize: Size(56.0, 56.0),
+              )
+            : null,
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+        fixedColor: HexColor("E67928"),
+        selectedLabelStyle:
+            TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        unselectedLabelStyle: TextStyle(color: Colors.black),
+        currentIndex: selectedIndex,
+        onTap: (int newIndex) {
+          setState(() {
+            selectedIndex = newIndex;
+          });
+        },
+        items: navigationList
+            .map((item) => BottomNavigationBarItem(
+                  icon: item.icon,
+                  label: item.title,
+                ))
+            .toList(),
+      ),
+      body: navigationList[selectedIndex].page,
     );
   }
 

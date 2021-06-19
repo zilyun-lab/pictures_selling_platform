@@ -1,18 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
-import 'package:selling_pictures_platform/Orders/placeOrderPayment.dart';
-
-import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
-import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
-import 'package:selling_pictures_platform/Widgets/wideButton.dart';
+
 import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:selling_pictures_platform/Counters/changeAddresss.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'addAddress.dart';
 
 class Address extends StatefulWidget {
   final double totalAmount;
@@ -69,7 +63,6 @@ class _AddressState extends State<Address> {
                                 return AddressCard(
                                   currentIndex: address.counter,
                                   value: index,
-                                  totalAmount: widget.totalAmount,
                                   model: AddressModel.fromJson(
                                       snapshot.data.docs[index].data()),
                                   addressId: snapshot.data.docs[index].id,
@@ -126,18 +119,12 @@ class _AddressState extends State<Address> {
 }
 
 class AddressCard extends StatefulWidget {
-  final double totalAmount;
   final AddressModel model;
   final String addressId;
   final int currentIndex;
   final int value;
   AddressCard(
-      {Key key,
-      this.model,
-      this.totalAmount,
-      this.addressId,
-      this.currentIndex,
-      this.value})
+      {Key key, this.model, this.addressId, this.currentIndex, this.value})
       : super(key: key);
   @override
   _AddressCardState createState() => _AddressCardState();

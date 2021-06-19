@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:selling_pictures_platform/Address/address.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:flutter/material.dart';
@@ -68,12 +69,6 @@ class _AddAddressState extends State<AddAddress> {
     "沖縄県",
   ];
   String selectedItem = "北海道";
-  String holder = "";
-  void getValue() {
-    setState(() {
-      holder = selectedItem;
-    });
-  }
 
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();

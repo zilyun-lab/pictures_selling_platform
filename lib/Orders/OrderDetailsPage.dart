@@ -7,7 +7,6 @@ import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
-import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
 import 'package:selling_pictures_platform/Widgets/orderCard.dart';
 import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +32,6 @@ class OrderDetails extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         appBar: MyAppBar(),
-        drawer: MyDrawer(),
         body: SingleChildScrollView(
           child: FutureBuilder<DocumentSnapshot>(
             future: EcommerceApp.firestore

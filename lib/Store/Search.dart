@@ -1,11 +1,11 @@
-import 'package:selling_pictures_platform/Authentication/login.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:selling_pictures_platform/Widgets/myDrawer.dart';
+import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 
-import '../Widgets/customAppBar.dart';
+import '../main.dart';
 
 class SearchProduct extends StatefulWidget {
   @override
@@ -18,7 +18,35 @@ class _SearchProductState extends State<SearchProduct> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        drawer: MyDrawer(),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60.0),
+          child: AppBar(
+            title: searchWidget(),
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios_outlined,
+                color: Colors.white,
+                size: 20,
+              ),
+              onPressed: () {
+                Route route = MaterialPageRoute(
+                  builder: (c) => MainPage(),
+                );
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (c) => MainPage(),
+                    ));
+              },
+            ),
+            backgroundColor: HexColor("E67928"),
+            // bottom: PreferredSize(
+            //   child: searchWidget(),
+            //   preferredSize: Size(56.0, 56.0),
+            // )
+            centerTitle: true,
+          ),
+        ),
         body: FutureBuilder<QuerySnapshot>(
           future: docList,
           builder: (context, snap) {
@@ -114,7 +142,7 @@ class _SearchProductState extends State<SearchProduct> {
                 onChanged: (val) {
                   startSearching(val);
                 },
-                decoration: InputDecoration.collapsed(hintText: "検索する"),
+                decoration: InputDecoration.collapsed(hintText: "作品を探す"),
               ),
             )),
           ],

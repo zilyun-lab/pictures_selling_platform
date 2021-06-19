@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 
 import '../Store/Search.dart';
 
@@ -7,48 +8,52 @@ class SearchBoxDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
           BuildContext context, double shrinkOffset, bool overlapsContent) =>
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: InkWell(
-          onTap: () {
-            Route route = MaterialPageRoute(
-              builder: (c) => SearchProduct(),
-            );
-            Navigator.pushReplacement(
-              context,
-              route,
-            );
-          },
+      Container(
+        color: HexColor("#E67928"),
+        child: Padding(
+          padding:
+              const EdgeInsets.only(top: 8.0, left: 8, right: 8, bottom: 45),
           child: InkWell(
-            child: Container(
-              width: MediaQuery.of(
+            onTap: () {
+              Route route = MaterialPageRoute(
+                builder: (c) => SearchProduct(),
+              );
+              Navigator.pushReplacement(
                 context,
-              ).size.width,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.5),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(25),
+                route,
+              );
+            },
+            child: InkWell(
+              child: Container(
+                width: MediaQuery.of(
+                  context,
+                ).size.width,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.5),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(25),
+                  ),
                 ),
-              ),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 8,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 8,
+                      ),
+                      child: Icon(
+                        Icons.search,
+                        color: Colors.blueGrey,
+                      ),
                     ),
-                    child: Icon(
-                      Icons.search,
-                      color: Colors.blueGrey,
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 8,
+                      ),
+                      child: Text("探す"),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 8,
-                    ),
-                    child: Text("探す"),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

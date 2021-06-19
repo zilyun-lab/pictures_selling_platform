@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EcommerceApp {
-  static const String appName = 'LeeWay';
+  static const String appName = 'LEEWAY';
 
   static SharedPreferences sharedPreferences;
   static FirebaseAuth user;

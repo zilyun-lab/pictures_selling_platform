@@ -1,13 +1,15 @@
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/HomeItemsModel(provider).dart';
 import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
-import 'package:selling_pictures_platform/Counters/cartitemcounter.dart';
+import 'package:selling_pictures_platform/Counters/Likeitemcounter.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -60,248 +62,233 @@ class _StoreHomeState extends State<StoreHome> {
     BuildContext context,
   ) {
     width = MediaQuery.of(context).size.width;
-    return SafeArea(
-      child: Scaffold(
-        //key: _scaffoldKey,
+    return Scaffold(
+      //key: _scaffoldKey,
 
-        backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
 
-        body: ChangeNotifierProvider<ItemGridModel>(
-          create: (_) => ItemGridModel()..fetchItems(),
+      body: ChangeNotifierProvider<ItemGridModel>(
+        create: (_) => ItemGridModel()..fetchItems(),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                HexColor("E67928"),
+                HexColor("E67928"),
+                Colors.white,
+              ],
+            ),
+          ),
           child: CustomScrollView(
             slivers: <Widget>[
               SliverPersistentHeader(delegate: SearchBoxDelegate()),
+
+              // SliverToBoxAdapter(
+              //   child: SizedBox(
+              //     height: 20,
+              //   ),
+              // ),
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 15),
-                  child: CarouselSlider(
-                    options: CarouselOptions(
-                      autoPlayInterval: Duration(seconds: 3),
-                      height: 100,
-                      autoPlay: true,
-                    ),
-                    items: items.map(
-                      (i) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return i.key == ""
-                                ? Container(
-                                    //color: Colors.red,
-                                    width: MediaQuery.of(context).size.width,
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 5.0),
-                                    child: ClipRRect(
-                                      child: AdWidget(
-                                          ad: BannerAd(
-                                        adUnitId:
-                                            "ca-app-pub-3940256099942544/2934735716",
-                                        size: AdSize.banner,
-                                        request: AdRequest(),
-                                        listener: BannerAdListener(),
-                                      )..load()),
-                                      borderRadius: BorderRadius.circular(
-                                        15.0,
-                                      ),
-                                    ),
-                                  )
-                                : InkWell(
-                                    onTap: () {
-                                      Route route = MaterialPageRoute(
-                                        builder: (c) => i.value,
-                                      );
-                                      Navigator.push(
-                                        context,
-                                        route,
-                                      );
-                                    },
-                                    child: Container(
+                child: Container(
+                  color: HexColor("E67928"),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 15),
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        enlargeCenterPage: true,
+                        aspectRatio: 2.0,
+                        autoPlayInterval: Duration(seconds: 3),
+                        height: 100,
+                        autoPlay: true,
+                      ),
+                      items: items.map(
+                        (i) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return i.key == ""
+                                  ? Container(
+                                      // color: Colors.red,
                                       width: MediaQuery.of(context).size.width,
                                       margin:
                                           EdgeInsets.symmetric(horizontal: 5.0),
                                       child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                        child: Image.asset(
-                                          i.key,
-                                          fit: BoxFit.cover,
+                                        child: AdWidget(
+                                          ad: BannerAd(
+                                            adUnitId:
+                                                "ca-app-pub-3940256099942544/2934735716",
+                                            size: AdSize.banner,
+                                            request: AdRequest(),
+                                            listener: BannerAdListener(),
+                                          )..load(),
+                                        ),
+                                        borderRadius: BorderRadius.circular(
+                                          15.0,
                                         ),
                                       ),
-                                    ),
-                                  );
-                          },
-                        );
-                      },
-                    ).toList(),
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Container(
-                    color: Colors.black12,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                EcommerceApp.sharedPreferences
-                                    .getString(EcommerceApp.userName),
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black.withOpacity(0.6)),
-                              ),
-                              Text(
-                                " さんがいいねした作品",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: Divider(
-                            thickness: 2,
-                            color: mainColor,
-                          ),
-                        ),
-                        StreamBuilder<QuerySnapshot>(
-                          stream: EcommerceApp.firestore
-                              .collection("items")
-                              .where(
-                                "shortInfo",
-                                whereIn: EcommerceApp.sharedPreferences
-                                    .getStringList(EcommerceApp.userLikeList),
-                              )
-                              .snapshots(),
-                          builder: (context, dataSnapshot) {
-                            return !dataSnapshot.hasData
-                                ? Container()
-                                : CarouselSlider.builder(
-                                    carouselController:
-                                        _buttonCarouselController,
-                                    itemCount: dataSnapshot.data.docs.length,
-                                    options: CarouselOptions(
-                                      viewportFraction: 0.3,
-                                      height: 99,
-                                      enableInfiniteScroll: false,
-                                      enlargeCenterPage: true,
-                                    ),
-                                    itemBuilder:
-                                        (BuildContext context, int index, _) {
-                                      ItemModel model = ItemModel.fromJson(
-                                        dataSnapshot.data.docs[index].data(),
-                                      );
-                                      return InkWell(
-                                        onTap: () {
-                                          Route route = MaterialPageRoute(
-                                            builder: (c) => ProductPage(
-                                              thumbnailURL: model.thumbnailUrl,
-                                              shortInfo: model.shortInfo,
-                                              longDescription:
-                                                  model.longDescription,
-                                              price: model.price,
-                                              attribute: model.attribute,
-                                              postBy: model.postBy,
-                                              Stock: model.Stock,
-                                              id: model.id,
-                                            ),
-                                          );
-                                          Navigator.pushReplacement(
-                                            context,
-                                            route,
-                                          );
-                                        },
-                                        child: Card(
-                                          child: Image.network(
-                                            model.thumbnailUrl,
-                                            height: 125,
-                                            width: 125,
-                                            fit: BoxFit.scaleDown,
+                                    )
+                                  : InkWell(
+                                      onTap: () {
+                                        Route route = MaterialPageRoute(
+                                          builder: (c) => i.value,
+                                        );
+                                        Navigator.push(
+                                          context,
+                                          route,
+                                        );
+                                      },
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 5.0),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(15.0),
+                                          child: Image.asset(
+                                            i.key,
+                                            fit: BoxFit.cover,
                                           ),
                                         ),
-                                      );
-                                    },
-                                  );
-                          },
-                        ),
-                      ],
+                                      ),
+                                    );
+                            },
+                          );
+                        },
+                      ).toList(),
                     ),
                   ),
                 ),
               ),
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 10,
+                ),
+              ),
+              SliverToBoxAdapter(
+                  child: Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: Text(
+                  "新着作品",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                ),
+              )),
               Consumer<ItemGridModel>(
                 builder: (context, model, child) {
                   final items = model.items;
                   return SliverGrid.count(
-                    crossAxisCount: 3,
+                    crossAxisCount: 2,
                     children: items
-                        .map((item) => Card(
-                              color: HexColor(
-                                "e5e2df",
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  Route route = MaterialPageRoute(
-                                    builder: (c) => ProductPage(
-                                      thumbnailURL: item.thumbnailUrl,
-                                      shortInfo: item.shortInfo,
-                                      longDescription: item.longDescription,
-                                      price: item.price,
-                                      attribute: item.attribute,
-                                      postBy: item.postBy,
-                                      Stock: item.Stock,
-                                      id: item.id,
-                                    ),
-                                  );
-                                  Navigator.pushReplacement(
-                                    context,
-                                    route,
-                                  );
-                                },
-                                splashColor: Colors.black,
-                                child: Column(
-                                  children: [
-                                    Stack(
+                        .map((item) => Container(
+                              child: Padding(
+                                padding: const EdgeInsets.all(3.0),
+                                child: Container(
+                                  // decoration: BoxDecoration(
+                                  //   // borderRadius: BorderRadius.circular(24),
+                                  //   border: Border.all(
+                                  //       color: Colors.black, width: 3),
+                                  // ),
+                                  // elevation: 10,
+                                  // color: HexColor("#E67928"),
+                                  // clipBehavior: Clip.antiAlias,
+                                  // shape: RoundedRectangleBorder(
+                                  //   borderRadius: BorderRadius.circular(24),
+                                  // ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Route route = MaterialPageRoute(
+                                        builder: (c) => ProductPage(
+                                          postName: item.postName,
+                                          thumbnailURL: item.thumbnailUrl,
+                                          shortInfo: item.shortInfo,
+                                          longDescription: item.longDescription,
+                                          price: item.price,
+                                          attribute: item.attribute,
+                                          postBy: item.postBy,
+                                          Stock: item.Stock,
+                                          id: item.id,
+                                        ),
+                                      );
+                                      Navigator.pushReplacement(
+                                        context,
+                                        route,
+                                      );
+                                    },
+                                    splashColor: Colors.black,
+                                    child: Column(
                                       children: [
-                                        Center(
-                                          child: SizedBox(
-                                            child: Container(
-                                              child: Image.network(
-                                                item.thumbnailUrl,
-                                                fit: BoxFit.scaleDown,
-                                                width: 100,
-                                                height: 111.5,
+                                        Stack(
+                                          children: [
+                                            Center(
+                                              child: Container(
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                  child: Image.network(
+                                                    item.thumbnailUrl,
+                                                    fit: BoxFit.cover,
+                                                    width: 100,
+                                                    height: 120,
+                                                  ),
+                                                ),
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                // color: Colors.white,
                                               ),
                                             ),
-                                          ),
+                                          ],
                                         ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 65.0),
-                                          child: Align(
-                                            alignment: Alignment.bottomRight,
+                                        Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(5.0),
                                             child: Padding(
                                               padding: const EdgeInsets.only(
-                                                  top: 8.0, right: 8),
-                                              child: Container(
-                                                color: Colors.black
-                                                    .withOpacity(0.7),
+                                                  right: 8.0),
+                                              child: Flexible(
                                                 child: Padding(
                                                   padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    "¥" +
-                                                        (item.price).toString(),
-                                                    style: TextStyle(
-                                                        color: Colors.white),
+                                                      const EdgeInsets.only(
+                                                          left: 8.0),
+                                                  child: Column(
+                                                    children: [
+                                                      DefaultTextStyle(
+                                                        style: new TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                Colors.black),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        maxLines: 1,
+                                                        child: new Text(
+                                                            item.shortInfo),
+                                                      ),
+                                                      DefaultTextStyle(
+                                                        style: new TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                Colors.black),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        maxLines: 1,
+                                                        child: new Text(
+                                                          item.price
+                                                                  .toString() +
+                                                              "円",
+                                                        ),
+                                                      ),
+                                                    ],
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                   ),
                                                 ),
                                               ),
@@ -310,7 +297,7 @@ class _StoreHomeState extends State<StoreHome> {
                                         ),
                                       ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ))
@@ -418,17 +405,6 @@ Widget sourceInfoForMain(ItemModel model, BuildContext context,
 
 //todo:以下商品ページ
 
-void checkItemInCart(
-  String shortInfoAsID,
-  BuildContext context,
-) {
-  EcommerceApp.sharedPreferences
-          .getStringList(EcommerceApp.userCartList)
-          .contains(shortInfoAsID)
-      ? Fluttertoast.showToast(msg: "マイカートに追加済みです")
-      : addItemToCart(shortInfoAsID, context);
-}
-
 void checkItemInLike(String shortInfoAsID, BuildContext context) {
   EcommerceApp.sharedPreferences
           .getStringList(EcommerceApp.userLikeList)
@@ -449,26 +425,6 @@ Future<bool> onLikeButtonTapped(
       ? removeItemFromLike(shortInfoAsID, context)
       : addItemToLike(shortInfoAsID, context);
   return !isLiked;
-}
-
-addItemToCart(
-  String shortInfoAsID,
-  BuildContext context,
-) {
-  List tempCartList =
-      EcommerceApp.sharedPreferences.getStringList(EcommerceApp.userCartList);
-  tempCartList.add(shortInfoAsID);
-  EcommerceApp.firestore
-      .collection(EcommerceApp.collectionUser)
-      .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
-      .update({EcommerceApp.userCartList: tempCartList}).then(
-    (v) {
-      Fluttertoast.showToast(msg: "マイカートに追加しました");
-      EcommerceApp.sharedPreferences
-          .setStringList(EcommerceApp.userCartList, tempCartList);
-      Provider.of<CartItemCounter>(context, listen: false).displayResult();
-    },
-  );
 }
 
 addItemToLike(

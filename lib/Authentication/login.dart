@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:selling_pictures_platform/Admin/adminLogin.dart';
+
 import 'package:selling_pictures_platform/Authentication/register.dart';
-import 'package:selling_pictures_platform/Authentication/registoration.dart';
 import 'package:selling_pictures_platform/Widgets/customTextField.dart';
 import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
 import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
@@ -13,17 +11,6 @@ import '../Store/storehome.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 
 //以下、カラーコード使用時に必要なクラス
-class HexColor extends Color {
-  static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll("#", "");
-    if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
-    }
-    return int.parse(hexColor, radix: 16);
-  }
-
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
-}
 
 class Login extends StatefulWidget {
   @override

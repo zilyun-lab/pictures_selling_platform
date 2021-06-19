@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
