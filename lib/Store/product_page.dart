@@ -24,16 +24,23 @@ class ProductPage extends StatefulWidget {
   final String postBy;
   final String id;
   final String postName;
-  ProductPage(
-      {this.thumbnailURL,
-      this.shortInfo,
-      this.longDescription,
-      this.price,
-      this.Stock,
-      this.attribute,
-      this.postBy,
-      this.id,
-      this.postName});
+  final String shipsDate;
+  final String width;
+  final String height;
+  ProductPage({
+    this.thumbnailURL,
+    this.shortInfo,
+    this.longDescription,
+    this.price,
+    this.Stock,
+    this.attribute,
+    this.postBy,
+    this.id,
+    this.postName,
+    this.shipsDate,
+    this.height,
+    this.width,
+  });
   @override
   _ProductPageState createState() => _ProductPageState(
       this.thumbnailURL,
@@ -44,7 +51,10 @@ class ProductPage extends StatefulWidget {
       this.postBy,
       this.Stock,
       this.id,
-      this.postName);
+      this.postName,
+      this.shipsDate,
+      this.height,
+      this.width);
 }
 
 class _ProductPageState extends State<ProductPage> {
@@ -57,6 +67,10 @@ class _ProductPageState extends State<ProductPage> {
   final String postBy;
   final String id;
   final String postName;
+  final String shipsDate;
+  final String width;
+  final String height;
+
   //ArCoreController arCoreController;
 
   int quantityOfItems = 1;
@@ -71,7 +85,10 @@ class _ProductPageState extends State<ProductPage> {
       this.postBy,
       this.Stock,
       this.id,
-      this.postName);
+      this.postName,
+      this.shipsDate,
+      this.width,
+      this.height);
   @override
   void initState() {
     // TODO: implement initState
@@ -150,6 +167,73 @@ class _ProductPageState extends State<ProductPage> {
                         SizedBox(
                           height: 10,
                         ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "作品情報(縦x横)",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Row(
+                          children: [
+                            RichText(
+                              text: TextSpan(
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: height,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  TextSpan(
+                                    text: 'mm',
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Text(" x ",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15)),
+                            RichText(
+                              text: TextSpan(
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text: width,
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
+                                  TextSpan(
+                                    text: 'mm',
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Divider(
+                          thickness: 1,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Text(
                           "金額",
                           style: TextStyle(
@@ -169,7 +253,7 @@ class _ProductPageState extends State<ProductPage> {
                           height: 10,
                         ),
                         Text(
-                          "在庫",
+                          "カテゴリー",
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.white,
@@ -182,21 +266,55 @@ class _ProductPageState extends State<ProductPage> {
                               )
                               .snapshots(),
                           builder: (context, dataSnapshot) {
-                            return !dataSnapshot.hasData
-                                ? null
-                                : attribute == "Original"
-                                    ? Text(
-                                        "こちらは原画の為、１点限りとなります。",
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    : Text(
-                                        "こちらは複製画の為、受注生産となります。",
-                                        style: boldTextStyle,
-                                      );
+                            if (attribute == "Original") {
+                              return Text(
+                                "こちらは原画の為、１点限りとなります。",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              );
+                            } else if (attribute == "Sticker") {
+                              return Text(
+                                "この商品はステッカーです",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              );
+                            } else if (attribute == "PostCard") {
+                              return Text(
+                                "この商品はポストカードです",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              );
+                            } else {
+                              return Text(
+                                "こちらは複製画の為、受注生産となります。",
+                                style: boldTextStyle,
+                              );
+                            }
                           },
+                        ),
+                        Divider(
+                          thickness: 1,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "発送日時",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          "$shipsDate",
+                          style: boldTextStyle,
                         ),
                         Divider(
                           thickness: 1,
@@ -310,6 +428,8 @@ class _ProductPageState extends State<ProductPage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             TextButton.icon(
+                                              onPressed: () => checkItemInLike(
+                                                  shortInfo, context),
                                               icon: Icon(
                                                 Icons.favorite,
                                                 color: Colors.white,

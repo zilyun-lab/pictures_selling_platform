@@ -1,24 +1,23 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Address/addAddress.dart';
 import 'package:selling_pictures_platform/Admin/MyUploadItems.dart';
 import 'package:selling_pictures_platform/Admin/uploadItems.dart';
 import 'package:selling_pictures_platform/Authentication/updateProfile.dart';
 import 'package:selling_pictures_platform/Authentication/Notification.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Counters/Likeitemcounter.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
+import 'package:selling_pictures_platform/Orders/TransactionPage.dart';
 import 'package:selling_pictures_platform/Orders/myOrders.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 
 import 'dart:io';
 
+import '../main.dart';
 import 'FAQ.dart';
 import 'PrivacyPolicyEtc.dart';
 import 'ProceedsRequests.dart';
@@ -35,313 +34,320 @@ class _MyPageState extends State<MyPage> {
   final mainColor = HexColor("E67928");
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: HexColor("e5e2df"),
-        floatingActionButton: Container(
-          width: 100,
-          height: 100,
-          child: FloatingActionButton(
-            backgroundColor: mainColor,
-            onPressed: () {
-              Route route = MaterialPageRoute(
-                builder: (c) => UploadPage(),
-              );
-              Navigator.pushReplacement(context, route);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                children: [
-                  Text("出品"),
-                  Icon(
-                    Icons.camera_alt_outlined,
-                    size: 50,
-                  ),
-                ],
-              ),
-            ),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(50.0))),
-          ),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Card(
-                color: HexColor("e5e2df").withOpacity(0.9),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Material(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(
-                            (80),
-                          ),
+    return Scaffold(
+      backgroundColor: HexColor("e5e2df"),
+      floatingActionButton: Container(
+        width: 100,
+        height: 100,
+        child: FloatingActionButton(
+          backgroundColor: mainColor,
+          onPressed: () {
+            showModalBottomSheet<int>(
+                context: context,
+                builder: (BuildContext context) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(
+                          "何を出品しますか？",
+                          style: TextStyle(
+                              color: mainColor, fontWeight: FontWeight.bold),
                         ),
-                        elevation: 8,
-                        child: Container(
-                          height: 80,
-                          width: 80,
-                          child: CircleAvatar(
-                            backgroundImage: NetworkImage(
-                              EcommerceApp.sharedPreferences.getString(
-                                EcommerceApp.userAvatarUrl,
-                              ),
-                            ),
-                          ),
+                      )),
+                      ListTile(
+                        title: Text(
+                          '原画',
+                          style: TextStyle(color: mainColor),
                         ),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (c) => OriginalUploadPage())),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 15.0, bottom: 35),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                EcommerceApp.auth.currentUser != null
-                                    ? Text(
-                                        EcommerceApp.sharedPreferences
-                                            .getString(EcommerceApp.userName),
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 25,
-                                        ),
-                                      )
-                                    : Text(
-                                        "ゲスト",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 25,
-                                        ),
-                                      ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 10.0, bottom: 35),
-                            child: EcommerceApp.auth.currentUser != null
-                                ? InkWell(
-                                    child: Icon(Icons.edit),
-                                    onTap: () {
-                                      Route route = MaterialPageRoute(
-                                        fullscreenDialog: true,
-                                        builder: (c) => ChangeProfile(),
-                                      );
-                                      Navigator.push(
-                                        context,
-                                        route,
-                                      );
-                                    },
-                                  )
-                                : null,
-                          ),
-                        ],
+                      ListTile(
+                        title: Text(
+                          'ステッカー',
+                          style: TextStyle(color: mainColor),
+                        ),
+                        onTap: () => Navigator.push(context,
+                            MaterialPageRoute(builder: (c) => Sticker())),
+                      ),
+                      ListTile(
+                        title: Text(
+                          'ポストカード',
+                          style: TextStyle(color: mainColor),
+                        ),
+                        onTap: () => Navigator.push(context,
+                            MaterialPageRoute(builder: (c) => PostCard())),
                       ),
                       SizedBox(
-                        height: 12,
+                        height: 20,
                       ),
                     ],
+                  );
+                });
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              children: [
+                Text("出品"),
+                Icon(
+                  Icons.camera_alt_outlined,
+                  size: 50,
+                ),
+              ],
+            ),
+          ),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(50.0))),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  decoration: BoxDecoration(
+                    color: HexColor("#E67928"),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(90),
+                      bottomRight: Radius.circular(90),
+                    ),
                   ),
                 ),
-              ),
-              Column(
-                children: [
-                  Container(
-                    child: Column(
-                      children: [
-                        EcommerceApp.auth.currentUser != null
-                            ? Card(
-                                color: HexColor("e5e2df").withOpacity(0.9),
-                                child: ListTile(
-                                  leading: FaIcon(FontAwesomeIcons.yenSign),
-                                  title: Text(EcommerceApp.sharedPreferences
-                                          .getString(EcommerceApp.userName) +
-                                      " さんの売上金"),
-                                  trailing: StreamBuilder<QuerySnapshot>(
-                                    stream: EcommerceApp.firestore
-                                        .collection(EcommerceApp.collectionUser)
-                                        .doc(EcommerceApp.sharedPreferences
-                                            .getString(EcommerceApp.userUID))
-                                        .collection("MyProceeds")
-                                        .snapshots(),
-                                    builder: (context, snapshot) {
-                                      return Text(
-                                        snapshot.data.docs[0]["Proceeds"]
-                                                .toString() +
-                                            "円",
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                        ),
-                                      );
-                                    },
+                Positioned(
+                  top: MediaQuery.of(context).size.height * 0.105,
+                  left: MediaQuery.of(context).size.width * 0.04,
+                  child: Padding(
+                    padding: const EdgeInsets.all(25.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(25),
+                          bottomRight: Radius.circular(25),
+                          topLeft: Radius.circular(25),
+                          topRight: Radius.circular(25),
+                        ),
+                      ),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 65,
                                   ),
-                                ),
-                              )
-                            : Container(),
-                        EcommerceApp.auth.currentUser != null
-                            ? Card(
-                                color: HexColor("e5e2df").withOpacity(0.9),
-                                child: ListTile(
-                                  onTap: () {
-                                    Route route = MaterialPageRoute(
-                                      builder: (c) => ProceedsRequests(),
-                                    );
-                                    Navigator.push(
-                                      context,
-                                      route,
-                                    );
-                                  },
-                                  leading: Icon(Icons.atm_outlined),
-                                  title: Text("売上振り込み申請"),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 18,
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 30.0,
+                                    ),
+                                    child: Flexible(
+                                      child: Row(
+                                        children: [
+                                          EcommerceApp.auth.currentUser != null
+                                              ? Center(
+                                                  child: DefaultTextStyle(
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .lightBlueAccent,
+                                                          fontSize: 25,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      child: new Text(EcommerceApp
+                                                          .sharedPreferences
+                                                          .getString(
+                                                              EcommerceApp
+                                                                  .userName))))
+                                              : Text(
+                                                  "ゲスト",
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 25,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              left: 10.0,
+                                            ),
+                                            child: EcommerceApp
+                                                        .auth.currentUser !=
+                                                    null
+                                                ? InkWell(
+                                                    child: Icon(
+                                                      Icons.edit,
+                                                      color: mainColor,
+                                                    ),
+                                                    onTap: () {
+                                                      Route route =
+                                                          MaterialPageRoute(
+                                                        fullscreenDialog: true,
+                                                        builder: (c) =>
+                                                            ChangeProfile(),
+                                                      );
+                                                      Navigator.push(
+                                                        context,
+                                                        route,
+                                                      );
+                                                    },
+                                                  )
+                                                : null,
+                                          ),
+                                        ],
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              )
-                            : Container(),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  EcommerceApp.auth.currentUser != null
-                      ? Card(
-                          color: HexColor("e5e2df").withOpacity(0.6),
-                          child: ListTile(
-                            onTap: () {
-                              Route route = MaterialPageRoute(
-                                builder: (c) => MyUploadItems(),
-                              );
-                              Navigator.push(
-                                context,
-                                route,
-                              );
-                            },
-                            leading: Icon(Icons.brush),
-                            title: Text("出品した商品"),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 18,
+                                  EcommerceApp.auth.currentUser != null
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            FaIcon(
+                                              FontAwesomeIcons.yenSign,
+                                              color: mainColor,
+                                              size: 15,
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            StreamBuilder<QuerySnapshot>(
+                                              stream: EcommerceApp.firestore
+                                                  .collection(EcommerceApp
+                                                      .collectionUser)
+                                                  .doc(EcommerceApp
+                                                      .sharedPreferences
+                                                      .getString(
+                                                          EcommerceApp.userUID))
+                                                  .collection("MyProceeds")
+                                                  .snapshots(),
+                                              builder: (context, snapshot) {
+                                                return Text(
+                                                  snapshot.data
+                                                          .docs[0]["Proceeds"]
+                                                          .toString() +
+                                                      " 円",
+                                                  style: TextStyle(
+                                                      color: mainColor,
+                                                      fontWeight:
+                                                          FontWeight.w900,
+                                                      fontSize: 20),
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        )
+                                      : Container(),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  CarouselSlider(
+                                    items: [
+                                      sliderItem(
+                                        context,
+                                        "売り上げ申請",
+                                        ProceedsRequests(),
+                                        Icons.atm_outlined,
+                                      ),
+                                      sliderItem(
+                                        context,
+                                        "出品履歴",
+                                        MyUploadItems(),
+                                        Icons.brush,
+                                      ),
+                                      sliderItem(
+                                        context,
+                                        "お届け先の追加",
+                                        AddAddress(),
+                                        Icons.add_location_alt_outlined,
+                                      ),
+                                      sliderItem(
+                                        context,
+                                        "購入履歴",
+                                        MyOrders(),
+                                        Icons.history_outlined,
+                                      ),
+                                      sliderItem(
+                                        context,
+                                        "取引履歴",
+                                        TransactionPage(),
+                                        Icons.history_outlined,
+                                      ),
+                                    ],
+                                    options: CarouselOptions(
+                                      height: 80,
+                                      viewportFraction: 0.3,
+                                      enableInfiniteScroll: true,
+                                      enlargeCenterPage: true,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        )
-                      : Container(),
-                  EcommerceApp.auth.currentUser != null
-                      ? Card(
-                          color: HexColor("e5e2df").withOpacity(0.6),
-                          child: ListTile(
-                            onTap: () {
-                              Route route = MaterialPageRoute(
-                                builder: (c) => UserNotification(),
-                              );
-                              Navigator.push(
-                                context,
-                                route,
-                              );
-                            },
-                            leading: Icon(Icons.notifications_active_outlined),
-                            title: Text("お知らせ"),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 18,
-                            ),
-                          ),
-                        )
-                      : Container(),
-                  EcommerceApp.auth.currentUser != null
-                      ? Card(
-                          color: HexColor("e5e2df").withOpacity(0.6),
-                          child: ListTile(
-                            onTap: () {
-                              Route route = MaterialPageRoute(
-                                builder: (c) => AddAddress(),
-                              );
-                              Navigator.push(
-                                context,
-                                route,
-                              );
-                            },
-                            leading: Icon(Icons.add_location_alt_outlined),
-                            title: Text("お届け先の追加"),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 18,
-                            ),
-                          ),
-                        )
-                      : Container(),
-                  EcommerceApp.auth.currentUser != null
-                      ? Card(
-                          color: HexColor("e5e2df").withOpacity(0.6),
-                          child: ListTile(
-                            onTap: () {
-                              Route route = MaterialPageRoute(
-                                builder: (c) => MyOrders(),
-                              );
-                              Navigator.push(
-                                context,
-                                route,
-                              );
-                            },
-                            leading: Icon(Icons.history_outlined),
-                            title: Text("注文履歴"),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 18,
-                            ),
-                          ),
-                        )
-                      : Container(),
-                  Card(
-                    color: HexColor("e5e2df").withOpacity(0.6),
-                    child: ListTile(
-                      onTap: () {
-                        Route route = MaterialPageRoute(
-                          builder: (c) => PrivacyPolicyPage(),
-                        );
-                        Navigator.push(
-                          context,
-                          route,
-                        );
-                      },
-                      leading: Icon(Icons.privacy_tip_outlined),
-                      title: Text("利用規約等"),
-                      trailing: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 18,
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                  Card(
-                    color: HexColor("e5e2df").withOpacity(0.6),
-                    child: ListTile(
-                      onTap: () {
-                        Route route = MaterialPageRoute(
-                          builder: (c) => FAQ(),
-                        );
-                        Navigator.push(
-                          context,
-                          route,
-                        );
-                      },
-                      leading: Icon(Icons.question_answer_outlined),
-                      title: Text("よくある質問"),
-                      trailing: Icon(
-                        Icons.arrow_forward_ios,
-                        size: 18,
+                ),
+                Positioned(
+                  top: MediaQuery.of(context).size.height * 0.08,
+                  left: MediaQuery.of(context).size.width * 0.325,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(25.0),
+                    child: Image.network(
+                      EcommerceApp.sharedPreferences.getString(
+                        EcommerceApp.userAvatarUrl,
                       ),
+                      fit: BoxFit.cover,
+                      width: 125,
+                      height: 100,
                     ),
                   ),
-                  EcommerceApp.auth.currentUser != null
-                      ? Card(
-                          color: HexColor("e5e2df").withOpacity(0.6),
+                ),
+                Container(
+                  //color: Colors.black.withOpacity(0.7),
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  height: MediaQuery.of(context).size.height * 0.50,
+                )
+              ],
+            ),
+            Column(
+              children: [
+                EcommerceApp.auth.currentUser != null
+                    ? infoTile(context, Icons.notifications_active_outlined,
+                        "お知らせ", UserNotification())
+                    : Container(),
+                infoTile(context, Icons.privacy_tip_outlined, "利用規約等",
+                    PrivacyPolicyPage()),
+                infoTile(
+                    context, Icons.question_answer_outlined, "よくある質問", FAQ()),
+                EcommerceApp.auth.currentUser != null
+                    ? Padding(
+                        padding:
+                            const EdgeInsets.only(top: 5, left: 8.0, right: 8),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: mainColor, width: 3),
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                          ),
                           child: ListTile(
                             onTap: () {
                               EcommerceApp.auth.signOut().then(
@@ -356,51 +362,67 @@ class _MyPageState extends State<MyPage> {
                                 },
                               );
                             },
-                            leading: Icon(Icons.login_outlined),
+                            leading:
+                                Icon(Icons.login_outlined, color: mainColor),
                             title: Text(
                               "ログアウト",
-                              //style: TextStyle(color: Colors.pink),
+                              style: TextStyle(color: mainColor),
                             ),
                             trailing: Icon(
                               Icons.arrow_forward_ios,
                               size: 18,
-                            ),
-                          ),
-                        )
-                      : Card(
-                          color: HexColor("e5e2df").withOpacity(0.6),
-                          child: ListTile(
-                            onTap: () {
-                              Route route = MaterialPageRoute(
-                                builder: (c) => Login(),
-                              );
-                              Navigator.push(
-                                context,
-                                route,
-                              );
-                            },
-                            leading: Icon(Icons.login_outlined),
-                            title: Text(
-                              "ログインまたは新規登録",
-                              //style: TextStyle(color: Colors.pink),
-                            ),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 18,
+                              color: mainColor,
                             ),
                           ),
                         ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
-          ),
+                      )
+                    : infoTile(
+                        context, Icons.login_outlined, "ログインまたは新規登録", Login()),
+              ],
+            ),
+            SizedBox(
+              height: 10,
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+Widget infoTile(
+    BuildContext context, IconData icon, String title, Widget func) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 5, left: 8.0, right: 8),
+    child: Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: HexColor("E67928"), width: 3),
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+      ),
+      child: ListTile(
+        onTap: () {
+          Route route = MaterialPageRoute(
+            builder: (c) => func,
+          );
+          Navigator.push(
+            context,
+            route,
+          );
+        },
+        leading: Icon(icon, color: HexColor("E67928")),
+        title: Text(
+          title,
+          style: TextStyle(color: HexColor("E67928")),
+        ),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          size: 18,
+          color: HexColor("E67928"),
+        ),
+      ),
+    ),
+  );
 }
 
 Widget sourceInfo(ItemModel model, BuildContext context,
@@ -464,6 +486,51 @@ Widget sourceInfo(ItemModel model, BuildContext context,
                         )),
                   ),
                 ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget sliderItem(
+    BuildContext context, String title, Widget page, IconData icon) {
+  return InkWell(
+    onTap: () {
+      EcommerceApp.auth.currentUser != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (c) => page,
+              ))
+          : null;
+    },
+    child: Container(
+      width: 80,
+      decoration: BoxDecoration(
+        color: HexColor("#E67928"),
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(3.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Icon(
+                icon,
+                color: Colors.white,
+                size: 45,
+              ),
+              Text(
+                title,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w100,
+                    fontSize: 10),
               ),
             ],
           ),

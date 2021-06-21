@@ -84,12 +84,6 @@ class _StoreHomeState extends State<StoreHome> {
           child: CustomScrollView(
             slivers: <Widget>[
               SliverPersistentHeader(delegate: SearchBoxDelegate()),
-
-              // SliverToBoxAdapter(
-              //   child: SizedBox(
-              //     height: 20,
-              //   ),
-              // ),
               SliverToBoxAdapter(
                 child: Container(
                   color: HexColor("E67928"),
@@ -199,6 +193,9 @@ class _StoreHomeState extends State<StoreHome> {
                                     onTap: () {
                                       Route route = MaterialPageRoute(
                                         builder: (c) => ProductPage(
+                                          width: item.itemWidth,
+                                          height: item.itemHeight,
+                                          shipsDate: item.shipsDate,
                                           postName: item.postName,
                                           thumbnailURL: item.thumbnailUrl,
                                           shortInfo: item.shortInfo,
@@ -258,7 +255,7 @@ class _StoreHomeState extends State<StoreHome> {
                                                     children: [
                                                       DefaultTextStyle(
                                                         style: new TextStyle(
-                                                            fontSize: 18,
+                                                            fontSize: 15,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                             color:

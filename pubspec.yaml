@@ -12,7 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  arkit_plugin: ^1.0.1
+  flutter_sidekick: ^0.1.3
+  #arkit_plugin: ^1.0.1
   cupertino_icons: ^0.1.2
   cloud_firestore: ^1.0.6
   firebase_auth: ^1.4.1
@@ -34,12 +35,12 @@ dependencies:
   stripe_sdk: ^5.0.0-nullsafety.0
   url_launcher: ^6.0.3
   carousel_slider: ^3.0.0
-
   flutter_email_sender: ^5.0.0
   flutter_gradient_colors: ^1.0.0
   flutter_credit_card: ^2.0.0
   google_mobile_ads: ^0.13.0
   gsheets: ^0.3.1
+  #flutter_chat_ui: ^1.1.4
 
 
 

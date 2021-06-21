@@ -241,73 +241,20 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(
-        title: (() {
-          if (selectedIndex == 0) {
-            return Center(
-              child: InkWell(
-                onTap: () {
-                  Route route = MaterialPageRoute(
-                    builder: (c) => MainPage(),
-                  );
-                  Navigator.pushReplacement(
-                    context,
-                    route,
-                  );
-                },
-                child: Text(
-                  "LEEWAY",
-                  style: GoogleFonts.sortsMillGoudy(
-                    color: Colors.white,
-                    fontSize: 35,
-                    fontWeight: FontWeight.w100,
-                  ),
-                ),
+      appBar: (() {
+        if (selectedIndex == 0) {
+          return MyAppBar(
+            title: Text(
+              "LEEWAY",
+              style: GoogleFonts.sortsMillGoudy(
+                color: Colors.white,
+                fontSize: 35,
+                fontWeight: FontWeight.w100,
               ),
-            );
-          } else if (selectedIndex == 1) {
-            return Center(
-              child: Text(
-                "LIKE",
-                style: GoogleFonts.sortsMillGoudy(
-                  color: Colors.white,
-                  fontSize: 35,
-                  fontWeight: FontWeight.w100,
-                ),
-              ),
-            );
-          } else if (selectedIndex == 2) {
-            return Center(
-              child: Text(
-                "SEARCH",
-                style: GoogleFonts.sortsMillGoudy(
-                  color: Colors.white,
-                  fontSize: 35,
-                  fontWeight: FontWeight.w100,
-                ),
-              ),
-            );
-          } else {
-            return Center(
-              child: Text(
-                "MY PAGE",
-                style: GoogleFonts.sortsMillGoudy(
-                  color: Colors.white,
-                  fontSize: 35,
-                  fontWeight: FontWeight.w100,
-                ),
-              ),
-            );
-          }
-        })(),
-        // centerTitle: true,
-        bottom: selectedIndex == 3
-            ? PreferredSize(
-                child: searchWidget(),
-                preferredSize: Size(56.0, 56.0),
-              )
-            : null,
-      ),
+            ),
+          );
+        }
+      })(),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,

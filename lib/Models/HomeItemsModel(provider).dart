@@ -8,15 +8,18 @@ class ItemGridModel extends ChangeNotifier {
   List<Items> items = [];
 
   Future fetchItems() async {
-    final docs = await FirebaseFirestore.instance
+    final snapshots = await FirebaseFirestore.instance
         .collection('items')
         .orderBy(
           "publishedDate",
           descending: true,
         )
-        .get();
-    final items = docs.docs.map((doc) => Items(doc)).toList();
-    this.items = items;
-    notifyListeners();
+        .snapshots();
+    snapshots.listen((snapshot) {
+      final docs = snapshot.docs;
+      final items = docs.map((doc) => Items(doc)).toList();
+      this.items = items;
+      notifyListeners();
+    });
   }
 }

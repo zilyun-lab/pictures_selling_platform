@@ -14,9 +14,13 @@ class Items {
     postBy = doc["postBy"];
     Stock = doc["Stock"];
     id = doc["id"];
-    postName = doc["postName"];
+    shipsDate = doc["shipsDate"];
+    itemHeight = doc["itemHeight"];
+    itemWidth = doc["itemWidth"];
   }
 
+  String itemWidth;
+  String itemHeight;
   String documentID;
   String shortInfo;
   String thumbnailUrl;
@@ -27,4 +31,5 @@ class Items {
   int Stock;
   String id;
   String postName;
+  String shipsDate;
 }

@@ -15,19 +15,20 @@ import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:selling_pictures_platform/main.dart';
 
 String getOrderId = "";
 String getNotifyID = "";
 String getAdminOrderId = "";
 String getAdminNotifyID = "";
 
-class OrderDetails extends StatelessWidget {
+class AdminOrderDetails extends StatelessWidget {
   final String orderID;
   final int totalPrice;
   final String speakingToID;
   final String speakingToName;
 
-  OrderDetails(
+  AdminOrderDetails(
       {Key key,
       this.orderID,
       this.totalPrice,
@@ -87,11 +88,12 @@ class OrderDetails extends StatelessWidget {
               .collection(EcommerceApp.collectionUser)
               .doc(EcommerceApp.sharedPreferences
                   .getString(EcommerceApp.userUID))
-              .collection(EcommerceApp.collectionOrders)
+              .collection("Notify")
               .doc(orderID)
               .get(),
           builder: (c, snapshot) {
             Map dataMap;
+
             if (snapshot.hasData) {
               dataMap = snapshot.data.data();
             }
@@ -164,8 +166,7 @@ class OrderDetails extends StatelessWidget {
                           FutureBuilder<DocumentSnapshot>(
                             future: EcommerceApp.firestore
                                 .collection(EcommerceApp.collectionUser)
-                                .doc(EcommerceApp.sharedPreferences
-                                    .getString(EcommerceApp.userUID))
+                                .doc(dataMap["buyerID"])
                                 .collection(EcommerceApp.subCollectionAddress)
                                 .doc(dataMap[EcommerceApp.addressID])
                                 .get(),
@@ -176,6 +177,7 @@ class OrderDetails extends StatelessWidget {
                                           snap.data.data()),
                                       orderID: orderID,
                                       postBy: dataMap["boughtFrom"],
+                                      buyerID: dataMap["buyerID"],
                                     )
                                   : Center(
                                       child: circularProgress(),
@@ -196,28 +198,38 @@ class OrderDetails extends StatelessWidget {
   }
 }
 
-class ShippingDetails extends StatelessWidget {
+class ShippingDetails extends StatefulWidget {
   final AddressModel model;
   final ItemModel itemModel;
   final String orderID;
   final int proceeds;
   final String postBy;
   final String notifyID;
+  final String buyerID;
 
-  ShippingDetails({
-    Key key,
-    this.model,
-    this.itemModel,
-    this.orderID,
-    this.proceeds,
-    this.postBy,
-    this.notifyID,
-  }) : super(key: key);
+  ShippingDetails(
+      {Key key,
+      this.model,
+      this.itemModel,
+      this.orderID,
+      this.proceeds,
+      this.postBy,
+      this.notifyID,
+      this.buyerID})
+      : super(key: key);
+
+  @override
+  State<ShippingDetails> createState() => _ShippingDetailsState();
+}
+
+class _ShippingDetailsState extends State<ShippingDetails> {
   TextEditingController _messageController = TextEditingController();
+
+  bool isShipped = false;
   @override
   Widget build(BuildContext context) {
-    getOrderId = orderID;
-    getNotifyID = notifyID;
+    getOrderId = widget.orderID;
+    getNotifyID = widget.notifyID;
 
     double screenWidth = MediaQuery.of(context).size.width;
     return Column(
@@ -247,7 +259,7 @@ class ShippingDetails extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 3.0),
                     child: KeyText(msg: "氏名"),
                   ),
-                  Text(model.lastName + " " + model.firstName),
+                  Text(widget.model.lastName + " " + widget.model.firstName),
                 ],
               ),
               TableRow(
@@ -256,7 +268,7 @@ class ShippingDetails extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 3.0),
                     child: KeyText(msg: "郵便番号"),
                   ),
-                  Text(model.postalCode),
+                  Text(widget.model.postalCode),
                 ],
               ),
               TableRow(
@@ -265,7 +277,7 @@ class ShippingDetails extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 3.0),
                     child: KeyText(msg: "都道府県"),
                   ),
-                  Text(model.prefectures),
+                  Text(widget.model.prefectures),
                 ],
               ),
               TableRow(
@@ -274,7 +286,7 @@ class ShippingDetails extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 3.0),
                     child: KeyText(msg: "市区町村"),
                   ),
-                  Text(model.city),
+                  Text(widget.model.city),
                 ],
               ),
               TableRow(
@@ -283,7 +295,7 @@ class ShippingDetails extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 3.0),
                     child: KeyText(msg: "番地および\n任意の建物名"),
                   ),
-                  Text(model.address),
+                  Text(widget.model.address),
                 ],
               ),
               TableRow(
@@ -292,7 +304,7 @@ class ShippingDetails extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 3.0),
                     child: KeyText(msg: "電話番号"),
                   ),
-                  Text(model.phoneNumber),
+                  Text(widget.model.phoneNumber),
                 ],
               ),
             ],
@@ -307,25 +319,27 @@ class ShippingDetails extends StatelessWidget {
         StreamBuilder<DocumentSnapshot>(
           stream: EcommerceApp.firestore
               .collection(EcommerceApp.collectionUser)
-              .doc(EcommerceApp.sharedPreferences
-                  .getString(EcommerceApp.userUID))
+              .doc(widget.buyerID)
               .collection(EcommerceApp.collectionOrders)
-              .doc(orderID)
+              .doc(widget.orderID)
               .snapshots(),
           builder: (c, snapshot) {
             Map dataMap;
             if (snapshot.hasData) {
               dataMap = snapshot.data.data();
             }
-            return DateTime.now().millisecondsSinceEpoch >=
-                    int.parse(dataMap["orderTime"]) + 86400
+            return isShipped == false
                 ? Padding(
                     padding: EdgeInsets.all(
                       5,
                     ),
                     child: InkWell(
                       onTap: () {
-                        completeTransactionAndNotifySellar(context, getOrderId);
+                        setState(() {
+                          isShipped = true;
+                        });
+                        completeTransactionAndNotifySellar(
+                            context, getOrderId, widget.buyerID);
                         // print(proceeds);
                       },
                       child: Container(
@@ -334,7 +348,7 @@ class ShippingDetails extends StatelessWidget {
                         height: 50,
                         child: Center(
                           child: Text(
-                            "商品を確認・受け取りました",
+                            "商品を発送しました。",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
@@ -344,117 +358,22 @@ class ShippingDetails extends StatelessWidget {
                       ),
                     ),
                   )
-                : Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 10,
-                          right: 10,
-                          left: 10,
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (_) {
-                                return AlertDialog(
-                                  title: Row(
-                                    children: [
-                                      Text(
-                                        "*",
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                      Text(
-                                        "商品キャンセルについて",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                  content: Container(
-                                      child:
-                                          Text("ご注文をキャンセルします。\n本当によろしいですか？")),
-                                  actions: <Widget>[
-                                    // ボタン領域
-                                    ElevatedButton(
-                                      child: Text("いいえ"),
-                                      onPressed: () => Navigator.pop(context),
-                                    ),
-                                    ElevatedButton(
-                                      child: Text("はい"),
-                                      onPressed: () {
-                                        FirebaseFirestore.instance
-                                            .collection("users")
-                                            .doc(EcommerceApp.sharedPreferences
-                                                .getString(
-                                                    EcommerceApp.userUID))
-                                            .collection("orders")
-                                            .doc(orderID)
-                                            .delete();
-                                        FirebaseFirestore.instance
-                                            .collection("users")
-                                            .doc(postBy)
-                                            .collection("Notify")
-                                            .doc(orderID)
-                                            .delete();
-                                        Route route = MaterialPageRoute(
-                                          builder: (c) => StoreHome(),
-                                        );
-                                        Navigator.pushReplacement(
-                                            context, route);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          child: Container(
-                            color: Colors.redAccent,
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            child: Center(
-                              child: Text(
-                                "商品をキャンセルする(24時間以内有効)",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
+                : Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Container(
+                      color: Colors.black,
+                      width: MediaQuery.of(context).size.width,
+                      height: 50,
+                      child: Center(
+                        child: Text(
+                          "購入者の受け取りをお待ちください。",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 10,
-                          right: 10,
-                          left: 10,
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            completeTransactionAndNotifySellar(
-                                context, getOrderId);
-                            // print(proceeds);
-                          },
-                          child: Container(
-                            color: Colors.black,
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            child: Center(
-                              child: Text(
-                                "商品を確認・受け取りました",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   );
           },
         ),
@@ -465,42 +384,31 @@ class ShippingDetails extends StatelessWidget {
     );
   }
 
-  _handleSubmit(String message) {
-    _messageController.text = "";
+  completeTransactionAndNotifySellar(
+      BuildContext context, String mOrderId, String cId) {
     var db = FirebaseFirestore.instance;
-    db.collection("chat_room").doc(orderID).set({
+    db.collection("chat_room").doc(mOrderId).collection("chat").add({
       "user_name":
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-      "buyerID": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-      "message": message,
-      "created_at": DateTime.now().millisecondsSinceEpoch,
-    }).then((val) {
-      print("成功です");
-    }).catchError((err) {
-      print(err);
+      "myId": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+      "message": "本日作品を発送しました。\n到着まで少々お待ちください。",
+      "created_at": DateTime.now().millisecondsSinceEpoch.toString()
     });
-  }
+    final order = EcommerceApp.firestore
+        .collection(EcommerceApp.collectionUser)
+        .doc(cId)
+        .collection(EcommerceApp.collectionOrders)
+        .doc(mOrderId)
+        .get();
 
-  completeTransactionAndNotifySellar(BuildContext context, String mOrderId) {
     EcommerceApp.firestore
         .collection(EcommerceApp.collectionUser)
-        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .doc(cId)
         .collection(EcommerceApp.collectionOrders)
         .doc(mOrderId)
         .update(
       {
-        "isTransactionFinished": "Complete",
-      },
-    );
-    EcommerceApp.firestore
-        .collection(EcommerceApp.collectionUser)
-        .doc(postBy)
-        .collection("Notify")
-        .doc(orderID)
-        .update(
-      {
-        "isTransactionFinished": "Complete",
-        "isBuyerDelivery": "Complete",
+        "isDelivery": "Complete",
       },
     );
 
@@ -516,9 +424,9 @@ class ShippingDetails extends StatelessWidget {
     // );
 
     getOrderId = "";
-    Route route = MaterialPageRoute(builder: (c) => StoreHome());
-    Navigator.pushReplacement(context, route);
-    Fluttertoast.showToast(msg: "取引が完了しました。\n引き続きLEEWAYをお楽しみください。");
+    // Route route = MaterialPageRoute(builder: (c) => MainPage());
+    // Navigator.pushReplacement(context, route);
+    // Fluttertoast.showToast(msg: "取引が完了しました。\n引き続きLEEWAYをお楽しみください。");
   }
 }
 
@@ -688,10 +596,6 @@ class _ChatPageState extends State<ChatPage> {
       "myId": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
       "message": message,
       "created_at": DateTime.now().millisecondsSinceEpoch.toString()
-    }).then((val) {
-      print("成功です");
-    }).catchError((err) {
-      print(err);
     });
   }
 }

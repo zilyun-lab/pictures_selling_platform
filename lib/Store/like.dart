@@ -1,3 +1,5 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/GetLikeItemsModel.dart';
@@ -33,90 +35,144 @@ class _LikePageState extends State<LikePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: HexColor("E5E2E0"),
-        body: ChangeNotifierProvider<GetLikeItemsModel>(
-          create: (_) => GetLikeItemsModel()..fetchItems(),
+    return Scaffold(
+      backgroundColor: HexColor("e5e2df"),
+      body: ChangeNotifierProvider<GetLikeItemsModel>(
+        create: (_) => GetLikeItemsModel()..fetchItems(),
+        child: SingleChildScrollView(
           child: Column(
             children: [
-              Consumer2<TotalAmount, LikeItemCounter>(
-                builder: (context, amountProvider, likeProvider, c) {
-                  return Padding(
-                    padding: EdgeInsets.all(
-                      8,
+              Stack(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    decoration: BoxDecoration(
+                      color: HexColor("#E67928"),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(90),
+                        bottomRight: Radius.circular(90),
+                      ),
                     ),
-                    child: likeProvider.count == 0
-                        ? Container()
-                        : Text(
-                            "いいねした作品",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+                  ),
+                  Positioned(
+                    top: MediaQuery.of(context).size.height * 0.1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(25.0),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.88,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(25),
+                            bottomRight: Radius.circular(25),
+                            topLeft: Radius.circular(25),
+                            topRight: Radius.circular(25),
                           ),
-                  );
-                },
-              ),
-              SingleChildScrollView(
-                child: Consumer<GetLikeItemsModel>(
-                  builder: (context, model, child) {
-                    final items = model.items;
-                    final listTiles = items
-                        .map((item) => Padding(
-                              padding: const EdgeInsets.all(3.0),
-                              child: Column(
-                                children: [
-                                  ListTile(
-                                    onTap: () {
-                                      Route route = MaterialPageRoute(
-                                        builder: (c) => ProductPage(
-                                          thumbnailURL: item.thumbnailUrl,
-                                          shortInfo: item.shortInfo,
-                                          longDescription: item.longDescription,
-                                          price: item.price,
-                                          attribute: item.attribute,
-                                          postBy: item.postBy,
-                                          Stock: item.Stock,
-                                          id: item.id,
-                                        ),
-                                      );
-                                      Navigator.pushReplacement(
-                                        context,
-                                        route,
-                                      );
-                                    },
-                                    leading: Image.network(
-                                      item.thumbnailUrl,
-                                      height: 50,
-                                      fit: BoxFit.scaleDown,
-                                    ),
-                                    title: Text(item.shortInfo.toString()),
-                                    trailing: IconButton(
-                                      color: Colors.black,
-                                      icon: Icon(Icons.delete),
-                                      onPressed: () => removeItemFromLike(
-                                          item.shortInfo, context),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 10.0, right: 10),
-                                    child: Divider(),
-                                  )
-                                ],
-                              ),
-                            ))
-                        .toList();
-                    return items.length == 0
-                        ? beginBuildingCart()
-                        : ListView(
-                            shrinkWrap: true,
-                            children: listTiles,
-                          );
-                  },
-                ),
+                        ),
+                        child: Center(
+                          child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Consumer<GetLikeItemsModel>(
+                                builder: (context, model, child) {
+                                  final items = model.items;
+                                  final listTiles = items
+                                      .map((item) => Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: mainColor, width: 3),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: Colors.white,
+                                              ),
+                                              child: ListTile(
+                                                onTap: () {
+                                                  Route route =
+                                                      MaterialPageRoute(
+                                                    builder: (c) => ProductPage(
+                                                      thumbnailURL:
+                                                          item.thumbnailUrl,
+                                                      shortInfo: item.shortInfo,
+                                                      longDescription:
+                                                          item.longDescription,
+                                                      price: item.price,
+                                                      attribute: item.attribute,
+                                                      postBy: item.postBy,
+                                                      Stock: item.Stock,
+                                                      id: item.id,
+                                                    ),
+                                                  );
+                                                  Navigator.pushReplacement(
+                                                    context,
+                                                    route,
+                                                  );
+                                                },
+                                                leading: Image.network(
+                                                  item.thumbnailUrl,
+                                                  height: 50,
+                                                  fit: BoxFit.scaleDown,
+                                                ),
+                                                title: Text(
+                                                  item.shortInfo.toString(),
+                                                  style: TextStyle(
+                                                    color: mainColor,
+                                                  ),
+                                                ),
+                                                trailing: IconButton(
+                                                  color: Colors.black,
+                                                  icon: Icon(
+                                                    Icons.delete,
+                                                    color: mainColor,
+                                                  ),
+                                                  onPressed: () =>
+                                                      removeItemFromLike(
+                                                          item.shortInfo,
+                                                          context),
+                                                ),
+                                              ),
+                                            ),
+                                          ))
+                                      .toList();
+                                  return items.length == 0
+                                      ? beginBuildingCart()
+                                      : ListView(
+                                          shrinkWrap: true,
+                                          children: listTiles,
+                                        );
+                                },
+                              )),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: MediaQuery.of(context).size.height * 0.08,
+                    left: MediaQuery.of(context).size.width * 0.425,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(25),
+                          bottomRight: Radius.circular(25),
+                          topLeft: Radius.circular(25),
+                          topRight: Radius.circular(25),
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.favorite,
+                        color: mainColor,
+                        size: 50,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    color: Colors.black.withOpacity(0.7),
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: MediaQuery.of(context).size.height * 0.25,
+                  )
+                ],
               ),
             ],
           ),
