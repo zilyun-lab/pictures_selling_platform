@@ -18,6 +18,7 @@ import 'package:selling_pictures_platform/Config/config.dart';
 import 'Counters/Likeitemcounter.dart';
 import 'Counters/changeAddresss.dart';
 import 'Counters/totalMoney.dart';
+import 'Models/GetLikeItemsModel.dart';
 import 'Models/HEXCOLOR.dart';
 import 'Store/Search.dart';
 import 'Store/storehome.dart';
@@ -46,6 +47,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (c) => TotalAmount(),
+        ),
+        ChangeNotifierProvider(
+          create: (c) => GetLikeItemsModel()..fetchItems(),
         ),
       ],
       child: MaterialApp(
@@ -206,16 +210,11 @@ class _MainPageState extends State<MainPage> {
                     //top: 0.1,
                     //bottom: 0.1,
                     left: 5,
-                    child: Consumer<LikeItemCounter>(
-                      builder: (context, counter, _) {
-                        Provider.of<LikeItemCounter>(context, listen: false)
-                            .displayResult();
+                    child: Consumer<GetLikeItemsModel>(
+                      builder: (context, model, child) {
+                        final item = model.items;
                         return Text(
-                          (EcommerceApp.sharedPreferences
-                                      .getStringList(EcommerceApp.userLikeList)
-                                      .length -
-                                  1)
-                              .toString(),
+                          (item.length).toString(),
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 10,

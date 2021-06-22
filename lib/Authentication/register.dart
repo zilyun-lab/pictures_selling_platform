@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Widgets/customTextField.dart';
 import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
 import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
@@ -38,14 +39,7 @@ class _RegisterState extends State<Register> {
       child: Scaffold(
         body: Stack(children: [
           Container(
-            decoration: new BoxDecoration(
-              image: new DecorationImage(
-                image: new NetworkImage(
-                  "https://images.unsplash.com/photo-1605462398512-51e939d2d21d?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NTh8fG9yYW5nZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=60",
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
+            color: HexColor("E67928"),
           ),
           Padding(
             padding: const EdgeInsets.all(15.0),
@@ -102,18 +96,25 @@ class _RegisterState extends State<Register> {
                         padding: const EdgeInsets.only(
                           top: 15.0,
                         ),
-                        child: CircleAvatar(
-                          radius: _screenWidth * 0.15,
-                          backgroundColor: Colors.white,
-                          backgroundImage:
-                              _imageFile == null ? null : FileImage(_imageFile),
-                          child: _imageFile == null
-                              ? Icon(
-                                  Icons.add_a_photo_outlined,
-                                  size: _screenWidth * 0.15,
-                                  color: Colors.grey,
-                                )
-                              : null,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                          ),
+                          child: CircleAvatar(
+                            radius: _screenWidth * 0.15,
+                            backgroundColor: Colors.white,
+                            backgroundImage: _imageFile == null
+                                ? null
+                                : FileImage(_imageFile),
+                            child: _imageFile == null
+                                ? Icon(
+                                    Icons.add_a_photo_outlined,
+                                    size: _screenWidth * 0.15,
+                                    color: Colors.grey,
+                                  )
+                                : null,
+                          ),
                         ),
                       ),
                     ),
@@ -192,9 +193,12 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                     ),
+                    SizedBox(
+                      height: 20,
+                    ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.black,
+                        primary: Colors.white,
                       ),
                       onPressed: () {
                         uploadAndSaveImage();
@@ -202,7 +206,7 @@ class _RegisterState extends State<Register> {
                       child: Text(
                         "登録する",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: HexColor("E67928"),
                         ),
                       ),
                     ),
@@ -218,7 +222,7 @@ class _RegisterState extends State<Register> {
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.black,
+                        primary: Colors.white,
                       ),
                       onPressed: () {
                         Route route = MaterialPageRoute(
@@ -240,7 +244,7 @@ class _RegisterState extends State<Register> {
                       child: Text(
                         "ログイン",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: HexColor("E67928"),
                         ),
                       ),
                     ),

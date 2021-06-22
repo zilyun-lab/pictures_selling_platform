@@ -10,14 +10,17 @@ class GetLikeItemsModel extends ChangeNotifier {
   List<UploadItems> items = [];
 
   Future fetchItems() async {
-    final docs = await EcommerceApp.firestore
+    final snapshots = await EcommerceApp.firestore
         .collection("items")
         .where("shortInfo",
             whereIn: EcommerceApp.sharedPreferences
                 .getStringList(EcommerceApp.userLikeList))
-        .get();
-    final items = docs.docs.map((doc) => UploadItems(doc)).toList();
-    this.items = items;
-    notifyListeners();
+        .snapshots();
+    snapshots.listen((snapshot) {
+      final docs = snapshot.docs;
+      final items = docs.map((doc) => UploadItems(doc)).toList();
+      this.items = items;
+      notifyListeners();
+    });
   }
 }

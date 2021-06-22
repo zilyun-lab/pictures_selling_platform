@@ -461,7 +461,6 @@ removeItemFromLike(
       Fluttertoast.showToast(msg: "マイいいねから削除しました");
       EcommerceApp.sharedPreferences
           .setStringList(EcommerceApp.userLikeList, tempCartList.cast());
-      Provider.of<LikeItemCounter>(context, listen: true).displayResult();
 
       //totalAmount = 0;
     },

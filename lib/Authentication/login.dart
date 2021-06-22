@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'package:selling_pictures_platform/Authentication/register.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Widgets/customTextField.dart';
 import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
 import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
@@ -9,6 +10,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Store/storehome.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
+
+import '../main.dart';
 
 //以下、カラーコード使用時に必要なクラス
 
@@ -30,14 +33,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: Stack(children: <Widget>[
         Container(
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              image: new NetworkImage(
-                "https://images.unsplash.com/photo-1605462398512-51e939d2d21d?ixid=MnwxMjA3fDB8MHxzZWFyY2h8NTh8fG9yYW5nZXxlbnwwfHwwfHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=900&q=60",
-              ),
-              fit: BoxFit.cover,
-            ),
-          ),
+          color: HexColor("E67928"),
         ),
         Padding(
           padding: const EdgeInsets.all(15.0),
@@ -274,7 +270,7 @@ class _LoginState extends State<Login> {
         (s) {
           Navigator.pop(context);
           Route route = MaterialPageRoute(
-            builder: (c) => StoreHome(),
+            builder: (c) => MainPage(),
           );
           Navigator.pushReplacement(
             context,

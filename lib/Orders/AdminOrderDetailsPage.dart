@@ -450,70 +450,105 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      backgroundColor: Colors.white.withOpacity(0.7),
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
       appBar: new AppBar(
+        backgroundColor: HexColor(
+          "E67928",
+        ),
         title: new Text("チャットページ"),
       ),
       body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
           children: <Widget>[
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection("chat_room")
-                  .doc(widget.orderId)
-                  .collection("chat")
-                  .orderBy("created_at", descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) return Container();
-                return new ListView.builder(
-                  shrinkWrap: true,
-                  padding: new EdgeInsets.all(8.0),
-                  reverse: true,
-                  itemBuilder: (_, int index) {
-                    DocumentSnapshot document = snapshot.data.docs[index];
-
-                    bool isOwnMessage = false;
-                    if (document['myId'] ==
-                        EcommerceApp.sharedPreferences
-                            .getString(EcommerceApp.userUID)) {
-                      isOwnMessage = true;
-                    }
-                    return isOwnMessage
-                        ? _ownMessage(document['message'],
-                            document['user_name'], document['created_at'])
-                        : _message(document['message'], document['user_name'],
-                            document['created_at']);
-                  },
-                  itemCount: snapshot.data.docs.length,
-                );
-              },
-            ),
-            new Divider(height: 1.0),
             Container(
-              margin: EdgeInsets.only(bottom: 20.0, right: 10.0, left: 10.0),
-              child: Row(
-                children: <Widget>[
-                  Flexible(
-                    child: new TextField(
-                      controller: _messageController,
-                      onSubmitted: _handleSubmit,
-                      decoration:
-                          new InputDecoration.collapsed(hintText: "メッセージの送信"),
-                    ),
-                  ),
-                  new Container(
-                    child: new IconButton(
-                        icon: new Icon(
-                          Icons.send,
-                          color: Colors.blue,
+              child: StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("chat_room")
+                    .doc(widget.orderId)
+                    .collection("chat")
+                    .orderBy("created_at", descending: true)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return Container();
+                  return new ListView.builder(
+                    shrinkWrap: true,
+                    padding: new EdgeInsets.all(8.0),
+                    reverse: true,
+                    itemBuilder: (_, int index) {
+                      DocumentSnapshot document = snapshot.data.docs[index];
+
+                      bool isOwnMessage = false;
+                      if (document['myId'] ==
+                          EcommerceApp.sharedPreferences
+                              .getString(EcommerceApp.userUID)) {
+                        isOwnMessage = true;
+                      }
+                      return isOwnMessage
+                          ? _ownMessage(document['message'],
+                              document['user_name'], document['created_at'])
+                          : _message(document['message'], document['user_name'],
+                              document['created_at']);
+                    },
+                    itemCount: snapshot.data.docs.length,
+                  );
+                },
+              ),
+              color: Colors.white,
+              height: MediaQuery.of(context).size.height * 0.81,
+            ),
+            new Divider(
+              height: 1.0,
+              thickness: 3,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              color: Colors.white,
+              // margin: EdgeInsets.only(bottom: 20.0, right: 10.0, left: 10.0),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: <Widget>[
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 10.0,
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: mainColor, width: 3),
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: new TextField(
+                                  controller: _messageController,
+                                  onSubmitted: _handleSubmit,
+                                  decoration: new InputDecoration.collapsed(
+                                      hintText: "メッセージの送信"),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                        onPressed: () {
-                          _handleSubmit(_messageController.text);
-                        }),
-                  ),
-                ],
+                        new Container(
+                          child: IconButton(
+                              icon: Icon(
+                                Icons.send,
+                                size: 30,
+                                color: HexColor("#E67928"),
+                              ),
+                              onPressed: () {
+                                _handleSubmit(_messageController.text);
+                              }),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -527,7 +562,7 @@ class _ChatPageState extends State<ChatPage> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
@@ -559,11 +594,11 @@ class _ChatPageState extends State<ChatPage> {
     return Row(
       children: <Widget>[
         Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.black,
                 borderRadius: BorderRadius.all(
                   Radius.circular(10),
                 ),
@@ -572,7 +607,7 @@ class _ChatPageState extends State<ChatPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   message,
-                  style: TextStyle(color: HexColor("#E67928")),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ),
