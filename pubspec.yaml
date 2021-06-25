@@ -14,6 +14,7 @@ dependencies:
 
   flutter_sidekick: ^0.1.3
   #arkit_plugin: ^1.0.1
+  transparent_image: ^2.0.0
   cupertino_icons: ^0.1.2
   cloud_firestore: ^1.0.6
   firebase_auth: ^1.4.1
@@ -40,7 +41,8 @@ dependencies:
   flutter_credit_card: ^2.0.0
   google_mobile_ads: ^0.13.0
   gsheets: ^0.3.1
-  #flutter_chat_ui: ^1.1.4
+  sliding_up_panel: ^2.0.0+1
+  flutter_rating_bar: ^4.0.0
 
 
 
@@ -55,9 +57,6 @@ flutter:
     - family: karakaze-R
       fonts:
         - asset: assets/fonts/karakaze-R.ttf
-#    - family: Signatra
-#      fonts:
-#        - asset: assets/fonts/Signatra.ttf
 
   assets:
      - images/welcome.png
@@ -83,3 +82,8 @@ flutter:
      - images/Online_Groceries-rafiki.png
      - images/Credit_card-cuate.png
      - images/Credit-card-pana.png
+     - images/isColor_Horizontal.png
+     - images/isColor_Vertical.png
+     - images/NoColor_horizontal.png
+     - images/NoColor_Vertical.png
+     - images/white.png

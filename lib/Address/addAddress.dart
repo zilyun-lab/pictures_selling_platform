@@ -87,67 +87,79 @@ class _AddAddressState extends State<AddAddress> {
       child: Scaffold(
         backgroundColor: HexColor("e5e2df"),
         key: scaffoldKey,
-        appBar: MyAppBar(),
-        //drawer: MyDrawer(),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            //print(selectedItem);
-            if (formKey.currentState.validate()) {
-              final model = AddressModel(
-                lastName: cLastName.text.trim(),
-                firstName: cFirstName.text.trim(),
-                postalCode: cPostalCode.text,
-                prefectures: selectedItem.trim(),
-                //prefectures: cPrefectures.text.trim(),
-                city: cCity.text.trim(),
-                address: cAddress.text,
-                phoneNumber: cPhoneNumber.text,
-                secondAddress: cSecondAddress.text,
-              ).toJson();
-              // todo: firestoreに追加
-              EcommerceApp.firestore
-                  .collection(EcommerceApp.collectionUser)
-                  .doc(EcommerceApp.sharedPreferences
-                      .getString(EcommerceApp.userUID))
-                  .collection(EcommerceApp.subCollectionAddress)
-                  .doc(DateTime.now().millisecondsSinceEpoch.toString())
-                  .set(model)
-                  .then((value) {
-                final snack = SnackBar(content: Text("新規お届け先を追加しました"));
-                scaffoldKey.currentState.showSnackBar(snack);
-                FocusScope.of(context).requestFocus(FocusNode());
-                formKey.currentState.reset();
-              });
-              Navigator.pop(context);
-              // Route route = MaterialPageRoute(builder: (c) => Address());
-              // Navigator.pushReplacement(context, route);
-            }
-          },
-          label: Text("追加する"),
-          backgroundColor: Colors.black,
-          icon: Icon(
-            Icons.check,
+        appBar: MyAppBar(
+          title: Text(
+            "新しいお届け先を追加する",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+        ),
+        floatingActionButton: Container(
+          width: 100,
+          height: 100,
+          child: FloatingActionButton(
+            backgroundColor: HexColor("E67928"),
+            onPressed: () {
+              //print(selectedItem);
+              if (formKey.currentState.validate()) {
+                final model = AddressModel(
+                  lastName: cLastName.text.trim(),
+                  firstName: cFirstName.text.trim(),
+                  postalCode: cPostalCode.text,
+                  prefectures: selectedItem.trim(),
+                  //prefectures: cPrefectures.text.trim(),
+                  city: cCity.text.trim(),
+                  address: cAddress.text,
+                  phoneNumber: cPhoneNumber.text,
+                  secondAddress: cSecondAddress.text,
+                ).toJson();
+                // todo: firestoreに追加
+                EcommerceApp.firestore
+                    .collection(EcommerceApp.collectionUser)
+                    .doc(EcommerceApp.sharedPreferences
+                        .getString(EcommerceApp.userUID))
+                    .collection(EcommerceApp.subCollectionAddress)
+                    .doc(DateTime.now().millisecondsSinceEpoch.toString())
+                    .set(model)
+                    .then((value) {
+                  final snack = SnackBar(content: Text("新規お届け先を追加しました"));
+                  scaffoldKey.currentState.showSnackBar(snack);
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  formKey.currentState.reset();
+                });
+                Navigator.pop(context);
+                // Route route = MaterialPageRoute(builder: (c) => Address());
+                // Navigator.pushReplacement(context, route);
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                children: [
+                  Text(
+                    "追加",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Icon(
+                    Icons.add,
+                    size: 45,
+                  ),
+                ],
+              ),
+            ),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(50.0))),
           ),
         ),
         body: SingleChildScrollView(
           child: Column(
             children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: EdgeInsets.all(
-                    8.0,
-                  ),
-                  child: Text(
-                    "新しいお届け先を追加する",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-              ),
               Form(
                 key: formKey,
                 child: Column(

@@ -1,6 +1,6 @@
 import 'dart:async';
-
 import 'package:firebase_core/firebase_core.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -15,6 +15,7 @@ import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
+import 'Admin/test.dart';
 import 'Counters/Likeitemcounter.dart';
 import 'Counters/changeAddresss.dart';
 import 'Counters/totalMoney.dart';
@@ -91,7 +92,7 @@ class _SplashScreenState extends State<SplashScreen> {
               inheritTheme: true,
               ctx: context,
               duration: Duration(
-                milliseconds: 1500,
+                milliseconds: 3000,
               ),
             ),
           );
@@ -126,47 +127,12 @@ class _SplashScreenState extends State<SplashScreen> {
               //Image.asset("images/welcome.png"),
               Padding(
                 padding: const EdgeInsets.all(50.0),
-                child: Image.asset(
-                  "images/home_image.png",
+                child: FadeInImage.assetNetwork(
+                  placeholder: "images/white.png",
+                  image:
+                      "https://firebasestorage.googleapis.com/v0/b/selling-pictures.appspot.com/o/isColor_Vertical.png?alt=media&token=d7895795-7d1d-4b5e-af38-0aebebfd7634",
+                  height: 150,
                 ),
-              ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Stack(
-                children: [
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 3.0,
-                        left: 7,
-                      ),
-                      child: Text(
-                        "LEEWAY",
-                        style: TextStyle(
-                          color: Colors.red.withOpacity(0.4),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w200,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        left: 15,
-                      ),
-                      child: Text(
-                        "LEEWAY",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w200,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
@@ -243,12 +209,16 @@ class _MainPageState extends State<MainPage> {
       appBar: (() {
         if (selectedIndex == 0) {
           return MyAppBar(
-            title: Text(
-              "LEEWAY",
-              style: GoogleFonts.sortsMillGoudy(
-                color: Colors.white,
-                fontSize: 35,
-                fontWeight: FontWeight.w100,
+            title: Padding(
+              padding: const EdgeInsets.all(125.0),
+              child: InkWell(
+                child: Image.asset("images/NoColor_horizontal.png"),
+                onTap: () {
+                  Route route = MaterialPageRoute(
+                    builder: (c) => Test(),
+                  );
+                  Navigator.pushReplacement(context, route);
+                },
               ),
             ),
           );

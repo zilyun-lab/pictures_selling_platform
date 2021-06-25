@@ -65,30 +65,29 @@ class _StoreHomeState extends State<StoreHome> {
     return Scaffold(
       //key: _scaffoldKey,
 
-      backgroundColor: Colors.white,
+      backgroundColor: HexColor("e5e2df"),
 
       body: ChangeNotifierProvider<ItemGridModel>(
         create: (_) => ItemGridModel()..fetchItems(),
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                HexColor("E67928"),
-                HexColor("E67928"),
-                Colors.white,
-              ],
-            ),
-          ),
+          color: HexColor("e5e2df"),
           child: CustomScrollView(
             slivers: <Widget>[
-              SliverPersistentHeader(delegate: SearchBoxDelegate()),
+              SliverToBoxAdapter(
+                child: Container(
+                  height: 10,
+                  color: mainColor,
+                ),
+              ),
+              SliverPersistentHeader(
+                delegate: SearchBoxDelegate(),
+                pinned: false,
+              ),
               SliverToBoxAdapter(
                 child: Container(
                   color: HexColor("E67928"),
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 10, bottom: 15),
+                    padding: const EdgeInsets.only(bottom: 15),
                     child: CarouselSlider(
                       options: CarouselOptions(
                         enlargeCenterPage: true,
@@ -177,18 +176,13 @@ class _StoreHomeState extends State<StoreHome> {
                         .map((item) => Container(
                               child: Padding(
                                 padding: const EdgeInsets.all(3.0),
-                                child: Container(
-                                  // decoration: BoxDecoration(
-                                  //   // borderRadius: BorderRadius.circular(24),
-                                  //   border: Border.all(
-                                  //       color: Colors.black, width: 3),
-                                  // ),
-                                  // elevation: 10,
-                                  // color: HexColor("#E67928"),
-                                  // clipBehavior: Clip.antiAlias,
-                                  // shape: RoundedRectangleBorder(
-                                  //   borderRadius: BorderRadius.circular(24),
-                                  // ),
+                                child: Card(
+                                  elevation: 0,
+                                  color: Colors.white,
+                                  clipBehavior: Clip.antiAlias,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
                                   child: InkWell(
                                     onTap: () {
                                       Route route = MaterialPageRoute(
@@ -227,7 +221,7 @@ class _StoreHomeState extends State<StoreHome> {
                                                     item.thumbnailUrl,
                                                     fit: BoxFit.cover,
                                                     width: 100,
-                                                    height: 120,
+                                                    height: 135,
                                                   ),
                                                 ),
                                                 width: MediaQuery.of(context)
@@ -271,8 +265,7 @@ class _StoreHomeState extends State<StoreHome> {
                                                             fontSize: 18,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            color:
-                                                                Colors.black),
+                                                            color: mainColor),
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                         maxLines: 1,

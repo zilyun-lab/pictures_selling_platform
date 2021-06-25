@@ -12,7 +12,7 @@ class SearchBoxDelegate extends SliverPersistentHeaderDelegate {
         color: HexColor("#E67928"),
         child: Padding(
           padding:
-              const EdgeInsets.only(top: 8.0, left: 8, right: 8, bottom: 45),
+              const EdgeInsets.only(top: 8.0, left: 8, right: 8, bottom: 20),
           child: InkWell(
             onTap: () {
               Route route = MaterialPageRoute(
@@ -25,10 +25,10 @@ class SearchBoxDelegate extends SliverPersistentHeaderDelegate {
             },
             child: InkWell(
               child: Container(
-                width: MediaQuery.of(
-                  context,
-                ).size.width,
-                height: 50,
+                // width: MediaQuery.of(
+                //   context,
+                // ).size.width,
+                height: 80,
                 decoration: BoxDecoration(
                   color: Colors.grey.withOpacity(0.5),
                   borderRadius: BorderRadius.all(
@@ -61,10 +61,10 @@ class SearchBoxDelegate extends SliverPersistentHeaderDelegate {
       );
 
   @override
-  double get maxExtent => 80;
+  double get maxExtent => 75;
 
   @override
-  double get minExtent => 80;
+  double get minExtent => 75;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;

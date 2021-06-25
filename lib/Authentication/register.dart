@@ -429,6 +429,14 @@ class _RegisterState extends State<Register> {
         .set(
       {},
     );
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(fUser.uid)
+        .collection("BankAccount")
+        .doc()
+        .set(
+      {"Submit": "false"},
+    );
 
     await EcommerceApp.sharedPreferences.setString(
       "uid",

@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:selling_pictures_platform/Address/address.dart';
 import 'package:selling_pictures_platform/Admin/uploadItems.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
+import 'package:selling_pictures_platform/Orders/myOrders.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
+import 'package:selling_pictures_platform/Widgets/CheckBox.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:selling_pictures_platform/Widgets/orderCard.dart';
@@ -15,6 +18,8 @@ import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:selling_pictures_platform/main.dart';
 
 String getOrderId = "";
 String getNotifyID = "";
@@ -214,6 +219,9 @@ class ShippingDetails extends StatelessWidget {
     this.notifyID,
   }) : super(key: key);
   TextEditingController _messageController = TextEditingController();
+  double getReviewCount = 0;
+  TextEditingController reviewTextController = TextEditingController();
+  final double earn = 0;
   @override
   Widget build(BuildContext context) {
     getOrderId = orderID;
@@ -314,9 +322,11 @@ class ShippingDetails extends StatelessWidget {
               .snapshots(),
           builder: (c, snapshot) {
             Map dataMap;
+
             if (snapshot.hasData) {
               dataMap = snapshot.data.data();
             }
+
             return DateTime.now().millisecondsSinceEpoch >=
                     int.parse(dataMap["orderTime"]) + 86400
                 ? Padding(
@@ -325,7 +335,88 @@ class ShippingDetails extends StatelessWidget {
                     ),
                     child: InkWell(
                       onTap: () {
-                        completeTransactionAndNotifySellar(context, getOrderId);
+                        return showDialog(
+                          context: context,
+                          builder: (_) {
+                            return SimpleDialog(
+                              title: Center(
+                                child: Text(
+                                  "受け取り確認・評価",
+                                ),
+                              ),
+                              children: [
+                                Center(
+                                  child: RatingBar.builder(
+                                    initialRating: 3,
+                                    minRating: 1,
+                                    direction: Axis.horizontal,
+                                    allowHalfRating: true,
+                                    itemCount: 5,
+                                    itemPadding:
+                                        EdgeInsets.symmetric(horizontal: 4.0),
+                                    itemBuilder: (context, _) => Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
+                                    onRatingUpdate: (rating) {
+                                      getReviewCount = rating;
+                                      print(getReviewCount);
+                                      print(rating);
+                                    },
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: TextField(
+                                          controller: reviewTextController,
+                                          decoration: InputDecoration(
+                                              hintStyle: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12),
+                                              hintText: "作者に何かメッセージを送ってみましょう！",
+                                              border: InputBorder.none),
+                                        ),
+                                      ),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          border: Border.all(
+                                              color: HexColor("3e1300"),
+                                              width: 3)),
+                                      height: 80,
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text("キャンセル")),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          completeTransactionAndNotifySellar(
+                                              context, getOrderId);
+                                          saveReviewCount();
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (c) => MainPage()));
+                                        },
+                                        child: Text("送信する")),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
                         // print(proceeds);
                       },
                       child: Container(
@@ -334,7 +425,7 @@ class ShippingDetails extends StatelessWidget {
                         height: 50,
                         child: Center(
                           child: Text(
-                            "商品を確認・受け取りました",
+                            "受け取り確認へ進む",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
@@ -444,7 +535,7 @@ class ShippingDetails extends StatelessWidget {
                             height: 50,
                             child: Center(
                               child: Text(
-                                "商品を確認・受け取りました",
+                                "受け取り確認へ",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 15,
@@ -463,6 +554,18 @@ class ShippingDetails extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  saveReviewCount() {
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(postBy)
+        .collection("Review")
+        .doc(orderID)
+        .set({
+      "message": reviewTextController.text.trim(),
+      "starRating": getReviewCount,
+    });
   }
 
   _handleSubmit(String message) {
@@ -504,16 +607,14 @@ class ShippingDetails extends StatelessWidget {
       },
     );
 
-    // EcommerceApp.firestore
-    //     .collection(EcommerceApp.collectionUser)
-    //     .doc(postBy)
-    //     .collection("MyProceeds")
-    //     .doc()
-    //     .update(
-    //   {
-    //     "Proceeds": FieldValue.increment(proceeds),
-    //   },
-    // );
+    EcommerceApp.firestore
+        .collection(EcommerceApp.collectionUser)
+        .doc(postBy)
+        .collection("MyProceeds")
+        .doc()
+        .update(
+      {"Proceeds": proceeds},
+    );
 
     getOrderId = "";
     Route route = MaterialPageRoute(builder: (c) => StoreHome());

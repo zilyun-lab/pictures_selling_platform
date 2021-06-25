@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -109,13 +110,13 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    // StripeService(price: price);
     return Scaffold(
       bottomNavigationBar: InkWell(
           onTap: () async {
             await showModalBottomSheet(
               enableDrag: true,
               isDismissible: true,
+              isScrollControlled: true,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(25.0),
@@ -830,38 +831,35 @@ class _ProductPageState extends State<ProductPage> {
           },
         ),
       ),
-      body: Stack(
-        //alignment: AlignmentDirectional.center,
-        children: [
-          // ElevatedButton(
-          //   onPressed: () {
-          //     Navigator.push(
-          //         context, MaterialPageRoute(builder: (c) => ARPage()));
-          //   },
-          // ),
-          Center(
-            child: Image.network(
-              thumbnailURL,
-              // height: 300,
-              // width: MediaQuery.of(context).size.width,
-              fit: BoxFit.scaleDown,
-            ),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 115.0),
-              child: Text(
-                "LEEWAY",
-                style: GoogleFonts.sortsMillGoudy(
-                  color: Colors.blueGrey.withOpacity(0.8),
-                  fontSize: 35,
-                  fontWeight: FontWeight.w100,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      body: Center(
+          child: StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection("items")
+                  .doc(id)
+                  .collection("itemImages")
+                  .doc(id)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                final imgList = snapshot.data.data()["images"].length;
+                return CarouselSlider.builder(
+                  options: CarouselOptions(
+                    enlargeCenterPage: true,
+                    aspectRatio: 1.0,
+                    autoPlayInterval: Duration(seconds: 3),
+                    enableInfiniteScroll: false,
+                    // autoPlay: true,
+                  ),
+                  itemCount: imgList,
+                  itemBuilder:
+                      (BuildContext context, int index, int realIndex) {
+                    return Image.network(
+                      snapshot.data.data()["images"][index].toString(),
+                      fit: BoxFit.scaleDown,
+                      height: MediaQuery.of(context).size.height,
+                    );
+                  },
+                );
+              })),
     );
   }
 

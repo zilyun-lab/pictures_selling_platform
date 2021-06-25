@@ -49,7 +49,7 @@ class _LikePageState extends State<LikePage> {
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: HexColor("e5e2df"),
                     borderRadius: BorderRadius.all(
                       Radius.circular(125),
                     ),
@@ -97,7 +97,7 @@ class _LikePageState extends State<LikePage> {
                                         title: Text(
                                           item.shortInfo.toString(),
                                           style: TextStyle(
-                                            color: mainColor,
+                                            color: Colors.black,
                                           ),
                                         ),
                                         trailing: IconButton(
@@ -115,31 +115,9 @@ class _LikePageState extends State<LikePage> {
                               .toList();
                           return items.length == 0
                               ? beginBuildingCart()
-                              : Column(
-                                  children: [
-                                    Container(
-                                      color: mainColor,
-                                      height: 10,
-                                    ),
-                                    Container(
-                                      height: 10,
-                                    ),
-                                    Container(
-                                      color: mainColor,
-                                      height: 10,
-                                    ),
-                                    Container(
-                                      height: 10,
-                                    ),
-                                    Container(
-                                      color: mainColor,
-                                      height: 10,
-                                    ),
-                                    ListView(
-                                      shrinkWrap: true,
-                                      children: listTiles,
-                                    ),
-                                  ],
+                              : ListView(
+                                  shrinkWrap: true,
+                                  children: listTiles,
                                 );
                         },
                       )),
