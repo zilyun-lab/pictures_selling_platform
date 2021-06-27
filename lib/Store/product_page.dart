@@ -108,6 +108,7 @@ class _ProductPageState extends State<ProductPage> {
     });
   }
 
+  final int _current = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

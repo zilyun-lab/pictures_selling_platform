@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:selling_pictures_platform/Admin/uploadItems.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/HomeItemsModel(provider).dart';
@@ -209,28 +210,23 @@ class _StoreHomeState extends State<StoreHome> {
                                     splashColor: Colors.black,
                                     child: Column(
                                       children: [
-                                        Stack(
-                                          children: [
-                                            Center(
-                                              child: Container(
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                  child: Image.network(
-                                                    item.thumbnailUrl,
-                                                    fit: BoxFit.cover,
-                                                    width: 100,
-                                                    height: 135,
-                                                  ),
-                                                ),
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width,
-                                                // color: Colors.white,
+                                        Center(
+                                          child: Container(
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                              child: Image.network(
+                                                item.thumbnailUrl,
+                                                fit: BoxFit.cover,
+                                                width: 100,
+                                                height: 135,
                                               ),
                                             ),
-                                          ],
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            // color: Colors.white,
+                                          ),
                                         ),
                                         Container(
                                           width:
@@ -352,40 +348,60 @@ Widget sourceInfoForMain(ItemModel model, BuildContext context,
       splashColor: Colors.black,
       child: Column(
         children: [
-          Stack(
-            children: [
-              Center(
-                child: SizedBox(
-                  child: Container(
-                    child: Image.network(
-                      model.thumbnailUrl,
-                      fit: BoxFit.scaleDown,
-                      width: 100,
-                      height: 108,
-                    ),
-                  ),
+          Center(
+            child: Container(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  model.thumbnailUrl,
+                  fit: BoxFit.cover,
+                  width: 100,
+                  height: 135,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 65.0),
-                child: Align(
-                  alignment: Alignment.bottomRight,
+              width: MediaQuery.of(context).size.width,
+              // color: Colors.white,
+            ),
+          ),
+          Container(
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: Flexible(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 8.0, right: 8),
-                    child: Container(
-                      color: Colors.black.withOpacity(0.7),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "¥" + (model.price).toString(),
-                          style: TextStyle(color: Colors.white),
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Column(
+                      children: [
+                        DefaultTextStyle(
+                          style: new TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          child: new Text(model.shortInfo),
                         ),
-                      ),
+                        DefaultTextStyle(
+                          style: new TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: mainColor),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          child: new Text(
+                            model.price.toString() + "円",
+                          ),
+                        ),
+                      ],
+                      crossAxisAlignment: CrossAxisAlignment.start,
                     ),
                   ),
                 ),
               ),
-            ],
+            ),
           ),
         ],
       ),

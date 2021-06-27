@@ -8,15 +8,12 @@ import 'package:selling_pictures_platform/Admin/uploadItems.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
-import 'package:selling_pictures_platform/Orders/myOrders.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
-import 'package:selling_pictures_platform/Widgets/CheckBox.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:selling_pictures_platform/Widgets/orderCard.dart';
 import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:selling_pictures_platform/main.dart';
@@ -562,10 +559,15 @@ class ShippingDetails extends StatelessWidget {
         .doc(postBy)
         .collection("Review")
         .doc(orderID)
-        .set({
-      "message": reviewTextController.text.trim(),
-      "starRating": getReviewCount,
-    });
+        .set(
+      {
+        "message": reviewTextController.text.trim(),
+        "starRating": getReviewCount,
+        "reviewBy":
+            EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+        "reviewDate": DateTime.now().millisecondsSinceEpoch.toString(),
+      },
+    );
   }
 
   _handleSubmit(String message) {
@@ -645,14 +647,13 @@ class _ChatPageState extends State<ChatPage> {
     return new Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      appBar: new AppBar(
+      appBar: AppBar(
         backgroundColor: HexColor(
           "E67928",
         ),
         title: new Text("チャットページ"),
       ),
       body: Container(
-        // margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
           children: <Widget>[
             Container(
