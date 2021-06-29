@@ -28,7 +28,8 @@ class StoreHome extends StatefulWidget {
   _StoreHomeState createState() => _StoreHomeState();
 }
 
-class _StoreHomeState extends State<StoreHome> {
+class _StoreHomeState extends State<StoreHome>
+    with SingleTickerProviderStateMixin {
   void initAd() {
     BannerAd bannerAd = BannerAd(
       adUnitId: "ca-app-pub-3940256099942544/2934735716",
@@ -50,12 +51,14 @@ class _StoreHomeState extends State<StoreHome> {
   //final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final CarouselController _buttonCarouselController = CarouselController();
   final mainColor = HexColor("E67928");
+  TabController _tabcontroller;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     initAd();
+    _tabcontroller = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -108,15 +111,15 @@ class _StoreHomeState extends State<StoreHome> {
                                       margin:
                                           EdgeInsets.symmetric(horizontal: 5.0),
                                       child: ClipRRect(
-                                        child: AdWidget(
-                                          ad: BannerAd(
-                                            adUnitId:
-                                                "ca-app-pub-3940256099942544/2934735716",
-                                            size: AdSize.banner,
-                                            request: AdRequest(),
-                                            listener: BannerAdListener(),
-                                          )..load(),
-                                        ),
+                                        // child: AdWidget(
+                                        //   ad: BannerAd(
+                                        //     adUnitId:
+                                        //         "ca-app-pub-3940256099942544/2934735716",
+                                        //     size: AdSize.banner,
+                                        //     request: AdRequest(),
+                                        //     listener: BannerAdListener(),
+                                        //   )..load(),
+                                        // ),
                                         borderRadius: BorderRadius.circular(
                                           15.0,
                                         ),
@@ -161,135 +164,171 @@ class _StoreHomeState extends State<StoreHome> {
                 ),
               ),
               SliverToBoxAdapter(
-                  child: Padding(
-                padding: const EdgeInsets.only(left: 12.0),
-                child: Text(
-                  "新着作品",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                child: DefaultTabController(
+                  length: 4,
+                  child: TabBar(
+                    isScrollable: true,
+                    enableFeedback: false,
+                    labelStyle:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    unselectedLabelStyle:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    unselectedLabelColor: Colors.grey,
+                    labelColor: mainColor,
+                    tabs: <Widget>[
+                      Tab(text: "作品一覧"),
+                      Tab(text: "原画作品一覧"),
+                      Tab(text: "ステッカー一覧"),
+                      Tab(text: "ポストカード一覧"),
+                    ],
+                    controller: _tabcontroller,
+                  ),
                 ),
-              )),
-              Consumer<ItemGridModel>(
-                builder: (context, model, child) {
-                  final items = model.items;
-                  return SliverGrid.count(
-                    crossAxisCount: 2,
-                    children: items
-                        .map((item) => Container(
-                              child: Padding(
-                                padding: const EdgeInsets.all(3.0),
-                                child: Card(
-                                  elevation: 0,
-                                  color: Colors.white,
-                                  clipBehavior: Clip.antiAlias,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(24),
-                                  ),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Route route = MaterialPageRoute(
-                                        builder: (c) => ProductPage(
-                                          width: item.itemWidth,
-                                          height: item.itemHeight,
-                                          shipsDate: item.shipsDate,
-                                          postName: item.postName,
-                                          thumbnailURL: item.thumbnailUrl,
-                                          shortInfo: item.shortInfo,
-                                          longDescription: item.longDescription,
-                                          price: item.price,
-                                          attribute: item.attribute,
-                                          postBy: item.postBy,
-                                          Stock: item.Stock,
-                                          id: item.id,
-                                        ),
-                                      );
-                                      Navigator.pushReplacement(
-                                        context,
-                                        route,
-                                      );
-                                    },
-                                    splashColor: Colors.black,
-                                    child: Column(
-                                      children: [
-                                        Center(
-                                          child: Container(
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                              child: Image.network(
-                                                item.thumbnailUrl,
-                                                fit: BoxFit.cover,
-                                                width: 100,
-                                                height: 135,
+              ),
+              SliverFillRemaining(
+                child: TabBarView(
+                  controller: _tabcontroller,
+                  children: [
+                    Consumer<ItemGridModel>(
+                      builder: (context, model, child) {
+                        final items = model.items;
+                        return GridView.count(
+                          crossAxisCount: 2,
+                          children: items
+                              .map(
+                                (item) => Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Card(
+                                      elevation: 0,
+                                      color: Colors.white,
+                                      clipBehavior: Clip.antiAlias,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(24),
+                                      ),
+                                      child: InkWell(
+                                        onTap: () {
+                                          Route route = MaterialPageRoute(
+                                            builder: (c) => ProductPage(
+                                              width: item.itemWidth,
+                                              height: item.itemHeight,
+                                              shipsDate: item.shipsDate,
+                                              postName: item.postName,
+                                              thumbnailURL: item.thumbnailUrl,
+                                              shortInfo: item.shortInfo,
+                                              longDescription:
+                                                  item.longDescription,
+                                              price: item.price,
+                                              attribute: item.attribute,
+                                              postBy: item.postBy,
+                                              Stock: item.Stock,
+                                              id: item.id,
+                                            ),
+                                          );
+                                          Navigator.push(
+                                            context,
+                                            route,
+                                          );
+                                        },
+                                        splashColor: Colors.black,
+                                        child: Column(
+                                          children: [
+                                            Center(
+                                              child: Container(
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                  child: Image.network(
+                                                    item.thumbnailUrl,
+                                                    fit: BoxFit.cover,
+                                                    width: 100,
+                                                    height: 135,
+                                                  ),
+                                                ),
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                // color: Colors.white,
                                               ),
                                             ),
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            // color: Colors.white,
-                                          ),
-                                        ),
-                                        Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(5.0),
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  right: 8.0),
-                                              child: Flexible(
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(5.0),
                                                 child: Padding(
                                                   padding:
                                                       const EdgeInsets.only(
-                                                          left: 8.0),
-                                                  child: Column(
-                                                    children: [
-                                                      DefaultTextStyle(
-                                                        style: new TextStyle(
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color:
-                                                                Colors.black),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        maxLines: 1,
-                                                        child: new Text(
-                                                            item.shortInfo),
+                                                          right: 8.0),
+                                                  child: Flexible(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8.0),
+                                                      child: Column(
+                                                        children: [
+                                                          DefaultTextStyle(
+                                                            style: new TextStyle(
+                                                                fontSize: 15,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .black),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            maxLines: 1,
+                                                            child: new Text(
+                                                                item.shortInfo),
+                                                          ),
+                                                          DefaultTextStyle(
+                                                            style: new TextStyle(
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color:
+                                                                    mainColor),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            maxLines: 1,
+                                                            child: new Text(
+                                                              item.price
+                                                                      .toString() +
+                                                                  "円",
+                                                            ),
+                                                          ),
+                                                        ],
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
                                                       ),
-                                                      DefaultTextStyle(
-                                                        style: new TextStyle(
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: mainColor),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        maxLines: 1,
-                                                        child: new Text(
-                                                          item.price
-                                                                  .toString() +
-                                                              "円",
-                                                        ),
-                                                      ),
-                                                    ],
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ))
-                        .toList(),
-                  );
-                },
+                              )
+                              .toList(),
+                        );
+                      },
+                    ),
+                    Text("good"),
+                    Text("hello"),
+                    Text("good"),
+                  ],
+                ),
               ),
             ],
           ),
@@ -320,158 +359,149 @@ class _StoreHomeState extends State<StoreHome> {
       ),
     );
   }
-}
 
-Widget sourceInfoForMain(ItemModel model, BuildContext context,
-    {Color background, removeCartFunction}) {
-  return Card(
-    color: HexColor("e5e2df"),
-    child: InkWell(
-      onTap: () {
-        Route route = MaterialPageRoute(
-          builder: (c) => ProductPage(
-            thumbnailURL: model.thumbnailUrl,
-            shortInfo: model.shortInfo,
-            longDescription: model.longDescription,
-            price: model.price,
-            attribute: model.attribute,
-            postBy: model.postBy,
-            Stock: model.Stock,
-            id: model.id,
-          ),
-        );
-        Navigator.pushReplacement(
-          context,
-          route,
-        );
-      },
-      splashColor: Colors.black,
+  Widget _tabSection(BuildContext context) {
+    return DefaultTabController(
+      length: 1,
       child: Column(
-        children: [
-          Center(
-            child: Container(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.network(
-                  model.thumbnailUrl,
-                  fit: BoxFit.cover,
-                  width: 100,
-                  height: 135,
-                ),
-              ),
-              width: MediaQuery.of(context).size.width,
-              // color: Colors.white,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Container(
+            child: TabBar(
+              labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              unselectedLabelStyle:
+                  TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              unselectedLabelColor: Colors.grey,
+              labelColor: mainColor,
+              tabs: [
+                Tab(text: "作品一覧"),
+              ],
             ),
           ),
-          Container(
-            color: Colors.white,
-            width: MediaQuery.of(context).size.width,
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Column(
-                      children: [
-                        DefaultTextStyle(
-                          style: new TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          child: new Text(model.shortInfo),
-                        ),
-                        DefaultTextStyle(
-                          style: new TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: mainColor),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          child: new Text(
-                            model.price.toString() + "円",
+          ChangeNotifierProvider<ItemGridModel>(
+            create: (_) => ItemGridModel()..fetchItems(),
+            child: Consumer<ItemGridModel>(
+              builder: (context, model, child) {
+                final items = model.items;
+                return SliverGrid.count(
+                  crossAxisCount: 2,
+                  children: items
+                      .map(
+                        (item) => Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(3.0),
+                            child: Card(
+                              elevation: 0,
+                              color: Colors.white,
+                              clipBehavior: Clip.antiAlias,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(24),
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  Route route = MaterialPageRoute(
+                                    builder: (c) => ProductPage(
+                                      width: item.itemWidth,
+                                      height: item.itemHeight,
+                                      shipsDate: item.shipsDate,
+                                      postName: item.postName,
+                                      thumbnailURL: item.thumbnailUrl,
+                                      shortInfo: item.shortInfo,
+                                      longDescription: item.longDescription,
+                                      price: item.price,
+                                      attribute: item.attribute,
+                                      postBy: item.postBy,
+                                      Stock: item.Stock,
+                                      id: item.id,
+                                    ),
+                                  );
+                                  Navigator.push(
+                                    context,
+                                    route,
+                                  );
+                                },
+                                splashColor: Colors.black,
+                                child: Column(
+                                  children: [
+                                    Center(
+                                      child: Container(
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          child: Image.network(
+                                            item.thumbnailUrl,
+                                            fit: BoxFit.cover,
+                                            width: 100,
+                                            height: 135,
+                                          ),
+                                        ),
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        // color: Colors.white,
+                                      ),
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 8.0),
+                                          child: Flexible(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: Column(
+                                                children: [
+                                                  DefaultTextStyle(
+                                                    style: new TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.black),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    child: new Text(
+                                                        item.shortInfo),
+                                                  ),
+                                                  DefaultTextStyle(
+                                                    style: new TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: mainColor),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    child: new Text(
+                                                      item.price.toString() +
+                                                          "円",
+                                                    ),
+                                                  ),
+                                                ],
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ],
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                    ),
-                  ),
-                ),
-              ),
+                      )
+                      .toList(),
+                );
+              },
             ),
-          ),
+          )
         ],
       ),
-    ),
-  );
-}
-
-//todo:以下商品ページ
-
-void checkItemInLike(String shortInfoAsID, BuildContext context) {
-  EcommerceApp.sharedPreferences
-          .getStringList(EcommerceApp.userLikeList)
-          .contains(shortInfoAsID)
-      ? removeItemFromLike(shortInfoAsID, context)
-      : addItemToLike(shortInfoAsID, context);
-  Route route = MaterialPageRoute(
-    builder: (c) => LikePage(),
-  );
-  Navigator.pushReplacement(context, route);
-}
-
-Future<bool> onLikeButtonTapped(
-    bool isLiked, String shortInfoAsID, BuildContext context) async {
-  EcommerceApp.sharedPreferences
-          .getStringList(EcommerceApp.userLikeList)
-          .contains(shortInfoAsID)
-      ? removeItemFromLike(shortInfoAsID, context)
-      : addItemToLike(shortInfoAsID, context);
-  return !isLiked;
-}
-
-addItemToLike(
-  String shortInfoAsID,
-  BuildContext context,
-) {
-  List tempLikeList =
-      EcommerceApp.sharedPreferences.getStringList(EcommerceApp.userLikeList);
-  tempLikeList.add(shortInfoAsID);
-  EcommerceApp.firestore
-      .collection(EcommerceApp.collectionUser)
-      .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
-      .update({EcommerceApp.userLikeList: tempLikeList}).then(
-    (v) {
-      Fluttertoast.showToast(msg: "いいねしました");
-      EcommerceApp.sharedPreferences
-          .setStringList(EcommerceApp.userLikeList, tempLikeList);
-      Provider.of<LikeItemCounter>(context, listen: false).displayResult();
-    },
-  );
-}
-
-removeItemFromLike(
-  String shortInfoAsID,
-  BuildContext context,
-) {
-  List tempCartList =
-      EcommerceApp.sharedPreferences.getStringList(EcommerceApp.userLikeList);
-  tempCartList.remove(shortInfoAsID);
-  EcommerceApp.firestore
-      .collection(EcommerceApp.collectionUser)
-      .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
-      .update(
-    {EcommerceApp.userLikeList: tempCartList},
-  ).then(
-    (v) {
-      Fluttertoast.showToast(msg: "マイいいねから削除しました");
-      EcommerceApp.sharedPreferences
-          .setStringList(EcommerceApp.userLikeList, tempCartList.cast());
-
-      //totalAmount = 0;
-    },
-  );
+    );
+  }
 }

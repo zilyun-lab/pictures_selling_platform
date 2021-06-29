@@ -5,6 +5,7 @@ import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/GetLikeItemsModel.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Counters/Likeitemcounter.dart';
 import 'package:selling_pictures_platform/Counters/totalMoney.dart';
@@ -26,11 +27,11 @@ class _LikePageState extends State<LikePage> {
     // TODO: implement initState
     super.initState();
 
-    totalAmount = 0;
-    Provider.of<TotalAmount>(
-      context,
-      listen: false,
-    ).display(0);
+    // totalAmount = 0;
+    // Provider.of<TotalAmount>(
+    //   context,
+    //   listen: false,
+    // ).display(0);
   }
 
   @override

@@ -42,14 +42,6 @@ class LEEWAY extends StatelessWidget {
             ],
           ),
         ),
-        // title: Text(
-        //   "LEEWAY",
-        //   style: GoogleFonts.sortsMillGoudy(
-        //     color: Colors.black,
-        //     fontSize: 35,
-        //     fontWeight: FontWeight.w100,
-        //   ),
-        // ),
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back_ios_outlined,

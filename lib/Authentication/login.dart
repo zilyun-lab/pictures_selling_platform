@@ -193,9 +193,6 @@ class _LoginState extends State<Login> {
                               ),
                               InkWell(
                                 onTap: () {
-                                  Route route = MaterialPageRoute(
-                                    builder: (_) => Register(),
-                                  );
                                   Navigator.pushReplacement(
                                     context,
                                     PageTransition(
@@ -259,7 +256,7 @@ class _LoginState extends State<Login> {
           context: context,
           builder: (c) {
             return ErrorAlertDialog(
-              message: error.toString(),
+              message: "メールアドレスまたはパスワードに誤りがあります。",
             );
           },
         );
@@ -269,14 +266,12 @@ class _LoginState extends State<Login> {
       readData(firebaseUser).then(
         (s) {
           Navigator.pop(context);
-          Route route = MaterialPageRoute(
-            builder: (c) => MainPage(),
-          );
+
           Navigator.pushReplacement(
             context,
             PageTransition(
               type: PageTransitionType.fade,
-              child: StoreHome(),
+              child: MainPage(),
               inheritTheme: true,
               ctx: context,
               duration: Duration(

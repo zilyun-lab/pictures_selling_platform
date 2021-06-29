@@ -1,18 +1,17 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/CheckBox.dart';
-import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:selling_pictures_platform/main.dart';
+
+import '../main.dart';
 
 final mainColor = HexColor("E67928");
 String selectedItem1 = "レッド";
@@ -24,14 +23,15 @@ TextEditingController _widthtextEditingController = TextEditingController();
 TextEditingController _heighttextEditingController = TextEditingController();
 TextEditingController _descriptiontextEditingController =
     TextEditingController();
+TextEditingController _stockInfoTextEditingController = TextEditingController();
 TextEditingController _shortInfoTextEditingController = TextEditingController();
 
-class OriginalUploadPage extends StatefulWidget {
+class PostCard extends StatefulWidget {
   @override
   _OriginalUploadPageState createState() => _OriginalUploadPageState();
 }
 
-class _OriginalUploadPageState extends State<OriginalUploadPage> {
+class _OriginalUploadPageState extends State<PostCard> {
   bool uploading = false;
   double val = 0;
 
@@ -232,100 +232,23 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                       }).toList(),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: DropdownButtonFormField<String>(
-                      validator: (val) => selectedFrame.trim() == "額縁の有無"
-                          ? "額縁の有無を選択してください。"
-                          : null,
-                      dropdownColor: HexColor("#e5e2df"),
-                      isExpanded: true,
-                      value: selectedFrame,
-                      onChanged: (String newValue) {
-                        setState(() {
-                          selectedFrame = newValue;
-                        });
-                      },
-                      selectedItemBuilder: (context) {
-                        return frame.map((String item) {
-                          return Text(
-                            item,
-                            style: TextStyle(),
-                          );
-                        }).toList();
-                      },
-                      items: frame.map((String item) {
-                        return DropdownMenuItem(
-                          value: item,
-                          child: ListTile(
-                            title: Text(
-                              item,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
                 ],
               ),
             ),
             SizedBox(
               height: 20,
             ),
-            uploadTitle("作品サイズ(縦 × 横)", 8.0),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Text("在庫数"),
+            ),
             Container(
               color: Colors.white,
-              child: Expanded(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 12.0),
-                        child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          validator: (val) =>
-                              _heighttextEditingController.text.isEmpty
-                                  ? "未記入の項目があります。"
-                                  : null,
-                          style: TextStyle(color: Colors.deepPurpleAccent),
-                          controller: _heighttextEditingController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            labelText: "mm",
-                            hintText: "mm",
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Text("x"),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 12.0),
-                        child: TextFormField(
-                          keyboardType: TextInputType.number,
-                          validator: (val) =>
-                              _widthtextEditingController.text.isEmpty
-                                  ? "未記入の項目があります。"
-                                  : null,
-                          style: TextStyle(color: Colors.deepPurpleAccent),
-                          controller: _widthtextEditingController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            labelText: "mm",
-                            hintText: "mm",
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              child: infoTiles(
+                keyboard: TextInputType.number,
+                hintText: "在庫数",
+                controller: _stockInfoTextEditingController,
+                alert: "未記入の項目があります。",
               ),
             ),
             SizedBox(
@@ -377,8 +300,8 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                 trailing: Text("円"),
                 title: TextFormField(
                   validator: (val) =>
-                      int.parse(_pricetextEditingController.text) < 5000
-                          ? "原画は5000円からの出品となります。"
+                      int.parse(_pricetextEditingController.text) < 500
+                          ? "ポストカードは500円からの出品となります。"
                           : null,
                   keyboardType: TextInputType.number,
                   style: TextStyle(color: Colors.black),
@@ -404,6 +327,7 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                     uploadFile();
                     confirmItemOfOriginal();
                     print(_imagesURL);
+                    print(_image);
                   }
                 },
                 child: Text("出品する"),
@@ -439,13 +363,30 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
   }
 
   saveToFB() {
-    EcommerceApp.firestore
+    final userItemRef = EcommerceApp.firestore
         .collection(EcommerceApp.collectionUser)
         .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
         .collection("MyUploadItems")
-        .doc(productID)
-        .collection("itemImages")
-        .add({'image': _imagesURL});
+        .doc(productID);
+    userItemRef.set({
+      "shortInfo": _shortInfoTextEditingController.text.trim(),
+      "longDescription": _descriptiontextEditingController.text.trim(),
+      "price": int.parse(_pricetextEditingController.text),
+      "publishedDate": DateTime.now(),
+      "status": "available",
+      "thumbnailUrl": _imagesURL[0],
+      "postBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+      "attribute": "PostCard",
+      "Stock": int.parse(_stockInfoTextEditingController.text),
+      "id": userItemRef.id,
+      "color1": selectedItem1.trim(),
+      "color2": selectedItem2.trim(),
+      "postName":
+          EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+      "shipsDate": selectedItem3.trim(),
+      "itemHeight": "148",
+      "itemWidth": "100",
+    });
     final itemRef =
         FirebaseFirestore.instance.collection("items").doc(productID);
     itemRef.set({
@@ -456,17 +397,16 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
       "status": "available",
       'thumbnailUrl': _imagesURL[0],
       "postBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-      "attribute": "Original",
-      "Stock": 1,
+      "attribute": "PostCard",
+      "Stock": int.parse(_stockInfoTextEditingController.text),
       "id": itemRef.id,
       "color1": selectedItem1.trim(),
       "color2": selectedItem2.trim(),
-      "itemWidth": _widthtextEditingController.text,
-      "itemHeight": _heighttextEditingController.text,
-      "Frame": selectedFrame.trim(),
       "postName":
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-      "shipsDate": selectedItem3.trim()
+      "shipsDate": selectedItem3.trim(),
+      "itemHeight": "148",
+      "itemWidth": "100",
     });
     FirebaseFirestore.instance
         .collection("items")
@@ -511,7 +451,6 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
             "利用規約の確認の確認は行いましたか？\nまた規約に同意しますか？",
             "OK",
             () {
-              uploadFile();
               saveToFB();
               Route route = MaterialPageRoute(
                 builder: (c) => MainPage(),

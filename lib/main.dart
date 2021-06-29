@@ -16,6 +16,8 @@ import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'Admin/test.dart';
+import 'Authentication/NewUserSplashScreen.dart';
+import 'Authentication/SubmitBirthDay.dart';
 import 'Counters/Likeitemcounter.dart';
 import 'Counters/changeAddresss.dart';
 import 'Counters/totalMoney.dart';
@@ -54,8 +56,12 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        key: GlobalKey<ScaffoldState>(),
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
+        theme: ThemeData(
+          primaryColor: HexColor("#E67928"),
+        ),
       ),
     );
   }
@@ -212,13 +218,11 @@ class _MainPageState extends State<MainPage> {
             title: Padding(
               padding: const EdgeInsets.all(125.0),
               child: InkWell(
-                child: Image.asset("images/NoColor_horizontal.png"),
                 onTap: () {
-                  Route route = MaterialPageRoute(
-                    builder: (c) => Test(),
-                  );
-                  Navigator.pushReplacement(context, route);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (c) => NewUserSplashScreen()));
                 },
+                child: Image.asset("images/NoColor_horizontal.png"),
               ),
             ),
           );

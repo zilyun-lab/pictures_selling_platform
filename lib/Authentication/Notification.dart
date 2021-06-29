@@ -31,16 +31,7 @@ class UserNotification extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return Card(
                               child: ListTile(
-                                onTap: () {
-                                  // Route route = MaterialPageRoute(
-                                  //     builder: (c) => TransactionDetailsPage(
-                                  //           notifyID: dataSnapshot
-                                  //               .data.docs[index].id,
-                                  //           imageURL: dataSnapshot
-                                  //               .data.docs[index]["imageURL"],
-                                  //         ));
-                                  // Navigator.pushReplacement(context, route);
-                                },
+                                onTap: () {},
                                 title: Flexible(
                                   child: Text(
                                     '${dataSnapshot.data.docs[index]["orderBy"]} さんより ${dataSnapshot.data.docs[index]["productIDs"]} を購入いただきました。\n取引完了まで少々お待ちください。',

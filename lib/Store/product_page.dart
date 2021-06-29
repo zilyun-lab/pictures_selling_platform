@@ -12,6 +12,7 @@ import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
 import 'package:flutter/material.dart';
 import 'package:selling_pictures_platform/Orders/myOrders.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import '../main.dart';
 import 'ARPage.dart';
 
@@ -885,7 +886,6 @@ class _ProductPageState extends State<ProductPage> {
           ),
           content: Container(child: Text("$shortInfo を削除します。\n本当によろしいですか？")),
           actions: <Widget>[
-            // ボタン領域
             ElevatedButton(
               child: Text("キャンセル"),
               onPressed: () => Navigator.pop(context),

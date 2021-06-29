@@ -48,13 +48,14 @@ class _MyOrdersState extends State<MyOrders> {
         ),
         actions: [
           IconButton(
-              icon: Icon(
-                Icons.arrow_drop_down_circle,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                SystemNavigator.pop();
-              })
+            icon: Icon(
+              Icons.arrow_drop_down_circle,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              SystemNavigator.pop();
+            },
+          ),
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(

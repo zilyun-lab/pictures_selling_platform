@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:selling_pictures_platform/Admin/MyUploadItems.dart';
 import 'package:selling_pictures_platform/Admin/uploadItems.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../main.dart';
@@ -111,92 +113,7 @@ class PublicUserPage extends StatelessWidget {
                                         }
                                         return null;
                                       }),
-                                  CarouselSlider(
-                                    items: [
-                                      SingleChildScrollView(
-                                        child: Column(
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                launch(EcommerceApp
-                                                    .sharedPreferences
-                                                    .getString(EcommerceApp
-                                                        .TwitterURL));
-                                              },
-                                              child: EcommerceApp
-                                                          .sharedPreferences
-                                                          .getString(EcommerceApp
-                                                              .TwitterURL) !=
-                                                      ""
-                                                  ? FaIcon(
-                                                      FontAwesomeIcons
-                                                          .twitterSquare,
-                                                      color:
-                                                          HexColor("#E67928"),
-                                                      size: 70,
-                                                    )
-                                                  : FaIcon(
-                                                      FontAwesomeIcons
-                                                          .twitterSquare,
-                                                      color: Colors.white54,
-                                                      size: 70,
-                                                    ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          launch(EcommerceApp.sharedPreferences
-                                              .getString(
-                                                  EcommerceApp.FaceBookURL));
-                                        },
-                                        child: EcommerceApp.sharedPreferences
-                                                    .getString(EcommerceApp
-                                                        .FaceBookURL) !=
-                                                ""
-                                            ? FaIcon(
-                                                FontAwesomeIcons.facebookSquare,
-                                                color: HexColor("#E67928"),
-                                                size: 70,
-                                              )
-                                            : FaIcon(
-                                                FontAwesomeIcons.facebookSquare,
-                                                color: Colors.white54,
-                                                size: 70,
-                                              ),
-                                      ),
-                                      InkWell(
-                                        onTap: () {
-                                          launch(EcommerceApp.sharedPreferences
-                                              .getString(
-                                                  EcommerceApp.InstagramURL));
-                                        },
-                                        child: EcommerceApp.sharedPreferences
-                                                    .getString(EcommerceApp
-                                                        .InstagramURL) ==
-                                                ""
-                                            ? FaIcon(
-                                                FontAwesomeIcons
-                                                    .instagramSquare,
-                                                color: Colors.white54,
-                                                size: 70,
-                                              )
-                                            : FaIcon(
-                                                FontAwesomeIcons
-                                                    .instagramSquare,
-                                                color: HexColor("#E67928"),
-                                                size: 70,
-                                              ),
-                                      ),
-                                    ],
-                                    options: CarouselOptions(
-                                      height: 80,
-                                      viewportFraction: 0.3,
-                                      enableInfiniteScroll: true,
-                                      enlargeCenterPage: true,
-                                    ),
-                                  ),
+                                  carouselSliderItems(),
                                 ],
                               ),
                             ),
@@ -229,6 +146,82 @@ class PublicUserPage extends StatelessWidget {
             _tabSection(context)
           ],
         ),
+      ),
+    );
+  }
+
+  Widget carouselSliderItems() {
+    return CarouselSlider(
+      items: [
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  launch(EcommerceApp.sharedPreferences
+                      .getString(EcommerceApp.TwitterURL));
+                },
+                child: EcommerceApp.sharedPreferences
+                            .getString(EcommerceApp.TwitterURL) !=
+                        ""
+                    ? FaIcon(
+                        FontAwesomeIcons.twitterSquare,
+                        color: HexColor("#E67928"),
+                        size: 70,
+                      )
+                    : FaIcon(
+                        FontAwesomeIcons.twitterSquare,
+                        color: Colors.white54,
+                        size: 70,
+                      ),
+              ),
+            ],
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            launch(EcommerceApp.sharedPreferences
+                .getString(EcommerceApp.FaceBookURL));
+          },
+          child: EcommerceApp.sharedPreferences
+                      .getString(EcommerceApp.FaceBookURL) !=
+                  ""
+              ? FaIcon(
+                  FontAwesomeIcons.facebookSquare,
+                  color: HexColor("#E67928"),
+                  size: 70,
+                )
+              : FaIcon(
+                  FontAwesomeIcons.facebookSquare,
+                  color: Colors.white54,
+                  size: 70,
+                ),
+        ),
+        InkWell(
+          onTap: () {
+            launch(EcommerceApp.sharedPreferences
+                .getString(EcommerceApp.InstagramURL));
+          },
+          child: EcommerceApp.sharedPreferences
+                      .getString(EcommerceApp.InstagramURL) ==
+                  ""
+              ? FaIcon(
+                  FontAwesomeIcons.instagramSquare,
+                  color: Colors.white54,
+                  size: 70,
+                )
+              : FaIcon(
+                  FontAwesomeIcons.instagramSquare,
+                  color: HexColor("#E67928"),
+                  size: 70,
+                ),
+        ),
+      ],
+      options: CarouselOptions(
+        height: 80,
+        viewportFraction: 0.3,
+        enableInfiniteScroll: true,
+        enlargeCenterPage: true,
       ),
     );
   }

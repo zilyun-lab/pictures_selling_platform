@@ -174,85 +174,8 @@ class _AddAddressState extends State<AddAddress> {
                       hint: "例) 太郎",
                       controller: cFirstName,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                              inputFormatters: [
-                                LengthLimitingTextInputFormatter(7),
-                              ],
-                              validator: (val) =>
-                                  val.isEmpty ? "未記入の項目があります" : null,
-                              maxLines: 1,
-                              controller: cPostalCode,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                labelText: '郵便番号',
-                                labelStyle: TextStyle(color: Colors.black),
-                                suffixIcon: IconButton(
-                                  highlightColor: Colors.transparent,
-                                  icon: Container(
-                                      width: 36.0,
-                                      child: new Icon(Icons.clear)),
-                                  onPressed: () {
-                                    cPostalCode.clear();
-                                    cCity.clear();
-                                  },
-                                  splashColor: Colors.transparent,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: HexColor("E67928"), //ボタンの背景色
-                          ),
-                          child: Text(
-                            '検索',
-                          ),
-                          onPressed: () async {
-                            var result = await get(Uri.parse(
-                                'https://zipcloud.ibsnet.co.jp/api/search?zipcode=${cPostalCode.text}'));
-                            Map<String, dynamic> map =
-                                jsonDecode(result.body)['results'][0];
-                            cCity.text = '${map['address2']}${map['address3']}';
-                          },
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DropdownButtonFormField<String>(
-                        value: selectedItem,
-                        onChanged: (String newValue) {
-                          setState(() {
-                            selectedItem = newValue;
-                          });
-                        },
-                        selectedItemBuilder: (context) {
-                          return items.map((String item) {
-                            return Text(
-                              item,
-                              style: TextStyle(color: Colors.black),
-                            );
-                          }).toList();
-                        },
-                        items: items.map((String item) {
-                          return DropdownMenuItem(
-                            value: item,
-                            child: Text(
-                              item,
-                              style: item == selectedItem
-                                  ? TextStyle(fontWeight: FontWeight.bold)
-                                  : TextStyle(fontWeight: FontWeight.normal),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    ),
+                    serachAddress(cPostalCode, cCity),
+                    selectPrefectures(),
                     MyTextField(
                       label: "市区町村",
                       hint: "例) 札幌市中央区",
@@ -263,37 +186,13 @@ class _AddAddressState extends State<AddAddress> {
                       hint: "２番地１６",
                       controller: cAddress,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(11),
-                        ],
-                        // keyboardType: TextInputType.number,
-                        controller: cSecondAddress,
-                        decoration: InputDecoration(
-                          labelText: "任意の建物名",
-                          labelStyle: TextStyle(color: Colors.black),
-                          hintText: "例) 北１条西2丁目　Leewayビル２階１２３号室",
-                        ),
-                        validator: (val) => val.isEmpty ? null : null,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(11),
-                        ],
-                        keyboardType: TextInputType.number,
-                        controller: cPhoneNumber,
-                        decoration: InputDecoration(
-                          labelText: "電話番号",
-                          labelStyle: TextStyle(color: Colors.black),
-                          hintText: "例) 09012345678",
-                        ),
-                        validator: (val) => val.isEmpty ? "未記入の項目があります" : null,
-                      ),
+                    textField(cSecondAddress, "任意の建物名",
+                        "例) 北１条西2丁目　Leewayビル２階１２３号室", 500),
+                    textField(
+                      cPhoneNumber,
+                      "電話番号",
+                      "例) 09012345678",
+                      11,
                     ),
                   ],
                 ),
@@ -301,6 +200,39 @@ class _AddAddressState extends State<AddAddress> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget selectPrefectures() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: DropdownButtonFormField<String>(
+        value: selectedItem,
+        onChanged: (String newValue) {
+          setState(() {
+            selectedItem = newValue;
+          });
+        },
+        selectedItemBuilder: (context) {
+          return items.map((String item) {
+            return Text(
+              item,
+              style: TextStyle(color: Colors.black),
+            );
+          }).toList();
+        },
+        items: items.map((String item) {
+          return DropdownMenuItem(
+            value: item,
+            child: Text(
+              item,
+              style: item == selectedItem
+                  ? TextStyle(fontWeight: FontWeight.bold)
+                  : TextStyle(fontWeight: FontWeight.normal),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -334,4 +266,71 @@ class MyTextField extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget serachAddress(
+    TextEditingController PostalCode, TextEditingController City) {
+  return Row(
+    children: [
+      Expanded(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextFormField(
+            inputFormatters: [
+              LengthLimitingTextInputFormatter(7),
+            ],
+            validator: (val) => val.isEmpty ? "未記入の項目があります" : null,
+            maxLines: 1,
+            controller: PostalCode,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: '郵便番号',
+              labelStyle: TextStyle(color: Colors.black),
+              suffixIcon: IconButton(
+                highlightColor: Colors.transparent,
+                icon: Container(width: 36.0, child: new Icon(Icons.clear)),
+                onPressed: () {
+                  PostalCode.clear();
+                  City.clear();
+                },
+                splashColor: Colors.transparent,
+              ),
+            ),
+          ),
+        ),
+      ),
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: HexColor("E67928"), //ボタンの背景色
+        ),
+        child: Text(
+          '検索',
+        ),
+        onPressed: () async {
+          var result = await get(Uri.parse(
+              'https://zipcloud.ibsnet.co.jp/api/search?zipcode=${PostalCode.text}'));
+          Map<String, dynamic> map = jsonDecode(result.body)['results'][0];
+          City.text = '${map['address2']}${map['address3']}';
+        },
+      ),
+    ],
+  );
+}
+
+Widget textField(
+    TextEditingController controller, String label, String hint, int length) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: TextFormField(
+      inputFormatters: [LengthLimitingTextInputFormatter(length)],
+      // keyboardType: TextInputType.number,
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.black),
+        hintText: hint,
+      ),
+      validator: (val) => val.isEmpty ? null : null,
+    ),
+  );
 }

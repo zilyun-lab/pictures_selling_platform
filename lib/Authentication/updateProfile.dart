@@ -30,7 +30,6 @@ class _ChangeProfileState extends State<ChangeProfile> {
       TextEditingController(
           text: EcommerceApp.sharedPreferences
               .getString(EcommerceApp.userDescription)
-              .trim()
               .toString());
   final TextEditingController _facebookEditingController =
       TextEditingController(
@@ -47,7 +46,8 @@ class _ChangeProfileState extends State<ChangeProfile> {
           .getString(EcommerceApp.TwitterURL)
           .toString());
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  String userImageUrl = "";
+  String userImageUrl =
+      "${EcommerceApp.sharedPreferences.getString(EcommerceApp.userAvatarUrl)}";
   File _imageFile;
 
   @override
@@ -90,8 +90,7 @@ class _ChangeProfileState extends State<ChangeProfile> {
                     child: CircleAvatar(
                       radius: _screenWidth * 0.15,
                       backgroundImage: _imageFile == null
-                          ? NetworkImage(EcommerceApp.sharedPreferences
-                              .getString(EcommerceApp.userAvatarUrl))
+                          ? NetworkImage(userImageUrl)
                           : FileImage(_imageFile),
                       child: _imageFile == null ? null : null,
                     ),
@@ -281,20 +280,7 @@ class _ChangeProfileState extends State<ChangeProfile> {
       );
     }
 
-    if (_imageFile == null) {
-      showDialog(
-        context: context,
-        builder: (c) {
-          return ErrorAlertDialog(
-            message: "画像を選択してください。",
-          );
-        },
-      );
-    } else {
-      _nameEditingController.text.isNotEmpty
-          ? uploadToStorage()
-          : displayDialog("未記入の項目があります。");
-    }
+    _imageFile == null ? saveUserInfoToFirestore() : uploadToStorage();
   }
 
   displayDialog(String msg) {
@@ -326,8 +312,6 @@ class _ChangeProfileState extends State<ChangeProfile> {
       (urlImage) {
         userImageUrl = urlImage;
         saveUserInfoToFirestore();
-        Route route = MaterialPageRoute(builder: (c) => MyPage());
-        Navigator.pushReplacement(context, route);
       },
     );
   }

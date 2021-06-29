@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:selling_pictures_platform/Address/addAddress.dart';
 import 'package:selling_pictures_platform/Admin/MyUploadItems.dart';
+import 'package:selling_pictures_platform/Admin/PostCard.dart';
+import 'package:selling_pictures_platform/Admin/Sticker.dart';
 import 'package:selling_pictures_platform/Admin/uploadItems.dart';
 import 'package:selling_pictures_platform/Authentication/updateProfile.dart';
 import 'package:selling_pictures_platform/Authentication/Notification.dart';

@@ -75,24 +75,6 @@ class _AddressState extends State<Address> {
           },
         ),
       ],
-
-      // drawer: MyDrawer(),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   label: Text("お届け先住所を追加する"),
-      //   backgroundColor: Colors.black,
-      //   icon: Icon(
-      //     Icons.add_business,
-      //   ),
-      //   onPressed: () {
-      //     Route route = MaterialPageRoute(
-      //       builder: (c) => AddAddress(),
-      //     );
-      //     Navigator.pushReplacement(
-      //       context,
-      //       route,
-      //     );
-      //   },
-      // ),
     );
   }
 
@@ -167,24 +149,6 @@ class _AddressCardState extends State<AddressCard> {
                       width: screenwidth * 0.8,
                       child: Table(
                         children: [
-                          // TableRow(
-                          //   children: [
-                          //     Padding(
-                          //       padding: const EdgeInsets.only(bottom: 3.0),
-                          //       child: KeyText(msg: "名字"),
-                          //     ),
-                          //     Text(widget.model.lastName),
-                          //   ],
-                          // ),
-                          // TableRow(
-                          //   children: [
-                          //     Padding(
-                          //       padding: const EdgeInsets.only(bottom: 3.0),
-                          //       child: KeyText(msg: "名前"),
-                          //     ),
-                          //     Text(widget.model.firstName),
-                          //   ],
-                          // ),
                           TableRow(
                             children: [
                               Padding(
@@ -204,33 +168,6 @@ class _AddressCardState extends State<AddressCard> {
                               Text(widget.model.postalCode),
                             ],
                           ),
-                          // TableRow(
-                          //   children: [
-                          //     Padding(
-                          //       padding: const EdgeInsets.only(bottom: 3.0),
-                          //       child: KeyText(msg: "都道府県"),
-                          //     ),
-                          //     Text(widget.model.prefectures),
-                          //   ],
-                          // ),
-                          // TableRow(
-                          //   children: [
-                          //     Padding(
-                          //       padding: const EdgeInsets.only(bottom: 3.0),
-                          //       child: KeyText(msg: "市区町村"),
-                          //     ),
-                          //     Text(widget.model.city),
-                          //   ],
-                          // ),
-                          // TableRow(
-                          //   children: [
-                          //     Padding(
-                          //       padding: const EdgeInsets.only(bottom: 3.0),
-                          //       child: KeyText(msg: "番地および\n任意の建物名"),
-                          //     ),
-                          //     Text(widget.model.address),
-                          //   ],
-                          // ),
                           TableRow(
                             children: [
                               Padding(
@@ -242,15 +179,6 @@ class _AddressCardState extends State<AddressCard> {
                                   widget.model.address),
                             ],
                           ),
-                          // TableRow(
-                          //   children: [
-                          //     Padding(
-                          //       padding: const EdgeInsets.only(bottom: 3.0),
-                          //       child: KeyText(msg: "電話番号"),
-                          //     ),
-                          //     Text(widget.model.phoneNumber),
-                          //   ],
-                          // ),
                         ],
                       ),
                     ),
@@ -258,19 +186,6 @@ class _AddressCardState extends State<AddressCard> {
                 ),
               ],
             ),
-            // widget.value == Provider.of<AddressChanger>(context).counter
-            //     ? WideButton(
-            //         message: "決済ページへ",
-            //         onPressed: () {
-            //           Route route = MaterialPageRoute(
-            //               builder: (c) => PaymentPage(
-            //                  addressId: widget.addressId,
-            //                     totalAmount: widget.totalAmount,
-            //                   ));
-            //           Navigator.push(context, route);
-            //         },
-            //       )
-            //     : Container(),
           ],
         ),
       ),

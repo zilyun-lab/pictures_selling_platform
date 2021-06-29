@@ -620,7 +620,7 @@ class ShippingDetails extends StatelessWidget {
 
     getOrderId = "";
     Route route = MaterialPageRoute(builder: (c) => StoreHome());
-    Navigator.pushReplacement(context, route);
+    Navigator.push(context, route);
     Fluttertoast.showToast(msg: "取引が完了しました。\n引き続きLEEWAYをお楽しみください。");
   }
 }
