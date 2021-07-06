@@ -1,11 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:flutter_credit_card/credit_card_form.dart';
-import 'package:flutter_credit_card/credit_card_model.dart';
-import 'package:flutter_credit_card/credit_card_widget.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +8,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Address/addAddress.dart';
 import 'package:selling_pictures_platform/Address/address.dart';
-import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Counters/changeAddresss.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/address.dart';
-import 'package:selling_pictures_platform/Models/item.dart';
+import 'package:selling_pictures_platform/Orders/OrderDetailsPage.dart';
 import 'package:selling_pictures_platform/Orders/myOrders.dart';
-import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
@@ -42,7 +35,9 @@ class CheckOutPage extends StatefulWidget {
       this.attribute,
       this.id,
       this.userName,
-      this.postName});
+      this.postName,
+      this.stock,
+      this.finalGetProceeds});
 
   final shortInfo;
   final imageURL;
@@ -51,12 +46,14 @@ class CheckOutPage extends StatefulWidget {
   final int value;
   final int currentIndex;
   final String addressId;
+  final int stock;
   final V;
   final AddressModel model;
   final String attribute;
   final String id;
   final String userName;
   final String postName;
+  final double finalGetProceeds;
 
   @override
   State<CheckOutPage> createState() => _CheckOutPageState();
@@ -71,6 +68,33 @@ class _CheckOutPageState extends State<CheckOutPage> {
   TextEditingController _expMonthEditingController = TextEditingController();
   TextEditingController _expYearEditingController = TextEditingController();
   TextEditingController _cvcNumberEditingController = TextEditingController();
+
+  String _email;
+
+  String _proceeds;
+  String _postName;
+  @override
+  void initState() {
+    fetchUserData();
+    fetchGetProceeds();
+  }
+
+  void fetchUserData() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.postBy)
+        .get();
+    _email = snapshot.data()['email'];
+  }
+
+  void fetchGetProceeds() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('items')
+        .doc(widget.id)
+        .get();
+    _proceeds = snapshot.data()['finalGetProceeds'].toString();
+    _postName = snapshot.data()['postName'].toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +117,14 @@ class _CheckOutPageState extends State<CheckOutPage> {
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
-        title: Text(
-          "購入画面",
-          style: TextStyle(color: Colors.black),
+        title: InkWell(
+          onTap: () {
+            print(_postName);
+          },
+          child: Text(
+            "購入画面",
+            style: TextStyle(color: Colors.black),
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -671,7 +700,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                               ? FirebaseFirestore.instance.collection("items").doc(widget.id).update({
                                                                                   "Stock": 0,
                                                                                 })
-                                                                              : null;
+                                                                              : FirebaseFirestore.instance.collection("items").doc(widget.id).update({
+                                                                                  // "Stock": widget.stock - 1,
+                                                                                  "Stock": FieldValue.increment(-1),
+                                                                                });
                                                                           final ref = EcommerceApp
                                                                               .firestore
                                                                               .collection(EcommerceApp.collectionUser)
@@ -693,7 +725,12 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                               "isTransactionFinished": "inComplete",
                                                                               "isDelivery": "inComplete",
                                                                               "itemPrice": widget.price,
-                                                                              "postName": widget.userName
+                                                                              "postName": widget.userName,
+                                                                              "email": EcommerceApp.sharedPreferences.getString(EcommerceApp.userEmail),
+                                                                              "CancelRequest": false,
+                                                                              "CancelRequestTo": false,
+                                                                              "cancelTransactionFinished": false,
+                                                                              "itemID": widget.id
                                                                             },
                                                                           ).whenComplete(
                                                                             () =>
@@ -741,6 +778,18 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                                 widget.price,
                                                                             "buyerID":
                                                                                 EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+                                                                            "email":
+                                                                                _email,
+                                                                            "finalGetProceeds":
+                                                                                _proceeds,
+                                                                            "CancelRequest":
+                                                                                false,
+                                                                            "CancelRequestTo":
+                                                                                false,
+                                                                            "cancelTransactionFinished":
+                                                                                false,
+                                                                            "itemID":
+                                                                                widget.id
                                                                           });
                                                                         },
                                                                       ),
@@ -831,9 +880,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
       name: widget.postName,
       id: widget.postBy,
     );
+
     Fluttertoast.showToast(msg: "注文を承りました");
     Route route = MaterialPageRoute(
         builder: (c) => MyOrders(
+              finalGetProceeds: widget.finalGetProceeds,
               name: widget.postName,
               id: widget.postBy,
             ));
@@ -848,7 +899,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
             ),
           ),
           content: Text(
-              "よろしければ「${widget.shortInfo}」の作者である\n「${widget.userName}」さんをフォローして応援しませんか？"),
+              "よろしければ「${widget.shortInfo}」の作者である\n「$_postName」さんをフォローして応援しませんか？"),
           actions: [
             ElevatedButton(
               child: Text("フォローしない"),

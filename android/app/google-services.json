@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "576176085064",
+    "firebase_url": "https://selling-pictures-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "selling-pictures",
+    "storage_bucket": "selling-pictures.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576176085064:android:705f24c342de98b06aa07d",
+        "android_client_info": {
+          "package_name": "com.masaru.selling_pictures_platform"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "576176085064-n7m0dquldidrdlmn1d4k6iicv10ple5f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAx9yQIl3h25jjN-aA9K1qga6Nog4qFsVQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "576176085064-n7m0dquldidrdlmn1d4k6iicv10ple5f.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "576176085064-61udn61c9q5oudghu6e93gqsrbhdag12.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.masaru.sellingPicturesPlatform"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

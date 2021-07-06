@@ -12,8 +12,10 @@ import '../Widgets/orderCard.dart';
 class MyOrders extends StatefulWidget {
   final String name;
   final String id;
+  final double finalGetProceeds;
 
-  const MyOrders({Key key, this.name, this.id}) : super(key: key);
+  const MyOrders({Key key, this.name, this.id, this.finalGetProceeds})
+      : super(key: key);
 
   @override
   _MyOrdersState createState() => _MyOrdersState();
@@ -83,6 +85,7 @@ class _MyOrdersState extends State<MyOrders> {
                       builder: (c, snap) {
                         return snap.hasData
                             ? OrderCard(
+                                finalGetProceeds: widget.finalGetProceeds,
                                 totalPrice: snapshot.data.docs[index]
                                     ["totalPrice"],
                                 itemCount: snap.data.docs.length,

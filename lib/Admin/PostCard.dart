@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
@@ -34,6 +35,8 @@ class PostCard extends StatefulWidget {
 class _OriginalUploadPageState extends State<PostCard> {
   bool uploading = false;
   double val = 0;
+  String _selectShipsDays = '';
+  String _selectShipsPayment = '';
 
   @override
   void initState() {
@@ -82,7 +85,7 @@ class _OriginalUploadPageState extends State<PostCard> {
       ),
       body: Form(
         key: _formKey,
-        child: ListView(
+        child: Stack(
           children: [
             uploading
                 ? Center(
@@ -105,238 +108,249 @@ class _OriginalUploadPageState extends State<PostCard> {
                     ],
                   ))
                 : Container(),
-            Container(
-              padding: EdgeInsets.all(4),
-              child: GridView.builder(
-                  shrinkWrap: true,
-                  itemCount: _image.length + 1,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3),
-                  itemBuilder: (context, index) {
-                    return index == 0
-                        ? Center(
-                            child: _image.length <= 4
-                                ? IconButton(
-                                    icon: Icon(Icons.add),
-                                    onPressed: () =>
-                                        !uploading ? chooseImage() : null)
-                                : IconButton(
-                                    icon: Icon(Icons.add),
-                                  ),
-                          )
-                        : Container(
-                            margin: EdgeInsets.all(3),
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: FileImage(_image[index - 1]),
-                                    fit: BoxFit.cover)),
-                          );
-                  }),
-            ),
-            uploadTitle("作品名と作品説明", 8.0),
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  infoTiles(
-                    hintText: "作品名",
-                    controller: _shortInfoTextEditingController,
-                    alert: "未記入の項目があります。",
+            ListView(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(4),
+                  child: GridView.builder(
+                      shrinkWrap: true,
+                      itemCount: _image.length + 1,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3),
+                      itemBuilder: (context, index) {
+                        return index == 0
+                            ? Center(
+                                child: _image.length <= 4
+                                    ? IconButton(
+                                        icon: Icon(Icons.add),
+                                        onPressed: () =>
+                                            !uploading ? chooseImage() : null)
+                                    : IconButton(
+                                        icon: Icon(Icons.add),
+                                      ),
+                              )
+                            : Container(
+                                margin: EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: FileImage(_image[index - 1]),
+                                        fit: BoxFit.cover)),
+                              );
+                      }),
+                ),
+                uploadTitle("作品名と作品説明", 8.0),
+                Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      infoTiles(
+                        hintText: "作品名",
+                        controller: _shortInfoTextEditingController,
+                        alert: "未記入の項目があります。",
+                      ),
+                      Divider(),
+                      infoTiles(
+                        hintText: "作品について",
+                        controller: _descriptiontextEditingController,
+                        alert: "未記入の項目があります。",
+                      ),
+                    ],
                   ),
-                  Divider(),
-                  infoTiles(
-                    hintText: "作品について",
-                    controller: _descriptiontextEditingController,
-                    alert: "未記入の項目があります。",
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            uploadTitle("作品情報", 8.0),
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: DropdownButtonFormField<String>(
-                      dropdownColor: HexColor("#e5e2df"),
-                      isExpanded: true,
-                      value: selectedItem1,
-                      onChanged: (String newValue) {
-                        setState(() {
-                          selectedItem1 = newValue;
-                        });
-                      },
-                      selectedItemBuilder: (context) {
-                        return color1.map((item) {
-                          return Text(
-                            item.key,
-                            style: TextStyle(color: item.value),
-                          );
-                        }).toList();
-                      },
-                      items: color1.map((item) {
-                        return DropdownMenuItem(
-                          value: item.key,
-                          child: ListTile(
-                            title: Text(
-                              item.key,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            trailing: Icon(
-                              Icons.waves,
-                              color: item.value,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: DropdownButtonFormField<String>(
-                      dropdownColor: HexColor("#e5e2df"),
-                      isExpanded: true,
-                      value: selectedItem2,
-                      onChanged: (String newValue) {
-                        setState(() {
-                          selectedItem2 = newValue;
-                        });
-                      },
-                      selectedItemBuilder: (context) {
-                        return color2.map((item) {
-                          return Text(
-                            item.key,
-                            style: TextStyle(color: item.value),
-                          );
-                        }).toList();
-                      },
-                      items: color2.map((item) {
-                        return DropdownMenuItem(
-                          value: item.key,
-                          child: ListTile(
-                            title: Text(
-                              item.key,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            trailing: Icon(
-                              Icons.waves,
-                              color: item.value,
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Text("在庫数"),
-            ),
-            Container(
-              color: Colors.white,
-              child: infoTiles(
-                keyboard: TextInputType.number,
-                hintText: "在庫数",
-                controller: _stockInfoTextEditingController,
-                alert: "未記入の項目があります。",
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            uploadTitle("発送予定日", 8.0),
-            Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: DropdownButtonFormField<String>(
-                  dropdownColor: HexColor("#e5e2df"),
-                  isExpanded: true,
-                  value: selectedItem3,
-                  onChanged: (String newValue) {
-                    setState(() {
-                      selectedItem3 = newValue;
-                    });
-                  },
-                  selectedItemBuilder: (context) {
-                    return shipsDays.map((item) {
-                      return Text(
-                        item,
-                        style: TextStyle(color: Colors.black),
-                      );
-                    }).toList();
-                  },
-                  items: shipsDays.map((item) {
-                    return DropdownMenuItem(
-                      value: item,
-                      child: ListTile(
-                        title: Text(
-                          item,
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                uploadTitle("作品情報", 8.0),
+                Container(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: DropdownButtonFormField<String>(
+                          dropdownColor: HexColor("#e5e2df"),
+                          isExpanded: true,
+                          value: selectedItem1,
+                          onChanged: (String newValue) {
+                            setState(() {
+                              selectedItem1 = newValue;
+                            });
+                          },
+                          selectedItemBuilder: (context) {
+                            return color1.map((item) {
+                              return Text(
+                                item.key,
+                                style: TextStyle(color: item.value),
+                              );
+                            }).toList();
+                          },
+                          items: color1.map((item) {
+                            return DropdownMenuItem(
+                              value: item.key,
+                              child: ListTile(
+                                title: Text(
+                                  item.key,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                trailing: Icon(
+                                  Icons.waves,
+                                  color: item.value,
+                                ),
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
-                    );
-                  }).toList(),
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: DropdownButtonFormField<String>(
+                          dropdownColor: HexColor("#e5e2df"),
+                          isExpanded: true,
+                          value: selectedItem2,
+                          onChanged: (String newValue) {
+                            setState(() {
+                              selectedItem2 = newValue;
+                            });
+                          },
+                          selectedItemBuilder: (context) {
+                            return color2.map((item) {
+                              return Text(
+                                item.key,
+                                style: TextStyle(color: item.value),
+                              );
+                            }).toList();
+                          },
+                          items: color2.map((item) {
+                            return DropdownMenuItem(
+                              value: item.key,
+                              child: ListTile(
+                                title: Text(
+                                  item.key,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                trailing: Icon(
+                                  Icons.waves,
+                                  color: item.value,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            uploadTitle("出品金額", 8.0),
-            Container(
-              color: Colors.white,
-              child: ListTile(
-                trailing: Text("円"),
-                title: TextFormField(
-                  validator: (val) =>
-                      int.parse(_pricetextEditingController.text) < 500
-                          ? "ポストカードは500円からの出品となります。"
-                          : null,
-                  keyboardType: TextInputType.number,
-                  style: TextStyle(color: Colors.black),
-                  controller: _pricetextEditingController,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "出品金額",
-                    hintStyle: TextStyle(
-                      color: Colors.black,
+                SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text("在庫数"),
+                ),
+                Container(
+                  color: Colors.white,
+                  child: infoTiles(
+                    keyboard: TextInputType.number,
+                    hintText: "在庫数",
+                    controller: _stockInfoTextEditingController,
+                    alert: "未記入の項目があります。",
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                uploadTitle("発送予定日", 8.0),
+                Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      children: [
+                        RadioButtonGroup(
+                          labels: shipsLabel,
+                          onSelected: (String selected) {
+                            setState(() {
+                              _selectShipsDays = selected;
+                            });
+                            print(_selectShipsDays);
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
+                SizedBox(
+                  height: 20,
+                ),
+                uploadTitle("送料", 8.0),
+                Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      children: [
+                        RadioButtonGroup(
+                          labels: shipsPayment,
+                          onSelected: (String selected) {
+                            setState(() {
+                              _selectShipsPayment = selected;
+                            });
+                            print(_selectShipsPayment);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                uploadTitle("出品金額", 8.0),
+                Container(
+                  color: Colors.white,
+                  child: ListTile(
+                    trailing: Text("円"),
+                    title: TextFormField(
+                      validator: (val) =>
+                          int.parse(_pricetextEditingController.text) < 500
+                              ? "ポストカードは500円からの出品となります。"
+                              : null,
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(color: Colors.black),
+                      controller: _pricetextEditingController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "出品金額",
+                        hintStyle: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        uploadFile();
+                        confirmItemOfOriginal();
+                        print(_imagesURL);
+                        print(_image);
+                      }
+                    },
+                    child: Text("出品する"),
+                    style: ElevatedButton.styleFrom(primary: mainColor),
+                  ),
+                ),
+                SizedBox(
+                  height: 50,
+                )
+              ],
             ),
-            SizedBox(
-              height: 20,
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    uploadFile();
-                    confirmItemOfOriginal();
-                    print(_imagesURL);
-                    print(_image);
-                  }
-                },
-                child: Text("出品する"),
-                style: ElevatedButton.styleFrom(primary: mainColor),
-              ),
-            ),
-            SizedBox(
-              height: 50,
-            )
           ],
         ),
       ),
@@ -383,9 +397,10 @@ class _OriginalUploadPageState extends State<PostCard> {
       "color2": selectedItem2.trim(),
       "postName":
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-      "shipsDate": selectedItem3.trim(),
       "itemHeight": "148",
       "itemWidth": "100",
+      "shipsPayment": _selectShipsPayment,
+      "shipsDate": _selectShipsDays,
     });
     final itemRef =
         FirebaseFirestore.instance.collection("items").doc(productID);
@@ -404,9 +419,11 @@ class _OriginalUploadPageState extends State<PostCard> {
       "color2": selectedItem2.trim(),
       "postName":
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-      "shipsDate": selectedItem3.trim(),
       "itemHeight": "148",
       "itemWidth": "100",
+      "finalGetProceeds": int.parse(_pricetextEditingController.text) * 0.85,
+      "shipsPayment": _selectShipsPayment,
+      "shipsDate": _selectShipsDays,
     });
     FirebaseFirestore.instance
         .collection("items")

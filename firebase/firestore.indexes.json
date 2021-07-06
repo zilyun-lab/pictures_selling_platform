@@ -1,0 +1,41 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "items",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "shortInfo",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "color1",
+          "order": "DESCENDING"
+        },
+        {
+          "fieldPath": "color2",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "items",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "shortInfo",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "color1",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "color2",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

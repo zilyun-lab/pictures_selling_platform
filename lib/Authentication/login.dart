@@ -12,6 +12,7 @@ import '../Store/storehome.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 
 import '../main.dart';
+import 'PasswordReset.dart';
 
 //以下、カラーコード使用時に必要なクラス
 
@@ -46,47 +47,9 @@ class _LoginState extends State<Login> {
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 25.0),
-                        child: Container(
-                          child: Center(
-                            child: Stack(
-                              children: [
-                                Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      top: 3.0,
-                                      left: 7,
-                                    ),
-                                    child: Text(
-                                      "LEEWAY",
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.8),
-                                        fontSize: 50,
-                                        fontWeight: FontWeight.w200,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                      left: 15,
-                                    ),
-                                    child: Text(
-                                      "LEEWAY",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 50,
-                                        fontWeight: FontWeight.w200,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                      Image.asset(
+                        "images/NoColor_horizontal.png",
+                        height: 75,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
@@ -128,6 +91,36 @@ class _LoginState extends State<Login> {
                                 child: Divider(
                                   thickness: 2,
                                   color: Colors.white,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  right: 12,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          PageTransition(
+                                            type: PageTransitionType.fade,
+                                            child: PasswordReset(),
+                                            inheritTheme: true,
+                                            ctx: context,
+                                            duration: Duration(
+                                              milliseconds: 1000,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "パスワードをお忘れですか？",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               SizedBox(

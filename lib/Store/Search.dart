@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
-import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
+import 'package:selling_pictures_platform/Models/allList.dart';
 
 import '../main.dart';
 
@@ -13,99 +13,99 @@ class SearchProduct extends StatefulWidget {
 }
 
 class _SearchProductState extends State<SearchProduct> {
-  Future<QuerySnapshot> docList;
+  String query = "";
+  String selectedItem1 = "レッド";
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(60.0),
-          child: AppBar(
-            title: searchWidget(),
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back_ios_outlined,
-                color: Colors.white,
-                size: 20,
-              ),
-              onPressed: () {
-                Route route = MaterialPageRoute(
-                  builder: (c) => MainPage(),
-                );
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (c) => MainPage(),
-                    ));
-              },
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(90.0),
+        child: AppBar(
+          title: searchWidget(),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back_ios_outlined,
+              color: Colors.white,
+              size: 20,
             ),
-            backgroundColor: HexColor("E67928"),
-            // bottom: PreferredSize(
-            //   child: searchWidget(),
-            //   preferredSize: Size(56.0, 56.0),
-            // )
-            centerTitle: true,
+            onPressed: () {
+              Route route = MaterialPageRoute(
+                builder: (c) => MainPage(),
+              );
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (c) => MainPage(),
+                  ));
+            },
           ),
+          backgroundColor: HexColor("E67928"),
+          centerTitle: true,
         ),
-        body: FutureBuilder<QuerySnapshot>(
-          future: docList,
-          builder: (context, snap) {
-            return snap.hasData
-                ? ListView.builder(
-                    itemCount: snap.data.docs.length,
-                    itemBuilder: (context, index) {
-                      ItemModel model =
-                          ItemModel.fromJson(snap.data.docs[index].data());
-                      return SizedBox(
-                        height: 75,
-                        child: Card(
-                          color: HexColor("e5e2df"),
-                          child: ListTile(
-                            onTap: () {
-                              Route route = MaterialPageRoute(
-                                builder: (c) => ProductPage(
-                                  thumbnailURL: model.thumbnailUrl,
-                                  shortInfo: model.shortInfo,
-                                  longDescription: model.longDescription,
-                                  price: model.price,
-                                  attribute: model.attribute,
-                                  postBy: model.postBy,
-                                  Stock: model.Stock,
-                                  id: model.id,
-                                ),
-                              );
-                              Navigator.pushReplacement(
-                                context,
-                                route,
-                              );
-                            },
-                            trailing: Text(
-                              model.price.toString() + "円",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            title: Text(model.shortInfo),
-                            subtitle: Text(model.longDescription),
-                            leading: Image.network(
-                              model.thumbnailUrl,
-                              height: 75,
-                              fit: BoxFit.scaleDown,
-                            ),
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection("items")
+            .where("shortInfo", isGreaterThanOrEqualTo: query)
+            .snapshots(),
+        builder: (context, snap) {
+          return snap.hasData
+              ? ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: snap.data.docs.length,
+                  itemBuilder: (context, index) {
+                    ItemModel model =
+                        ItemModel.fromJson(snap.data.docs[index].data());
+                    return SizedBox(
+                      height: 75,
+                      child: Card(
+                        color: HexColor("e5e2df"),
+                        child: ListTile(
+                          onTap: () {
+                            Route route = MaterialPageRoute(
+                              builder: (c) => ProductPage(
+                                thumbnailURL: model.thumbnailUrl,
+                                shortInfo: model.shortInfo,
+                                longDescription: model.longDescription,
+                                price: model.price,
+                                attribute: model.attribute,
+                                postBy: model.postBy,
+                                Stock: model.Stock,
+                                id: model.id,
+                              ),
+                            );
+                            Navigator.pushReplacement(
+                              context,
+                              route,
+                            );
+                          },
+                          trailing: Text(
+                            model.price.toString() + "円",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          title: Text(model.shortInfo),
+                          subtitle: Text(model.longDescription),
+                          leading: Image.network(
+                            model.thumbnailUrl,
+                            height: 75,
+                            fit: BoxFit.scaleDown,
                           ),
                         ),
-                      );
-                    },
-                  )
-                : Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "検索した商品が見つかりませんでした",
-                        style: TextStyle(color: Colors.black),
                       ),
+                    );
+                  },
+                )
+              : Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "お探しの作品が見つかりませんでした",
+                      style: TextStyle(color: Colors.black),
                     ),
-                  );
-          },
-        ),
+                  ),
+                );
+        },
       ),
     );
   }
@@ -140,7 +140,9 @@ class _SearchProductState extends State<SearchProduct> {
               ),
               child: TextField(
                 onChanged: (val) {
-                  startSearching(val);
+                  setState(() {
+                    query = val;
+                  });
                 },
                 decoration: InputDecoration.collapsed(hintText: "作品を探す"),
               ),
@@ -149,12 +151,5 @@ class _SearchProductState extends State<SearchProduct> {
         ),
       ),
     );
-  }
-
-  Future startSearching(String query) async {
-    docList = FirebaseFirestore.instance
-        .collection("items")
-        .where("shortInfo", isGreaterThanOrEqualTo: query)
-        .get();
   }
 }

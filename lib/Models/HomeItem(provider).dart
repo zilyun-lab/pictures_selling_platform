@@ -17,6 +17,7 @@ class Items {
     shipsDate = doc["shipsDate"];
     itemHeight = doc["itemHeight"];
     itemWidth = doc["itemWidth"];
+    finalGetProceeds = doc["finalGetProceeds"];
   }
 
   String itemWidth;
@@ -32,4 +33,5 @@ class Items {
   String id;
   String postName;
   String shipsDate;
+  double finalGetProceeds;
 }

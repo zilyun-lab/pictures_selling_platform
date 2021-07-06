@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:selling_pictures_platform/Address/address.dart';
@@ -28,13 +29,15 @@ class OrderDetails extends StatelessWidget {
   final int totalPrice;
   final String speakingToID;
   final String speakingToName;
+  final double finalGetProceeds;
 
   OrderDetails(
       {Key key,
       this.orderID,
       this.totalPrice,
       this.speakingToName,
-      this.speakingToID})
+      this.speakingToID,
+      this.finalGetProceeds})
       : super(key: key);
 
   @override
@@ -178,6 +181,7 @@ class OrderDetails extends StatelessWidget {
                                           snap.data.data()),
                                       orderID: orderID,
                                       postBy: dataMap["boughtFrom"],
+                                      id: speakingToID,
                                     )
                                   : Center(
                                       child: circularProgress(),
@@ -198,140 +202,189 @@ class OrderDetails extends StatelessWidget {
   }
 }
 
-class ShippingDetails extends StatelessWidget {
+class ShippingDetails extends StatefulWidget {
+  final String id;
   final AddressModel model;
   final ItemModel itemModel;
   final String orderID;
   final int proceeds;
   final String postBy;
   final String notifyID;
+  final double finalGetProceeds;
 
-  ShippingDetails({
-    Key key,
-    this.model,
-    this.itemModel,
-    this.orderID,
-    this.proceeds,
-    this.postBy,
-    this.notifyID,
-  }) : super(key: key);
+  ShippingDetails(
+      {Key key,
+      this.model,
+      this.itemModel,
+      this.orderID,
+      this.proceeds,
+      this.postBy,
+      this.notifyID,
+      this.finalGetProceeds,
+      this.id})
+      : super(key: key);
+
+  @override
+  State<ShippingDetails> createState() => _ShippingDetailsState();
+}
+
+class _ShippingDetailsState extends State<ShippingDetails> {
   TextEditingController _messageController = TextEditingController();
+
   double getReviewCount = 0;
+
   TextEditingController reviewTextController = TextEditingController();
+
   final double earn = 0;
+
+  int proceed;
+  String itemID;
+
+  void fetchGetProceeds() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.postBy)
+        .collection("Notify")
+        .doc(widget.orderID)
+        .get();
+    proceed = int.parse(snapshot.data()['finalGetProceeds']);
+  }
+
+  void fetchItemData() async {
+    DocumentSnapshot snap = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("orders")
+        .doc(widget.orderID)
+        .get();
+    itemID = snap.data()['itemID'];
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchGetProceeds();
+    fetchItemData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    getOrderId = orderID;
-    getNotifyID = notifyID;
+    getOrderId = widget.orderID;
+    getNotifyID = widget.notifyID;
 
     double screenWidth = MediaQuery.of(context).size.width;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 20,
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Text(
-            "お届け先",
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Text(
+              "お届け先",
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 80, vertical: 5),
-          width: screenWidth,
-          child: Table(
-            children: [
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: KeyText(msg: "氏名"),
-                  ),
-                  Text(model.lastName + " " + model.firstName),
-                ],
-              ),
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: KeyText(msg: "郵便番号"),
-                  ),
-                  Text(model.postalCode),
-                ],
-              ),
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: KeyText(msg: "都道府県"),
-                  ),
-                  Text(model.prefectures),
-                ],
-              ),
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: KeyText(msg: "市区町村"),
-                  ),
-                  Text(model.city),
-                ],
-              ),
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: KeyText(msg: "番地および\n任意の建物名"),
-                  ),
-                  Text(model.address),
-                ],
-              ),
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: KeyText(msg: "電話番号"),
-                  ),
-                  Text(model.phoneNumber),
-                ],
-              ),
-            ],
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 80, vertical: 5),
+            width: screenWidth,
+            child: Table(
+              children: [
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 3.0),
+                      child: KeyText(msg: "氏名"),
+                    ),
+                    Text(widget.model.lastName + " " + widget.model.firstName),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 3.0),
+                      child: KeyText(msg: "郵便番号"),
+                    ),
+                    Text(widget.model.postalCode),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 3.0),
+                      child: KeyText(msg: "都道府県"),
+                    ),
+                    Text(widget.model.prefectures),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 3.0),
+                      child: KeyText(msg: "市区町村"),
+                    ),
+                    Text(widget.model.city),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 3.0),
+                      child: KeyText(msg: "番地および\n任意の建物名"),
+                    ),
+                    Text(widget.model.address),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 3.0),
+                      child: KeyText(msg: "電話番号"),
+                    ),
+                    Text(widget.model.phoneNumber),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(
-          height: 15,
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        StreamBuilder<DocumentSnapshot>(
-          stream: EcommerceApp.firestore
-              .collection(EcommerceApp.collectionUser)
-              .doc(EcommerceApp.sharedPreferences
-                  .getString(EcommerceApp.userUID))
-              .collection(EcommerceApp.collectionOrders)
-              .doc(orderID)
-              .snapshots(),
-          builder: (c, snapshot) {
-            Map dataMap;
+          SizedBox(
+            height: 15,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          StreamBuilder<DocumentSnapshot>(
+            stream: EcommerceApp.firestore
+                .collection(EcommerceApp.collectionUser)
+                .doc(EcommerceApp.sharedPreferences
+                    .getString(EcommerceApp.userUID))
+                .collection(EcommerceApp.collectionOrders)
+                .doc(widget.orderID)
+                .snapshots(),
+            builder: (c, snapshot) {
+              Map dataMap;
 
-            if (snapshot.hasData) {
-              dataMap = snapshot.data.data();
-            }
+              if (snapshot.hasData) {
+                dataMap = snapshot.data.data();
+              }
 
-            return DateTime.now().millisecondsSinceEpoch >=
-                    int.parse(dataMap["orderTime"]) + 86400
-                ? Padding(
+              return Column(
+                children: [
+                  Padding(
                     padding: EdgeInsets.all(
                       5,
                     ),
                     child: InkWell(
                       onTap: () {
+                        print(widget.postBy);
+
+                        print(widget.orderID);
                         return showDialog(
                           context: context,
                           builder: (_) {
@@ -431,134 +484,214 @@ class ShippingDetails extends StatelessWidget {
                         ),
                       ),
                     ),
-                  )
-                : Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 10,
-                          right: 10,
-                          left: 10,
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (_) {
-                                return AlertDialog(
-                                  title: Row(
-                                    children: [
-                                      Text(
-                                        "*",
-                                        style: TextStyle(color: Colors.red),
-                                      ),
-                                      Text(
-                                        "商品キャンセルについて",
+                  ),
+                ],
+              );
+            },
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(EcommerceApp.sharedPreferences
+                      .getString(EcommerceApp.userUID))
+                  .collection("orders")
+                  .doc(widget.orderID)
+                  .snapshots(),
+              builder: (context, snap) {
+                return snap.data["CancelRequestTo"] == true
+                    ? Column(
+                        children: [
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(children: <Widget>[
+                            Expanded(
+                                child: Divider(
+                              thickness: 5,
+                              color: Colors.black,
+                            )),
+                            Text("　  作者よりキャンセル申請が届いています 　 "),
+                            Expanded(
+                                child: Divider(
+                              thickness: 5,
+                              color: Colors.black,
+                            )),
+                          ]),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Container(
+                            child: Column(
+                              children: [
+                                FutureBuilder<DocumentSnapshot>(
+                                    future: FirebaseFirestore.instance
+                                        .collection("cancelReport")
+                                        .doc(widget.orderID)
+                                        .get(),
+                                    builder: (context, data) {
+                                      return Text(
+                                        "申請理由：" + data.data["reason"],
                                         style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
+                                      );
+                                    })
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    print(itemID);
+                                    showDialog(
+                                        context: context,
+                                        builder: (_) {
+                                          return AlertDialog(
+                                            title: Text("キャンセル申請に同意しますか？"),
+                                            actions: [
+                                              Row(
+                                                children: [
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Text(
+                                                      "キャンセル",
+                                                      style: TextStyle(
+                                                          color: Colors.black),
+                                                    ),
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            elevation: 0,
+                                                            primary:
+                                                                Colors.white),
+                                                  ),
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      FirebaseFirestore.instance
+                                                          .collection("users")
+                                                          .doc(EcommerceApp
+                                                              .sharedPreferences
+                                                              .getString(
+                                                                  EcommerceApp
+                                                                      .userUID))
+                                                          .collection("orders")
+                                                          .doc(widget.orderID)
+                                                          .update({
+                                                        "CancelRequest": true,
+                                                        "cancelTransactionFinished":
+                                                            true,
+                                                      });
+                                                      FirebaseFirestore.instance
+                                                          .collection("users")
+                                                          .doc(widget.postBy)
+                                                          .collection("Notify")
+                                                          .doc(widget.orderID)
+                                                          .update({
+                                                        "CancelRequest": true,
+                                                        "cancelTransactionFinished":
+                                                            true,
+                                                      });
+                                                      FirebaseFirestore.instance
+                                                          .collection("items")
+                                                          .doc(itemID)
+                                                          .update({
+                                                        "Stock": FieldValue
+                                                            .increment(1)
+                                                      }).whenComplete(() async {
+                                                        Fluttertoast.showToast(
+                                                          msg:
+                                                              "キャンセル申請に同意し、取引をキャンセルしました。",
+                                                          backgroundColor:
+                                                              HexColor(
+                                                                  "#E67928"),
+                                                        );
+                                                        await Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (c) =>
+                                                                    MainPage()));
+                                                      });
+                                                    },
+                                                    child: Text(
+                                                      "同意する",
+                                                      style: TextStyle(
+                                                          color: Colors.black),
+                                                    ),
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            elevation: 0,
+                                                            primary:
+                                                                Colors.white),
+                                                  ),
+                                                ],
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  child: Container(
+                                    color: Colors.redAccent,
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 50,
+                                    child: Center(
+                                      child: Text(
+                                        "同意する",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                        ),
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                  content: Container(
-                                      child:
-                                          Text("ご注文をキャンセルします。\n本当によろしいですか？")),
-                                  actions: <Widget>[
-                                    // ボタン領域
-                                    ElevatedButton(
-                                      child: Text("いいえ"),
-                                      onPressed: () => Navigator.pop(context),
-                                    ),
-                                    ElevatedButton(
-                                      child: Text("はい"),
-                                      onPressed: () {
-                                        FirebaseFirestore.instance
-                                            .collection("users")
-                                            .doc(EcommerceApp.sharedPreferences
-                                                .getString(
-                                                    EcommerceApp.userUID))
-                                            .collection("orders")
-                                            .doc(orderID)
-                                            .delete();
-                                        FirebaseFirestore.instance
-                                            .collection("users")
-                                            .doc(postBy)
-                                            .collection("Notify")
-                                            .doc(orderID)
-                                            .delete();
-                                        Route route = MaterialPageRoute(
-                                          builder: (c) => StoreHome(),
-                                        );
-                                        Navigator.pushReplacement(
-                                            context, route);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          child: Container(
-                            color: Colors.redAccent,
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            child: Center(
-                              child: Text(
-                                "商品をキャンセルする(24時間以内有効)",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
                                 ),
-                              ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
+                                  color: Colors.redAccent,
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 50,
+                                  child: Center(
+                                    child: Text(
+                                      "同意しない",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 10,
-                          right: 10,
-                          left: 10,
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            completeTransactionAndNotifySellar(
-                                context, getOrderId);
-                            // print(proceeds);
-                          },
-                          child: Container(
-                            color: Colors.black,
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            child: Center(
-                              child: Text(
-                                "受け取り確認へ",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-          },
-        ),
-        SizedBox(
-          height: 15,
-        ),
-      ],
+                        ],
+                      )
+                    : Container();
+              })
+        ],
+      ),
     );
   }
 
   saveReviewCount() {
     FirebaseFirestore.instance
         .collection("users")
-        .doc(postBy)
+        .doc(widget.postBy)
         .collection("Review")
-        .doc(orderID)
+        .doc(widget.orderID)
         .set(
       {
         "message": reviewTextController.text.trim(),
@@ -568,22 +701,6 @@ class ShippingDetails extends StatelessWidget {
         "reviewDate": DateTime.now().millisecondsSinceEpoch.toString(),
       },
     );
-  }
-
-  _handleSubmit(String message) {
-    _messageController.text = "";
-    var db = FirebaseFirestore.instance;
-    db.collection("chat_room").doc(orderID).set({
-      "user_name":
-          EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-      "buyerID": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-      "message": message,
-      "created_at": DateTime.now().millisecondsSinceEpoch,
-    }).then((val) {
-      print("成功です");
-    }).catchError((err) {
-      print(err);
-    });
   }
 
   completeTransactionAndNotifySellar(BuildContext context, String mOrderId) {
@@ -599,9 +716,9 @@ class ShippingDetails extends StatelessWidget {
     );
     EcommerceApp.firestore
         .collection(EcommerceApp.collectionUser)
-        .doc(postBy)
+        .doc(widget.postBy)
         .collection("Notify")
-        .doc(orderID)
+        .doc(widget.orderID)
         .update(
       {
         "isTransactionFinished": "Complete",
@@ -611,11 +728,11 @@ class ShippingDetails extends StatelessWidget {
 
     EcommerceApp.firestore
         .collection(EcommerceApp.collectionUser)
-        .doc(postBy)
+        .doc(widget.postBy)
         .collection("MyProceeds")
         .doc()
         .update(
-      {"Proceeds": proceeds},
+      {"Proceeds": FieldValue.increment(proceed)},
     );
 
     getOrderId = "";

@@ -353,3 +353,16 @@ List<String> day = [
   "30",
   "31",
 ];
+List<String> shipsLabel = [
+  "1~2日後",
+  "2~4日後",
+  "5~7日後",
+];
+List<String> isFrame = ["有り", "無し"];
+List<String> shipsPayment = ["送料込み(出品者負担)", "送料別途(購入者負担)"];
+List<String> cancelReason = [
+  "購入者が誤って購入した",
+  "出品情報や商品に\n不備が見つかった",
+  "購入者からの連絡が無い",
+  "上記以外の理由"
+];

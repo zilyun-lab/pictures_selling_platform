@@ -4,10 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:selling_pictures_platform/Address/addAddress.dart';
+import 'package:selling_pictures_platform/Admin/Copy.dart';
 import 'package:selling_pictures_platform/Admin/MyUploadItems.dart';
 import 'package:selling_pictures_platform/Admin/PostCard.dart';
 import 'package:selling_pictures_platform/Admin/Sticker.dart';
 import 'package:selling_pictures_platform/Admin/uploadItems.dart';
+import 'package:selling_pictures_platform/Authentication/SubmitBankAccount.dart';
 import 'package:selling_pictures_platform/Authentication/updateProfile.dart';
 import 'package:selling_pictures_platform/Authentication/Notification.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
@@ -67,23 +69,41 @@ class _MyPageState extends State<MyPage> {
                         onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
+                                fullscreenDialog: true,
                                 builder: (c) => OriginalUploadPage())),
+                      ),
+                      ListTile(
+                        title: Text(
+                          '複製',
+                          style: TextStyle(color: mainColor),
+                        ),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                fullscreenDialog: true,
+                                builder: (c) => Copy())),
                       ),
                       ListTile(
                         title: Text(
                           'ステッカー',
                           style: TextStyle(color: mainColor),
                         ),
-                        onTap: () => Navigator.push(context,
-                            MaterialPageRoute(builder: (c) => Sticker())),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                fullscreenDialog: true,
+                                builder: (c) => Sticker())),
                       ),
                       ListTile(
                         title: Text(
                           'ポストカード',
                           style: TextStyle(color: mainColor),
                         ),
-                        onTap: () => Navigator.push(context,
-                            MaterialPageRoute(builder: (c) => PostCard())),
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                fullscreenDialog: true,
+                                builder: (c) => PostCard())),
                       ),
                       SizedBox(
                         height: 20,
@@ -265,6 +285,12 @@ class _MyPageState extends State<MyPage> {
                                         context,
                                         "売り上げ申請",
                                         ProceedsRequests(),
+                                        Icons.atm_outlined,
+                                      ),
+                                      sliderItem(
+                                        context,
+                                        "口座登録",
+                                        SubmitBankAccount(),
                                         Icons.atm_outlined,
                                       ),
                                       sliderItem(

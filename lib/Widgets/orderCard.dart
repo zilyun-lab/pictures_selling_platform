@@ -14,6 +14,7 @@ class OrderCard extends StatelessWidget {
   final String orderID;
   final String speakingToID;
   final String speakingToName;
+  final double finalGetProceeds;
 
   OrderCard(
       {Key key,
@@ -22,7 +23,8 @@ class OrderCard extends StatelessWidget {
       this.orderID,
       this.totalPrice,
       this.speakingToID,
-      this.speakingToName})
+      this.speakingToName,
+      this.finalGetProceeds})
       : super(key: key);
 
   @override
@@ -36,6 +38,7 @@ class OrderCard extends StatelessWidget {
         }
         route = MaterialPageRoute(
             builder: (c) => OrderDetails(
+                  finalGetProceeds: finalGetProceeds,
                   orderID: orderID,
                   totalPrice: totalPrice,
                   speakingToName: speakingToName,

@@ -75,43 +75,38 @@ class _TransactionPageState extends State<TransactionPage>
   transactioned() {
     return StreamBuilder<QuerySnapshot>(
       stream: EcommerceApp.firestore
-          .collection(EcommerceApp.collectionUser)
+          .collection("users")
           .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
           .collection("Notify")
           .where("isTransactionFinished", isEqualTo: "Complete")
           .snapshots(),
       builder: (c, snapshot) {
-        return snapshot.hasData
-            ? ListView.builder(
-                itemCount: snapshot.data.docs.length,
-                itemBuilder: (c, index) {
-                  return FutureBuilder<QuerySnapshot>(
-                    future: FirebaseFirestore.instance
-                        .collection("items")
-                        .where("shortInfo",
-                            isEqualTo: snapshot.data.docs[index]["productIDs"])
-                        .get(),
-                    builder: (c, snap) {
-                      return snap.hasData
-                          ? AdminOrderCard(
-                              totalPrice: snapshot.data.docs[index]
-                                  ["totalPrice"],
-                              itemCount: snap.data.docs.length,
-                              data: snap.data.docs,
-                              orderID: snapshot.data.docs[index].id,
-                              speakingToID: widget.id,
-                              speakingToName: widget.name,
-                            )
-                          : Center(
-                              child: circularProgress(),
-                            );
-                    },
-                  );
-                },
-              )
-            : Center(
-                child: circularProgress(),
-              );
+        return ListView.builder(
+          itemCount: snapshot.data.docs.length,
+          itemBuilder: (c, index) {
+            return StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection("items")
+                  .where("shortInfo",
+                      isEqualTo: snapshot.data.docs[index]["productIDs"])
+                  .snapshots(),
+              builder: (c, snap) {
+                return snap.hasData
+                    ? AdminOrderCard(
+                        totalPrice: snapshot.data.docs[index]["totalPrice"],
+                        itemCount: snap.data.docs.length,
+                        data: snap.data.docs,
+                        orderID: snapshot.data.docs[index].id,
+                        speakingToID: widget.id,
+                        speakingToName: widget.name,
+                      )
+                    : Center(
+                        child: circularProgress(),
+                      );
+              },
+            );
+          },
+        );
       },
     );
   }

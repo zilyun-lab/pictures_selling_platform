@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:selling_pictures_platform/Authentication/Notify.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -219,8 +220,8 @@ class _MainPageState extends State<MainPage> {
               padding: const EdgeInsets.all(125.0),
               child: InkWell(
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (c) => NewUserSplashScreen()));
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (c) => Notify()));
                 },
                 child: Image.asset("images/NoColor_horizontal.png"),
               ),

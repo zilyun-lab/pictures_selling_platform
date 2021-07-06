@@ -44,6 +44,7 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   flutter_rating_bar: ^4.0.0
   dropdown_date_picker: ^0.1.1+2
+  grouped_buttons: ^1.0.4
 
 
 

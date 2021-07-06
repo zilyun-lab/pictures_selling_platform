@@ -15,6 +15,7 @@ import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import '../main.dart';
 import 'ARPage.dart';
+import 'UpdateItem.dart';
 
 class ProductPage extends StatefulWidget {
   final String shortInfo;
@@ -29,20 +30,21 @@ class ProductPage extends StatefulWidget {
   final String shipsDate;
   final String width;
   final String height;
-  ProductPage({
-    this.thumbnailURL,
-    this.shortInfo,
-    this.longDescription,
-    this.price,
-    this.Stock,
-    this.attribute,
-    this.postBy,
-    this.id,
-    this.postName,
-    this.shipsDate,
-    this.height,
-    this.width,
-  });
+  final double finalGetProceeds;
+  ProductPage(
+      {this.thumbnailURL,
+      this.shortInfo,
+      this.longDescription,
+      this.price,
+      this.Stock,
+      this.attribute,
+      this.postBy,
+      this.id,
+      this.postName,
+      this.shipsDate,
+      this.height,
+      this.width,
+      this.finalGetProceeds});
   @override
   _ProductPageState createState() => _ProductPageState(
       this.thumbnailURL,
@@ -56,7 +58,8 @@ class ProductPage extends StatefulWidget {
       this.postName,
       this.shipsDate,
       this.height,
-      this.width);
+      this.width,
+      this.finalGetProceeds);
 }
 
 class _ProductPageState extends State<ProductPage> {
@@ -72,8 +75,7 @@ class _ProductPageState extends State<ProductPage> {
   final String shipsDate;
   final String width;
   final String height;
-
-  //ArCoreController arCoreController;
+  final double finalGetProceeds;
 
   int quantityOfItems = 1;
   List<DocumentSnapshot> documentList = [];
@@ -90,7 +92,8 @@ class _ProductPageState extends State<ProductPage> {
       this.postName,
       this.shipsDate,
       this.width,
-      this.height);
+      this.height,
+      this.finalGetProceeds);
   @override
   void initState() {
     // TODO: implement initState
@@ -413,69 +416,129 @@ class _ProductPageState extends State<ProductPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                InkWell(
-                                  onTap: () =>
-                                      checkItemInLike(shortInfo, context),
-                                  child: Container(
-                                    color: Colors.black,
-                                    width: MediaQuery.of(
-                                          context,
-                                        ).size.width *
-                                        0.46,
-                                    height: 50,
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            TextButton.icon(
-                                              onPressed: () => checkItemInLike(
-                                                  shortInfo, context),
-                                              icon: Icon(
-                                                Icons.favorite,
-                                                color: Colors.white,
+                                postBy !=
+                                        EcommerceApp.sharedPreferences
+                                            .getString(EcommerceApp.userUID)
+                                    ? InkWell(
+                                        onTap: () =>
+                                            checkItemInLike(shortInfo, context),
+                                        child: Container(
+                                          color: Colors.black,
+                                          width: MediaQuery.of(
+                                                context,
+                                              ).size.width *
+                                              0.46,
+                                          height: 50,
+                                          child: Center(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  TextButton.icon(
+                                                    onPressed: () =>
+                                                        checkItemInLike(
+                                                            shortInfo, context),
+                                                    icon: Icon(
+                                                      Icons.favorite,
+                                                      color: Colors.white,
+                                                    ),
+                                                    label:
+                                                        StreamBuilder<
+                                                                QuerySnapshot>(
+                                                            stream: null,
+                                                            builder: (context,
+                                                                snapshot) {
+                                                              return Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                  right: 0.5,
+                                                                ),
+                                                                child: !EcommerceApp
+                                                                        .sharedPreferences
+                                                                        .getStringList(EcommerceApp
+                                                                            .userLikeList)
+                                                                        .contains(
+                                                                            shortInfo)
+                                                                    ? Text(
+                                                                        "いいねに追加",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                      )
+                                                                    : Text(
+                                                                        "いいねから外す",
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                      ),
+                                                              );
+                                                            }),
+                                                  ),
+                                                ],
                                               ),
-                                              label: StreamBuilder<
-                                                      QuerySnapshot>(
-                                                  stream: null,
-                                                  builder: (context, snapshot) {
-                                                    return Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        right: 0.5,
-                                                      ),
-                                                      child: !EcommerceApp
-                                                              .sharedPreferences
-                                                              .getStringList(
-                                                                  EcommerceApp
-                                                                      .userLikeList)
-                                                              .contains(
-                                                                  shortInfo)
-                                                          ? Text(
-                                                              "いいねに追加",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            )
-                                                          : Text(
-                                                              "いいねから外す",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            ),
-                                                    );
-                                                  }),
                                             ),
-                                          ],
+                                          ),
+                                        ),
+                                      )
+                                    : InkWell(
+                                        onTap: () =>
+                                            checkItemInLike(shortInfo, context),
+                                        child: Container(
+                                          color: Colors.black,
+                                          width: MediaQuery.of(
+                                                context,
+                                              ).size.width *
+                                              0.46,
+                                          height: 50,
+                                          child: Center(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  TextButton.icon(
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (c) =>
+                                                                  UpdateItemInfo(
+                                                                    shortInfo:
+                                                                        shortInfo,
+                                                                    id: id,
+                                                                    longDescription:
+                                                                        longDescription,
+                                                                    price:
+                                                                        price,
+                                                                  )));
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.edit,
+                                                      color: Colors.white,
+                                                    ),
+                                                    label: Text("商品情報を編集する",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                        )),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                ),
                                 StreamBuilder<QuerySnapshot>(
                                   stream: FirebaseFirestore.instance
                                       .collection(
@@ -490,13 +553,11 @@ class _ProductPageState extends State<ProductPage> {
                                               Route route = MaterialPageRoute(
                                                   fullscreenDialog: true,
                                                   builder: (c) => Login());
-                                              Navigator.pushReplacement(
+                                              Navigator.push(
                                                 context,
                                                 route,
                                               );
                                             },
-                                            // onTap: () => checkItemInCart(
-                                            //     widget.itemModel.shortInfo, context),
                                             child: Container(
                                               color: Colors.black,
                                               width: MediaQuery.of(
@@ -547,7 +608,8 @@ class _ProductPageState extends State<ProductPage> {
                                                         EcommerceApp.userUID)
                                             ? InkWell(
                                                 onTap: () {
-                                                  beforeDeleteDialog();
+                                                  beforeDeleteDialog(
+                                                      context, shortInfo, id);
                                                 },
                                                 // onTap: () => checkItemInCart(
                                                 //     widget.itemModel.shortInfo, context),
@@ -604,15 +666,17 @@ class _ProductPageState extends State<ProductPage> {
                                                       Route route =
                                                           MaterialPageRoute(
                                                         fullscreenDialog: true,
-                                                        builder: (c) =>
-                                                            CheckOutPage(
-                                                                id: id,
-                                                                imageURL:
-                                                                    thumbnailURL,
-                                                                shortInfo:
-                                                                    shortInfo,
-                                                                price: price,
-                                                                postBy: postBy),
+                                                        builder: (c) => CheckOutPage(
+                                                            finalGetProceeds:
+                                                                finalGetProceeds,
+                                                            stock: Stock,
+                                                            id: id,
+                                                            imageURL:
+                                                                thumbnailURL,
+                                                            shortInfo:
+                                                                shortInfo,
+                                                            price: price,
+                                                            postBy: postBy),
                                                       );
                                                       Navigator.pushReplacement(
                                                         context,
@@ -680,6 +744,9 @@ class _ProductPageState extends State<ProductPage> {
                                                                 true,
                                                             builder: (c) =>
                                                                 CheckOutPage(
+                                                              finalGetProceeds:
+                                                                  finalGetProceeds,
+                                                              stock: Stock,
                                                               imageURL:
                                                                   thumbnailURL,
                                                               shortInfo:
@@ -865,17 +932,7 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
-  deleteItem() {
-    FirebaseFirestore.instance.collection("items").doc(id).delete();
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
-        .collection("MyUploadItems")
-        .doc(id)
-        .delete();
-  }
-
-  beforeDeleteDialog() {
+  beforeDeleteDialog(BuildContext context, String, String id) {
     showDialog(
       context: context,
       builder: (_) {
@@ -893,45 +950,12 @@ class _ProductPageState extends State<ProductPage> {
             ElevatedButton(
               child: Text("確認しました。"),
               onPressed: () {
-                deleteItem();
+                deleteItem(id);
                 Route route = MaterialPageRoute(
                   // fullscreenDialog: true,
                   builder: (c) => MainPage(),
                 );
-                Navigator.pushReplacement(
-                  context,
-                  route,
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  afterDeleteDialog() {
-    showDialog(
-      context: context,
-      builder: (_) {
-        return AlertDialog(
-          title: Text(
-            "削除完了",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          content: Container(
-              child: Text("$shortInfo を削除しました。\n引き続きLEEWAYをお楽しみください。")),
-          actions: <Widget>[
-            // ボタン領域
-
-            ElevatedButton(
-              child: Text("確認しました。"),
-              onPressed: () {
-                Route route = MaterialPageRoute(
-                  fullscreenDialog: true,
-                  builder: (c) => StoreHome(),
-                );
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   route,
                 );
@@ -1050,6 +1074,49 @@ class _ProductPageState extends State<ProductPage> {
       ),
     );
   }
+}
+
+void deleteItem(String id) {
+  FirebaseFirestore.instance.collection("items").doc(id).delete();
+  FirebaseFirestore.instance
+      .collection("users")
+      .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+      .collection("MyUploadItems")
+      .doc(id)
+      .delete();
+}
+
+afterDeleteDialog(BuildContext context, String shortInfo) {
+  showDialog(
+    context: context,
+    builder: (_) {
+      return AlertDialog(
+        title: Text(
+          "削除完了",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        content:
+            Container(child: Text("$shortInfo を削除しました。\n引き続きLEEWAYをお楽しみください。")),
+        actions: <Widget>[
+          // ボタン領域
+
+          ElevatedButton(
+            child: Text("確認しました。"),
+            onPressed: () {
+              Route route = MaterialPageRoute(
+                fullscreenDialog: true,
+                builder: (c) => MainPage(),
+              );
+              Navigator.pushReplacement(
+                context,
+                route,
+              );
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
 
 class BubbleBorder extends ShapeBorder {

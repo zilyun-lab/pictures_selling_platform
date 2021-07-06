@@ -38,7 +38,7 @@ class ItemGridModel extends ChangeNotifier {
     snapshots.listen((snapshot) {
       final docs = snapshot.docs;
       final items = docs.map((doc) => Items(doc)).toList();
-      this.postcard = items;
+      this.items = items;
       notifyListeners();
     });
   }
@@ -55,7 +55,7 @@ class ItemGridModel extends ChangeNotifier {
     snapshots.listen((snapshot) {
       final docs = snapshot.docs;
       final items = docs.map((doc) => Items(doc)).toList();
-      this.sticker = items;
+      this.items = items;
       notifyListeners();
     });
   }
@@ -64,15 +64,24 @@ class ItemGridModel extends ChangeNotifier {
     final snapshots = await FirebaseFirestore.instance
         .collection('items')
         .where("attribute", isEqualTo: "Original")
-        .orderBy(
-          "publishedDate",
-          descending: true,
-        )
         .snapshots();
     snapshots.listen((snapshot) {
       final docs = snapshot.docs;
       final items = docs.map((doc) => Items(doc)).toList();
-      this.original = items;
+      this.items = items;
+      notifyListeners();
+    });
+  }
+
+  Future fetchCopyItems() async {
+    final snapshots = await FirebaseFirestore.instance
+        .collection('items')
+        .where("attribute", isEqualTo: "Copy")
+        .snapshots();
+    snapshots.listen((snapshot) {
+      final docs = snapshot.docs;
+      final items = docs.map((doc) => Items(doc)).toList();
+      this.items = items;
       notifyListeners();
     });
   }

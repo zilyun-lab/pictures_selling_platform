@@ -8,6 +8,7 @@ import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
+import 'package:selling_pictures_platform/Widgets/CheckBox.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:selling_pictures_platform/Widgets/orderCard.dart';
@@ -178,7 +179,7 @@ class AdminOrderDetails extends StatelessWidget {
                                       orderID: orderID,
                                       postBy: dataMap["boughtFrom"],
                                       buyerID: dataMap["buyerID"],
-                                    )
+                                      postByName: speakingToName)
                                   : Center(
                                       child: circularProgress(),
                                     );
@@ -206,6 +207,7 @@ class ShippingDetails extends StatefulWidget {
   final String postBy;
   final String notifyID;
   final String buyerID;
+  final String postByName;
 
   ShippingDetails(
       {Key key,
@@ -215,7 +217,8 @@ class ShippingDetails extends StatefulWidget {
       this.proceeds,
       this.postBy,
       this.notifyID,
-      this.buyerID})
+      this.buyerID,
+      this.postByName})
       : super(key: key);
 
   @override
@@ -224,6 +227,28 @@ class ShippingDetails extends StatefulWidget {
 
 class _ShippingDetailsState extends State<ShippingDetails> {
   TextEditingController _messageController = TextEditingController();
+
+  String buyerIDFromFB;
+  String orderIDFromFB;
+  String whoBought;
+  @override
+  void initState() {
+    super.initState();
+    // todo: ここに処理を書く
+    getData();
+  }
+
+  void getData() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.postBy)
+        .collection("Notify")
+        .doc(widget.orderID)
+        .get();
+    buyerIDFromFB = snapshot.data()["buyerID"];
+    orderIDFromFB = snapshot.data()["id"];
+    whoBought = snapshot.data()["boughtFrom"];
+  }
 
   bool isShipped = false;
   @override
@@ -328,18 +353,57 @@ class _ShippingDetailsState extends State<ShippingDetails> {
             if (snapshot.hasData) {
               dataMap = snapshot.data.data();
             }
-            return isShipped == false
+            return dataMap["isBuyerDelivery"] == "inComplete"
                 ? Padding(
                     padding: EdgeInsets.all(
                       5,
                     ),
                     child: InkWell(
                       onTap: () {
-                        setState(() {
-                          isShipped = true;
-                        });
-                        completeTransactionAndNotifySellar(
-                            context, getOrderId, widget.buyerID);
+                        showDialog(
+                            context: context,
+                            builder: (_) {
+                              return AlertDialog(
+                                title: Center(child: Text("発送通知")),
+                                content: Text("購入者に発送通知を送ります。\nよろしいですか？"),
+                                actions: [
+                                  Row(
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: Text(
+                                          "キャンセル",
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                            elevation: 0,
+                                            primary: Colors.white),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          completeTransactionAndNotifySellar(
+                                              context,
+                                              orderIDFromFB,
+                                              buyerIDFromFB);
+                                        },
+                                        child: Text(
+                                          "送信する",
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                            elevation: 0,
+                                            primary: Colors.white),
+                                      ),
+                                    ],
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                  ),
+                                ],
+                              );
+                            });
+
                         // print(proceeds);
                       },
                       child: Container(
@@ -348,7 +412,7 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                         height: 50,
                         child: Center(
                           child: Text(
-                            "商品を発送しました。",
+                            "発送通知を送る。",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
@@ -380,6 +444,48 @@ class _ShippingDetailsState extends State<ShippingDetails> {
         SizedBox(
           height: 15,
         ),
+        StreamBuilder<DocumentSnapshot>(
+            stream: EcommerceApp.firestore
+                .collection(EcommerceApp.collectionUser)
+                .doc(widget.buyerID)
+                .collection(EcommerceApp.collectionOrders)
+                .doc(widget.orderID)
+                .snapshots(),
+            builder: (c, snapshot) {
+              return snapshot.data.data()["CancelRequestTo"] != true
+                  ? Center(
+                      child: InkWell(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (_) {
+                                return NormalCheckBoxDialog(
+                                  "キャンセル申請",
+                                  "",
+                                  "確認",
+                                  buyerIDFromFB,
+                                  orderIDFromFB,
+                                  widget.postBy,
+                                  EcommerceApp.sharedPreferences
+                                      .getString(EcommerceApp.userName),
+                                  widget.postByName,
+                                  whoBought,
+                                );
+                              });
+                        },
+                        child: Text(
+                          "この取引をキャンセルする",
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
+                      ),
+                    )
+                  : Center(
+                      child: Text(
+                        "この取引のキャンセル申請を行いました。",
+                        style: TextStyle(color: Colors.blueAccent),
+                      ),
+                    );
+            })
       ],
     );
   }
@@ -408,7 +514,17 @@ class _ShippingDetailsState extends State<ShippingDetails> {
         .doc(mOrderId)
         .update(
       {
-        "isDelivery": "Complete",
+        "isBuyerDelivery": "Complete",
+      },
+    );
+    EcommerceApp.firestore
+        .collection(EcommerceApp.collectionUser)
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection(EcommerceApp.collectionOrders)
+        .doc(mOrderId)
+        .update(
+      {
+        "isBuyerDelivery": "Complete",
       },
     );
 
@@ -424,9 +540,8 @@ class _ShippingDetailsState extends State<ShippingDetails> {
     // );
 
     getOrderId = "";
-    // Route route = MaterialPageRoute(builder: (c) => MainPage());
-    // Navigator.pushReplacement(context, route);
-    // Fluttertoast.showToast(msg: "取引が完了しました。\n引き続きLEEWAYをお楽しみください。");
+    Navigator.pop(context);
+    Fluttertoast.showToast(msg: "購入者に発送通知を送信しました。\n受け取り確認完了まで少々お待ちください。");
   }
 }
 

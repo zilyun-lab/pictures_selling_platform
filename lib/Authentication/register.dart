@@ -45,208 +45,175 @@ class _RegisterState extends State<Register> {
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: SingleChildScrollView(
-            child: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 25.0),
-                    child: Container(
-                      child: Center(
-                        child: Stack(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Image.asset(
+                      "images/NoColor_horizontal.png",
+                      height: 75,
+                    ),
+                    InkWell(
+                      onTap: _selectAndPickImage,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 15.0,
+                        ),
+                        child: Container(
+                          // decoration: BoxDecoration(
+                          //   borderRadius: BorderRadius.circular(10),
+                          //   color: Colors.white,
+                          // ),
+                          child: CircleAvatar(
+                            radius: _screenWidth * 0.15,
+                            backgroundColor: Colors.white,
+                            backgroundImage: _imageFile == null
+                                ? null
+                                : FileImage(_imageFile),
+                            child: _imageFile == null
+                                ? Icon(
+                                    Icons.add_a_photo_outlined,
+                                    size: _screenWidth * 0.15,
+                                    color: Colors.grey,
+                                  )
+                                : null,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 20.0, left: 20, right: 20),
+                      child: Form(
+                        key: _formkey,
+                        child: Column(
                           children: [
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 3.0,
-                                  left: 7,
-                                ),
-                                child: Text(
-                                  "LEEWAY",
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.8),
-                                    fontSize: 50,
-                                    fontWeight: FontWeight.w200,
-                                  ),
-                                ),
+                            CustomTextField(
+                              controller: _nameEditingController,
+                              data: Icons.person,
+                              hintText: "ユーザーネーム",
+                              isObsecure: false,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 12,
+                                right: 12,
+                              ),
+                              child: Divider(
+                                thickness: 2,
+                                color: Colors.white,
                               ),
                             ),
-                            Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  left: 15,
-                                ),
-                                child: Text(
-                                  "LEEWAY",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 50,
-                                    fontWeight: FontWeight.w200,
-                                  ),
-                                ),
+                            CustomTextField(
+                              controller: _emailEditingController,
+                              data: Icons.email,
+                              hintText: "メールアドレス",
+                              isObsecure: false,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 12,
+                                right: 12,
+                              ),
+                              child: Divider(
+                                thickness: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                            CustomTextField(
+                              controller: _passwordEditingController,
+                              data: FontAwesomeIcons.userLock,
+                              hintText: "パスワード",
+                              isObsecure: true,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 12,
+                                right: 12,
+                              ),
+                              child: Divider(
+                                thickness: 2,
+                                color: Colors.white,
+                              ),
+                            ),
+                            CustomTextField(
+                              controller: _cPasswordEditingController,
+                              data: FontAwesomeIcons.userLock,
+                              hintText: "パスワード(確認用)",
+                              isObsecure: true,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 12,
+                                right: 12,
+                              ),
+                              child: Divider(
+                                thickness: 2,
+                                color: Colors.white,
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ),
-                  InkWell(
-                    onTap: _selectAndPickImage,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 15.0,
+                    SizedBox(
+                      height: 20,
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.white,
                       ),
-                      child: Container(
-                        // decoration: BoxDecoration(
-                        //   borderRadius: BorderRadius.circular(10),
-                        //   color: Colors.white,
-                        // ),
-                        child: CircleAvatar(
-                          radius: _screenWidth * 0.15,
-                          backgroundColor: Colors.white,
-                          backgroundImage:
-                              _imageFile == null ? null : FileImage(_imageFile),
-                          child: _imageFile == null
-                              ? Icon(
-                                  Icons.add_a_photo_outlined,
-                                  size: _screenWidth * 0.15,
-                                  color: Colors.grey,
-                                )
-                              : null,
+                      onPressed: () {
+                        uploadAndSaveImage();
+                      },
+                      child: Text(
+                        "登録する",
+                        style: TextStyle(
+                          color: HexColor("E67928"),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(top: 20.0, left: 20, right: 20),
-                    child: Form(
-                      key: _formkey,
-                      child: Column(
-                        children: [
-                          CustomTextField(
-                            controller: _nameEditingController,
-                            data: Icons.person,
-                            hintText: "ユーザーネーム",
-                            isObsecure: false,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 12,
-                              right: 12,
-                            ),
-                            child: Divider(
-                              thickness: 2,
-                              color: Colors.white,
-                            ),
-                          ),
-                          CustomTextField(
-                            controller: _emailEditingController,
-                            data: Icons.email,
-                            hintText: "メールアドレス",
-                            isObsecure: false,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 12,
-                              right: 12,
-                            ),
-                            child: Divider(
-                              thickness: 2,
-                              color: Colors.white,
-                            ),
-                          ),
-                          CustomTextField(
-                            controller: _passwordEditingController,
-                            data: FontAwesomeIcons.userLock,
-                            hintText: "パスワード",
-                            isObsecure: true,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 12,
-                              right: 12,
-                            ),
-                            child: Divider(
-                              thickness: 2,
-                              color: Colors.white,
-                            ),
-                          ),
-                          CustomTextField(
-                            controller: _cPasswordEditingController,
-                            data: FontAwesomeIcons.userLock,
-                            hintText: "パスワード(確認用)",
-                            isObsecure: true,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 12,
-                              right: 12,
-                            ),
-                            child: Divider(
-                              thickness: 2,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 45.0, right: 45),
+                      child: Divider(
+                        color: Colors.white,
+                        thickness: 2,
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
+                    SizedBox(
+                      height: 20,
                     ),
-                    onPressed: () {
-                      uploadAndSaveImage();
-                    },
-                    child: Text(
-                      "登録する",
-                      style: TextStyle(
-                        color: HexColor("E67928"),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.leftToRightWithFade,
+                            child: Login(),
+                            inheritTheme: true,
+                            ctx: context,
+                            duration: Duration(
+                              milliseconds: 500,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "ログイン",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 45.0, right: 45),
-                    child: Divider(
-                      color: Colors.white,
-                      thickness: 2,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.leftToRightWithFade,
-                          child: Login(),
-                          inheritTheme: true,
-                          ctx: context,
-                          duration: Duration(
-                            milliseconds: 500,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "ログイン",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -396,6 +363,7 @@ class _RegisterState extends State<Register> {
   Future saveUserInfoToFirestore(User fUser) async {
     FirebaseFirestore.instance.collection("users").doc(fUser.uid).set(
       {
+        "isFreeze": false,
         "uid": fUser.uid,
         "email": fUser.email,
         "name": _nameEditingController.text.trim(),

@@ -1,18 +1,18 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/material.dart';
+import 'package:grouped_buttons/grouped_buttons.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/CheckBox.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:selling_pictures_platform/main.dart';
-import 'package:grouped_buttons/grouped_buttons.dart';
+
+import '../main.dart';
 
 final mainColor = HexColor("E67928");
 String selectedItem1 = "レッド";
@@ -24,31 +24,19 @@ TextEditingController _widthtextEditingController = TextEditingController();
 TextEditingController _heighttextEditingController = TextEditingController();
 TextEditingController _descriptiontextEditingController =
     TextEditingController();
+TextEditingController _stockInfoTextEditingController = TextEditingController();
 TextEditingController _shortInfoTextEditingController = TextEditingController();
 
-class OriginalUploadPage extends StatefulWidget {
+class Copy extends StatefulWidget {
   @override
   _OriginalUploadPageState createState() => _OriginalUploadPageState();
 }
 
-class _OriginalUploadPageState extends State<OriginalUploadPage> {
+class _OriginalUploadPageState extends State<Copy> {
   bool uploading = false;
   double val = 0;
   String _selectShipsDays = '';
   String _selectShipsPayment = '';
-
-  void _handleShipsDaysRadioButton(String ships) => setState(() {
-        _selectShipsDays = ships;
-
-        print(_selectShipsDays);
-      });
-  String _selectFrame = '';
-
-  void _handleFrameRadioButton(String frame) => setState(() {
-        _selectShipsDays = frame;
-
-        print(_selectShipsDays);
-      });
 
   @override
   void initState() {
@@ -102,25 +90,23 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
             uploading
                 ? Center(
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          child: Text(
-                            'uploading...',
-                            style: TextStyle(fontSize: 20),
-                          ),
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        child: Text(
+                          'uploading...',
+                          style: TextStyle(fontSize: 20),
                         ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        CircularProgressIndicator(
-                          value: val,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.green),
-                        )
-                      ],
-                    ),
-                  )
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      CircularProgressIndicator(
+                        value: val,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                      )
+                    ],
+                  ))
                 : Container(),
             ListView(
               children: [
@@ -141,6 +127,7 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                                             !uploading ? chooseImage() : null)
                                     : IconButton(
                                         icon: Icon(Icons.add),
+                                        onPressed: () {},
                                       ),
                               )
                             : Container(
@@ -257,24 +244,17 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                 SizedBox(
                   height: 20,
                 ),
-                uploadTitle("額縁の有無", 8.0),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text("在庫数"),
+                ),
                 Container(
                   color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      children: [
-                        RadioButtonGroup(
-                          labels: isFrame,
-                          onSelected: (String selected) {
-                            setState(() {
-                              _selectFrame = selected;
-                            });
-                            print(_selectFrame);
-                          },
-                        ),
-                      ],
-                    ),
+                  child: infoTiles(
+                    keyboard: TextInputType.number,
+                    hintText: "在庫数",
+                    controller: _stockInfoTextEditingController,
+                    alert: "未記入の項目があります。",
                   ),
                 ),
                 SizedBox(
@@ -338,7 +318,7 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                 SizedBox(
                   height: 20,
                 ),
-                uploadTitle("発送予定日", 8.0),
+                uploadTitle("発送予定日(受注販売)", 8.0),
                 Container(
                   color: Colors.white,
                   child: Padding(
@@ -355,32 +335,6 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                           },
                         ),
                       ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                uploadTitle("出品金額", 8.0),
-                Container(
-                  color: Colors.white,
-                  child: ListTile(
-                    trailing: Text("円"),
-                    title: TextFormField(
-                      validator: (val) =>
-                          int.parse(_pricetextEditingController.text) < 5000
-                              ? "原画は5000円からの出品となります。"
-                              : null,
-                      keyboardType: TextInputType.number,
-                      style: TextStyle(color: Colors.black),
-                      controller: _pricetextEditingController,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "出品金額",
-                        hintStyle: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -410,14 +364,41 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                 SizedBox(
                   height: 20,
                 ),
+                uploadTitle("出品金額", 8.0),
+                Container(
+                  color: Colors.white,
+                  child: ListTile(
+                    trailing: Text("円"),
+                    title: TextFormField(
+                      validator: (val) =>
+                          int.parse(_pricetextEditingController.text) < 500
+                              ? "ポストカードは500円からの出品となります。"
+                              : null,
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(color: Colors.black),
+                      controller: _pricetextEditingController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "出品金額",
+                        hintStyle: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: ElevatedButton(
                     onPressed: () {
-                      uploadFile();
                       if (_formKey.currentState.validate()) {
+                        uploadFile();
                         confirmItemOfOriginal();
                         print(_imagesURL);
+                        print(_image);
                       }
                     },
                     child: Text("出品する"),
@@ -468,26 +449,18 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
       "status": "available",
       "thumbnailUrl": _imagesURL[0],
       "postBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-      "attribute": "Original",
-      "Stock": 1,
+      "attribute": "Copy",
+      "Stock": int.parse(_stockInfoTextEditingController.text),
       "id": userItemRef.id,
       "color1": selectedItem1.trim(),
       "color2": selectedItem2.trim(),
       "postName":
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-      "shipsDate": _selectShipsDays,
       "itemWidth": _widthtextEditingController.text,
       "itemHeight": _heighttextEditingController.text,
       "shipsPayment": _selectShipsPayment,
-      "Frame": selectedFrame.trim(),
+      "shipsDate": _selectShipsDays,
     });
-    EcommerceApp.firestore
-        .collection(EcommerceApp.collectionUser)
-        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
-        .collection("MyUploadItems")
-        .doc(productID)
-        .collection("itemImages")
-        .add({'image': _imagesURL});
     final itemRef =
         FirebaseFirestore.instance.collection("items").doc(productID);
     itemRef.set({
@@ -498,19 +471,18 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
       "status": "available",
       'thumbnailUrl': _imagesURL[0],
       "postBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-      "attribute": "Original",
-      "Stock": 1,
+      "attribute": "Copy",
+      "Stock": int.parse(_stockInfoTextEditingController.text),
       "id": itemRef.id,
       "color1": selectedItem1.trim(),
       "color2": selectedItem2.trim(),
-      "itemWidth": _widthtextEditingController.text,
-      "itemHeight": _heighttextEditingController.text,
-      "Frame": selectedFrame.trim(),
       "postName":
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-      "shipsDate": _selectShipsDays,
+      "itemWidth": _widthtextEditingController.text,
+      "itemHeight": _heighttextEditingController.text,
       "finalGetProceeds": int.parse(_pricetextEditingController.text) * 0.7,
-      "shipsPayment": _selectShipsPayment
+      "shipsPayment": _selectShipsPayment,
+      "shipsDate": _selectShipsDays,
     });
     FirebaseFirestore.instance
         .collection("items")
@@ -555,7 +527,6 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
             "利用規約の確認の確認は行いましたか？\nまた規約に同意しますか？",
             "OK",
             () {
-              uploadFile();
               saveToFB();
               Route route = MaterialPageRoute(
                 builder: (c) => MainPage(),
