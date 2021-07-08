@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:selling_pictures_platform/Store/BSTransaction.dart';
+
+import '../LEEWAY.dart';
+import '../main.dart';
 
 List<String> shipsDays = ["選択してください", "1~2日後", "2~3日後", "4~7日後"];
 
@@ -355,14 +359,79 @@ List<String> day = [
 ];
 List<String> shipsLabel = [
   "1~2日後",
-  "2~4日後",
+  "3~4日後",
   "5~7日後",
+];
+List<String> shipsNoStockLabel = [
+  "約１週間後",
+  "約２週間後",
+  "約３週間後",
+  "１ヶ月以内",
 ];
 List<String> isFrame = ["有り", "無し"];
 List<String> shipsPayment = ["送料込み(出品者負担)", "送料別途(購入者負担)"];
+List<String> howToCopy = ["業者への委託", "自己印刷"];
+List<String> isStock = ["在庫なし(受注生産)", "在庫あり"];
 List<String> cancelReason = [
   "購入者が誤って購入した",
   "出品情報や商品に\n不備が見つかった",
   "購入者からの連絡が無い",
   "上記以外の理由"
+];
+List<String> items = [
+  "北海道",
+  "青森県",
+  "岩手県",
+  "宮城県",
+  "秋田県",
+  "山形県",
+  "福島県",
+  "茨城県",
+  "栃木県",
+  "群馬県",
+  "埼玉県",
+  "千葉県",
+  "東京都",
+  "神奈川県",
+  "新潟県",
+  "富山県",
+  "石川県",
+  "福井県",
+  "山梨県",
+  "長野県",
+  "岐阜県",
+  "静岡県",
+  "愛知県",
+  "三重県",
+  "滋賀県",
+  "京都府",
+  "大阪府",
+  "兵庫県",
+  "奈良県",
+  "和歌山県",
+  "鳥取県",
+  "島根県",
+  "岡山県",
+  "広島県",
+  "山口県",
+  "徳島県",
+  "香川県",
+  "愛媛県",
+  "高知県",
+  "福岡県",
+  "佐賀県",
+  "長崎県",
+  "熊本県",
+  "大分県",
+  "宮崎県",
+  "鹿児島県",
+  "沖縄県",
+];
+List<MapEntry<String, Widget>> storeItems = [
+  MapEntry("images/painter1.png", BSTransaction()),
+  MapEntry("images/painter2.png", LEEWAY()),
+  MapEntry("", null),
+  MapEntry("images/painter4.png", MainPage()),
+  MapEntry("images/painter5.png", MainPage()),
+  MapEntry("", null),
 ];

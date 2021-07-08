@@ -48,9 +48,16 @@ dependencies:
 
 
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.9.0
+
+flutter_icons:
+  image_path: "icon/leewayIcon.png"
+  android: true
+  ios: true
 
 flutter:
 

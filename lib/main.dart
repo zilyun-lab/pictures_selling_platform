@@ -50,9 +50,6 @@ class MyApp extends StatelessWidget {
           create: (c) => AddressChanger(),
         ),
         ChangeNotifierProvider(
-          create: (c) => TotalAmount(),
-        ),
-        ChangeNotifierProvider(
           create: (c) => GetLikeItemsModel()..fetchItems(),
         ),
       ],
@@ -91,7 +88,7 @@ class _SplashScreenState extends State<SplashScreen> {
         if (await EcommerceApp.auth.currentUser != null) {
           //todo:もしログインしていたら以下
 
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             PageTransition(
               type: PageTransitionType.fade,

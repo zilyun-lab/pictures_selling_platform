@@ -11,6 +11,7 @@ import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/CheckBox.dart';
+import 'package:selling_pictures_platform/Widgets/WidgetOfFirebase.dart';
 
 import '../main.dart';
 
@@ -26,6 +27,7 @@ TextEditingController _descriptiontextEditingController =
     TextEditingController();
 TextEditingController _stockInfoTextEditingController = TextEditingController();
 TextEditingController _shortInfoTextEditingController = TextEditingController();
+TextEditingController _paperTextEditingController = TextEditingController();
 
 class Copy extends StatefulWidget {
   @override
@@ -36,7 +38,11 @@ class _OriginalUploadPageState extends State<Copy> {
   bool uploading = false;
   double val = 0;
   String _selectShipsDays = '';
+  String _selectShipsDaysWhenNoStock = '';
   String _selectShipsPayment = '';
+  String _howToCopy = '';
+  String _selectFrame = "";
+  String _isStock = "";
 
   @override
   void initState() {
@@ -158,9 +164,6 @@ class _OriginalUploadPageState extends State<Copy> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
                 uploadTitle("作品情報", 8.0),
                 Container(
                   color: Colors.white,
@@ -241,24 +244,102 @@ class _OriginalUploadPageState extends State<Copy> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text("在庫数"),
-                ),
+                uploadTitle("印刷に関する情報", 8.0),
                 Container(
                   color: Colors.white,
-                  child: infoTiles(
-                    keyboard: TextInputType.number,
-                    hintText: "在庫数",
-                    controller: _stockInfoTextEditingController,
-                    alert: "未記入の項目があります。",
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: RadioButtonGroup(
+                                labels: howToCopy,
+                                onSelected: (String selected) {
+                                  setState(() {
+                                    _howToCopy = selected;
+                                  });
+                                  print(_howToCopy);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Divider(),
+                        infoTiles(
+                          hintText: "印刷使用紙",
+                          controller: _paperTextEditingController,
+                          alert: "未記入の項目があります。",
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
+                uploadTitle("在庫の有無", 8.0),
+                Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: RadioButtonGroup(
+                            labels: isStock,
+                            onSelected: (String selected) {
+                              setState(() {
+                                _isStock = selected;
+                              });
+                              print(_isStock);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                _isStock == "在庫あり"
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text("在庫数"),
+                          ),
+                          Container(
+                            color: Colors.white,
+                            child: infoTiles(
+                              keyboard: TextInputType.number,
+                              hintText: "在庫数",
+                              controller: _stockInfoTextEditingController,
+                              alert: "未記入の項目があります。",
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(),
+                uploadTitle("額縁の有無", 8.0),
+                Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      children: [
+                        RadioButtonGroup(
+                          labels: isFrame,
+                          onSelected: (String selected) {
+                            setState(() {
+                              _selectFrame = selected;
+                            });
+                            print(_selectFrame);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 uploadTitle("作品サイズ(縦 × 横)", 8.0),
                 Container(
@@ -315,32 +396,65 @@ class _OriginalUploadPageState extends State<Copy> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                uploadTitle("発送予定日(受注販売)", 8.0),
-                Container(
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      children: [
-                        RadioButtonGroup(
-                          labels: shipsLabel,
-                          onSelected: (String selected) {
-                            setState(() {
-                              _selectShipsDays = selected;
-                            });
-                            print(_selectShipsDays);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
+                _isStock == "在庫あり"
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          uploadTitle("発送予定日", 8.0),
+                          Container(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: RadioButtonGroup(
+                                      labels: shipsLabel,
+                                      onSelected: (String selected) {
+                                        setState(() {
+                                          _selectShipsDays = selected;
+                                        });
+                                        print(_selectShipsDays);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(),
+                _isStock == "在庫なし(受注生産)"
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          uploadTitle("発送予定日(受注生産)", 8.0),
+                          Container(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: RadioButtonGroup(
+                                      labels: shipsNoStockLabel,
+                                      onSelected: (String selected) {
+                                        setState(() {
+                                          _selectShipsDaysWhenNoStock =
+                                              selected;
+                                        });
+                                        print(_selectShipsDaysWhenNoStock);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(),
                 uploadTitle("送料", 8.0),
                 Container(
                   color: Colors.white,
@@ -360,9 +474,6 @@ class _OriginalUploadPageState extends State<Copy> {
                       ],
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
                 ),
                 uploadTitle("出品金額", 8.0),
                 Container(
@@ -436,60 +547,42 @@ class _OriginalUploadPageState extends State<Copy> {
   }
 
   saveToFB() {
-    final userItemRef = EcommerceApp.firestore
-        .collection(EcommerceApp.collectionUser)
-        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
-        .collection("MyUploadItems")
-        .doc(productID);
-    userItemRef.set({
-      "shortInfo": _shortInfoTextEditingController.text.trim(),
-      "longDescription": _descriptiontextEditingController.text.trim(),
-      "price": int.parse(_pricetextEditingController.text),
-      "publishedDate": DateTime.now(),
-      "status": "available",
-      "thumbnailUrl": _imagesURL[0],
-      "postBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-      "attribute": "Copy",
-      "Stock": int.parse(_stockInfoTextEditingController.text),
-      "id": userItemRef.id,
-      "color1": selectedItem1.trim(),
-      "color2": selectedItem2.trim(),
-      "postName":
-          EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-      "itemWidth": _widthtextEditingController.text,
-      "itemHeight": _heighttextEditingController.text,
-      "shipsPayment": _selectShipsPayment,
-      "shipsDate": _selectShipsDays,
-    });
     final itemRef =
         FirebaseFirestore.instance.collection("items").doc(productID);
-    itemRef.set({
-      "shortInfo": _shortInfoTextEditingController.text.trim(),
-      "longDescription": _descriptiontextEditingController.text.trim(),
-      "price": int.parse(_pricetextEditingController.text),
-      "publishedDate": DateTime.now(),
-      "status": "available",
-      'thumbnailUrl': _imagesURL[0],
-      "postBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-      "attribute": "Copy",
-      "Stock": int.parse(_stockInfoTextEditingController.text),
-      "id": itemRef.id,
-      "color1": selectedItem1.trim(),
-      "color2": selectedItem2.trim(),
-      "postName":
-          EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-      "itemWidth": _widthtextEditingController.text,
-      "itemHeight": _heighttextEditingController.text,
-      "finalGetProceeds": int.parse(_pricetextEditingController.text) * 0.7,
-      "shipsPayment": _selectShipsPayment,
-      "shipsDate": _selectShipsDays,
-    });
-    FirebaseFirestore.instance
-        .collection("items")
-        .doc(productID)
-        .collection("itemImages")
-        .doc(productID)
-        .set({'images': _imagesURL});
+    final model = CopyStickerPostCardModel(
+      shortInfo: _shortInfoTextEditingController.text.trim(),
+      longDescription: _descriptiontextEditingController.text.trim(),
+      price: int.parse(_pricetextEditingController.text),
+      publishedDate: DateTime.now(),
+      status: "available",
+      thumbnailUrl: _imagesURL[0],
+      postBy: EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+      attribute: "Copy",
+      Stock: int.parse(_stockInfoTextEditingController.text),
+      id: itemRef.id,
+      color1: selectedItem1.trim(),
+      color2: selectedItem2.trim(),
+      postName: EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+      itemWidth: _widthtextEditingController.text,
+      itemHeight: _heighttextEditingController.text,
+      finalGetProceeds: int.parse(_pricetextEditingController.text) * 0.7,
+      shipsPayment: _selectShipsPayment,
+      shipsDate:
+          _isStock == "在庫あり" ? _selectShipsDays : _selectShipsDaysWhenNoStock,
+      paper: _paperTextEditingController.text.trim(),
+      howToCopy: _howToCopy,
+      isFrame: _selectFrame,
+      stockType: _isStock,
+    ).toJson();
+    setData("items", model, productID);
+    setDataMultiple(
+        EcommerceApp.collectionUser,
+        EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+        "MyUploadItems",
+        productID,
+        model);
+    setDataMultiple(
+        "items", productID, "itemImages", productID, {'images': _imagesURL});
     setState(() {
       _imagesURL = [];
     });

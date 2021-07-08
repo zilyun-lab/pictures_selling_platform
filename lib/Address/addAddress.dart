@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:selling_pictures_platform/Address/address.dart';
-import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
+import 'package:selling_pictures_platform/Models/allList.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
+import 'package:selling_pictures_platform/Widgets/WidgetOfFirebase.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:flutter/material.dart';
@@ -19,55 +20,6 @@ class AddAddress extends StatefulWidget {
 }
 
 class _AddAddressState extends State<AddAddress> {
-  List<String> items = [
-    "北海道",
-    "青森県",
-    "岩手県",
-    "宮城県",
-    "秋田県",
-    "山形県",
-    "福島県",
-    "茨城県",
-    "栃木県",
-    "群馬県",
-    "埼玉県",
-    "千葉県",
-    "東京都",
-    "神奈川県",
-    "新潟県",
-    "富山県",
-    "石川県",
-    "福井県",
-    "山梨県",
-    "長野県",
-    "岐阜県",
-    "静岡県",
-    "愛知県",
-    "三重県",
-    "滋賀県",
-    "京都府",
-    "大阪府",
-    "兵庫県",
-    "奈良県",
-    "和歌山県",
-    "鳥取県",
-    "島根県",
-    "岡山県",
-    "広島県",
-    "山口県",
-    "徳島県",
-    "香川県",
-    "愛媛県",
-    "高知県",
-    "福岡県",
-    "佐賀県",
-    "長崎県",
-    "熊本県",
-    "大分県",
-    "宮崎県",
-    "鹿児島県",
-    "沖縄県",
-  ];
   String selectedItem = "北海道";
 
   final formKey = GlobalKey<FormState>();
@@ -97,66 +49,38 @@ class _AddAddressState extends State<AddAddress> {
             ),
           ),
         ),
-        floatingActionButton: Container(
-          width: 100,
-          height: 100,
-          child: FloatingActionButton(
-            backgroundColor: HexColor("E67928"),
-            onPressed: () {
-              //print(selectedItem);
-              if (formKey.currentState.validate()) {
-                final model = AddressModel(
-                  lastName: cLastName.text.trim(),
-                  firstName: cFirstName.text.trim(),
-                  postalCode: cPostalCode.text,
-                  prefectures: selectedItem.trim(),
-                  //prefectures: cPrefectures.text.trim(),
-                  city: cCity.text.trim(),
-                  address: cAddress.text,
-                  phoneNumber: cPhoneNumber.text,
-                  secondAddress: cSecondAddress.text,
-                ).toJson();
-                // todo: firestoreに追加
-                EcommerceApp.firestore
-                    .collection(EcommerceApp.collectionUser)
-                    .doc(EcommerceApp.sharedPreferences
-                        .getString(EcommerceApp.userUID))
-                    .collection(EcommerceApp.subCollectionAddress)
-                    .doc(DateTime.now().millisecondsSinceEpoch.toString())
-                    .set(model)
-                    .then((value) {
-                  final snack = SnackBar(content: Text("新規お届け先を追加しました"));
-                  scaffoldKey.currentState.showSnackBar(snack);
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  formKey.currentState.reset();
-                });
-                Navigator.pop(context);
-                // Route route = MaterialPageRoute(builder: (c) => Address());
-                // Navigator.pushReplacement(context, route);
-              }
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                children: [
-                  Text(
-                    "追加",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Icon(
-                    Icons.add,
-                    size: 45,
-                  ),
-                ],
-              ),
-            ),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(50.0))),
-          ),
-        ),
+        floatingActionButton: myFloatingActionButton("追加", () {
+          //print(selectedItem);
+          if (formKey.currentState.validate()) {
+            final model = AddressModel(
+              lastName: cLastName.text.trim(),
+              firstName: cFirstName.text.trim(),
+              postalCode: cPostalCode.text,
+              prefectures: selectedItem.trim(),
+              //prefectures: cPrefectures.text.trim(),
+              city: cCity.text.trim(),
+              address: cAddress.text,
+              phoneNumber: cPhoneNumber.text,
+              secondAddress: cSecondAddress.text,
+            ).toJson();
+            // todo: firestoreに追加
+            setDataMultiple(
+              EcommerceApp.collectionUser,
+              EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+              EcommerceApp.subCollectionAddress,
+              DateTime.now().millisecondsSinceEpoch.toString(),
+              model,
+            );
+
+            final snack = SnackBar(content: Text("新規お届け先を追加しました"));
+            scaffoldKey.currentState.showSnackBar(snack);
+            FocusScope.of(context).requestFocus(FocusNode());
+            formKey.currentState.reset();
+            Navigator.pop(context);
+            // Route route = MaterialPageRoute(builder: (c) => Address());
+            // Navigator.pushReplacement(context, route);
+          }
+        }),
         body: SingleChildScrollView(
           child: Column(
             children: [

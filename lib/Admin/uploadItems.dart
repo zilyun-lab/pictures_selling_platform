@@ -171,9 +171,6 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
                 uploadTitle("作品情報", 8.0),
                 Container(
                   color: Colors.white,
@@ -254,9 +251,6 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
                 uploadTitle("額縁の有無", 8.0),
                 Container(
                   color: Colors.white,
@@ -276,9 +270,6 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                       ],
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
                 ),
                 uploadTitle("作品サイズ(縦 × 横)", 8.0),
                 Container(
@@ -335,9 +326,6 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
                 uploadTitle("発送予定日", 8.0),
                 Container(
                   color: Colors.white,
@@ -357,9 +345,6 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                       ],
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
                 ),
                 uploadTitle("出品金額", 8.0),
                 Container(
@@ -383,9 +368,6 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
                 ),
                 uploadTitle("送料", 8.0),
                 Container(

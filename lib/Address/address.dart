@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
+import 'package:selling_pictures_platform/Widgets/WidgetOfFirebase.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 
 import 'package:selling_pictures_platform/Models/address.dart';
@@ -43,12 +45,11 @@ class _AddressState extends State<Address> {
           builder: (context, address, c) {
             return Flexible(
               child: StreamBuilder<QuerySnapshot>(
-                stream: EcommerceApp.firestore
-                    .collection(EcommerceApp.collectionUser)
-                    .doc(EcommerceApp.sharedPreferences
-                        .getString(EcommerceApp.userUID))
-                    .collection(EcommerceApp.subCollectionAddress)
-                    .snapshots(),
+                stream: getSecondStreamSnapshots(
+                    EcommerceApp.collectionUser,
+                    EcommerceApp.sharedPreferences
+                        .getString(EcommerceApp.userUID),
+                    EcommerceApp.subCollectionAddress),
                 builder: (context, snapshot) {
                   return !snapshot.hasData
                       ? Center(
@@ -150,35 +151,19 @@ class _AddressCardState extends State<AddressCard> {
                       child: Table(
                         children: [
                           TableRow(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 2.0),
-                                child: KeyText(msg: "氏名"),
-                              ),
-                              Text(widget.model.lastName +
-                                  widget.model.firstName),
-                            ],
-                          ),
+                              children: addressText(
+                                  "氏名",
+                                  widget.model.lastName +
+                                      widget.model.firstName)),
                           TableRow(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 2.0),
-                                child: KeyText(msg: "郵便番号"),
-                              ),
-                              Text(widget.model.postalCode),
-                            ],
-                          ),
+                              children:
+                                  addressText("郵便番号", widget.model.postalCode)),
                           TableRow(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 2.0),
-                                child: KeyText(msg: "住所"),
-                              ),
-                              Text(widget.model.prefectures +
-                                  widget.model.city +
-                                  widget.model.address),
-                            ],
-                          ),
+                              children: addressText(
+                                  "住所",
+                                  widget.model.prefectures +
+                                      widget.model.city +
+                                      widget.model.address)),
                         ],
                       ),
                     ),
@@ -188,21 +173,6 @@ class _AddressCardState extends State<AddressCard> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class KeyText extends StatelessWidget {
-  final String msg;
-  KeyText({Key key, this.msg}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      msg,
-      style: TextStyle(
-        color: Colors.black,
-        fontWeight: FontWeight.bold,
       ),
     );
   }

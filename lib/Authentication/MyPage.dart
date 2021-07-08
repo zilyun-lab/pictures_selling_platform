@@ -20,8 +20,6 @@ import 'package:selling_pictures_platform/Orders/myOrders.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 
 import 'dart:io';
-
-import '../main.dart';
 import 'FAQ.dart';
 import 'PrivacyPolicyEtc.dart';
 import 'ProceedsRequests.dart';
@@ -378,17 +376,39 @@ class _MyPageState extends State<MyPage> {
                           ),
                           child: ListTile(
                             onTap: () {
-                              EcommerceApp.auth.signOut().then(
-                                (c) {
-                                  Route route = MaterialPageRoute(
-                                    builder: (c) => Login(),
-                                  );
-                                  Navigator.push(
-                                    context,
-                                    route,
-                                  );
-                                },
-                              );
+                              showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                        title: Text("本当にログアウトしますか？"),
+                                        actions: [
+                                          Row(
+                                            children: [
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text("　キャンセル　")),
+                                              ElevatedButton(
+                                                  onPressed: () {
+                                                    Route route =
+                                                        MaterialPageRoute(
+                                                      builder: (c) => Login(),
+                                                    );
+                                                    EcommerceApp.auth
+                                                        .signOut()
+                                                        .then((c) =>
+                                                            Navigator.push(
+                                                              context,
+                                                              route,
+                                                            ));
+                                                  },
+                                                  child: Text("ログアウトする")),
+                                            ],
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                          ),
+                                        ],
+                                      ));
                             },
                             leading:
                                 Icon(Icons.login_outlined, color: mainColor),
@@ -462,17 +482,10 @@ Widget sourceInfo(ItemModel model, BuildContext context,
     onTap: () {
       Route route = MaterialPageRoute(
         builder: (c) => ProductPage(
-          thumbnailURL: model.thumbnailUrl,
-          shortInfo: model.shortInfo,
-          longDescription: model.longDescription,
-          price: model.price,
-          attribute: model.attribute,
-          postBy: model.postBy,
-          Stock: model.Stock,
           id: model.id,
         ),
       );
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         route,
       );

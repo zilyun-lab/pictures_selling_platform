@@ -65,13 +65,6 @@ class _SearchProductState extends State<SearchProduct> {
                           onTap: () {
                             Route route = MaterialPageRoute(
                               builder: (c) => ProductPage(
-                                thumbnailURL: model.thumbnailUrl,
-                                shortInfo: model.shortInfo,
-                                longDescription: model.longDescription,
-                                price: model.price,
-                                attribute: model.attribute,
-                                postBy: model.postBy,
-                                Stock: model.Stock,
                                 id: model.id,
                               ),
                             );

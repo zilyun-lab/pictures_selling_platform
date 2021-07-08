@@ -74,14 +74,6 @@ class _LikePageState extends State<LikePage> {
                                         onTap: () {
                                           Route route = MaterialPageRoute(
                                             builder: (c) => ProductPage(
-                                              thumbnailURL: item.thumbnailUrl,
-                                              shortInfo: item.shortInfo,
-                                              longDescription:
-                                                  item.longDescription,
-                                              price: item.price,
-                                              attribute: item.attribute,
-                                              postBy: item.postBy,
-                                              Stock: item.Stock,
                                               id: item.id,
                                             ),
                                           );

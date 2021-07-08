@@ -32,7 +32,6 @@ class PublicUserPage extends StatelessWidget {
     this.name,
   }) : super(key: key);
 
-  TabController _tabController;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

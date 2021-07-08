@@ -20,8 +20,6 @@ String selectedItem2 = "無し";
 String selectedItem3 = "選択してください";
 String selectedFrame = "額縁の有無";
 TextEditingController _pricetextEditingController = TextEditingController();
-TextEditingController _widthtextEditingController = TextEditingController();
-TextEditingController _heighttextEditingController = TextEditingController();
 TextEditingController _descriptiontextEditingController =
     TextEditingController();
 TextEditingController _stockInfoTextEditingController = TextEditingController();
@@ -126,6 +124,7 @@ class _OriginalUploadPageState extends State<PostCard> {
                                         onPressed: () =>
                                             !uploading ? chooseImage() : null)
                                     : IconButton(
+                                        onPressed: () {},
                                         icon: Icon(Icons.add),
                                       ),
                               )
@@ -156,9 +155,6 @@ class _OriginalUploadPageState extends State<PostCard> {
                       ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  height: 20,
                 ),
                 uploadTitle("作品情報", 8.0),
                 Container(
@@ -240,9 +236,6 @@ class _OriginalUploadPageState extends State<PostCard> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Text("在庫数"),
@@ -255,9 +248,6 @@ class _OriginalUploadPageState extends State<PostCard> {
                     controller: _stockInfoTextEditingController,
                     alert: "未記入の項目があります。",
                   ),
-                ),
-                SizedBox(
-                  height: 20,
                 ),
                 uploadTitle("発送予定日", 8.0),
                 Container(
@@ -279,9 +269,6 @@ class _OriginalUploadPageState extends State<PostCard> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
                 uploadTitle("送料", 8.0),
                 Container(
                   color: Colors.white,
@@ -301,9 +288,6 @@ class _OriginalUploadPageState extends State<PostCard> {
                       ],
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 20,
                 ),
                 uploadTitle("出品金額", 8.0),
                 Container(
@@ -338,8 +322,6 @@ class _OriginalUploadPageState extends State<PostCard> {
                       if (_formKey.currentState.validate()) {
                         uploadFile();
                         confirmItemOfOriginal();
-                        print(_imagesURL);
-                        print(_image);
                       }
                     },
                     child: Text("出品する"),

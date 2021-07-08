@@ -12,7 +12,6 @@ import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Counters/changeAddresss.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/address.dart';
-import 'package:selling_pictures_platform/Orders/OrderDetailsPage.dart';
 import 'package:selling_pictures_platform/Orders/myOrders.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:stripe_payment/stripe_payment.dart';
@@ -95,6 +94,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
     _proceeds = snapshot.data()['finalGetProceeds'].toString();
     _postName = snapshot.data()['postName'].toString();
   }
+
+  bool cvc = false;
+  bool month = false;
+  bool year = false;
+  bool number = false;
 
   @override
   Widget build(BuildContext context) {
@@ -201,23 +205,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           children: [
                             Padding(
                               padding:
-                                  const EdgeInsets.only(right: 6.0, bottom: 5),
-                              child: Container(
-                                color: Colors.deepPurpleAccent,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: Text(
-                                    "送料別途",
-                                    style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
                                   const EdgeInsets.only(right: 8.0, bottom: 5),
                               child: Text(
                                 "¥ " + widget.price.toString(),
@@ -289,10 +276,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
             SizedBox(
               height: 20,
             ),
-            // Container(
-            //   color: Colors.white,
-            //   child: _buildContent(),
-            // ),
             SizedBox(
               height: 20,
             ),
@@ -300,31 +283,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
               color: Colors.white,
               child: Column(
                 children: [
-                  ListTile(
-                    leading: Text(
-                      "送料",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 15.0),
-                    ),
-                    trailing: Text(
-                      "¥ " + shipsPayment.toString() + " (一律)",
-                    ),
-                  ),
-                  Divider(),
-                  ListTile(
-                    leading: Text(
-                      "サイズ料金",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 15.0),
-                    ),
-                    trailing: gValue != 0
-                        ? Text(
-                            "¥ " + gValue.toString() + " (オプション有り)",
-                          )
-                        : Text(
-                            "¥ " + gValue.toString() + " (オプション無し)",
-                          ),
-                  ),
                   Divider(),
                   ListTile(
                     leading: Text(
@@ -333,7 +291,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
                     trailing: Text(
-                      "¥ " + "${widget.price + shipsPayment + gValue}",
+                      "¥ " + "${widget.price}",
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
@@ -639,166 +597,146 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                               const EdgeInsets
                                                                       .only(
                                                                   right: 15.0),
-                                                          child: ElevatedButton(
-                                                            child: Text(
-                                                                "   購入する   "),
-                                                            onPressed: () {
-                                                              showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder: (_) {
-                                                                  return CupertinoAlertDialog(
-                                                                    title:
-                                                                        Center(
-                                                                      child:
-                                                                          Text(
-                                                                        "購入確認",
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                    content:
-                                                                        Container(
-                                                                      child:
-                                                                          Text(
-                                                                        "${widget.shortInfo} を購入します。\nよろしいですか？",
-                                                                      ),
-                                                                    ),
-                                                                    actions: <
-                                                                        Widget>[
-                                                                      // ボタン領域
-                                                                      ElevatedButton(
-                                                                        child: Text(
-                                                                            "キャンセル"),
-                                                                        onPressed:
-                                                                            () =>
-                                                                                Navigator.pop(context),
-                                                                      ),
-                                                                      ElevatedButton(
-                                                                        child:
-                                                                            Text(
-                                                                          "購入する",
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
+                                                          child: _cardNumberEditingController.text.isNotEmpty &&
+                                                                  _expMonthEditingController
+                                                                      .text
+                                                                      .isNotEmpty &&
+                                                                  _expYearEditingController
+                                                                      .text
+                                                                      .isNotEmpty &&
+                                                                  _cvcNumberEditingController
+                                                                      .text
+                                                                      .isNotEmpty
+                                                              ? ElevatedButton(
+                                                                  child: Text(
+                                                                      "   購入する   "),
+                                                                  onPressed:
+                                                                      () {
+                                                                    showDialog(
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (_) {
+                                                                        return CupertinoAlertDialog(
+                                                                          title:
+                                                                              Center(
+                                                                            child:
+                                                                                Text(
+                                                                              "購入確認",
+                                                                              style: TextStyle(
+                                                                                fontWeight: FontWeight.bold,
+                                                                              ),
+                                                                            ),
                                                                           ),
-                                                                        ),
-                                                                        onPressed:
-                                                                            () {
-                                                                          final creditCard = CreditCard(
-                                                                              number: _cardNumberEditingController.text.toString(),
-                                                                              expMonth: int.parse(_expMonthEditingController.text),
-                                                                              expYear: int.parse(_expYearEditingController.text),
-                                                                              cvc: _cvcNumberEditingController.text.toString());
-                                                                          StripeService(price: widget.price + shipsPayment + gValue)
-                                                                              .payViaExistingCard(creditCard);
-                                                                          widget.attribute == "Original"
-                                                                              ? FirebaseFirestore.instance.collection("items").doc(widget.id).update({
-                                                                                  "Stock": 0,
-                                                                                })
-                                                                              : FirebaseFirestore.instance.collection("items").doc(widget.id).update({
-                                                                                  // "Stock": widget.stock - 1,
-                                                                                  "Stock": FieldValue.increment(-1),
-                                                                                });
-                                                                          final ref = EcommerceApp
-                                                                              .firestore
-                                                                              .collection(EcommerceApp.collectionUser)
-                                                                              .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
-                                                                              .collection(EcommerceApp.collectionOrders)
-                                                                              .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID) + DateTime.now().millisecondsSinceEpoch.toString());
-                                                                          ref.set(
-                                                                            {
-                                                                              "id": ref.id,
-                                                                              "imageURL": widget.imageURL,
-                                                                              EcommerceApp.addressID: snapshot.data.docs[index].id,
-                                                                              "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-                                                                              EcommerceApp.productID: widget.shortInfo,
-                                                                              EcommerceApp.paymentDetails: "クレジットカード",
-                                                                              EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
-                                                                              EcommerceApp.isSuccess: true,
-                                                                              "boughtFrom": widget.postBy,
-                                                                              "totalPrice": widget.price + shipsPayment + gValue,
-                                                                              "isTransactionFinished": "inComplete",
-                                                                              "isDelivery": "inComplete",
-                                                                              "itemPrice": widget.price,
-                                                                              "postName": widget.userName,
-                                                                              "email": EcommerceApp.sharedPreferences.getString(EcommerceApp.userEmail),
-                                                                              "CancelRequest": false,
-                                                                              "CancelRequestTo": false,
-                                                                              "cancelTransactionFinished": false,
-                                                                              "itemID": widget.id
-                                                                            },
-                                                                          ).whenComplete(
-                                                                            () =>
-                                                                                {
-                                                                              finishedCheckOut(),
-                                                                            },
-                                                                          );
-                                                                          EcommerceApp
-                                                                              .firestore
-                                                                              .collection(EcommerceApp.collectionUser)
-                                                                              .doc(widget.postBy)
-                                                                              .collection("Notify")
-                                                                              .doc(ref.id)
-                                                                              .set({
-                                                                            "id":
-                                                                                ref.id,
-                                                                            "imageURL":
-                                                                                widget.imageURL,
-                                                                            EcommerceApp.addressID:
-                                                                                snapshot.data.docs[index].id,
-                                                                            "orderBy":
-                                                                                EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-                                                                            EcommerceApp.productID:
-                                                                                widget.shortInfo,
-                                                                            EcommerceApp.paymentDetails:
-                                                                                "代金引換",
-                                                                            EcommerceApp.orderTime:
-                                                                                DateTime.now().millisecondsSinceEpoch.toString(),
-                                                                            EcommerceApp.isSuccess:
-                                                                                true,
-                                                                            "boughtFrom":
-                                                                                widget.postBy,
-                                                                            "totalPrice": widget.price +
-                                                                                shipsPayment +
-                                                                                gValue,
-                                                                            "NotifyMessage":
-                                                                                "${EcommerceApp.sharedPreferences.getString(
-                                                                              EcommerceApp.userName,
-                                                                            )} さんが${widget.shortInfo}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
-                                                                            "isTransactionFinished":
-                                                                                "inComplete",
-                                                                            "isBuyerDelivery":
-                                                                                "inComplete",
-                                                                            "itemPrice":
-                                                                                widget.price,
-                                                                            "buyerID":
-                                                                                EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-                                                                            "email":
-                                                                                _email,
-                                                                            "finalGetProceeds":
-                                                                                _proceeds,
-                                                                            "CancelRequest":
-                                                                                false,
-                                                                            "CancelRequestTo":
-                                                                                false,
-                                                                            "cancelTransactionFinished":
-                                                                                false,
-                                                                            "itemID":
-                                                                                widget.id
-                                                                          });
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                },
-                                                              );
-                                                            },
-                                                          ),
+                                                                          content:
+                                                                              Container(
+                                                                            child:
+                                                                                Text(
+                                                                              "${widget.shortInfo} を購入します。\nよろしいですか？",
+                                                                            ),
+                                                                          ),
+                                                                          actions: <
+                                                                              Widget>[
+                                                                            // ボタン領域
+                                                                            ElevatedButton(
+                                                                              child: Text("キャンセル"),
+                                                                              onPressed: () => Navigator.pop(context),
+                                                                            ),
+                                                                            _cardNumberEditingController.text != "" && _expMonthEditingController.text != "" && _expYearEditingController.text != "" && _cvcNumberEditingController.text != ""
+                                                                                ? ElevatedButton(
+                                                                                    child: Text(
+                                                                                      "購入する",
+                                                                                      style: TextStyle(
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                      ),
+                                                                                    ),
+                                                                                    onPressed: () {
+                                                                                      final creditCard = CreditCard(number: _cardNumberEditingController.text.toString(), expMonth: int.parse(_expMonthEditingController.text), expYear: int.parse(_expYearEditingController.text), cvc: _cvcNumberEditingController.text.toString());
+                                                                                      StripeService(price: widget.price).payViaExistingCard(creditCard);
+                                                                                      widget.attribute == "Original"
+                                                                                          ? FirebaseFirestore.instance.collection("items").doc(widget.id).update({
+                                                                                              "Stock": 0,
+                                                                                            })
+                                                                                          : FirebaseFirestore.instance.collection("items").doc(widget.id).update({
+                                                                                              // "Stock": widget.stock - 1,
+                                                                                              "Stock": FieldValue.increment(-1),
+                                                                                            });
+                                                                                      final ref = EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID)).collection(EcommerceApp.collectionOrders).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID) + DateTime.now().millisecondsSinceEpoch.toString());
+                                                                                      ref.set(
+                                                                                        {
+                                                                                          "id": ref.id,
+                                                                                          "imageURL": widget.imageURL,
+                                                                                          EcommerceApp.addressID: snapshot.data.docs[index].id,
+                                                                                          "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+                                                                                          EcommerceApp.productID: widget.shortInfo,
+                                                                                          EcommerceApp.paymentDetails: "クレジットカード",
+                                                                                          EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
+                                                                                          EcommerceApp.isSuccess: true,
+                                                                                          "boughtFrom": widget.postBy,
+                                                                                          "totalPrice": widget.price,
+                                                                                          "isTransactionFinished": "inComplete",
+                                                                                          "isDelivery": "inComplete",
+                                                                                          "itemPrice": widget.price,
+                                                                                          "postName": widget.userName,
+                                                                                          "email": EcommerceApp.sharedPreferences.getString(EcommerceApp.userEmail),
+                                                                                          "CancelRequest": false,
+                                                                                          "CancelRequestTo": false,
+                                                                                          "cancelTransactionFinished": false,
+                                                                                          "itemID": widget.id
+                                                                                        },
+                                                                                      ).whenComplete(
+                                                                                        () => {
+                                                                                          finishedCheckOut(),
+                                                                                        },
+                                                                                      );
+                                                                                      EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(widget.postBy).collection("Notify").doc(ref.id).set({
+                                                                                        "id": ref.id,
+                                                                                        "imageURL": widget.imageURL,
+                                                                                        EcommerceApp.addressID: snapshot.data.docs[index].id,
+                                                                                        "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+                                                                                        EcommerceApp.productID: widget.shortInfo,
+                                                                                        EcommerceApp.paymentDetails: "代金引換",
+                                                                                        EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
+                                                                                        EcommerceApp.isSuccess: true,
+                                                                                        "boughtFrom": widget.postBy,
+                                                                                        "totalPrice": widget.price,
+                                                                                        "NotifyMessage": "${EcommerceApp.sharedPreferences.getString(
+                                                                                          EcommerceApp.userName,
+                                                                                        )} さんが${widget.shortInfo}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
+                                                                                        "isTransactionFinished": "inComplete",
+                                                                                        "isBuyerDelivery": "inComplete",
+                                                                                        "itemPrice": widget.price,
+                                                                                        "buyerID": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+                                                                                        "email": _email,
+                                                                                        "finalGetProceeds": _proceeds,
+                                                                                        "CancelRequest": false,
+                                                                                        "CancelRequestTo": false,
+                                                                                        "cancelTransactionFinished": false,
+                                                                                        "itemID": widget.id
+                                                                                      });
+                                                                                    },
+                                                                                  )
+                                                                                : ElevatedButton(
+                                                                                    onPressed: () {},
+                                                                                    child: Text("購入する"),
+                                                                                    style: ElevatedButton.styleFrom(primary: Colors.grey),
+                                                                                  ),
+                                                                          ],
+                                                                        );
+                                                                      },
+                                                                    );
+                                                                  },
+                                                                )
+                                                              : ElevatedButton(
+                                                                  onPressed:
+                                                                      () {},
+                                                                  child: Text(
+                                                                      "　購入する　"),
+                                                                  style: ElevatedButton
+                                                                      .styleFrom(
+                                                                          primary:
+                                                                              Colors.grey),
+                                                                ),
                                                         ),
                                                       ],
                                                     ),
@@ -840,8 +778,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
         ),
         title: Text('新規のカードで決済する'),
       ),
-      onTap: StripeService(price: widget.price + shipsPayment + gValue)
-          .payViaNewCard,
+      onTap: StripeService(price: widget.price).payViaNewCard,
     );
   }
 

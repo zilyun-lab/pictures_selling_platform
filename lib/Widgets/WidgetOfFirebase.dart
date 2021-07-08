@@ -1,6 +1,94 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ItemModel {
+Future<Map<String, dynamic>> getData(
+    String collection, String documentId) async {
+  DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+      .collection(collection)
+      .doc(documentId)
+      .get();
+
+  return docSnapshot.data();
+}
+
+Future<Map<String, dynamic>> getDataMultiple(String firstCollection,
+    String firstDocumentId, String secondCollection, String secondDoc) async {
+  DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+      .collection(firstCollection)
+      .doc(firstDocumentId)
+      .collection(secondCollection)
+      .doc(secondDoc)
+      .get();
+
+  return docSnapshot.data();
+}
+
+void setData(String collection, Map data, String doc) {
+  FirebaseFirestore.instance.collection(collection).doc(doc).set(data);
+}
+
+void setDataMultiple(
+  String firstCollection,
+  String firstDoc,
+  String secondCollection,
+  String secondDoc,
+  Map data,
+) {
+  FirebaseFirestore.instance
+      .collection(firstCollection)
+      .doc(firstDoc)
+      .collection(secondCollection)
+      .doc(secondDoc)
+      .set(data);
+}
+
+void updateData(String collection, Map data, {String doc}) {
+  FirebaseFirestore.instance.collection(collection).doc(doc).update(data);
+}
+
+void updateDataMultiple(
+  String firstCollection,
+  String firstDoc,
+  String secondCollection,
+  String secondDoc,
+  Map data,
+) {
+  FirebaseFirestore.instance
+      .collection(firstCollection)
+      .doc(firstDoc)
+      .collection(secondCollection)
+      .doc(secondDoc)
+      .update(data);
+}
+
+Stream<QuerySnapshot> getStreamSnapshots(String collection) {
+  return FirebaseFirestore.instance.collection(collection).snapshots();
+}
+
+Stream<DocumentSnapshot> getFirstStreamSnapshots(
+    String collection, String doc) {
+  return FirebaseFirestore.instance.collection(collection).doc(doc).snapshots();
+}
+
+Stream<QuerySnapshot> getSecondStreamSnapshots(
+    String firstCollection, String doc, String secondCollection) {
+  return FirebaseFirestore.instance
+      .collection(firstCollection)
+      .doc(doc)
+      .collection(secondCollection)
+      .snapshots();
+}
+
+Stream<DocumentSnapshot> getThirdStreamSnapshots(String firstCollection,
+    String firstDoc, secondCollection, String secondDoc) {
+  return FirebaseFirestore.instance
+      .collection(firstCollection)
+      .doc(firstDoc)
+      .collection(secondCollection)
+      .doc(secondDoc)
+      .snapshots();
+}
+
+class CopyStickerPostCardModel {
   String shortInfo;
   String longDescription;
   int price;
@@ -24,7 +112,7 @@ class ItemModel {
   String isFrame;
   String stockType;
 
-  ItemModel({
+  CopyStickerPostCardModel({
     this.shortInfo,
     this.longDescription,
     this.price,
@@ -49,7 +137,7 @@ class ItemModel {
     this.stockType,
   });
 
-  ItemModel.fromJson(Map<String, dynamic> json) {
+  CopyStickerPostCardModel.fromJson(Map<String, dynamic> json) {
     shortInfo = json['shortInfo'];
     longDescription = json['longDescription'];
     price = json['price'];
@@ -98,22 +186,6 @@ class ItemModel {
     data['howToCopy'] = this.howToCopy;
     data['isFrame'] = this.isFrame;
     data['stockType'] = this.stockType;
-    return data;
-  }
-}
-
-class PublishedDate {
-  String date;
-
-  PublishedDate({this.date});
-
-  PublishedDate.fromJson(Map<String, dynamic> json) {
-    date = json['$date'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['$date'] = this.date;
     return data;
   }
 }
