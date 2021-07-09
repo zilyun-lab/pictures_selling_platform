@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +14,8 @@ import 'package:selling_pictures_platform/Counters/changeAddresss.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:selling_pictures_platform/Orders/myOrders.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
+import 'package:selling_pictures_platform/Widgets/WidgetOfFirebase.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
@@ -20,39 +23,11 @@ import '../main.dart';
 import 'TransactionPage.dart';
 
 class CheckOutPage extends StatefulWidget {
-  const CheckOutPage(
-      {Key key,
-      this.model,
-      this.shortInfo,
-      this.imageURL,
-      this.price,
-      this.postBy,
-      this.value,
-      this.currentIndex,
-      this.addressId,
-      this.V,
-      this.attribute,
-      this.id,
-      this.userName,
-      this.postName,
-      this.stock,
-      this.finalGetProceeds});
+  const CheckOutPage({Key key, this.id, this.il, this.V});
 
-  final shortInfo;
-  final imageURL;
-  final price;
-  final postBy;
-  final int value;
-  final int currentIndex;
-  final String addressId;
-  final int stock;
-  final V;
-  final AddressModel model;
-  final String attribute;
+  final int V;
   final String id;
-  final String userName;
-  final String postName;
-  final double finalGetProceeds;
+  final Map il;
 
   @override
   State<CheckOutPage> createState() => _CheckOutPageState();
@@ -70,35 +45,26 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   String _email;
 
-  String _proceeds;
-  String _postName;
+  final formKey = GlobalKey<FormState>();
   @override
   void initState() {
     fetchUserData();
-    fetchGetProceeds();
   }
 
   void fetchUserData() async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
         .collection('users')
-        .doc(widget.postBy)
+        .doc(widget.il["postBy"])
         .get();
     _email = snapshot.data()['email'];
   }
 
-  void fetchGetProceeds() async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('items')
-        .doc(widget.id)
-        .get();
-    _proceeds = snapshot.data()['finalGetProceeds'].toString();
-    _postName = snapshot.data()['postName'].toString();
-  }
-
-  bool cvc = false;
-  bool month = false;
-  bool year = false;
-  bool number = false;
+  String cvc = "";
+  String month = "";
+  String year = "";
+  String cNumber = "";
+  bool cNumberbool = false;
 
   @override
   Widget build(BuildContext context) {
@@ -115,15 +81,17 @@ class _CheckOutPageState extends State<CheckOutPage> {
             ),
           ),
           onPressed: () {
-            Route route = MaterialPageRoute(builder: (c) => MainPage());
-            Navigator.pushReplacement(context, route);
+            // Route route = MaterialPageRoute(builder: (c) => MainPage());
+            // Navigator.pushReplacement(context, route);
+            Navigator.pop(context);
           },
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
         title: InkWell(
           onTap: () {
-            print(_postName);
+            print(widget.il["postName"]);
+            print(widget.il["finalGetProceeds"]);
           },
           child: Text(
             "購入画面",
@@ -136,133 +104,57 @@ class _CheckOutPageState extends State<CheckOutPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              color: Colors.white,
-              child: Table(
-                children: [
-                  TableRow(
-                    children: [
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(top: 3.0, left: 3, bottom: 3),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Image.network(
-                                widget.imageURL,
-                                //width: 100,
-                                height: 100,
-                                fit: BoxFit.scaleDown,
-                              ),
+                height: 75,
+                color: Colors.white,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    ListTile(
+                      leading: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Image.network(
+                              widget.il["thumbnailUrl"],
+                              //width: 100,
+                              height: 100,
+                              fit: BoxFit.scaleDown,
                             ),
-                            Container(
-                              height: 90,
-                              //width: MediaQuery.of(context).size.width * 0.8,
-                              //color: Colors.red,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 3.0,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "作品：" + widget.shortInfo,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    StreamBuilder<QuerySnapshot>(
-                                      stream: FirebaseFirestore.instance
-                                          .collection(
-                                            "users",
-                                          )
-                                          .where("uid",
-                                              isEqualTo: widget.postBy)
-                                          .snapshots(),
-                                      builder: (context, dataSnapshot) {
-                                        return Text(
-                                          "作者名：" +
-                                              dataSnapshot.data.docs[0]["name"]
-                                                  .toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        );
-                                      },
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Container(
-                        height: 100,
-                        // color: Colors.red,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(right: 8.0, bottom: 5),
-                              child: Text(
-                                "¥ " + widget.price.toString(),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0),
-                                //textAlign: TextAlign.right,
-                              ),
-                            ),
-                          ],
-                        ),
+                      title: Text(
+                        "作品名：" + widget.il["shortInfo"],
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              color: Colors.white,
-              child: widget.attribute == "Original"
-                  ? null
-                  : Column(
-                      children: [
-                        RadioListTile(
-                          secondary: Text("−500円"),
-                          title: Text('サイズ 小'),
-                          subtitle: Text('100×150のサイズです'),
-                          value: -500,
-                          groupValue: gValue,
-                          onChanged: (value) => _onRadioSelected(value),
-                        ),
-                        Divider(),
-                        RadioListTile(
-                          secondary: Text("+0円"),
-                          title: Text('サイズ 中'),
-                          value: 0,
-                          subtitle: Text('150×225のサイズです'),
-                          groupValue: gValue,
-                          onChanged: (value) => _onRadioSelected(value),
-                        ),
-                        Divider(),
-                        RadioListTile(
-                          secondary: Text("+500円"),
-                          title: Text('サイズ 大'),
-                          subtitle: Text('300×450のサイズです'),
-                          value: 500,
-                          groupValue: gValue,
-                          onChanged: (value) => _onRadioSelected(value),
-                        ),
-                      ],
-                    ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
+                      subtitle: StreamBuilder<QuerySnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection(
+                              "users",
+                            )
+                            .where("uid", isEqualTo: widget.il["postBy"])
+                            .snapshots(),
+                        builder: (context, dataSnapshot) {
+                          return dataSnapshot.data == null
+                              ? Container()
+                              : Text(
+                                  "作者名：" +
+                                      dataSnapshot.data.docs[0]["name"]
+                                          .toString(),
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                );
+                        },
+                      ),
+                      trailing: Text(
+                        "¥ " + widget.il["price"].toString(),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20.0),
+                        //textAlign: TextAlign.right,
+                      ),
+                    )
+                  ],
+                )),
+            mySizedBox(40),
             Container(
               color: Colors.white,
               child: ListTile(
@@ -273,12 +165,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 trailing: Text("クレジットカード"),
               ),
             ),
-            SizedBox(
-              height: 20,
-            ),
-            SizedBox(
-              height: 20,
-            ),
+            mySizedBox(40),
             Container(
               color: Colors.white,
               child: Column(
@@ -291,7 +178,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
                     trailing: Text(
-                      "¥ " + "${widget.price}",
+                      "¥ " + "${widget.il["price"]}",
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
@@ -363,9 +250,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 );
               },
             ),
-            SizedBox(
-              height: 20,
-            ),
+            mySizedBox(20),
             Consumer<AddressChanger>(
               builder: (context, address, c) {
                 return StreamBuilder<QuerySnapshot>(
@@ -412,163 +297,197 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                 ),
                                                 content: SingleChildScrollView(
                                                   child: Expanded(
-                                                      child: Column(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(5.0),
-                                                        child: TextFormField(
-                                                          inputFormatters: [
-                                                            LengthLimitingTextInputFormatter(
-                                                                16),
-                                                          ],
-                                                          keyboardType:
-                                                              TextInputType
-                                                                  .number,
-                                                          validator:
-                                                              (String value) {
-                                                            return value.isEmpty ||
-                                                                    value.length >=
-                                                                        16
-                                                                ? '正しいカードナンバーを入力して下さい'
-                                                                : null;
-                                                          },
-                                                          decoration:
-                                                              InputDecoration(
-                                                            labelText:
-                                                                "カードナンバー",
-                                                            icon: Icon(Icons
-                                                                .credit_card),
-                                                            hintText: "カードナンバー",
-                                                            hintStyle:
-                                                                TextStyle(
-                                                              color:
-                                                                  Colors.grey,
-                                                            ),
-                                                          ),
-                                                          controller:
-                                                              _cardNumberEditingController,
-                                                        ),
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(5.0),
-                                                              child:
-                                                                  TextFormField(
-                                                                validator:
-                                                                    (String
-                                                                        value) {
-                                                                  return value
-                                                                          .isEmpty
-                                                                      ? '正しいカード有効期限を入力して下さい'
-                                                                      : null;
-                                                                },
-                                                                inputFormatters: [
-                                                                  LengthLimitingTextInputFormatter(
-                                                                      2),
-                                                                ],
-                                                                keyboardType:
-                                                                    TextInputType
-                                                                        .number,
-                                                                decoration:
-                                                                    InputDecoration(
-                                                                  labelText:
-                                                                      "MM",
-                                                                  hintText:
-                                                                      "MM",
-                                                                  hintStyle:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .grey,
-                                                                  ),
-                                                                ),
-                                                                controller:
-                                                                    _expMonthEditingController,
+                                                      child: Form(
+                                                    key: formKey,
+                                                    child: Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(5.0),
+                                                          child: TextFormField(
+                                                            onChanged: (value) {
+                                                              setState(() {
+                                                                cNumber = value;
+                                                                cNumberbool =
+                                                                    !cNumberbool;
+                                                              });
+                                                            },
+                                                            inputFormatters: [
+                                                              LengthLimitingTextInputFormatter(
+                                                                  16),
+                                                            ],
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            validator:
+                                                                (String value) {
+                                                              return value.isEmpty ||
+                                                                      value.length >=
+                                                                          16
+                                                                  ? '正しいカードナンバーを入力して下さい'
+                                                                  : null;
+                                                            },
+                                                            decoration:
+                                                                InputDecoration(
+                                                              labelText:
+                                                                  "カードナンバー",
+                                                              icon: Icon(Icons
+                                                                  .credit_card),
+                                                              hintText:
+                                                                  "カードナンバー",
+                                                              hintStyle:
+                                                                  TextStyle(
+                                                                color:
+                                                                    Colors.grey,
                                                               ),
                                                             ),
+                                                            controller:
+                                                                _cardNumberEditingController,
                                                           ),
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(5.0),
-                                                              child:
-                                                                  TextFormField(
-                                                                validator:
-                                                                    (String
-                                                                        value) {
-                                                                  return value
-                                                                          .isEmpty
-                                                                      ? '正しいカード有効期限を入力して下さい'
-                                                                      : null;
-                                                                },
-                                                                inputFormatters: [
-                                                                  LengthLimitingTextInputFormatter(
-                                                                      2),
-                                                                ],
-                                                                keyboardType:
-                                                                    TextInputType
-                                                                        .number,
-                                                                decoration:
-                                                                    InputDecoration(
-                                                                  labelText:
-                                                                      "YY",
-                                                                  hintText:
-                                                                      "YY",
-                                                                  hintStyle:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .grey,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        5.0),
+                                                                child:
+                                                                    TextFormField(
+                                                                  onChanged:
+                                                                      (value) {
+                                                                    setState(
+                                                                        () {
+                                                                      month =
+                                                                          value;
+                                                                    });
+                                                                  },
+                                                                  validator:
+                                                                      (String
+                                                                          value) {
+                                                                    return value
+                                                                            .isEmpty
+                                                                        ? '正しいカード有効期限を入力して下さい'
+                                                                        : null;
+                                                                  },
+                                                                  inputFormatters: [
+                                                                    LengthLimitingTextInputFormatter(
+                                                                        2),
+                                                                  ],
+                                                                  keyboardType:
+                                                                      TextInputType
+                                                                          .number,
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    labelText:
+                                                                        "MM",
+                                                                    hintText:
+                                                                        "MM",
+                                                                    hintStyle:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .grey,
+                                                                    ),
                                                                   ),
+                                                                  controller:
+                                                                      _expMonthEditingController,
                                                                 ),
-                                                                controller:
-                                                                    _expYearEditingController,
                                                               ),
                                                             ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(5.0),
-                                                        child: TextFormField(
-                                                          validator:
-                                                              (String value) {
-                                                            return value.isEmpty ||
-                                                                    value.length >=
-                                                                        3
-                                                                ? '正しいセキュリティーコードを入力して下さい'
-                                                                : null;
-                                                          },
-                                                          inputFormatters: [
-                                                            LengthLimitingTextInputFormatter(
-                                                                3),
-                                                          ],
-                                                          keyboardType:
-                                                              TextInputType
-                                                                  .number,
-                                                          decoration:
-                                                              InputDecoration(
-                                                            labelText:
-                                                                "セキュリティーコード",
-                                                            hintText: "CVC",
-                                                            hintStyle:
-                                                                TextStyle(
-                                                              color:
-                                                                  Colors.grey,
+                                                            Expanded(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        5.0),
+                                                                child:
+                                                                    TextFormField(
+                                                                  onChanged:
+                                                                      (value) {
+                                                                    setState(
+                                                                        () {
+                                                                      year =
+                                                                          value;
+                                                                    });
+                                                                  },
+                                                                  validator:
+                                                                      (String
+                                                                          value) {
+                                                                    return value
+                                                                            .isEmpty
+                                                                        ? '正しいカード有効期限を入力して下さい'
+                                                                        : null;
+                                                                  },
+                                                                  inputFormatters: [
+                                                                    LengthLimitingTextInputFormatter(
+                                                                        2),
+                                                                  ],
+                                                                  keyboardType:
+                                                                      TextInputType
+                                                                          .number,
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    labelText:
+                                                                        "YY",
+                                                                    hintText:
+                                                                        "YY",
+                                                                    hintStyle:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .grey,
+                                                                    ),
+                                                                  ),
+                                                                  controller:
+                                                                      _expYearEditingController,
+                                                                ),
+                                                              ),
                                                             ),
-                                                          ),
-                                                          controller:
-                                                              _cvcNumberEditingController,
+                                                          ],
                                                         ),
-                                                      ),
-                                                    ],
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(5.0),
+                                                          child: TextFormField(
+                                                            onChanged: (value) {
+                                                              setState(() {
+                                                                cvc = value;
+                                                              });
+                                                            },
+                                                            validator:
+                                                                (String value) {
+                                                              return value.isEmpty ||
+                                                                      value.length >=
+                                                                          3
+                                                                  ? '正しいセキュリティーコードを入力して下さい'
+                                                                  : null;
+                                                            },
+                                                            inputFormatters: [
+                                                              LengthLimitingTextInputFormatter(
+                                                                  3),
+                                                            ],
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              labelText:
+                                                                  "セキュリティーコード",
+                                                              hintText: "CVC",
+                                                              hintStyle:
+                                                                  TextStyle(
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                            ),
+                                                            controller:
+                                                                _cvcNumberEditingController,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   )),
                                                 ),
                                                 actions: <Widget>[
@@ -597,16 +516,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                               const EdgeInsets
                                                                       .only(
                                                                   right: 15.0),
-                                                          child: _cardNumberEditingController.text.isNotEmpty &&
-                                                                  _expMonthEditingController
-                                                                      .text
-                                                                      .isNotEmpty &&
-                                                                  _expYearEditingController
-                                                                      .text
-                                                                      .isNotEmpty &&
-                                                                  _cvcNumberEditingController
-                                                                      .text
-                                                                      .isNotEmpty
+                                                          child: cNumber !=
+                                                                      "" &&
+                                                                  month != "" &&
+                                                                  year != "" &&
+                                                                  cvc != ""
                                                               ? ElevatedButton(
                                                                   child: Text(
                                                                       "   購入する   "),
@@ -632,7 +546,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                               Container(
                                                                             child:
                                                                                 Text(
-                                                                              "${widget.shortInfo} を購入します。\nよろしいですか？",
+                                                                              "${widget.il["shortInfo"]} を購入します。\nよろしいですか？",
                                                                             ),
                                                                           ),
                                                                           actions: <
@@ -642,7 +556,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                               child: Text("キャンセル"),
                                                                               onPressed: () => Navigator.pop(context),
                                                                             ),
-                                                                            _cardNumberEditingController.text != "" && _expMonthEditingController.text != "" && _expYearEditingController.text != "" && _cvcNumberEditingController.text != ""
+                                                                            formKey.currentState.validate()
                                                                                 ? ElevatedButton(
                                                                                     child: Text(
                                                                                       "購入する",
@@ -652,8 +566,8 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                                     ),
                                                                                     onPressed: () {
                                                                                       final creditCard = CreditCard(number: _cardNumberEditingController.text.toString(), expMonth: int.parse(_expMonthEditingController.text), expYear: int.parse(_expYearEditingController.text), cvc: _cvcNumberEditingController.text.toString());
-                                                                                      StripeService(price: widget.price).payViaExistingCard(creditCard);
-                                                                                      widget.attribute == "Original"
+                                                                                      StripeService(price: widget.il["price"]).payViaExistingCard(creditCard);
+                                                                                      widget.il["attribute"] == "Original"
                                                                                           ? FirebaseFirestore.instance.collection("items").doc(widget.id).update({
                                                                                               "Stock": 0,
                                                                                             })
@@ -665,19 +579,19 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                                       ref.set(
                                                                                         {
                                                                                           "id": ref.id,
-                                                                                          "imageURL": widget.imageURL,
+                                                                                          "imageURL": widget.il["imageURL"],
                                                                                           EcommerceApp.addressID: snapshot.data.docs[index].id,
                                                                                           "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-                                                                                          EcommerceApp.productID: widget.shortInfo,
+                                                                                          EcommerceApp.productID: widget.il["shortInfo"],
                                                                                           EcommerceApp.paymentDetails: "クレジットカード",
                                                                                           EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
                                                                                           EcommerceApp.isSuccess: true,
-                                                                                          "boughtFrom": widget.postBy,
-                                                                                          "totalPrice": widget.price,
+                                                                                          "boughtFrom": widget.il["postBy"],
+                                                                                          "totalPrice": widget.il["price"],
                                                                                           "isTransactionFinished": "inComplete",
                                                                                           "isDelivery": "inComplete",
-                                                                                          "itemPrice": widget.price,
-                                                                                          "postName": widget.userName,
+                                                                                          "itemPrice": widget.il["price"],
+                                                                                          "postName": widget.il["postName"],
                                                                                           "email": EcommerceApp.sharedPreferences.getString(EcommerceApp.userEmail),
                                                                                           "CancelRequest": false,
                                                                                           "CancelRequestTo": false,
@@ -689,26 +603,26 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                                           finishedCheckOut(),
                                                                                         },
                                                                                       );
-                                                                                      EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(widget.postBy).collection("Notify").doc(ref.id).set({
+                                                                                      EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(widget.il["postBy"]).collection("Notify").doc(ref.id).set({
                                                                                         "id": ref.id,
-                                                                                        "imageURL": widget.imageURL,
+                                                                                        "imageURL": widget.il["imageURL"],
                                                                                         EcommerceApp.addressID: snapshot.data.docs[index].id,
                                                                                         "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-                                                                                        EcommerceApp.productID: widget.shortInfo,
+                                                                                        EcommerceApp.productID: widget.il["shortInfo"],
                                                                                         EcommerceApp.paymentDetails: "代金引換",
                                                                                         EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
                                                                                         EcommerceApp.isSuccess: true,
-                                                                                        "boughtFrom": widget.postBy,
-                                                                                        "totalPrice": widget.price,
+                                                                                        "boughtFrom": widget.il["postName"],
+                                                                                        "totalPrice": widget.il["price"],
                                                                                         "NotifyMessage": "${EcommerceApp.sharedPreferences.getString(
                                                                                           EcommerceApp.userName,
-                                                                                        )} さんが${widget.shortInfo}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
+                                                                                        )} さんが${widget.il["shortInfo"]}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
                                                                                         "isTransactionFinished": "inComplete",
                                                                                         "isBuyerDelivery": "inComplete",
-                                                                                        "itemPrice": widget.price,
+                                                                                        "itemPrice": widget.il["price"],
                                                                                         "buyerID": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
                                                                                         "email": _email,
-                                                                                        "finalGetProceeds": _proceeds,
+                                                                                        "finalGetProceeds": widget.il["finalGetProceeds"],
                                                                                         "CancelRequest": false,
                                                                                         "CancelRequestTo": false,
                                                                                         "cancelTransactionFinished": false,
@@ -759,39 +673,17 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 );
               },
             ),
-            SizedBox(
-              height: 20,
-            ),
+            mySizedBox(20)
           ],
         ),
       ),
     );
   }
 
-  /// 未登録のカードで決済をするボタン
-  Widget _buildPayViaNewCardButton(BuildContext context) {
-    return InkWell(
-      child: ListTile(
-        leading: Icon(
-          Icons.add,
-          color: Theme.of(context).primaryColor,
-        ),
-        title: Text('新規のカードで決済する'),
-      ),
-      onTap: StripeService(price: widget.price).payViaNewCard,
-    );
-  }
-
-  _onRadioSelected(value) {
-    setState(() {
-      gValue = value;
-    });
-  }
-
   Future notifyToSeller(Map<String, dynamic> data) async {
     await EcommerceApp.firestore
         .collection(EcommerceApp.collectionUser)
-        .doc(widget.postBy)
+        .doc(widget.il["postBy"])
         .collection("Notify")
         .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID) +
             data["orderTime"])
@@ -814,16 +706,16 @@ class _CheckOutPageState extends State<CheckOutPage> {
 
   finishedCheckOut() {
     TransactionPage(
-      name: widget.postName,
-      id: widget.postBy,
+      name: widget.il["postName"],
+      id: widget.il["postBy"],
     );
 
     Fluttertoast.showToast(msg: "注文を承りました");
     Route route = MaterialPageRoute(
         builder: (c) => MyOrders(
-              finalGetProceeds: widget.finalGetProceeds,
-              name: widget.postName,
-              id: widget.postBy,
+              finalGetProceeds: widget.il["finalGetProceeds"],
+              name: widget.il["postName"],
+              id: widget.il["postBy"],
             ));
     Navigator.pushReplacement(context, route);
     showDialog(
@@ -836,7 +728,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
             ),
           ),
           content: Text(
-              "よろしければ「${widget.shortInfo}」の作者である\n「$_postName」さんをフォローして応援しませんか？"),
+              "よろしければ「${widget.il["shortInfo"]}」の作者である\n「${widget.il["postName"]}」さんをフォローして応援しませんか？"),
           actions: [
             ElevatedButton(
               child: Text("フォローしない"),
@@ -847,7 +739,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
               onPressed: () {
                 FirebaseFirestore.instance
                     .collection("users")
-                    .doc(widget.postBy)
+                    .doc(widget.il["postBy"])
                     .collection("Followers")
                     .doc(EcommerceApp.sharedPreferences
                         .getString(EcommerceApp.userUID))

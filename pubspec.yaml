@@ -15,13 +15,13 @@ dependencies:
   flutter_sidekick: ^0.1.3
   #arkit_plugin: ^1.0.1
   transparent_image: ^2.0.0
-  cupertino_icons: ^0.1.2
-  cloud_firestore: ^1.0.6
-  firebase_auth: ^1.4.1
+  cupertino_icons: ^1.0.3
+  cloud_firestore: ^2.3.0
+  firebase_auth: ^2.0.0
   shared_preferences: ^2.0.5
   fluttertoast: ^8.0.6
   image_picker: ^0.8.0+3
-  firebase_storage: ^8.1.3
+  firebase_storage: ^9.0.0
   flutter_staggered_grid_view: ^0.4.0
   provider: ^5.0.0
   path_provider: ^2.0.1
@@ -35,7 +35,7 @@ dependencies:
   stripe_payment: ^1.1.0
   stripe_sdk: ^5.0.0-nullsafety.0
   url_launcher: ^6.0.3
-  carousel_slider: ^3.0.0
+  carousel_slider: ^4.0.0
   flutter_email_sender: ^5.0.0
   flutter_gradient_colors: ^1.0.0
   flutter_credit_card: ^2.0.0

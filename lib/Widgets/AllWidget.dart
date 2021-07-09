@@ -5,7 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:selling_pictures_platform/Address/addAddress.dart';
+import 'package:selling_pictures_platform/Admin/Copy.dart';
+import 'package:selling_pictures_platform/Admin/MyUploadItems.dart';
 import 'package:selling_pictures_platform/Admin/PostCard.dart';
+import 'package:selling_pictures_platform/Admin/Sticker.dart';
+import 'package:selling_pictures_platform/Admin/uploadItems.dart';
+import 'package:selling_pictures_platform/Authentication/ProceedsRequests.dart';
+import 'package:selling_pictures_platform/Authentication/SubmitBankAccount.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Authentication/publicUserPage.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
@@ -15,6 +22,8 @@ import 'package:selling_pictures_platform/Models/HomeItem(provider).dart';
 import 'package:selling_pictures_platform/Models/UploadItemList.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
+import 'package:selling_pictures_platform/Orders/TransactionPage.dart';
+import 'package:selling_pictures_platform/Orders/myOrders.dart';
 import 'package:selling_pictures_platform/Store/UpdateItem.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
@@ -109,35 +118,39 @@ Widget sourceInfoForMain(ItemModel model, BuildContext context,
               padding: const EdgeInsets.all(5.0),
               child: Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Column(
-                      children: [
-                        DefaultTextStyle(
-                          style: new TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          child: new Text(model.shortInfo),
+                child: Column(
+                  children: [
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Column(
+                          children: [
+                            DefaultTextStyle(
+                              style: new TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              child: new Text(model.shortInfo),
+                            ),
+                            DefaultTextStyle(
+                              style: new TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: mainColorOfLEEWAY),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              child: new Text(
+                                model.price.toString() + "円",
+                              ),
+                            ),
+                          ],
+                          crossAxisAlignment: CrossAxisAlignment.start,
                         ),
-                        DefaultTextStyle(
-                          style: new TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: mainColor),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          child: new Text(
-                            model.price.toString() + "円",
-                          ),
-                        ),
-                      ],
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -280,7 +293,7 @@ Widget HomeItemFrame(context, Items item) {
                               style: new TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: mainColor),
+                                  color: mainColorOfLEEWAY),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               child: new Text(
@@ -303,7 +316,7 @@ Widget HomeItemFrame(context, Items item) {
   );
 }
 
-Widget myFloatingActionButton(String title, Function func) {
+Widget myFloatingActionButton(String title, Function func, IconData icon) {
   return Container(
     width: 100,
     height: 100,
@@ -322,7 +335,7 @@ Widget myFloatingActionButton(String title, Function func) {
               ),
             ),
             Icon(
-              Icons.add,
+              icon,
               size: 45,
             ),
           ],
@@ -594,59 +607,62 @@ Widget userLink(Map il) {
                     .doc(il["postBy"])
                     .snapshots(),
                 builder: (context, snapshot) {
-                  return InkWell(
-                    onTap: () {
-                      CheckOutPage(userName: snapshot.data["name"]);
-                      Route route = MaterialPageRoute(
-                        builder: (c) => PublicUserPage(
-                          uid: snapshot.data["uid"],
-                          imageUrl: snapshot.data["url"],
-                          name: snapshot.data["name"],
-                          description: snapshot.data["description"],
-                        ),
-                      );
-                      Navigator.pushReplacement(context, route);
-                    },
-                    child: ListTile(
-                      leading: Container(
-                        height: 80,
-                        width: 80,
-                        child: CircleAvatar(
-                          backgroundImage:
-                              NetworkImage(snapshot.data["url"].toString()),
-                        ),
-                      ),
-                      title: Text(
-                        '${snapshot.data["name"]}',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 5.0,
-                          horizontal: 10.0,
-                        ),
-                        child: Text(
-                          '${snapshot.data["description"]}',
-                          style: TextStyle(fontSize: 12),
-                        ),
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: BubbleBorder(
-                            width: 1,
-                            radius: 10,
+                  return snapshot.data == null
+                      ? Container()
+                      : InkWell(
+                          onTap: () {
+                            CheckOutPage(il: il);
+                            Route route = MaterialPageRoute(
+                              builder: (c) => PublicUserPage(
+                                uid: snapshot.data.id,
+                                imageUrl: snapshot.data["url"],
+                                name: snapshot.data["name"],
+                                description: snapshot.data["description"],
+                              ),
+                            );
+                            Navigator.pushReplacement(context, route);
+                          },
+                          child: ListTile(
+                            leading: Container(
+                              height: 80,
+                              width: 80,
+                              child: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    snapshot.data["url"].toString()),
+                              ),
+                            ),
+                            title: Text(
+                              '${snapshot.data["name"]}',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Container(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 5.0,
+                                horizontal: 10.0,
+                              ),
+                              child: Text(
+                                '${snapshot.data["description"]}',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                              decoration: ShapeDecoration(
+                                color: Colors.white,
+                                shape: BubbleBorder(
+                                  width: 1,
+                                  radius: 10,
+                                ),
+                              ),
+                            ), //["PostBy"]}\nshortInfo:${document.data()["shortInfo"]}'),
                           ),
-                        ),
-                      ), //["PostBy"]}\nshortInfo:${document.data()["shortInfo"]}'),
-                    ),
-                  );
+                        );
                 })),
       ),
     ),
   );
 }
 
-Widget likeButtont(BuildContext context, Map il) {
+likeButton(BuildContext context, Map il) {
   return InkWell(
     onTap: () => checkItemInLike(il["shortInfo"], context),
     child: Container(
@@ -701,7 +717,7 @@ Widget likeButtont(BuildContext context, Map il) {
   );
 }
 
-Widget itemEditButton(BuildContext context, Map il, String id) {
+itemEditButton(BuildContext context, Map il, String id) {
   return InkWell(
     onTap: () => checkItemInLike(il["shortInfo"], context),
     child: Container(
@@ -746,7 +762,7 @@ Widget itemEditButton(BuildContext context, Map il, String id) {
   );
 }
 
-Widget checkOutByNewUser(BuildContext context) {
+checkOutByNewUser(BuildContext context) {
   return InkWell(
     onTap: () {
       Route route =
@@ -839,13 +855,9 @@ Widget checkOutItemButton(BuildContext context, Map il, String id) {
       Route route = MaterialPageRoute(
         fullscreenDialog: true,
         builder: (c) => CheckOutPage(
-            finalGetProceeds: il["finalGetProceeds"],
-            stock: il["Stock"],
-            id: id,
-            imageURL: il["thumbnailURL"],
-            shortInfo: il["shortInfo"],
-            price: il["price"],
-            postBy: il["postBy"]),
+          il: il,
+          id: id,
+        ),
       );
       Navigator.push(
         context,
@@ -928,7 +940,7 @@ Widget soldOutButton(BuildContext context) {
 
 Widget productPageBody(String id) {
   return Center(
-      child: StreamBuilder<DocumentSnapshot>(
+      child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
           stream: FirebaseFirestore.instance
               .collection("items")
               .doc(id)
@@ -936,7 +948,7 @@ Widget productPageBody(String id) {
               .doc(id)
               .snapshots(),
           builder: (context, snapshot) {
-            final imgList = snapshot.data.data()["images"].length;
+            final imgList = snapshot.data.data()["images"];
             return CarouselSlider.builder(
               options: CarouselOptions(
                 enlargeCenterPage: true,
@@ -955,4 +967,289 @@ Widget productPageBody(String id) {
               },
             );
           }));
+}
+
+Function bottomSheetItems(
+  BuildContext context,
+) {
+  return () {
+    showModalBottomSheet<int>(
+        context: context,
+        builder: (BuildContext context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Center(
+                  child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Text(
+                  "何を出品しますか？",
+                  style: TextStyle(
+                      color: mainColorOfLEEWAY, fontWeight: FontWeight.bold),
+                ),
+              )),
+              ListTile(
+                title: Text(
+                  '原画',
+                  style: TextStyle(color: mainColorOfLEEWAY),
+                ),
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        fullscreenDialog: true,
+                        builder: (c) => OriginalUploadPage())),
+              ),
+              ListTile(
+                title: Text(
+                  '複製',
+                  style: TextStyle(color: mainColorOfLEEWAY),
+                ),
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        fullscreenDialog: true, builder: (c) => Copy())),
+              ),
+              ListTile(
+                title: Text(
+                  'ステッカー',
+                  style: TextStyle(color: mainColorOfLEEWAY),
+                ),
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        fullscreenDialog: true, builder: (c) => Sticker())),
+              ),
+              ListTile(
+                title: Text(
+                  'ポストカード',
+                  style: TextStyle(color: mainColorOfLEEWAY),
+                ),
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        fullscreenDialog: true, builder: (c) => PostCard())),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          );
+        });
+  };
+}
+
+Widget mySizedBox(double height) {
+  return SizedBox(
+    height: height,
+  );
+}
+
+Widget myPageSliderItems(BuildContext context) {
+  return Expanded(
+    child: CarouselSlider(
+      items: [
+        sliderItem(
+          context,
+          "売り上げ申請",
+          ProceedsRequests(),
+          Icons.atm_outlined,
+        ),
+        sliderItem(
+          context,
+          "口座登録",
+          SubmitBankAccount(),
+          Icons.atm_outlined,
+        ),
+        sliderItem(
+          context,
+          "出品履歴",
+          MyUploadItems(),
+          Icons.brush,
+        ),
+        sliderItem(
+          context,
+          "お届け先の追加",
+          AddAddress(),
+          Icons.add_location_alt_outlined,
+        ),
+        sliderItem(
+          context,
+          "購入履歴",
+          MyOrders(),
+          Icons.history_outlined,
+        ),
+        sliderItem(
+          context,
+          "取引履歴",
+          TransactionPage(),
+          Icons.history_outlined,
+        ),
+      ],
+      options: CarouselOptions(
+        height: 80,
+        viewportFraction: 0.3,
+        enableInfiniteScroll: true,
+        enlargeCenterPage: true,
+      ),
+    ),
+  );
+}
+
+Widget infoTile(
+    BuildContext context, IconData icon, String title, Widget func) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 5, left: 8.0, right: 8),
+    child: Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: HexColor("E67928"), width: 3),
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+      ),
+      child: ListTile(
+        onTap: () {
+          Route route = MaterialPageRoute(
+            builder: (c) => func,
+          );
+          Navigator.push(
+            context,
+            route,
+          );
+        },
+        leading: Icon(icon, color: HexColor("E67928")),
+        title: Text(
+          title,
+          style: TextStyle(color: HexColor("E67928")),
+        ),
+        trailing: Icon(
+          Icons.arrow_forward_ios,
+          size: 18,
+          color: HexColor("E67928"),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget sliderItem(
+    BuildContext context, String title, Widget page, IconData icon) {
+  return InkWell(
+    onTap: () {
+      EcommerceApp.auth.currentUser != null
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (c) => page,
+              ))
+          : null;
+    },
+    child: Container(
+      width: 80,
+      decoration: BoxDecoration(
+        color: HexColor("#E67928"),
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(3.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Icon(
+                icon,
+                color: Colors.white,
+                size: 45,
+              ),
+              Text(
+                title,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w100,
+                    fontSize: 10),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget logOutWidget(BuildContext context) {
+  return ListTile(
+    onTap: () {
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                title: Text("本当にログアウトしますか？"),
+                actions: [
+                  Row(
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("　キャンセル　")),
+                      ElevatedButton(
+                          onPressed: () {
+                            Route route = MaterialPageRoute(
+                              builder: (c) => Login(),
+                            );
+                            EcommerceApp.auth
+                                .signOut()
+                                .then((c) => Navigator.push(
+                                      context,
+                                      route,
+                                    ));
+                          },
+                          child: Text("ログアウトする")),
+                    ],
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  ),
+                ],
+              ));
+    },
+    leading: Icon(Icons.login_outlined, color: mainColorOfLEEWAY),
+    title: Text(
+      "ログアウト",
+      style: TextStyle(color: mainColorOfLEEWAY),
+    ),
+    trailing: Icon(Icons.arrow_forward_ios, size: 18, color: mainColorOfLEEWAY),
+  );
+}
+
+beforeDeleteDialog(BuildContext context, Map il, String id) {
+  showDialog(
+    context: context,
+    builder: (_) {
+      return AlertDialog(
+        title: Text(
+          "最終確認",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        content:
+            Container(child: Text("${il["shortInfo"]} を削除します。\n本当によろしいですか？")),
+        actions: <Widget>[
+          ElevatedButton(
+            child: Text("キャンセル"),
+            onPressed: () => Navigator.pop(context),
+          ),
+          ElevatedButton(
+            child: Text("確認しました。"),
+            onPressed: () {
+              deleteItem(id);
+              Route route = MaterialPageRoute(
+                // fullscreenDialog: true,
+                builder: (c) => MainPage(),
+              );
+              Navigator.push(
+                context,
+                route,
+              );
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

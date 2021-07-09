@@ -24,6 +24,7 @@ class CustomTextField extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           child: TextFormField(
+            autofocus: true,
             controller: controller,
             obscureText: isObsecure,
             cursorColor: Theme.of(context).primaryColor,

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:selling_pictures_platform/Authentication/Notify.dart';
+import 'package:selling_pictures_platform/Authentication/register.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,16 +17,16 @@ import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'Admin/test.dart';
-import 'Authentication/NewUserSplashScreen.dart';
 import 'Authentication/SubmitBirthDay.dart';
 import 'Counters/Likeitemcounter.dart';
 import 'Counters/changeAddresss.dart';
-import 'Counters/totalMoney.dart';
+
 import 'Models/GetLikeItemsModel.dart';
 import 'Models/HEXCOLOR.dart';
-import 'Store/Search.dart';
+import 'Models/allList.dart';
 import 'Store/storehome.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +36,9 @@ Future<void> main() async {
   EcommerceApp.auth = FirebaseAuth.instance;
   EcommerceApp.sharedPreferences = await SharedPreferences.getInstance();
   EcommerceApp.firestore = FirebaseFirestore.instance;
-  runApp(MyApp());
+  runApp(
+    MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -54,6 +57,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         key: GlobalKey<ScaffoldState>(),
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
@@ -85,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen> {
         seconds: 3,
       ),
       () async {
-        if (await EcommerceApp.auth.currentUser != null) {
+        if (await EcommerceApp.auth.currentUser != null && mounted) {
           //todo:もしログインしていたら以下
 
           Navigator.push(
@@ -128,7 +132,6 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              //Image.asset("images/welcome.png"),
               Padding(
                 padding: const EdgeInsets.all(50.0),
                 child: FadeInImage.assetNetwork(
@@ -154,56 +157,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  List<BottomNavigationEntity> navigationList = [
-    BottomNavigationEntity(
-        title: "ホーム", icon: Icon(Icons.home_outlined), page: StoreHome()),
-    BottomNavigationEntity(
-        title: "いいね",
-        icon: new Stack(
-          children: [
-            Icon(
-              Icons.favorite_outline_outlined,
-            ),
-            Positioned(
-              //top: 0.1,
-              //bottom: 3,
-              left: 10,
-              child: Stack(
-                children: [
-                  Icon(
-                    Icons.brightness_1,
-                    size: 15,
-                    color: HexColor("E67928"),
-                  ),
-                  //todo: アイテムカウントの可視化
-                  Positioned(
-                    //top: 0.1,
-                    //bottom: 0.1,
-                    left: 5,
-                    child: Consumer<GetLikeItemsModel>(
-                      builder: (context, model, child) {
-                        final item = model.items;
-                        return Text(
-                          (item.length).toString(),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-        page: LikePage()),
-    // BottomNavigationEntity(
-    //     title: "検索", icon: Icon(Icons.search), page: SearchProduct()),
-    BottomNavigationEntity(
-        title: "マイページ", icon: Icon(Icons.perm_identity), page: MyPage()),
-  ];
   int selectedIndex = 0;
   Future<QuerySnapshot> docList;
   var _sliderValue = 0.0;
@@ -218,7 +171,7 @@ class _MainPageState extends State<MainPage> {
               child: InkWell(
                 onTap: () {
                   Navigator.push(
-                      context, MaterialPageRoute(builder: (c) => Notify()));
+                      context, MaterialPageRoute(builder: (c) => Register()));
                 },
                 child: Image.asset("images/NoColor_horizontal.png"),
               ),
@@ -274,8 +227,7 @@ class _MainPageState extends State<MainPage> {
                 color: Colors.blueGrey,
               ),
             ),
-            Flexible(
-                child: Padding(
+            Padding(
               padding: EdgeInsets.only(
                 left: 8,
               ),
@@ -285,7 +237,7 @@ class _MainPageState extends State<MainPage> {
                 },
                 decoration: InputDecoration.collapsed(hintText: "検索する"),
               ),
-            )),
+            ),
           ],
         ),
       ),

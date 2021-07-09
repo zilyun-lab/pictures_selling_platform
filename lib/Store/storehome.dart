@@ -49,10 +49,8 @@ class _StoreHomeState extends State<StoreHome>
   ) {
     width = MediaQuery.of(context).size.width;
     return Scaffold(
-      //key: _scaffoldKey,
-
+      //key: //_scaffoldKey,
       backgroundColor: mainColor,
-
       body: Container(
         color: mainColor,
         child: CustomScrollView(
@@ -107,7 +105,45 @@ class _StoreHomeState extends State<StoreHome>
                       create: (_) => ItemGridModel()..fetchItems(),
                       child: Consumer<ItemGridModel>(
                         builder: (context, model, child) {
-                          return mainTabChild(model);
+                          final items = model.items;
+                          return GridView.count(
+                            crossAxisCount: 2,
+                            children: items
+                                .map(
+                                  (item) => Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: Card(
+                                        elevation: 0,
+                                        color: Colors.white,
+                                        clipBehavior: Clip.antiAlias,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(24),
+                                        ),
+                                        child: InkWell(
+                                            onTap: () {
+                                              Route route = MaterialPageRoute(
+                                                builder: (c) => ProductPage(
+                                                  id: item.id,
+                                                ),
+                                              );
+                                              Navigator.push(
+                                                context,
+                                                route,
+                                              );
+                                            },
+                                            splashColor: Colors.black,
+                                            child: gridItems(
+                                                item.thumbnailUrl,
+                                                item.shortInfo,
+                                                item.price.toString())),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          );
                         },
                       ),
                     ),
@@ -115,7 +151,45 @@ class _StoreHomeState extends State<StoreHome>
                       create: (_) => ItemGridModel()..fetchOriginalItems(),
                       child: Consumer<ItemGridModel>(
                         builder: (context, model, child) {
-                          return mainTabChild(model);
+                          final items = model.items;
+                          return GridView.count(
+                            crossAxisCount: 2,
+                            children: items
+                                .map(
+                                  (item) => Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: Card(
+                                        elevation: 0,
+                                        color: Colors.white,
+                                        clipBehavior: Clip.antiAlias,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(24),
+                                        ),
+                                        child: InkWell(
+                                            onTap: () {
+                                              Route route = MaterialPageRoute(
+                                                builder: (c) => ProductPage(
+                                                  id: item.id,
+                                                ),
+                                              );
+                                              Navigator.push(
+                                                context,
+                                                route,
+                                              );
+                                            },
+                                            splashColor: Colors.black,
+                                            child: gridItems(
+                                                item.thumbnailUrl,
+                                                item.shortInfo,
+                                                item.price.toString())),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          );
                         },
                       ),
                     ),
@@ -123,7 +197,45 @@ class _StoreHomeState extends State<StoreHome>
                       create: (_) => ItemGridModel()..fetchCopyItems(),
                       child: Consumer<ItemGridModel>(
                         builder: (context, model, child) {
-                          return mainTabChild(model);
+                          final items = model.items;
+                          return GridView.count(
+                            crossAxisCount: 2,
+                            children: items
+                                .map(
+                                  (item) => Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: Card(
+                                        elevation: 0,
+                                        color: Colors.white,
+                                        clipBehavior: Clip.antiAlias,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(24),
+                                        ),
+                                        child: InkWell(
+                                            onTap: () {
+                                              Route route = MaterialPageRoute(
+                                                builder: (c) => ProductPage(
+                                                  id: item.id,
+                                                ),
+                                              );
+                                              Navigator.push(
+                                                context,
+                                                route,
+                                              );
+                                            },
+                                            splashColor: Colors.black,
+                                            child: gridItems(
+                                                item.thumbnailUrl,
+                                                item.shortInfo,
+                                                item.price.toString())),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          );
                         },
                       ),
                     ),
@@ -131,7 +243,45 @@ class _StoreHomeState extends State<StoreHome>
                       create: (_) => ItemGridModel()..fetchStickerItems(),
                       child: Consumer<ItemGridModel>(
                         builder: (context, model, child) {
-                          return mainTabChild(model);
+                          final items = model.items;
+                          return GridView.count(
+                            crossAxisCount: 2,
+                            children: items
+                                .map(
+                                  (item) => Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: Card(
+                                        elevation: 0,
+                                        color: Colors.white,
+                                        clipBehavior: Clip.antiAlias,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(24),
+                                        ),
+                                        child: InkWell(
+                                            onTap: () {
+                                              Route route = MaterialPageRoute(
+                                                builder: (c) => ProductPage(
+                                                  id: item.id,
+                                                ),
+                                              );
+                                              Navigator.push(
+                                                context,
+                                                route,
+                                              );
+                                            },
+                                            splashColor: Colors.black,
+                                            child: gridItems(
+                                                item.thumbnailUrl,
+                                                item.shortInfo,
+                                                item.price.toString())),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          );
                         },
                       ),
                     ),
@@ -139,7 +289,45 @@ class _StoreHomeState extends State<StoreHome>
                       create: (_) => ItemGridModel()..fetchPostCardItems(),
                       child: Consumer<ItemGridModel>(
                         builder: (context, model, child) {
-                          return mainTabChild(model);
+                          final items = model.items;
+                          return GridView.count(
+                            crossAxisCount: 2,
+                            children: items
+                                .map(
+                                  (item) => Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: Card(
+                                        elevation: 0,
+                                        color: Colors.white,
+                                        clipBehavior: Clip.antiAlias,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(24),
+                                        ),
+                                        child: InkWell(
+                                            onTap: () {
+                                              Route route = MaterialPageRoute(
+                                                builder: (c) => ProductPage(
+                                                  id: item.id,
+                                                ),
+                                              );
+                                              Navigator.push(
+                                                context,
+                                                route,
+                                              );
+                                            },
+                                            splashColor: Colors.black,
+                                            child: gridItems(
+                                                item.thumbnailUrl,
+                                                item.shortInfo,
+                                                item.price.toString())),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          );
                         },
                       ),
                     ),
@@ -170,84 +358,79 @@ class _StoreHomeState extends State<StoreHome>
                     borderRadius: BorderRadius.circular(24),
                   ),
                   child: InkWell(
-                    onTap: () {
-                      Route route = MaterialPageRoute(
-                        builder: (c) => ProductPage(
-                          id: item.id,
-                        ),
-                      );
-                      Navigator.push(
-                        context,
-                        route,
-                      );
-                    },
-                    splashColor: Colors.black,
-                    child: Column(
-                      children: [
-                        Center(
-                          child: Container(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: Image.network(
-                                item.thumbnailUrl,
-                                fit: BoxFit.cover,
-                                width: 100,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.15,
-                              ),
-                            ),
-                            width: MediaQuery.of(context).size.width,
-                            // color: Colors.white,
+                      onTap: () {
+                        Route route = MaterialPageRoute(
+                          builder: (c) => ProductPage(
+                            id: item.id,
                           ),
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Flexible(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Column(
-                                    children: [
-                                      DefaultTextStyle(
-                                        style: new TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        child: new Text(item.shortInfo),
-                                      ),
-                                      DefaultTextStyle(
-                                        style: new TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: mainColor),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        child: new Text(
-                                          item.price.toString() + "円",
-                                        ),
-                                      ),
-                                    ],
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                        );
+                        Navigator.push(
+                          context,
+                          route,
+                        );
+                      },
+                      splashColor: Colors.black,
+                      child: gridItems(item.thumbnailUrl, item.shortInfo,
+                          item.price.toString())),
                 ),
               ),
             ),
           )
           .toList(),
+    );
+  }
+
+  gridItems(String url, String title, String price) {
+    return Column(
+      children: [
+        Center(
+          child: Container(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.network(
+                url,
+                fit: BoxFit.cover,
+                width: 100,
+                height: MediaQuery.of(context).size.height * 0.15,
+              ),
+            ),
+            width: MediaQuery.of(context).size.width,
+            // color: Colors.white,
+          ),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          child: Padding(
+            padding: const EdgeInsets.only(
+                top: 5, right: 13.0, left: 13.0, bottom: 5),
+            child: Column(
+              children: [
+                DefaultTextStyle(
+                  style: new TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  child: new Text(title),
+                ),
+                DefaultTextStyle(
+                  style: new TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: mainColor),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  child: new Text(
+                    price + "円",
+                  ),
+                ),
+              ],
+              crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -314,29 +497,6 @@ class _StoreHomeState extends State<StoreHome>
               );
             },
           ).toList(),
-        ),
-      ),
-    );
-  }
-
-  beginBuildingCart() {
-    return Container(
-      // width: MediaQuery.of(context).size.width,
-      child: Card(
-        color: HexColor("E67928").withOpacity(0.8),
-        child: Container(
-          height: 100,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.insert_emoticon,
-                color: Colors.black,
-              ),
-              Text("まだいいねしていません"),
-              Text("何かいいねしてみませんか？"),
-            ],
-          ),
         ),
       ),
     );

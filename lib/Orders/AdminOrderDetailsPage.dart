@@ -85,7 +85,7 @@ class AdminOrderDetails extends StatelessWidget {
       ),
       appBar: MyAppBar(),
       body: SingleChildScrollView(
-        child: FutureBuilder<DocumentSnapshot>(
+        child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
           future: EcommerceApp.firestore
               .collection(EcommerceApp.collectionUser)
               .doc(EcommerceApp.sharedPreferences
@@ -240,7 +240,8 @@ class _ShippingDetailsState extends State<ShippingDetails> {
   }
 
   void getData() async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+    DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
         .collection("users")
         .doc(widget.postBy)
         .collection("Notify")
@@ -445,7 +446,7 @@ class _ShippingDetailsState extends State<ShippingDetails> {
         SizedBox(
           height: 15,
         ),
-        StreamBuilder<DocumentSnapshot>(
+        StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
             stream: EcommerceApp.firestore
                 .collection(EcommerceApp.collectionUser)
                 .doc(widget.buyerID)

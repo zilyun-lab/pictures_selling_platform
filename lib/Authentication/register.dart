@@ -33,6 +33,7 @@ class _RegisterState extends State<Register> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   String userImageUrl = "";
   File _imageFile;
+  bool isChecked = false;
   @override
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width,
@@ -165,20 +166,82 @@ class _RegisterState extends State<Register> {
                     SizedBox(
                       height: 20,
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.white,
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 12,
+                        right: 12,
                       ),
-                      onPressed: () {
-                        uploadAndSaveImage();
-                      },
-                      child: Text(
-                        "登録する",
-                        style: TextStyle(
-                          color: HexColor("E67928"),
+                      child: ExpansionTile(
+                        iconColor: Colors.white,
+                        title: Text(
+                          "会員登録の規約について",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        children: [
+                          Text(
+                            "著作権　許諾の同意"
+                            "\n\n本サービス及び本サービスのコンテンツの著作権及び商標権等の知的財産権（以下、「著作権等」といいます）は、当社又は著作権等を有する第三者に帰属するものとします。会員は、当社の書面による事前の承諾がある場合を除き、本サービスのコンテンツを当社又は著作権等を有する第三者の許諾を得ることなく使用することはできません。"
+                            "\n会員は、本サービスサイトにデザイン画像をアップロードし、又は、商品データを入力した場合、当社に対して、当該商品データ等を、本サービスにおいて、以下の各号に掲げる方法のいずれかまたはすべてにより、当該商品データ等の全部または一部を無償で利用することを非独占的に許諾する。なお、許諾地域は日本を含むすべての国と地域とし、許諾期間は本サービスの利用契約の有効期間とします。"
+                            "\n（１）インターネット、携帯電話その他情報通信ネットワーク、情報誌等含む任意の媒体を利用して、商品データ等の複製、頒布、自動公衆送信（送信可能化を含む）、修正及び改変を行うこと（本サービスサイトに掲載し閲覧させることを含む。）"
+                            "\n（２）デザイン画像を商品素材に印刷、加工し、商品として製造すること、及び、これに付随する一切の行為"
+                            "\n（３）前号に基づき製造した商品を、第６条第１項の委託を受けて購入者に販売すること"
+                            "\n会員は、当社に対し、前項に定める許諾を、当社と提携若しくは協力関係にある第三者に対し再許諾することを許諾するものとします。"
+                            "\n本サービスの利用契約の終了に伴い、本条第２項乃至第３項の許諾が終了する場合においても、当該許諾の終了以前に成立した売買契約に関する商品の製造及び販売を目的とする商品データ等の利用の許諾は有効なものとします。",
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 12,
+                        right: 12,
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
+                        child: CheckboxListTile(
+                          tileColor: Colors.white,
+                          value: isChecked,
+                          title: Text(
+                            "規約を読んだ上で同意しますか？",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          controlAffinity: ListTileControlAffinity.leading,
+                          // チェックボックスを押下すると以下の処理が実行される
+                          onChanged: (bool value) {
+                            setState(() {
+                              isChecked = value;
+                            });
+                          },
                         ),
                       ),
                     ),
+                    isChecked
+                        ? ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.white,
+                            ),
+                            onPressed: () {
+                              uploadAndSaveImage();
+                            },
+                            child: Text(
+                              "登録する",
+                              style: TextStyle(
+                                color: HexColor("E67928"),
+                              ),
+                            ),
+                          )
+                        : ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.grey,
+                            ),
+                            onPressed: () {},
+                            child: Text(
+                              "登録する",
+                              style: TextStyle(
+                                color: HexColor("E67928"),
+                              ),
+                            ),
+                          ),
                     SizedBox(
                       height: 20,
                     ),

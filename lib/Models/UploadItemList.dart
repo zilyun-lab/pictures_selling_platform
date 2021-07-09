@@ -20,13 +20,10 @@ class UploadItems {
     postName = doc['postName'];
     itemWidth = doc['itemWidth'];
     itemHeight = doc['itemHeight'];
-    finalGetProceeds = doc['finalGetProceeds'];
+    //finalGetProceeds = doc['finalGetProceeds'];
     shipsPayment = doc['shipsPayment'];
     shipsDate = doc['shipsDate'];
-    paper = doc['paper'];
-    howToCopy = doc['howToCopy'];
-    isFrame = doc['isFrame'];
-    stockType = doc['stockType'];
+    Frame = doc['Frame'];
   }
 
   String shortInfo;
@@ -44,11 +41,9 @@ class UploadItems {
   String postName;
   String itemWidth;
   String itemHeight;
-  double finalGetProceeds;
+  //double finalGetProceeds;
   String shipsPayment;
   String shipsDate;
-  String paper;
-  String howToCopy;
-  String isFrame;
-  String stockType;
+
+  String Frame;
 }

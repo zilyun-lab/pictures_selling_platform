@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:selling_pictures_platform/Authentication/MyPage.dart';
 import 'package:selling_pictures_platform/Store/BSTransaction.dart';
+import 'package:selling_pictures_platform/Store/like.dart';
+import 'package:selling_pictures_platform/Store/storehome.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 
 import '../LEEWAY.dart';
 import '../main.dart';
+import 'GetLikeItemsModel.dart';
+import 'bottom_navigation.dart';
 
 List<String> shipsDays = ["選択してください", "1~2日後", "2~3日後", "4~7日後"];
 
@@ -434,4 +441,55 @@ List<MapEntry<String, Widget>> storeItems = [
   MapEntry("images/painter4.png", MainPage()),
   MapEntry("images/painter5.png", MainPage()),
   MapEntry("", null),
+];
+
+List<BottomNavigationEntity> navigationList = [
+  BottomNavigationEntity(
+      title: "ホーム", icon: Icon(Icons.home_outlined), page: StoreHome()),
+  BottomNavigationEntity(
+      title: "いいね",
+      icon: new Stack(
+        children: [
+          Icon(
+            Icons.favorite_outline_outlined,
+          ),
+          Positioned(
+            //top: 0.1,
+            //bottom: 3,
+            left: 10,
+            child: Stack(
+              children: [
+                Icon(
+                  Icons.brightness_1,
+                  size: 15,
+                  color: mainColorOfLEEWAY,
+                ),
+                //todo: アイテムカウントの可視化
+                Positioned(
+                  //top: 0.1,
+                  //bottom: 0.1,
+                  left: 5,
+                  child: Consumer<GetLikeItemsModel>(
+                    builder: (context, model, child) {
+                      final item = model.items;
+                      return Text(
+                        item.length.toString(),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+      page: LikePage()),
+  // BottomNavigationEntity(
+  //     title: "検索", icon: Icon(Icons.search), page: SearchProduct()),
+  BottomNavigationEntity(
+      title: "マイページ", icon: Icon(Icons.perm_identity), page: MyPage()),
 ];

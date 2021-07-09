@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'HomeItem(provider).dart';
 
 class ItemGridModel extends ChangeNotifier {
-  //List<クラス名>　○○ = [];
   List<Items> items = [];
   List<Items> postcard = [];
   List<Items> sticker = [];

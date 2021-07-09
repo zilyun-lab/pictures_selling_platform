@@ -480,44 +480,48 @@ class _ThankYouState extends State<ThankYou> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: RichText(
-              text: TextSpan(
-                style: TextStyle(color: Colors.black),
-                children: [
-                  TextSpan(
-                      text: 'ご協力ありがとうございました。 ',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      )),
-                  TextSpan(
-                      text: '引き続き。 ',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      )),
-                  TextSpan(
-                    text: 'LEEWAY',
+      body: Align(
+        alignment: Alignment.center,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: Text('ご協力ありがとうございました。\n ',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                        color: HexColor("E67928")),
-                  ),
-                  TextSpan(
-                      text: ' をお楽しみください。',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      )),
-                ],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                    )),
               ),
-            ),
+              RichText(
+                text: TextSpan(
+                  style: TextStyle(color: Colors.black),
+                  children: [
+                    TextSpan(
+                        text: '引き続き ',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        )),
+                    TextSpan(
+                      text: 'LEEWAY',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                          color: HexColor("E67928")),
+                    ),
+                    TextSpan(
+                        text: ' をお楽しみ下さい',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

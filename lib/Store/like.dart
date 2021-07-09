@@ -8,10 +8,8 @@ import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Counters/Likeitemcounter.dart';
-import 'package:selling_pictures_platform/Counters/totalMoney.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:provider/provider.dart';
 
 class LikePage extends StatefulWidget {

@@ -4,7 +4,7 @@ class ItemModel {
   String shortInfo;
   String longDescription;
   int price;
-  DateTime publishedDate;
+  Timestamp publishedDate;
   String status;
   String thumbnailUrl;
   String postBy;

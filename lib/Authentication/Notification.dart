@@ -32,11 +32,15 @@ class UserNotification extends StatelessWidget {
                             return Card(
                               child: ListTile(
                                 onTap: () {},
-                                title: Flexible(
-                                  child: Text(
-                                    '${dataSnapshot.data.docs[index]["orderBy"]} さんより ${dataSnapshot.data.docs[index]["productIDs"]} を購入いただきました。\n取引完了まで少々お待ちください。',
-                                    style: TextStyle(fontSize: 15),
-                                  ),
+                                title: Column(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        '${dataSnapshot.data.docs[index]["orderBy"]} さんより ${dataSnapshot.data.docs[index]["productIDs"]} を購入いただきました。\n取引完了まで少々お待ちください。',
+                                        style: TextStyle(fontSize: 15),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             );

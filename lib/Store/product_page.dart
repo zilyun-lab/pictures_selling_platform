@@ -1,21 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import 'package:google_fonts/google_fonts.dart';
-import 'package:selling_pictures_platform/Admin/test.dart';
-import 'package:selling_pictures_platform/Authentication/login.dart';
-import 'package:selling_pictures_platform/Authentication/publicUserPage.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
-import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
 import 'package:flutter/material.dart';
-import 'package:selling_pictures_platform/Orders/myOrders.dart';
-import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import '../main.dart';
-import 'ARPage.dart';
-import 'UpdateItem.dart';
 
 class ProductPage extends StatefulWidget {
   final String id;
@@ -24,19 +14,13 @@ class ProductPage extends StatefulWidget {
     this.id,
   });
   @override
-  _ProductPageState createState() => _ProductPageState(
-        this.id,
-      );
+  _ProductPageState createState() => _ProductPageState();
 }
 
 class _ProductPageState extends State<ProductPage> {
-  final String id;
-
   int quantityOfItems = 1;
 
-  _ProductPageState(
-    this.id,
-  );
+  _ProductPageState();
   @override
   void initState() {
     // TODO: implement initState
@@ -55,16 +39,6 @@ class _ProductPageState extends State<ProductPage> {
     setState(() {
       il = snapshot.data();
     });
-  }
-
-  Map<String, dynamic> documentList;
-  Future<String> getData(String field) async {
-    DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(il["postBy"])
-        .get();
-    Map<String, dynamic> record = docSnapshot.data();
-    return record[field];
   }
 
   @override
@@ -290,39 +264,61 @@ class _ProductPageState extends State<ProductPage> {
                           ),
                           child: Center(
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                il["postBy"] !=
-                                        EcommerceApp.sharedPreferences
-                                            .getString(EcommerceApp.userUID)
-                                    ? likeButtont(context, il)
-                                    : itemEditButton(context, il, id),
-                                StreamBuilder<QuerySnapshot>(
-                                  stream: FirebaseFirestore.instance
-                                      .collection(
-                                        "items",
-                                      )
-                                      .snapshots(),
-                                  builder: (context, snapshot) {
-                                    return FirebaseAuth.instance.currentUser ==
-                                            null
-                                        ? checkOutByNewUser(context)
-                                        : il["postBy"] ==
-                                                EcommerceApp.sharedPreferences
-                                                    .getString(
-                                                        EcommerceApp.userUID)
-                                            ? deleteItemButton(context, () {
-                                                beforeDeleteDialog(
-                                                    context, il, id);
-                                              })
-                                            : il["attribute"] != "Original"
-                                                ? checkOutItemButton(
-                                                    context, il, id)
-                                                : il["Stock"] != 0
-                                                    ? checkOutItemButton(
-                                                        context, il, id)
-                                                    : soldOutButton;
-                                  },
+                                Expanded(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      il["postBy"] !=
+                                              EcommerceApp.sharedPreferences
+                                                  .getString(
+                                                      EcommerceApp.userUID)
+                                          ? likeButton(context, il)
+                                          : itemEditButton(
+                                              context, il, widget.id),
+                                      StreamBuilder<
+                                          QuerySnapshot<Map<String, dynamic>>>(
+                                        stream: FirebaseFirestore.instance
+                                            .collection(
+                                              "items",
+                                            )
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          return FirebaseAuth.instance
+                                                          .currentUser ==
+                                                      null &&
+                                                  !snapshot.hasData
+                                              ? checkOutByNewUser(context)
+                                              : il["postBy"] ==
+                                                      EcommerceApp
+                                                          .sharedPreferences
+                                                          .getString(
+                                                              EcommerceApp
+                                                                  .userUID)
+                                                  ? deleteItemButton(context,
+                                                      () {
+                                                      beforeDeleteDialog(
+                                                          context,
+                                                          il,
+                                                          widget.id);
+                                                    })
+                                                  : il["attribute"] !=
+                                                          "Original"
+                                                      ? checkOutItemButton(
+                                                          context,
+                                                          il,
+                                                          widget.id)
+                                                      : il["Stock"] != 0
+                                                          ? checkOutItemButton(
+                                                              context,
+                                                              il,
+                                                              widget.id)
+                                                          : soldOutButton;
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -338,15 +334,10 @@ class _ProductPageState extends State<ProductPage> {
           child: buildFooter(context)),
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: InkWell(
-          onTap: () {
-            print(getData("name"));
-          },
-          child: Text(
-            il["shortInfo"],
-            style: TextStyle(
-              color: HexColor("#E67928"),
-            ),
+        title: Text(
+          il["shortInfo"] ?? "",
+          style: TextStyle(
+            color: HexColor("#E67928"),
           ),
         ),
         leading: IconButton(
@@ -355,9 +346,6 @@ class _ProductPageState extends State<ProductPage> {
             color: HexColor("#E67928"),
           ),
           onPressed: () {
-            Route route = MaterialPageRoute(
-              builder: (c) => MainPage(),
-            );
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -366,43 +354,38 @@ class _ProductPageState extends State<ProductPage> {
           },
         ),
       ),
-      body: productPageBody(id),
+      body: Center(
+          child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+              stream: FirebaseFirestore.instance
+                  .collection("items")
+                  .doc(widget.id)
+                  .collection("itemImages")
+                  .doc(widget.id)
+                  .snapshots(),
+              builder: (context,
+                  AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                      snapshot) {
+                return snapshot.data == null
+                    ? Container()
+                    : CarouselSlider.builder(
+                        options: CarouselOptions(
+                          enlargeCenterPage: true,
+                          aspectRatio: 1.0,
+                          autoPlayInterval: Duration(seconds: 3),
+                          enableInfiniteScroll: false,
+                          // autoPlay: true,
+                        ),
+                        itemCount: snapshot.data.data()["images"].length,
+                        itemBuilder:
+                            (BuildContext context, int index, int realIndex) {
+                          return Image.network(
+                            snapshot.data.data()["images"][index].toString(),
+                            fit: BoxFit.scaleDown,
+                            height: MediaQuery.of(context).size.height,
+                          );
+                        },
+                      );
+              })),
     );
   }
-}
-
-beforeDeleteDialog(BuildContext context, Map il, String id) {
-  showDialog(
-    context: context,
-    builder: (_) {
-      return AlertDialog(
-        title: Text(
-          "最終確認",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        content:
-            Container(child: Text("${il["shortInfo"]} を削除します。\n本当によろしいですか？")),
-        actions: <Widget>[
-          ElevatedButton(
-            child: Text("キャンセル"),
-            onPressed: () => Navigator.pop(context),
-          ),
-          ElevatedButton(
-            child: Text("確認しました。"),
-            onPressed: () {
-              deleteItem(id);
-              Route route = MaterialPageRoute(
-                // fullscreenDialog: true,
-                builder: (c) => MainPage(),
-              );
-              Navigator.push(
-                context,
-                route,
-              );
-            },
-          ),
-        ],
-      );
-    },
-  );
 }

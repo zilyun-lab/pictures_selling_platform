@@ -80,7 +80,7 @@ class _AddAddressState extends State<AddAddress> {
             // Route route = MaterialPageRoute(builder: (c) => Address());
             // Navigator.pushReplacement(context, route);
           }
-        }),
+        }, Icons.add),
         body: SingleChildScrollView(
           child: Column(
             children: [
