@@ -355,7 +355,8 @@ class _ShippingDetailsState extends State<ShippingDetails> {
             if (snapshot.hasData) {
               dataMap = snapshot.data.data();
             }
-            return dataMap["isBuyerDelivery"] == "inComplete"
+            return dataMap["isBuyerDelivery"] == "inComplete" &&
+                    snapshot.hasData
                 ? Padding(
                     padding: EdgeInsets.all(
                       5,
@@ -454,7 +455,8 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                 .doc(widget.orderID)
                 .snapshots(),
             builder: (c, snapshot) {
-              return snapshot.data.data()["CancelRequestTo"] != true
+              return snapshot.data.data()["CancelRequestTo"] != true &&
+                      snapshot.hasData
                   ? Center(
                       child: InkWell(
                         onTap: () {

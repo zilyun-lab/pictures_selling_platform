@@ -249,7 +249,7 @@ class _ShippingDetailsState extends State<ShippingDetails> {
         .collection("Notify")
         .doc(widget.orderID)
         .get();
-    proceed = int.parse(snapshot.data()['finalGetProceeds']);
+    proceed = snapshot.data()['finalGetProceeds'].toInt();
   }
 
   void fetchItemData() async {
@@ -504,7 +504,7 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                   .doc(widget.orderID)
                   .snapshots(),
               builder: (context, snap) {
-                return snap.data["CancelRequestTo"] == true
+                return snap.data["CancelRequestTo"] == true && snap.hasData
                     ? Column(
                         children: [
                           SizedBox(
@@ -704,6 +704,16 @@ class _ShippingDetailsState extends State<ShippingDetails> {
         "reviewDate": DateTime.now().millisecondsSinceEpoch.toString(),
       },
     );
+    // FirebaseFirestore.instance
+    //     .collection("users")
+    //     .doc(widget.postBy)
+    //     .collection("TotalReviewCount")
+    //     .doc(widget.postBy)
+    //     .set(
+    //   {
+    //     "starRating": FieldValue.increment(getReviewCount),
+    //   },
+    // );
   }
 
   completeTransactionAndNotifySellar(BuildContext context, String mOrderId) {

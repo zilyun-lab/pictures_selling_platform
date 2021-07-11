@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:selling_pictures_platform/Authentication/Notify.dart';
 import 'package:selling_pictures_platform/Authentication/register.dart';
+import 'package:selling_pictures_platform/Models/StarRatingModel.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -54,6 +55,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (c) => GetLikeItemsModel()..fetchItems(),
+        ),
+        ChangeNotifierProvider(
+          create: (c) => StarRatingModel()..fetchItems(),
         ),
       ],
       child: MaterialApp(

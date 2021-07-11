@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
@@ -54,91 +55,71 @@ class _LikePageState extends State<LikePage> {
                     ),
                   ),
                   child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Consumer<GetLikeItemsModel>(
-                        builder: (context, model, child) {
-                          final items = model.items;
-                          final listTiles = items
-                              .map((item) => Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: mainColor, width: 3),
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
+                    padding: const EdgeInsets.all(15.0),
+                    child: Consumer<GetLikeItemsModel>(
+                      builder: (context, model, child) {
+                        final items = model.items;
+                        final listTiles = items
+                            .map((item) => Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: mainColor, width: 3),
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.white,
+                                    ),
+                                    child: ListTile(
+                                      onTap: () {
+                                        Route route = MaterialPageRoute(
+                                          builder: (c) => ProductPage(
+                                            id: item.id,
+                                          ),
+                                        );
+                                        Navigator.pushReplacement(
+                                          context,
+                                          route,
+                                        );
+                                      },
+                                      leading: Image.network(
+                                        item.thumbnailUrl,
+                                        height: 50,
+                                        fit: BoxFit.scaleDown,
                                       ),
-                                      child: ListTile(
-                                        onTap: () {
-                                          Route route = MaterialPageRoute(
-                                            builder: (c) => ProductPage(
-                                              id: item.id,
-                                            ),
-                                          );
-                                          Navigator.pushReplacement(
-                                            context,
-                                            route,
-                                          );
-                                        },
-                                        leading: Image.network(
-                                          item.thumbnailUrl,
-                                          height: 50,
-                                          fit: BoxFit.scaleDown,
-                                        ),
-                                        title: Text(
-                                          item.shortInfo.toString(),
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        trailing: IconButton(
+                                      title: Text(
+                                        item.shortInfo.toString(),
+                                        style: TextStyle(
                                           color: Colors.black,
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: mainColor,
-                                          ),
-                                          onPressed: () => removeItemFromLike(
-                                              item.shortInfo, context),
                                         ),
+                                      ),
+                                      trailing: IconButton(
+                                        color: Colors.black,
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: mainColor,
+                                        ),
+                                        onPressed: () => removeItemFromLike(
+                                            item.shortInfo, context),
                                       ),
                                     ),
-                                  ))
-                              .toList();
-                          return items.length == 0
-                              ? beginBuildingCart()
-                              : ListView(
-                                  shrinkWrap: true,
-                                  children: listTiles,
-                                );
-                        },
-                      )),
+                                  ),
+                                ))
+                            .toList();
+                        return items.length == 0
+                            ? Text(EcommerceApp.sharedPreferences
+                                .getStringList(EcommerceApp.userLikeList)
+                                .toString())
+                            : ListView(
+                                shrinkWrap: true,
+                                children: listTiles,
+                              );
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
         ));
-  }
-
-  beginBuildingCart() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      child: Card(
-        color: HexColor("E67928").withOpacity(0.8),
-        child: Container(
-          height: 100,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.insert_emoticon,
-                color: Colors.black,
-              ),
-              Text("まだいいねしていません"),
-              Text("何かいいねしてみませんか？"),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

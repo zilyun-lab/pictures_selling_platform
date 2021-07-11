@@ -5,9 +5,6 @@ import 'HomeItem(provider).dart';
 
 class ItemGridModel extends ChangeNotifier {
   List<Items> items = [];
-  List<Items> postcard = [];
-  List<Items> sticker = [];
-  List<Items> original = [];
 
   Future fetchItems() async {
     final snapshots = await FirebaseFirestore.instance

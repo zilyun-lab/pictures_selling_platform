@@ -69,7 +69,7 @@ class _ProductPageState extends State<ProductPage> {
                           style: TextStyle(fontSize: 12, color: Colors.white),
                         ),
                         Text(
-                          il["shortInfo"],
+                          il["shortInfo"] ?? "",
                           style: boldTextStyle,
                         ),
                         Divider(
@@ -262,66 +262,54 @@ class _ProductPageState extends State<ProductPage> {
                           padding: EdgeInsets.only(
                             top: 8,
                           ),
-                          child: Center(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      il["postBy"] !=
-                                              EcommerceApp.sharedPreferences
-                                                  .getString(
-                                                      EcommerceApp.userUID)
-                                          ? likeButton(context, il)
-                                          : itemEditButton(
-                                              context, il, widget.id),
-                                      StreamBuilder<
-                                          QuerySnapshot<Map<String, dynamic>>>(
-                                        stream: FirebaseFirestore.instance
-                                            .collection(
-                                              "items",
-                                            )
-                                            .snapshots(),
-                                        builder: (context, snapshot) {
-                                          return FirebaseAuth.instance
-                                                          .currentUser ==
-                                                      null &&
-                                                  !snapshot.hasData
-                                              ? checkOutByNewUser(context)
-                                              : il["postBy"] ==
-                                                      EcommerceApp
-                                                          .sharedPreferences
-                                                          .getString(
-                                                              EcommerceApp
-                                                                  .userUID)
-                                                  ? deleteItemButton(context,
-                                                      () {
-                                                      beforeDeleteDialog(
-                                                          context,
-                                                          il,
-                                                          widget.id);
-                                                    })
-                                                  : il["attribute"] !=
-                                                          "Original"
-                                                      ? checkOutItemButton(
-                                                          context,
-                                                          il,
-                                                          widget.id)
-                                                      : il["Stock"] != 0
-                                                          ? checkOutItemButton(
-                                                              context,
-                                                              il,
-                                                              widget.id)
-                                                          : soldOutButton;
-                                        },
-                                      ),
-                                    ],
-                                  ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    il["postBy"] !=
+                                            EcommerceApp.sharedPreferences
+                                                .getString(EcommerceApp.userUID)
+                                        ? likeButton(context, il)
+                                        : itemEditButton(
+                                            context, il, widget.id),
+                                    StreamBuilder<
+                                        QuerySnapshot<Map<String, dynamic>>>(
+                                      stream: FirebaseFirestore.instance
+                                          .collection(
+                                            "items",
+                                          )
+                                          .snapshots(),
+                                      builder: (context, snapshot) {
+                                        return !snapshot.hasData
+                                            ? Container()
+                                            : il["postBy"] ==
+                                                    EcommerceApp
+                                                        .sharedPreferences
+                                                        .getString(EcommerceApp
+                                                            .userUID)
+                                                ? deleteItemButton(context, () {
+                                                    beforeDeleteDialog(
+                                                        context, il, widget.id);
+                                                  })
+                                                : il["attribute"] != "Original"
+                                                    ? checkOutItemButton(
+                                                        context, il, widget.id)
+                                                    : il["Stock"] != 0
+                                                        ? checkOutItemButton(
+                                                            context,
+                                                            il,
+                                                            widget.id)
+                                                        : soldOutButton(
+                                                            context);
+                                      },
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -334,10 +322,16 @@ class _ProductPageState extends State<ProductPage> {
           child: buildFooter(context)),
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text(
-          il["shortInfo"] ?? "",
-          style: TextStyle(
-            color: HexColor("#E67928"),
+        title: InkWell(
+          onTap: () {
+            print(EcommerceApp.sharedPreferences
+                .getStringList(EcommerceApp.userLikeList));
+          },
+          child: Text(
+            il["shortInfo"] ?? "",
+            style: TextStyle(
+              color: HexColor("#E67928"),
+            ),
           ),
         ),
         leading: IconButton(

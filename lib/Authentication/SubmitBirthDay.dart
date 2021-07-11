@@ -129,6 +129,7 @@ class _SubmitState extends State<SubmitBirthDay> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             FloatingActionButton.extended(
+              heroTag: "hero1",
               onPressed: () {
                 Navigator.push(
                     context, MaterialPageRoute(builder: (c) => SubmitGender()));
@@ -138,6 +139,7 @@ class _SubmitState extends State<SubmitBirthDay> {
             ),
             getYear != "" && getMonth != "" && getDay != ""
                 ? FloatingActionButton.extended(
+                    heroTag: "hero2",
                     onPressed: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (c) => SubmitResult()));
@@ -146,6 +148,7 @@ class _SubmitState extends State<SubmitBirthDay> {
                     backgroundColor: HexColor("#E67928"),
                   )
                 : FloatingActionButton.extended(
+                    heroTag: "hero3",
                     onPressed: () {},
                     label: Text("次へ"),
                     backgroundColor: Colors.grey,
@@ -350,6 +353,7 @@ class _SubmitResultState extends State<SubmitResult> {
                     context, MaterialPageRoute(builder: (c) => SubmitGender()));
               },
               label: Text("戻る"),
+              heroTag: "hero1",
               backgroundColor: HexColor("#E67928"),
             ),
             getYear != "" && getMonth != "" && getDay != ""
@@ -365,9 +369,11 @@ class _SubmitResultState extends State<SubmitResult> {
                       });
                     },
                     label: Text("完了する"),
+                    heroTag: "hero2",
                     backgroundColor: HexColor("#E67928"),
                   )
                 : FloatingActionButton.extended(
+                    heroTag: "hero3",
                     onPressed: () {},
                     label: Text("完了する"),
                     backgroundColor: Colors.grey,

@@ -7,10 +7,10 @@ import 'UploadItemList.dart';
 
 class GetLikeItemsModel extends ChangeNotifier {
   //List<クラス名>　○○ = [];
-  List<UploadItems> items = [];
+  List<LikeItems> items = [];
 
   Future fetchItems() async {
-    final snapshots = await EcommerceApp.firestore
+    final snapshots = await FirebaseFirestore.instance
         .collection("items")
         .where("shortInfo",
             whereIn: EcommerceApp.sharedPreferences
@@ -18,7 +18,7 @@ class GetLikeItemsModel extends ChangeNotifier {
         .snapshots();
     snapshots.listen((snapshot) {
       final docs = snapshot.docs;
-      final items = docs.map((doc) => UploadItems(doc)).toList();
+      final items = docs.map((doc) => LikeItems(doc)).toList();
       this.items = items;
       notifyListeners();
     });

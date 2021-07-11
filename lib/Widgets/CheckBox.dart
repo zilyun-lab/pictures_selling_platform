@@ -206,8 +206,7 @@ class NormalCheckBoxDialogState extends State<NormalCheckBoxDialog> {
               child: ListView(children: [
                 CheckboxListTile(
                   controlAffinity: ListTileControlAffinity.leading,
-                  title:
-                      Expanded(child: Text("返品が必要な場合は、キャンセル申請前に返品を完了してくだささい。")),
+                  title: Text("返品が必要な場合は、キャンセル申請前に返品を完了してくだささい。"),
                   value: _isChecked1,
                   onChanged: (bool value) {
                     setState(() {
@@ -217,7 +216,7 @@ class NormalCheckBoxDialogState extends State<NormalCheckBoxDialog> {
                 ),
                 CheckboxListTile(
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: Expanded(child: Text("キャンセル後は取引メッセージが利用できなくなります")),
+                  title: Text("キャンセル後は取引メッセージが利用できなくなります"),
                   value: _isChecked2,
                   onChanged: (bool value) {
                     setState(() {

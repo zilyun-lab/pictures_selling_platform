@@ -82,11 +82,13 @@ class _MyPageState extends State<MyPage> {
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       maxLines: 1,
-                                                      child: new Text(EcommerceApp
-                                                          .sharedPreferences
-                                                          .getString(
-                                                              EcommerceApp
-                                                                  .userName)))),
+                                                      child: Center(
+                                                        child: new Text(EcommerceApp
+                                                            .sharedPreferences
+                                                            .getString(
+                                                                EcommerceApp
+                                                                    .userName)),
+                                                      ))),
                                               InkWell(
                                                 child: Icon(
                                                   Icons.edit,

@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Admin/MyUploadItems.dart';
 import 'package:selling_pictures_platform/Admin/uploadItems.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
+import 'package:selling_pictures_platform/Models/StarRatingModel.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
@@ -23,6 +25,9 @@ class PublicUserPage extends StatelessWidget {
   final String imageUrl;
   final String name;
   final String description;
+  final String FB;
+  final String TW;
+  final String IG;
 
   PublicUserPage({
     Key key,
@@ -30,6 +35,9 @@ class PublicUserPage extends StatelessWidget {
     this.imageUrl,
     this.description,
     this.name,
+    this.FB,
+    this.IG,
+    this.TW,
   }) : super(key: key);
 
   @override
@@ -41,23 +49,25 @@ class PublicUserPage extends StatelessWidget {
           children: [
             Stack(
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  decoration: BoxDecoration(
-                    color: HexColor("#E67928"),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(90),
-                      bottomRight: Radius.circular(90),
+                Positioned(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 235,
+                    decoration: BoxDecoration(
+                      color: HexColor("#E67928"),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(90),
+                        bottomRight: Radius.circular(90),
+                      ),
                     ),
                   ),
                 ),
-                Positioned(
-                  top: MediaQuery.of(context).size.height * 0.105,
-                  left: MediaQuery.of(context).size.width * 0.04,
-                  child: Padding(
-                    padding: const EdgeInsets.all(25.0),
+                Positioned.fill(
+                  top: 100,
+                  child: Align(
+                    alignment: Alignment.center,
                     child: Container(
+                      height: 300,
                       width: MediaQuery.of(context).size.width * 0.8,
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -65,81 +75,93 @@ class PublicUserPage extends StatelessWidget {
                           Radius.circular(25),
                         ),
                       ),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: 65,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 30.0,
-                                    ),
-                                    child: Flexible(
-                                      child: Center(
-                                          child: DefaultTextStyle(
-                                              style: TextStyle(
-                                                  color: Colors.lightBlueAccent,
-                                                  fontSize: 25,
-                                                  fontWeight: FontWeight.bold),
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              child: new Text(name))),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  StreamBuilder<QuerySnapshot>(
-                                      stream: FirebaseFirestore.instance
-                                          .collection("users")
-                                          .doc(uid)
-                                          .collection("Review")
-                                          .snapshots(),
-                                      builder: (ctx, snap) {
-                                        for (var i = 0;
-                                            i < snap.data.docs.length;
-                                            i++) {
-                                          return Center(
-                                            child: Text(
-                                                "平均評価：${snap.data.docs[i]["starRating"] / 2 + snap.data.docs[i]["starRating"] / 2}"),
-                                          );
-                                        }
-                                        return null;
-                                      }),
-                                  carouselSliderItems(),
-                                ],
+                      child: Column(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 65,
                               ),
-                            ),
-                          ],
-                        ),
+                              DefaultTextStyle(
+                                  style: TextStyle(
+                                      color: Colors.lightBlueAccent,
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  child: new Text(name)),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              ChangeNotifierProvider<StarRatingModel>(
+                                  create: (_) =>
+                                      StarRatingModel(id: uid)..fetchItems(),
+                                  child: Consumer<StarRatingModel>(
+                                      builder: (context, model, child) {
+                                    final items = model.items;
+                                    final List star = [0.0];
+                                    final total = items.map((e) {
+                                      return star.add(e.starRating);
+                                    }).toList();
+                                    final sum = star != null
+                                        ? star?.reduce((a, b) {
+                                            return a + b / (star.length - 1);
+                                          })
+                                        : 0;
+                                    return Center(
+                                      child: RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(color: Colors.black),
+                                          children: [
+                                            TextSpan(
+                                                text: '平均評価： ',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                )),
+                                            TextSpan(
+                                              text: '${sum.toString()}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 25,
+                                                  color: HexColor("E67928")),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  })),
+                              mySizedBox(10),
+                              carouselSliderItems(),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  top: 60,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25.0),
+                      child: Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        width: 125,
+                        height: 100,
                       ),
                     ),
                   ),
                 ),
                 Positioned(
-                  top: MediaQuery.of(context).size.height * 0.08,
-                  left: MediaQuery.of(context).size.width * 0.325,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(25.0),
-                    child: Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      width: 125,
-                      height: 100,
-                    ),
+                  child: Container(
+                    width: 100,
+                    height: 350,
                   ),
                 ),
-                Container(
-                  //color: Colors.black.withOpacity(0.7),
-                  width: MediaQuery.of(context).size.width * 0.5,
-                  height: MediaQuery.of(context).size.height * 0.36,
-                )
               ],
             ),
             _tabSection(context)
@@ -152,69 +174,54 @@ class PublicUserPage extends StatelessWidget {
   Widget carouselSliderItems() {
     return CarouselSlider(
       items: [
-        SingleChildScrollView(
-          child: Column(
-            children: [
-              InkWell(
+        TW != ""
+            ? InkWell(
                 onTap: () {
-                  launch(EcommerceApp.sharedPreferences
-                      .getString(EcommerceApp.TwitterURL));
+                  launch(TW);
                 },
-                child: EcommerceApp.sharedPreferences
-                            .getString(EcommerceApp.TwitterURL) !=
-                        ""
-                    ? FaIcon(
-                        FontAwesomeIcons.twitterSquare,
-                        color: HexColor("#E67928"),
-                        size: 70,
-                      )
-                    : FaIcon(
-                        FontAwesomeIcons.twitterSquare,
-                        color: Colors.white54,
-                        size: 70,
-                      ),
+                child: FaIcon(
+                  FontAwesomeIcons.twitterSquare,
+                  color: HexColor("#E67928"),
+                  size: 70,
+                ),
+              )
+            : FaIcon(
+                FontAwesomeIcons.twitterSquare,
+                color: Colors.grey,
+                size: 70,
               ),
-            ],
-          ),
-        ),
-        InkWell(
-          onTap: () {
-            launch(EcommerceApp.sharedPreferences
-                .getString(EcommerceApp.FaceBookURL));
-          },
-          child: EcommerceApp.sharedPreferences
-                      .getString(EcommerceApp.FaceBookURL) !=
-                  ""
-              ? FaIcon(
+        FB != ""
+            ? InkWell(
+                onTap: () {
+                  launch(FB);
+                },
+                child: FaIcon(
                   FontAwesomeIcons.facebookSquare,
                   color: HexColor("#E67928"),
                   size: 70,
-                )
-              : FaIcon(
-                  FontAwesomeIcons.facebookSquare,
-                  color: Colors.white54,
-                  size: 70,
                 ),
-        ),
-        InkWell(
-          onTap: () {
-            launch(EcommerceApp.sharedPreferences
-                .getString(EcommerceApp.InstagramURL));
-          },
-          child: EcommerceApp.sharedPreferences
-                      .getString(EcommerceApp.InstagramURL) ==
-                  ""
-              ? FaIcon(
-                  FontAwesomeIcons.instagramSquare,
-                  color: Colors.white54,
-                  size: 70,
-                )
-              : FaIcon(
+              )
+            : FaIcon(
+                FontAwesomeIcons.facebookSquare,
+                color: Colors.grey,
+                size: 70,
+              ),
+        IG == ""
+            ? FaIcon(
+                FontAwesomeIcons.instagramSquare,
+                color: Colors.grey,
+                size: 70,
+              )
+            : InkWell(
+                onTap: () {
+                  launch(IG);
+                },
+                child: FaIcon(
                   FontAwesomeIcons.instagramSquare,
                   color: HexColor("#E67928"),
                   size: 70,
                 ),
-        ),
+              ),
       ],
       options: CarouselOptions(
         height: 80,
@@ -295,50 +302,57 @@ class PublicUserPage extends StatelessWidget {
                       .collection("Review")
                       .snapshots(),
                   builder: (context, snap) {
-                    return ListView.builder(
-                        itemCount: snap.data.docs.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              child: ListTile(
-                                trailing: Text(
-                                  "購入日: " +
-                                      DateFormat("yyyy年MM月dd日").format(
-                                          DateTime.fromMillisecondsSinceEpoch(
-                                              int.parse(snap.data
-                                                  .docs[index]["reviewDate"]
-                                                  .toString()))),
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 16.0),
-                                ),
-                                subtitle: Text(snap.data.docs[index]["message"]
-                                    .toString()),
-                                title: RatingBar.builder(
-                                  itemSize: 25,
-                                  initialRating: snap.data.docs[index]
-                                      ["starRating"],
-                                  minRating: 1,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: true,
-                                  itemCount: 5,
-                                  itemPadding:
-                                      EdgeInsets.symmetric(horizontal: 2.0),
-                                  itemBuilder: (context, _) => Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
+                    return !snap.hasData
+                        ? beginBuildingCart(context, "取引評価はありません。", "")
+                        : ListView.builder(
+                            itemCount: snap.data.docs.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: ListTile(
+                                    trailing: Text(
+                                      "購入日: " +
+                                          DateFormat("yyyy年MM月dd日").format(
+                                              DateTime
+                                                  .fromMillisecondsSinceEpoch(
+                                                      int.parse(snap
+                                                          .data
+                                                          .docs[index]
+                                                              ["reviewDate"]
+                                                          .toString()))),
+                                      style: TextStyle(
+                                          color: Colors.grey, fontSize: 16.0),
+                                    ),
+                                    subtitle: Text(snap
+                                        .data.docs[index]["message"]
+                                        .toString()),
+                                    title: RatingBar.builder(
+                                      itemSize: 25,
+                                      initialRating: snap.data.docs[index]
+                                          ["starRating"],
+                                      minRating: 1,
+                                      direction: Axis.horizontal,
+                                      allowHalfRating: true,
+                                      itemCount: 5,
+                                      itemPadding:
+                                          EdgeInsets.symmetric(horizontal: 2.0),
+                                      itemBuilder: (context, _) => Icon(
+                                        Icons.star,
+                                        color: Colors.amber,
+                                        size: 8,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          );
-                        });
+                              );
+                            });
                   })
             ]),
           ),

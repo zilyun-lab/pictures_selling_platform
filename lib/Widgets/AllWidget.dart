@@ -80,7 +80,7 @@ Widget uploadTitle(String title, double pad) {
 Widget sourceInfoForMain(ItemModel model, BuildContext context,
     {Color background, removeCartFunction}) {
   return Card(
-    color: HexColor("e5e2df"),
+    color: Colors.white,
     child: InkWell(
       onTap: () {
         Route route = MaterialPageRoute(
@@ -104,7 +104,7 @@ Widget sourceInfoForMain(ItemModel model, BuildContext context,
                   model.thumbnailUrl,
                   fit: BoxFit.cover,
                   width: 100,
-                  height: 135,
+                  height: MediaQuery.of(context).size.height * 0.15,
                 ),
               ),
               width: MediaQuery.of(context).size.width,
@@ -115,43 +115,36 @@ Widget sourceInfoForMain(ItemModel model, BuildContext context,
             color: Colors.white,
             width: MediaQuery.of(context).size.width,
             child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Column(
-                  children: [
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Column(
-                          children: [
-                            DefaultTextStyle(
-                              style: new TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              child: new Text(model.shortInfo),
-                            ),
-                            DefaultTextStyle(
-                              style: new TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: mainColorOfLEEWAY),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              child: new Text(
-                                model.price.toString() + "円",
-                              ),
-                            ),
-                          ],
-                          crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.only(
+                  top: 5, right: 13.0, left: 13.0, bottom: 5),
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      DefaultTextStyle(
+                        style: new TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        child: new Text(model.shortInfo),
+                      ),
+                      DefaultTextStyle(
+                        style: new TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: mainColorOfLEEWAY),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        child: new Text(
+                          model.price.toString() + "円",
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                ],
               ),
             ),
           ),
@@ -172,7 +165,7 @@ void checkItemInLike(String shortInfoAsID, BuildContext context) {
   Route route = MaterialPageRoute(
     builder: (c) => LikePage(),
   );
-  Navigator.pushReplacement(context, route);
+  Navigator.push(context, route);
 }
 
 Future<bool> onLikeButtonTapped(
@@ -225,94 +218,6 @@ removeItemFromLike(
 
       //totalAmount = 0;
     },
-  );
-}
-
-Widget HomeItemFrame(context, Items item) {
-  Container(
-    child: Padding(
-      padding: const EdgeInsets.all(3.0),
-      child: Card(
-        elevation: 0,
-        color: Colors.white,
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: InkWell(
-          onTap: () {
-            Route route = MaterialPageRoute(
-              builder: (c) => ProductPage(
-                id: item.id,
-              ),
-            );
-            Navigator.pushReplacement(
-              context,
-              route,
-            );
-          },
-          splashColor: Colors.black,
-          child: Column(
-            children: [
-              Center(
-                child: Container(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image.network(
-                      item.thumbnailUrl,
-                      fit: BoxFit.cover,
-                      width: 100,
-                      height: 135,
-                    ),
-                  ),
-                  width: MediaQuery.of(context).size.width,
-                  // color: Colors.white,
-                ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Column(
-                          children: [
-                            DefaultTextStyle(
-                              style: new TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              child: new Text(item.shortInfo),
-                            ),
-                            DefaultTextStyle(
-                              style: new TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: mainColorOfLEEWAY),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              child: new Text(
-                                item.price.toString() + "円",
-                              ),
-                            ),
-                          ],
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
   );
 }
 
@@ -375,7 +280,7 @@ List<Widget> addressText(String title, String text) {
 Widget sourceInfoForMains(UploadItems model, BuildContext context,
     {Color background, removeCartFunction}) {
   return Card(
-    color: HexColor("e5e2df"),
+    color: Colors.white,
     child: InkWell(
       onTap: () {
         Route route = MaterialPageRoute(
@@ -399,7 +304,7 @@ Widget sourceInfoForMains(UploadItems model, BuildContext context,
                   model.thumbnailUrl,
                   fit: BoxFit.cover,
                   width: 100,
-                  height: 139,
+                  height: MediaQuery.of(context).size.height * 0.15,
                 ),
               ),
               width: MediaQuery.of(context).size.width,
@@ -410,39 +315,32 @@ Widget sourceInfoForMains(UploadItems model, BuildContext context,
             color: Colors.white,
             width: MediaQuery.of(context).size.width,
             child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Column(
-                      children: [
-                        DefaultTextStyle(
-                          style: new TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          child: new Text(model.shortInfo),
-                        ),
-                        DefaultTextStyle(
-                          style: new TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: HexColor("#E67928")),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          child: new Text(
-                            model.price.toString() + "円",
-                          ),
-                        ),
-                      ],
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              padding: const EdgeInsets.only(
+                  top: 5, right: 13.0, left: 13.0, bottom: 5),
+              child: Column(
+                children: [
+                  DefaultTextStyle(
+                    style: new TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    child: new Text(model.shortInfo),
+                  ),
+                  DefaultTextStyle(
+                    style: new TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: mainColorOfLEEWAY),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    child: new Text(
+                      model.price.toString() + "円",
                     ),
                   ),
-                ),
+                ],
+                crossAxisAlignment: CrossAxisAlignment.start,
               ),
             ),
           ),
@@ -614,6 +512,9 @@ Widget userLink(Map il) {
                             CheckOutPage(il: il);
                             Route route = MaterialPageRoute(
                               builder: (c) => PublicUserPage(
+                                FB: snapshot.data["FaceBookURL"],
+                                IG: snapshot.data["InstagramURL"],
+                                TW: snapshot.data["TwitterURL"],
                                 uid: snapshot.data.id,
                                 imageUrl: snapshot.data["url"],
                                 name: snapshot.data["name"],
@@ -663,100 +564,68 @@ Widget userLink(Map il) {
 }
 
 likeButton(BuildContext context, Map il) {
-  return InkWell(
-    onTap: () => checkItemInLike(il["shortInfo"], context),
-    child: Container(
-      color: Colors.black,
-      width: MediaQuery.of(
-            context,
-          ).size.width *
-          0.46,
-      height: 50,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton.icon(
-                onPressed: () => checkItemInLike(il["shortInfo"], context),
-                icon: Icon(
-                  Icons.favorite,
-                  color: Colors.white,
-                ),
-                label: StreamBuilder<QuerySnapshot>(
-                    stream: null,
-                    builder: (context, snapshot) {
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                          right: 0.5,
-                        ),
-                        child: !EcommerceApp.sharedPreferences
-                                .getStringList(EcommerceApp.userLikeList)
-                                .contains(il["shortInfo"])
-                            ? Text(
-                                "いいねに追加",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              )
-                            : Text(
-                                "いいねから外す",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                      );
-                    }),
-              ),
-            ],
-          ),
-        ),
-      ),
+  return ElevatedButton.icon(
+    onPressed: () => checkItemInLike(il["shortInfo"], context),
+    icon: Icon(
+      Icons.favorite,
+      color: Colors.white,
     ),
+    label: StreamBuilder<QuerySnapshot>(
+        stream: null,
+        builder: (context, snapshot) {
+          return Padding(
+            padding: const EdgeInsets.only(
+              right: 0.5,
+            ),
+            child: !EcommerceApp.sharedPreferences
+                    .getStringList(EcommerceApp.userLikeList)
+                    .contains(il["shortInfo"])
+                ? Text(
+                    "いいねに追加",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  )
+                : Text(
+                    "いいねから外す",
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+          );
+        }),
   );
 }
 
 itemEditButton(BuildContext context, Map il, String id) {
-  return InkWell(
-    onTap: () => checkItemInLike(il["shortInfo"], context),
-    child: Container(
-      color: Colors.black,
-      width: MediaQuery.of(
-            context,
-          ).size.width *
-          0.46,
-      height: 50,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (c) => UpdateItemInfo(
-                                shortInfo: il["shortInfo"],
-                                id: id,
-                                longDescription: il["longDescription"],
-                                price: il["price"],
-                              )));
-                },
-                icon: Icon(
-                  Icons.edit,
+  return Expanded(
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (c) => UpdateItemInfo(
+                            shortInfo: il["shortInfo"],
+                            id: id,
+                            longDescription: il["longDescription"],
+                            price: il["price"],
+                          )));
+            },
+            icon: Icon(
+              Icons.edit,
+              color: Colors.white,
+            ),
+            label: Text("編集する",
+                style: TextStyle(
                   color: Colors.white,
-                ),
-                label: Text("商品情報を編集する",
-                    style: TextStyle(
-                      color: Colors.white,
-                    )),
-              ),
-            ],
+                )),
           ),
-        ),
+        ],
       ),
     ),
   );
@@ -810,39 +679,22 @@ checkOutByNewUser(BuildContext context) {
 }
 
 Widget deleteItemButton(BuildContext context, Function func) {
-  return InkWell(
-    onTap: func,
-    child: Container(
-      color: Colors.black,
-      width: MediaQuery.of(
-            context,
-          ).size.width *
-          0.46,
-      height: 50,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 6.0),
-                child: Icon(
-                  Icons.delete,
-                  color: Colors.white,
-                ),
+  return Expanded(
+    child: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ElevatedButton.icon(
+              onPressed: func,
+              icon: Icon(
+                Icons.delete,
+                color: Colors.white,
               ),
-              Padding(
-                padding: const EdgeInsets.only(right: 45),
-                child: Text(
-                  "削除する",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
+              label: Text("削除する"),
+            ),
+          ],
         ),
       ),
     ),
@@ -850,51 +702,34 @@ Widget deleteItemButton(BuildContext context, Function func) {
 }
 
 Widget checkOutItemButton(BuildContext context, Map il, String id) {
-  return InkWell(
-    onTap: () {
-      Route route = MaterialPageRoute(
-        fullscreenDialog: true,
-        builder: (c) => CheckOutPage(
-          il: il,
-          id: id,
-        ),
-      );
-      Navigator.push(
-        context,
-        route,
-      );
-    },
-    child: Container(
-      color: Colors.black,
-      width: MediaQuery.of(
-            context,
-          ).size.width *
-          0.46,
-      height: 50,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 6.0),
-                child: Icon(
-                  Icons.check,
-                  color: Colors.white,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 45),
-                child: Text(
-                  "購入する",
-                  style: TextStyle(
-                    color: Colors.white,
+  return Expanded(
+    child: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ElevatedButton.icon(
+              onPressed: () {
+                Route route = MaterialPageRoute(
+                  fullscreenDialog: true,
+                  builder: (c) => CheckOutPage(
+                    il: il,
+                    id: id,
                   ),
-                ),
+                );
+                Navigator.push(
+                  context,
+                  route,
+                );
+              },
+              icon: Icon(
+                Icons.check,
+                color: Colors.white,
               ),
-            ],
-          ),
+              label: Text("購入する"),
+            ),
+          ],
         ),
       ),
     ),
@@ -1251,5 +1086,24 @@ beforeDeleteDialog(BuildContext context, Map il, String id) {
         ],
       );
     },
+  );
+}
+
+beginBuildingCart(BuildContext context, String title, String sub) {
+  return Container(
+    color: HexColor("E67928").withOpacity(0.8),
+    width: MediaQuery.of(context).size.width,
+    height: 20,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.insert_emoticon,
+          color: Colors.black,
+        ),
+        Text(title),
+        Text(sub),
+      ],
+    ),
   );
 }

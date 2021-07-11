@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Authentication/MyPage.dart';
+import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Store/BSTransaction.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
@@ -472,13 +473,29 @@ List<BottomNavigationEntity> navigationList = [
                   child: Consumer<GetLikeItemsModel>(
                     builder: (context, model, child) {
                       final item = model.items;
-                      return Text(
-                        item.length.toString(),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500),
-                      );
+                      return EcommerceApp.sharedPreferences
+                                  .getStringList(EcommerceApp.userLikeList)
+                                  .length ==
+                              null
+                          ? Text(
+                              "0",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500),
+                            )
+                          : Text(
+                              (EcommerceApp.sharedPreferences
+                                          .getStringList(
+                                              EcommerceApp.userLikeList)
+                                          .length -
+                                      1)
+                                  .toString(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w500),
+                            );
                     },
                   ),
                 ),

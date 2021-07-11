@@ -81,32 +81,35 @@ class _TransactionPageState extends State<TransactionPage>
           .where("isTransactionFinished", isEqualTo: "Complete")
           .snapshots(),
       builder: (c, snapshot) {
-        return ListView.builder(
-          itemCount: snapshot.data.docs.length,
-          itemBuilder: (c, index) {
-            return StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection("items")
-                  .where("shortInfo",
-                      isEqualTo: snapshot.data.docs[index]["productIDs"])
-                  .snapshots(),
-              builder: (c, snap) {
-                return snap.hasData
-                    ? AdminOrderCard(
-                        totalPrice: snapshot.data.docs[index]["totalPrice"],
-                        itemCount: snap.data.docs.length,
-                        data: snap.data.docs,
-                        orderID: snapshot.data.docs[index].id,
-                        speakingToID: widget.id,
-                        speakingToName: widget.name,
-                      )
-                    : Center(
-                        child: circularProgress(),
-                      );
-              },
-            );
-          },
-        );
+        return !snapshot.hasData
+            ? Container()
+            : ListView.builder(
+                itemCount: snapshot.data.docs.length,
+                itemBuilder: (c, index) {
+                  return StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("items")
+                        .where("shortInfo",
+                            isEqualTo: snapshot.data.docs[index]["productIDs"])
+                        .snapshots(),
+                    builder: (c, snap) {
+                      return snap.hasData
+                          ? AdminOrderCard(
+                              totalPrice: snapshot.data.docs[index]
+                                  ["totalPrice"],
+                              itemCount: snap.data.docs.length,
+                              data: snap.data.docs,
+                              orderID: snapshot.data.docs[index].id,
+                              speakingToID: widget.id,
+                              speakingToName: widget.name,
+                            )
+                          : Center(
+                              child: circularProgress(),
+                            );
+                    },
+                  );
+                },
+              );
       },
     );
   }

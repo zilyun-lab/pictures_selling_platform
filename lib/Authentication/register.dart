@@ -498,10 +498,7 @@ class _RegisterState extends State<Register> {
       "FaceBookURL",
       "",
     );
-    await EcommerceApp.sharedPreferences.setStringList(
-      EcommerceApp.userCartList,
-      ["garbageValue"],
-    );
+
     await EcommerceApp.sharedPreferences.setStringList(
       EcommerceApp.userLikeList,
       ["garbageValue"],
