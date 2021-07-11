@@ -3,26 +3,27 @@ const nodemailer = require('nodemailer');
 const admin = require('firebase-admin');
 admin.initializeApp();
 const gmailEmail = "massaru1221@gmail.com";
-const gmailPassword = "Massaru19991221";
+const gmailPassword = "take3r12";
 
-var transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587,
-  secure: false,
-  
-  auth: {
-      user: gmailEmail,
-      pass: gmailPassword,
-  }
-});
 
-exports.sendEmail = functions.firestore
+exports.sendReportEmail = functions.firestore
     .document('report/{reportID}')
     .onCreate((snap, context) => {
+        var transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            
+            auth: {
+                user: "mjw12.birth@leewayjp.net",
+                pass: gmailPassword,
+            }
+          });
+          
 
         const mailOptions = {
-            from: `massaru1221@gmail.com`,
-            to: "massaru1221@gmail.com",
+            from: "user-report@leewayjp.net",
+            to: snap.data().email,
             subject: 'ユーザーからの報告があります',
             html: `<p>
                                    <b>報告対象ユーザー: </b>${snap.data().burnToID}<br>
@@ -43,12 +44,61 @@ exports.sendEmail = functions.firestore
 });
 
 
+exports.sendCancelEmail = functions.firestore
+    .document('cancelReport/{cancelID}')
+    .onCreate((snap, context) => {
+        var transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            
+            auth: {
+                user: "mjw12.birth@leewayjp.net",
+                pass: gmailPassword,
+            }
+          });
+          
+
+        const mailOptions = {
+            from: "user-report@leewayjp.net",
+            to: "user-report@leewayjp.net",
+            subject: 'ユーザーよりキャンセルがありました。',
+            html: `<p>
+                                   <b>キャンセル申請ユーザー: </b>${snap.data().CancelRequestName}<br>
+                                   <b>キャンセル申請ユーザー: </b>${snap.data().whoCancelRequestID}<br>
+                                   <b>申請理由: </b>${snap.data().reason}<br>
+                                   <b>任意の申請理由: </b>${snap.data().why}<br>
+                                   <b>注文ID: </b>${snap.data().orderID}<br>
+                                </p>`
+        };
+
+
+        return transporter.sendMail(mailOptions, (error, data) => {
+            if (error) {
+                console.log(error)
+                return
+            }
+            console.log("Sent!")
+        });
+});
+
+
 exports.sendEmailToNewUser = functions.firestore
     .document('users/{userID}')
     .onCreate((snap, context) => {
+        var transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            
+            auth: {
+                user: "mjw12.birth@leewayjp.net",
+                pass: gmailPassword,
+            }
+          });
 
         const mailOptions = {
-            from: `massaru1221@gmail.com`,
+            from: `no-reply@leewayjp.net`,
             to: snap.data().email,
             subject: 'アカウント登録完了のお知らせ',
             html: `<p>${snap.data().name} 様<br><br>アカウント登録ありがとうございます！<br><br>LEEWAYは絵画、ステッカーなど専用の販売サービス<br><br>自分で描いた絵やオリジナルのステッカーを販売し、お気に入りの商品を購入しましょう！</p>
@@ -56,7 +106,7 @@ exports.sendEmailToNewUser = functions.firestore
             <img src="https://firebasestorage.googleapis.com/v0/b/selling-pictures.appspot.com/o/isColor_Horizontal.png?alt=media&token=ad01809b-03ff-4126-9eaf-08d429ec2791">
             <br><br><br>
             <hr noshade>
-            <p><br>絵画専門サービス LEEWAY運営<br><br><br>本メールは送信専用のため、返信をいただきましてもお答え出来かねます。<br><br>お問い合わせは下記アドレスまでお願いいたします。<br>Email:LEEWAY@LEEWAY.com</p>
+            <p><br>絵画専門サービス LEEWAY運営<br><br><br>本メールは送信専用のため、返信をいただきましてもお答え出来かねます。<br><br>お問い合わせは下記アドレスまでお願いいたします。<br>Email: contact@leewayjp.net</p>
             <br>
             <hr noshade>`
         };
@@ -75,6 +125,16 @@ exports.sendEmailToNewUser = functions.firestore
 exports.sendEmailToSeller = functions.firestore
     .document('users/{userID}/Notify/{notifyID}')
     .onCreate(async (snap, context) => {
+        var transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            
+            auth: {
+                user: "mjw12.birth@leewayjp.net",
+                pass: gmailPassword,
+            }
+          });
         const userIds = context.params.userID;
         
         const userRefs = admin.firestore().doc(`users/${userIds}`);
@@ -82,7 +142,7 @@ exports.sendEmailToSeller = functions.firestore
 
         const dateTimeOfBought = new Date(snap.data().orderTime * 1000);
         const mailOptions = {
-            from: `massaru1221@gmail.com`,
+            from: `no-reply@leewayjp.net`,
             to: snap.data().email,
             subject: '作品が購入されました',
             html: `<p>${docs.data().name} 様<br><br>${snap.data().orderBy}様より、商品が購入されました。<br><br>発送の準備を始めましょう。</p><br>
@@ -102,7 +162,7 @@ exports.sendEmailToSeller = functions.firestore
             <p>何かありましたら、取引ページより出品者に連絡をしてください。</p>
             <br><br>
             <hr noshade>
-            <p><br>絵画専門サービス LEEWAY運営<br><br><br>本メールは送信専用のため、返信をいただきましてもお答え出来かねます。<br><br>お問い合わせは下記アドレスまでお願いいたします。<br>Email:LEEWAY@LEEWAY.com</p>
+            <p><br>絵画専門サービス LEEWAY運営<br><br><br>本メールは送信専用のため、返信をいただきましてもお答え出来かねます。<br><br>お問い合わせは下記アドレスまでお願いいたします。<br>Email: contact@leewayjp.net/p>
             <br>
             <hr noshade>`
         };
@@ -123,6 +183,16 @@ exports.sendEmailToSeller = functions.firestore
 exports.sendEmailToBuyer = functions.firestore
     .document('users/{userID}/orders/{OrderID}')
     .onCreate(async (snap, context) => {
+        var transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            
+            auth: {
+                user: "mjw12.birth@leewayjp.net",
+                pass: gmailPassword,
+            }
+          });
         const userId = context.params.userID;
         const userRef = admin.firestore().doc(`users/${userId}`);
         const doc = await userRef.get();
@@ -141,7 +211,7 @@ exports.sendEmailToBuyer = functions.firestore
 
 
         const mailOptions = {
-            from: `massaru1221@gmail.com`,
+            from: `no-reply@leewayjp.net`,
             to: snap.data().email,
             subject: '注文内容の確認',
             html: `
@@ -166,7 +236,7 @@ exports.sendEmailToBuyer = functions.firestore
             <p>何かありましたら、取引ページより出品者に連絡をしてください。</p>
             <br><br>
             <hr noshade>
-            <p><br>絵画専門サービス LEEWAY運営<br><br><br>本メールは送信専用のため、返信をいただきましてもお答え出来かねます。<br><br>お問い合わせは下記アドレスまでお願いいたします。<br>Email:LEEWAY@LEEWAY.com</p>
+            <p><br>絵画専門サービス LEEWAY運営<br><br><br>本メールは送信専用のため、返信をいただきましてもお答え出来かねます。<br><br>お問い合わせは下記アドレスまでお願いいたします。<br>Email: contact@leewayjp.net</p>
             <br>
             <hr noshade>`
         };
@@ -186,9 +256,19 @@ exports.sendEmailToBuyer = functions.firestore
 exports.sendEmailWhenTransactionFinished = functions.firestore
     .document('users/{userID}/Notify/{notifyID}')
     .onUpdate((change, context) => {
+        var transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            
+            auth: {
+                user: "mjw12.birth@leewayjp.net",
+                pass: gmailPassword,
+            }
+          });
 
         const mailOptions = {
-            from: `massaru1221@gmail.com`,
+            from: `no-reply@leewayjp.net`,
             to: change.after.data().email,
             subject: '取引終了のお知らせと口座登録のお願い',
             html: `<p>${change.after.data().name} 様<br><br>取引が完了し、売上金を反映いたしました。<br>
@@ -208,13 +288,111 @@ exports.sendEmailWhenTransactionFinished = functions.firestore
             
             
             <hr noshade>
-            <p><br>絵画専門サービス LEEWAY運営<br><br><br>本メールは送信専用のため、返信をいただきましてもお答え出来かねます。<br><br>お問い合わせは下記アドレスまでお願いいたします。<br>Email:LEEWAY@LEEWAY.com</p>
+            <p><br>絵画専門サービス LEEWAY運営<br><br><br>本メールは送信専用のため、返信をいただきましてもお答え出来かねます。<br><br>お問い合わせは下記アドレスまでお願いいたします。<br>Email: contact@leewayjp.net</p>
             <br>
             <hr noshade>`
                                 
         };
 
         if(change.after.data().isTransactionFinished === "Complete"){
+
+
+        return transporter.sendMail(mailOptions, (error, data) => {
+            if (error) {
+                console.log(error)
+                return
+            }
+            console.log("Sent!")
+        });
+    }
+});
+
+
+
+exports.sendEmailWhenCancelFinishedToSeller = functions.firestore
+    .document('users/{userID}/Notify/{notifyID}')
+    .onUpdate((change, context) => {
+        var transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            
+            auth: {
+                user: "mjw12.birth@leewayjp.net",
+                pass: gmailPassword,
+            }
+          });
+
+        const mailOptions = {
+            from: `no-reply@leewayjp.net`,
+            to: change.after.data().email,
+            subject: '取引キャンセル完了のお知らせ',
+            html: `<p>${change.after.data().name} 様<br><br>${change.after.data().orderBy} 様との取引のキャンセルの申請を確認し、キャンセルが成立しました。<br>
+            <br>
+            <p>ご注文ID：${change.after.data().id}</p>
+            <p>商品名：${change.after.data().productIDs}</p>
+            <br>
+            
+            <br>
+            
+            <hr noshade>
+            <p><br>絵画専門サービス LEEWAY運営<br><br><br>本メールは送信専用のため、返信をいただきましてもお答え出来かねます。<br><br>お問い合わせは下記アドレスまでお願いいたします。<br>Email: contact@leewayjp.net</p>
+            <br>
+            <hr noshade>`
+                                
+        };
+
+        if(change.after.data().cancelTransactionFinished === true){
+
+
+        return transporter.sendMail(mailOptions, (error, data) => {
+            if (error) {
+                console.log(error)
+                return
+            }
+            console.log("Sent!")
+        });
+    }
+});
+
+
+exports.sendEmailWhenCancelFinishedToBuyer = functions.firestore
+    .document('users/{userID}/orders/{OrderID}')
+    .onUpdate((change, context) => {
+        var transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            
+            auth: {
+                user: "mjw12.birth@leewayjp.net",
+                pass: gmailPassword,
+            }
+          });
+
+        const mailOptions = {
+            from: `no-reply@leewayjp.net`,
+            to: change.after.data().email,
+            subject: '取引キャンセル完了のお知らせ',
+            html: `<p>${change.after.data().name} 様<br><br>${change.after.data().postName} 様との取引のキャンセルの申請を確認し、キャンセルが成立しました。<br>
+            <br>
+            <p>ご注文ID：${change.after.data().id}</p>
+            <p>商品名：${change.after.data().productIDs}</p>
+            <p>返金予定額：${change.after.data().totalPrice*0.964}円</p>
+            <span style="color: red">* </span>
+            <span>お届け先は個人情報のため発送の際にのみ、アプリ内取引ページにて確認いただけます。</span>
+            <br>
+            
+            <br>
+            
+            <hr noshade>
+            <p><br>絵画専門サービス LEEWAY運営<br><br><br>本メールは送信専用のため、返信をいただきましてもお答え出来かねます。<br><br>お問い合わせは下記アドレスまでお願いいたします。<br>Email: contact@leewayjp.net</p>
+            <br>
+            <hr noshade>`
+                                
+        };
+
+        if(change.after.data().cancelTransactionFinished === true){
 
 
         return transporter.sendMail(mailOptions, (error, data) => {
