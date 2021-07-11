@@ -42,47 +42,63 @@ class AdminOrderDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     getOrderId = orderID;
     return Scaffold(
-      floatingActionButton: Container(
-        width: 125,
-        height: 125,
-        child: FloatingActionButton(
-          backgroundColor: mainColor,
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (c) => ChatPage(
-                        EcommerceApp.sharedPreferences.getString(EcommerceApp
-                            .sharedPreferences
-                            .getString(EcommerceApp.userUID)),
-                        speakingToID,
-                        orderID,
-                        speakingToName,
-                        EcommerceApp.sharedPreferences
-                            .getString(EcommerceApp.userName))));
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              children: [
-                Text(
-                  "メッセージ",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Icon(
-                  Icons.message_outlined,
-                  size: 50,
-                ),
-              ],
-            ),
-          ),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(50.0))),
-        ),
-      ),
+      floatingActionButton: StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection("users")
+              .doc(EcommerceApp.sharedPreferences
+                  .getString(EcommerceApp.userUID))
+              .collection("Notify")
+              .doc(orderID)
+              .snapshots(),
+          builder: (context, snap) {
+            return !snap.hasData
+                ? Container()
+                : !snap.data["cancelTransactionFinished"]
+                    ? Container(
+                        width: 125,
+                        height: 125,
+                        child: FloatingActionButton(
+                          backgroundColor: mainColor,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (c) => ChatPage(
+                                        EcommerceApp.sharedPreferences
+                                            .getString(EcommerceApp
+                                                .sharedPreferences
+                                                .getString(
+                                                    EcommerceApp.userUID)),
+                                        speakingToID,
+                                        orderID,
+                                        speakingToName,
+                                        EcommerceApp.sharedPreferences
+                                            .getString(
+                                                EcommerceApp.userName))));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "メッセージ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                mySizedBox(5),
+                                Icon(
+                                  Icons.message_outlined,
+                                  size: 50,
+                                ),
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50.0))),
+                        ),
+                      )
+                    : Container();
+          }),
       appBar: MyAppBar(),
       body: SingleChildScrollView(
         child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -106,6 +122,29 @@ class AdminOrderDetails extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(EcommerceApp.sharedPreferences
+                                      .getString(EcommerceApp.userUID))
+                                  .collection("Notify")
+                                  .doc(orderID)
+                                  .snapshots(),
+                              builder: (c, snap) {
+                                return !snap.hasData
+                                    ? Container()
+                                    : snap.data["cancelTransactionFinished"]
+                                        ? Center(
+                                            child: Text(
+                                              "この注文はキャンセルされました。",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.redAccent,
+                                                  fontSize: 22),
+                                            ),
+                                          )
+                                        : Container();
+                              }),
                           SizedBox(
                             height: 10.0,
                           ),
@@ -229,9 +268,6 @@ class ShippingDetails extends StatefulWidget {
 class _ShippingDetailsState extends State<ShippingDetails> {
   TextEditingController _messageController = TextEditingController();
 
-  String buyerIDFromFB;
-  String orderIDFromFB;
-  String whoBought;
   @override
   void initState() {
     super.initState();
@@ -239,11 +275,14 @@ class _ShippingDetailsState extends State<ShippingDetails> {
     getData();
   }
 
+  String buyerIDFromFB;
+  String orderIDFromFB;
+  String whoBought;
   void getData() async {
     DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
         .collection("users")
-        .doc(widget.postBy)
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
         .collection("Notify")
         .doc(widget.orderID)
         .get();
@@ -346,8 +385,9 @@ class _ShippingDetailsState extends State<ShippingDetails> {
         StreamBuilder<DocumentSnapshot>(
           stream: EcommerceApp.firestore
               .collection(EcommerceApp.collectionUser)
-              .doc(widget.buyerID)
-              .collection(EcommerceApp.collectionOrders)
+              .doc(EcommerceApp.sharedPreferences
+                  .getString(EcommerceApp.userUID))
+              .collection("Notify")
               .doc(widget.orderID)
               .snapshots(),
           builder: (c, snapshot) {
@@ -355,93 +395,115 @@ class _ShippingDetailsState extends State<ShippingDetails> {
             if (snapshot.hasData) {
               dataMap = snapshot.data.data();
             }
-            return dataMap["isBuyerDelivery"] == "inComplete" &&
-                    snapshot.hasData
-                ? Padding(
-                    padding: EdgeInsets.all(
-                      5,
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (_) {
-                              return AlertDialog(
-                                title: Center(child: Text("発送通知")),
-                                content: Text("購入者に発送通知を送ります。\nよろしいですか？"),
-                                actions: [
-                                  Row(
-                                    children: [
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text(
-                                          "キャンセル",
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                            elevation: 0,
-                                            primary: Colors.white),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          completeTransactionAndNotifySellar(
-                                              context,
-                                              orderIDFromFB,
-                                              buyerIDFromFB);
-                                        },
-                                        child: Text(
-                                          "送信する",
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                        style: ElevatedButton.styleFrom(
-                                            elevation: 0,
-                                            primary: Colors.white),
+            return snapshot.hasData
+                ? dataMap["isBuyerDelivery"] == "inComplete" &&
+                        !dataMap["cancelTransactionFinished"]
+                    ? Padding(
+                        padding: EdgeInsets.all(
+                          5,
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return AlertDialog(
+                                    title: Center(child: Text("発送通知")),
+                                    content: Text("購入者に発送通知を送ります。\nよろしいですか？"),
+                                    actions: [
+                                      Row(
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              "キャンセル",
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                                elevation: 0,
+                                                primary: Colors.white),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              completeTransactionAndNotifySellar(
+                                                  context,
+                                                  orderIDFromFB,
+                                                  buyerIDFromFB);
+                                            },
+                                            child: Text(
+                                              "送信する",
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                            style: ElevatedButton.styleFrom(
+                                                elevation: 0,
+                                                primary: Colors.white),
+                                          ),
+                                        ],
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                       ),
                                     ],
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                  ),
-                                ],
-                              );
-                            });
+                                  );
+                                });
 
-                        // print(proceeds);
-                      },
-                      child: Container(
-                        color: Colors.black,
-                        width: MediaQuery.of(context).size.width,
-                        height: 50,
-                        child: Center(
-                          child: Text(
-                            "発送通知を送る。",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
+                            // print(proceeds);
+                          },
+                          child: Container(
+                            color: Colors.black,
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            child: Center(
+                              child: Text(
+                                "発送通知を送る。",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Container(
-                      color: Colors.black,
-                      width: MediaQuery.of(context).size.width,
-                      height: 50,
-                      child: Center(
-                        child: Text(
-                          "購入者の受け取りをお待ちください。",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
+                      )
+                    : dataMap["cancelTransactionFinished"]
+                        ? Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Container(
+                              color: Colors.grey,
+                              width: MediaQuery.of(context).size.width,
+                              height: 50,
+                              child: Center(
+                                child: Text(
+                                  "この取引はキャンセルされました。",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Container(
+                              color: Colors.black,
+                              width: MediaQuery.of(context).size.width,
+                              height: 50,
+                              child: Center(
+                                child: Text(
+                                  "購入者の受け取りをお待ちください。",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                : Container();
           },
         ),
         SizedBox(
@@ -455,40 +517,56 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                 .doc(widget.orderID)
                 .snapshots(),
             builder: (c, snapshot) {
-              return snapshot.data.data()["CancelRequestTo"] != true &&
-                      snapshot.hasData
-                  ? Center(
-                      child: InkWell(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (_) {
-                                return NormalCheckBoxDialog(
-                                  "キャンセル申請",
-                                  "",
-                                  "確認",
-                                  buyerIDFromFB,
-                                  orderIDFromFB,
-                                  widget.postBy,
-                                  EcommerceApp.sharedPreferences
-                                      .getString(EcommerceApp.userName),
-                                  widget.postByName,
-                                  whoBought,
-                                );
-                              });
-                        },
-                        child: Text(
-                          "この取引をキャンセルする",
-                          style: TextStyle(color: Colors.redAccent),
-                        ),
-                      ),
-                    )
-                  : Center(
-                      child: Text(
-                        "この取引のキャンセル申請を行いました。",
-                        style: TextStyle(color: Colors.blueAccent),
-                      ),
-                    );
+              return snapshot.hasData
+                  ? snapshot.data.data()["CancelRequestTo"] != true
+                      ? Center(
+                          child: InkWell(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (_) {
+                                    return NormalCheckBoxDialog(
+                                      "キャンセル申請",
+                                      "",
+                                      "確認",
+                                      buyerIDFromFB,
+                                      orderIDFromFB,
+                                      widget.postBy,
+                                      EcommerceApp.sharedPreferences
+                                          .getString(EcommerceApp.userName),
+                                      widget.postByName,
+                                      whoBought,
+                                    );
+                                  });
+                            },
+                            child: Text(
+                              "この取引をキャンセルする",
+                              style: TextStyle(color: Colors.redAccent),
+                            ),
+                          ),
+                        )
+                      : StreamBuilder<DocumentSnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection("users")
+                              .doc(EcommerceApp.sharedPreferences
+                                  .getString(EcommerceApp.userUID))
+                              .collection("Notify")
+                              .doc(widget.orderID)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            return snapshot.hasData
+                                ? snapshot.data["cancelTransactionFinished"]
+                                    ? Container()
+                                    : Center(
+                                        child: Text(
+                                          "この取引のキャンセル申請を行いました。",
+                                          style: TextStyle(
+                                              color: Colors.blueAccent),
+                                        ),
+                                      )
+                                : Container();
+                          })
+                  : Container();
             })
       ],
     );

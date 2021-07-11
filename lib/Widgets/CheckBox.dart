@@ -250,18 +250,24 @@ class NormalCheckBoxDialogState extends State<NormalCheckBoxDialog> {
                                   .collection("users")
                                   .doc(widget.postBy)
                                   .collection("Notify")
-                                  .doc(widget.orderID)
+                                  .doc(EcommerceApp.sharedPreferences
+                                      .getString(EcommerceApp.userUID))
                                   .collection("cancel")
                                   .add({
                                 "why": whyController.text,
                                 "reason": cancelWhy,
-                                "orderID": widget.orderID,
-                                "whoCancelRequest": widget.postBy,
+                                "orderID": widget.postBy,
+                                "whoCancelRequest": widget.orderID,
+                                "whoCancelRequestID": EcommerceApp
+                                    .sharedPreferences
+                                    .getString(EcommerceApp.userUID),
                                 "CancelRequestName": widget.postByName,
                                 "cancelTo": widget.buyerID,
                                 "cancelToID": EcommerceApp.sharedPreferences
                                     .getString(EcommerceApp.userUID),
                                 "cancelTime": refTime,
+                                "email": EcommerceApp.sharedPreferences
+                                    .getString(EcommerceApp.userEmail)
                               });
                               FirebaseFirestore.instance
                                   .collection("users")
@@ -290,14 +296,16 @@ class NormalCheckBoxDialogState extends State<NormalCheckBoxDialog> {
                                   .set({
                                 "why": whyController.text,
                                 "reason": cancelWhy,
-                                "orderID": widget.orderID,
-                                "whoCancelRequest": widget.postBy,
+                                "orderID": widget.postBy,
+                                "whoCancelRequest": widget.orderID,
                                 "CancelRequestName": widget.postByName,
                                 "cancelTo": EcommerceApp.sharedPreferences
                                     .getString(EcommerceApp.userName),
                                 "cancelToID": EcommerceApp.sharedPreferences
                                     .getString(EcommerceApp.userUID),
                                 "cancelTime": refTime,
+                                "email": EcommerceApp.sharedPreferences
+                                    .getString(EcommerceApp.userEmail)
                               }).whenComplete(() {
                                 Fluttertoast.showToast(
                                   msg: "キャンセル申請を送信しました。",

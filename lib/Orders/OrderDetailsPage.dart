@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:selling_pictures_platform/Address/address.dart';
@@ -45,47 +46,65 @@ class OrderDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     getOrderId = orderID;
     return Scaffold(
-      floatingActionButton: Container(
-        width: 125,
-        height: 125,
-        child: FloatingActionButton(
-          backgroundColor: mainColor,
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (c) => ChatPage(
-                        EcommerceApp.sharedPreferences.getString(EcommerceApp
-                            .sharedPreferences
-                            .getString(EcommerceApp.userUID)),
-                        speakingToID,
-                        orderID,
-                        speakingToName,
-                        EcommerceApp.sharedPreferences
-                            .getString(EcommerceApp.userName))));
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              children: [
-                Text(
-                  "メッセージ",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Icon(
-                  Icons.message_outlined,
-                  size: 50,
-                ),
-              ],
-            ),
-          ),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(50.0))),
-        ),
-      ),
+      floatingActionButton: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection("users")
+              .doc(EcommerceApp.sharedPreferences
+                  .getString(EcommerceApp.userUID))
+              .collection("orders")
+              .doc(orderID)
+              .snapshots(),
+          builder: (c, snap) {
+            return !snap.hasData
+                ? Container()
+                : !snap.data["cancelTransactionFinished"]
+                    ? Container(
+                        width: 125,
+                        height: 125,
+                        child: FloatingActionButton(
+                          backgroundColor: mainColor,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (c) => ChatPage(
+                                        EcommerceApp.sharedPreferences
+                                            .getString(EcommerceApp
+                                                .sharedPreferences
+                                                .getString(
+                                                    EcommerceApp.userUID)),
+                                        speakingToID,
+                                        orderID,
+                                        speakingToName,
+                                        EcommerceApp.sharedPreferences
+                                            .getString(
+                                                EcommerceApp.userName))));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "メッセージ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Icon(
+                                  Icons.message_outlined,
+                                  size: 50,
+                                ),
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50.0))),
+                        ),
+                      )
+                    : Container();
+          }),
       appBar: MyAppBar(),
       body: SingleChildScrollView(
         child: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -108,6 +127,29 @@ class OrderDetails extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          StreamBuilder(
+                              stream: FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(EcommerceApp.sharedPreferences
+                                      .getString(EcommerceApp.userUID))
+                                  .collection("orders")
+                                  .doc(orderID)
+                                  .snapshots(),
+                              builder: (c, snap) {
+                                return !snap.hasData
+                                    ? Container()
+                                    : snap.data["cancelTransactionFinished"]
+                                        ? Center(
+                                            child: Text(
+                                              "この注文はキャンセルされました。",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.redAccent,
+                                                  fontSize: 22),
+                                            ),
+                                          )
+                                        : Container();
+                              }),
                           SizedBox(
                             height: 10.0,
                           ),
@@ -377,108 +419,16 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                 dataMap = snapshot.data.data();
               }
 
-              return Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(
-                      5,
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        print(widget.postBy);
-
-                        print(widget.orderID);
-                        return showDialog(
-                          context: context,
-                          builder: (_) {
-                            return SimpleDialog(
-                              title: Center(
-                                child: Text(
-                                  "受け取り確認・評価",
-                                ),
-                              ),
-                              children: [
-                                Center(
-                                  child: RatingBar.builder(
-                                    initialRating: 3,
-                                    minRating: 1,
-                                    direction: Axis.horizontal,
-                                    allowHalfRating: true,
-                                    itemCount: 5,
-                                    itemPadding:
-                                        EdgeInsets.symmetric(horizontal: 4.0),
-                                    itemBuilder: (context, _) => Icon(
-                                      Icons.star,
-                                      color: Colors.amber,
-                                    ),
-                                    onRatingUpdate: (rating) {
-                                      getReviewCount = rating;
-                                      print(getReviewCount);
-                                      print(rating);
-                                    },
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Center(
-                                    child: Container(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: TextField(
-                                          controller: reviewTextController,
-                                          decoration: InputDecoration(
-                                              hintStyle: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 12),
-                                              hintText: "作者に何かメッセージを送ってみましょう！",
-                                              border: InputBorder.none),
-                                        ),
-                                      ),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          border: Border.all(
-                                              color: HexColor("3e1300"),
-                                              width: 3)),
-                                      height: 80,
-                                    ),
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text("キャンセル")),
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          completeTransactionAndNotifySellar(
-                                              context, getOrderId);
-                                          saveReviewCount();
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (c) => MainPage()));
-                                        },
-                                        child: Text("送信する")),
-                                  ],
-                                ),
-                              ],
-                            );
-                          },
-                        );
-
-                        // print(proceeds);
-                      },
+              return snapshot.data["cancelTransactionFinished"]
+                  ? Padding(
+                      padding: const EdgeInsets.all(5.0),
                       child: Container(
-                        color: Colors.black,
+                        color: Colors.grey,
                         width: MediaQuery.of(context).size.width,
                         height: 50,
                         child: Center(
                           child: Text(
-                            "受け取り確認へ進む",
+                            "この注文はキャンセルされました。",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 15,
@@ -486,10 +436,124 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ],
-              );
+                    )
+                  : Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.all(
+                            5,
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              print(widget.postBy);
+
+                              print(widget.orderID);
+                              return showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return SimpleDialog(
+                                    title: Center(
+                                      child: Text(
+                                        "受け取り確認・評価",
+                                      ),
+                                    ),
+                                    children: [
+                                      Center(
+                                        child: RatingBar.builder(
+                                          initialRating: 3,
+                                          minRating: 1,
+                                          direction: Axis.horizontal,
+                                          allowHalfRating: true,
+                                          itemCount: 5,
+                                          itemPadding: EdgeInsets.symmetric(
+                                              horizontal: 4.0),
+                                          itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            getReviewCount = rating;
+                                            print(getReviewCount);
+                                            print(rating);
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(height: 10),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Center(
+                                          child: Container(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: TextField(
+                                                controller:
+                                                    reviewTextController,
+                                                decoration: InputDecoration(
+                                                    hintStyle: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 12),
+                                                    hintText:
+                                                        "作者に何かメッセージを送ってみましょう！",
+                                                    border: InputBorder.none),
+                                              ),
+                                            ),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                    color: HexColor("3e1300"),
+                                                    width: 3)),
+                                            height: 80,
+                                          ),
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text("キャンセル")),
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                completeTransactionAndNotifySellar(
+                                                    context, getOrderId);
+                                                saveReviewCount();
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (c) =>
+                                                            MainPage()));
+                                              },
+                                              child: Text("送信する")),
+                                        ],
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+
+                              // print(proceeds);
+                            },
+                            child: Container(
+                              color: Colors.black,
+                              width: MediaQuery.of(context).size.width,
+                              height: 50,
+                              child: Center(
+                                child: Text(
+                                  "受け取り確認へ進む",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
             },
           ),
           SizedBox(
@@ -504,184 +568,209 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                   .doc(widget.orderID)
                   .snapshots(),
               builder: (context, snap) {
-                return snap.data["CancelRequestTo"] == true && snap.hasData
-                    ? Column(
-                        children: [
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Row(children: <Widget>[
-                            Expanded(
-                                child: Divider(
-                              thickness: 5,
-                              color: Colors.black,
-                            )),
-                            Text("　  作者よりキャンセル申請が届いています 　 "),
-                            Expanded(
-                                child: Divider(
-                              thickness: 5,
-                              color: Colors.black,
-                            )),
-                          ]),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Container(
-                            child: Column(
-                              children: [
-                                FutureBuilder<DocumentSnapshot>(
-                                    future: FirebaseFirestore.instance
-                                        .collection("cancelReport")
-                                        .doc(widget.orderID)
-                                        .get(),
-                                    builder: (context, data) {
-                                      return Text(
-                                        "申請理由：" + data.data["reason"],
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20),
-                                      );
-                                    })
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 20,
+                return snap.hasData
+                    ? snap.data["CancelRequestTo"] &&
+                            !snap.data["cancelTransactionFinished"]
+                        ? Column(
+                            children: [
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Row(children: <Widget>[
+                                Expanded(
+                                    child: Divider(
+                                  thickness: 5,
+                                  color: Colors.black,
+                                )),
+                                Text("　  作者よりキャンセル申請が届いています 　 "),
+                                Expanded(
+                                    child: Divider(
+                                  thickness: 5,
+                                  color: Colors.black,
+                                )),
+                              ]),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                child: Column(
+                                  children: [
+                                    FutureBuilder<DocumentSnapshot>(
+                                        future: FirebaseFirestore.instance
+                                            .collection("cancelReport")
+                                            .doc(widget.orderID)
+                                            .get(),
+                                        builder: (context, data) {
+                                          return !data.hasData
+                                              ? Container()
+                                              : Text(
+                                                  "申請理由：" + data.data["reason"],
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20),
+                                                );
+                                        })
+                                  ],
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    print(itemID);
-                                    showDialog(
-                                        context: context,
-                                        builder: (_) {
-                                          return AlertDialog(
-                                            title: Text("キャンセル申請に同意しますか？"),
-                                            actions: [
-                                              Row(
-                                                children: [
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Text(
-                                                      "キャンセル",
-                                                      style: TextStyle(
-                                                          color: Colors.black),
-                                                    ),
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                            elevation: 0,
-                                                            primary:
-                                                                Colors.white),
-                                                  ),
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      FirebaseFirestore.instance
-                                                          .collection("users")
-                                                          .doc(EcommerceApp
-                                                              .sharedPreferences
-                                                              .getString(
-                                                                  EcommerceApp
-                                                                      .userUID))
-                                                          .collection("orders")
-                                                          .doc(widget.orderID)
-                                                          .update({
-                                                        "CancelRequest": true,
-                                                        "cancelTransactionFinished":
-                                                            true,
-                                                      });
-                                                      FirebaseFirestore.instance
-                                                          .collection("users")
-                                                          .doc(widget.postBy)
-                                                          .collection("Notify")
-                                                          .doc(widget.orderID)
-                                                          .update({
-                                                        "CancelRequest": true,
-                                                        "cancelTransactionFinished":
-                                                            true,
-                                                      });
-                                                      FirebaseFirestore.instance
-                                                          .collection("items")
-                                                          .doc(itemID)
-                                                          .update({
-                                                        "Stock": FieldValue
-                                                            .increment(1)
-                                                      }).whenComplete(() async {
-                                                        Fluttertoast.showToast(
-                                                          msg:
-                                                              "キャンセル申請に同意し、取引をキャンセルしました。",
-                                                          backgroundColor:
-                                                              HexColor(
-                                                                  "#E67928"),
-                                                        );
-                                                        await Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: (c) =>
-                                                                    MainPage()));
-                                                      });
-                                                    },
-                                                    child: Text(
-                                                      "同意する",
-                                                      style: TextStyle(
-                                                          color: Colors.black),
-                                                    ),
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                            elevation: 0,
-                                                            primary:
-                                                                Colors.white),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        print(itemID);
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) {
+                                              return AlertDialog(
+                                                title: Text("キャンセル申請に同意しますか？"),
+                                                actions: [
+                                                  Row(
+                                                    children: [
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                        child: Text(
+                                                          "キャンセル",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black),
+                                                        ),
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                                elevation: 0,
+                                                                primary: Colors
+                                                                    .white),
+                                                      ),
+                                                      ElevatedButton(
+                                                        onPressed: () {
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(EcommerceApp
+                                                                  .sharedPreferences
+                                                                  .getString(
+                                                                      EcommerceApp
+                                                                          .userUID))
+                                                              .collection(
+                                                                  "orders")
+                                                              .doc(widget
+                                                                  .orderID)
+                                                              .update({
+                                                            "CancelRequest":
+                                                                true,
+                                                            "cancelTransactionFinished":
+                                                                true,
+                                                          });
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(
+                                                                  widget.postBy)
+                                                              .collection(
+                                                                  "Notify")
+                                                              .doc(widget
+                                                                  .orderID)
+                                                              .update({
+                                                            "CancelRequest":
+                                                                true,
+                                                            "cancelTransactionFinished":
+                                                                true,
+                                                          });
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "items")
+                                                              .doc(itemID)
+                                                              .update({
+                                                            "Stock": FieldValue
+                                                                .increment(1)
+                                                          }).whenComplete(
+                                                                  () async {
+                                                            Fluttertoast
+                                                                .showToast(
+                                                              msg:
+                                                                  "キャンセル申請に同意し、取引をキャンセルしました。",
+                                                              backgroundColor:
+                                                                  HexColor(
+                                                                      "#E67928"),
+                                                            );
+                                                            await Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder: (c) =>
+                                                                        MainPage()));
+                                                          });
+                                                        },
+                                                        child: Text(
+                                                          "同意する",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black),
+                                                        ),
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                                elevation: 0,
+                                                                primary: Colors
+                                                                    .white),
+                                                      ),
+                                                    ],
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                   ),
                                                 ],
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                              ),
-                                            ],
-                                          );
-                                        });
-                                  },
-                                  child: Container(
-                                    color: Colors.redAccent,
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 50,
-                                    child: Center(
-                                      child: Text(
-                                        "同意する",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15,
+                                              );
+                                            });
+                                      },
+                                      child: Container(
+                                        color: Colors.redAccent,
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        height: 50,
+                                        child: Center(
+                                          child: Text(
+                                            "同意する",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 15,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Container(
-                                  color: Colors.redAccent,
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  child: Center(
-                                    child: Text(
-                                      "同意しない",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Container(
+                                      color: Colors.redAccent,
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 50,
+                                      child: Center(
+                                        child: Text(
+                                          "同意しない",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15,
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )
+                              ),
+                            ],
+                          )
+                        : Container()
                     : Container();
               })
         ],
@@ -704,16 +793,6 @@ class _ShippingDetailsState extends State<ShippingDetails> {
         "reviewDate": DateTime.now().millisecondsSinceEpoch.toString(),
       },
     );
-    // FirebaseFirestore.instance
-    //     .collection("users")
-    //     .doc(widget.postBy)
-    //     .collection("TotalReviewCount")
-    //     .doc(widget.postBy)
-    //     .set(
-    //   {
-    //     "starRating": FieldValue.increment(getReviewCount),
-    //   },
-    // );
   }
 
   completeTransactionAndNotifySellar(BuildContext context, String mOrderId) {

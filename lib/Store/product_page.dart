@@ -272,7 +272,9 @@ class _ProductPageState extends State<ProductPage> {
                                     il["postBy"] !=
                                             EcommerceApp.sharedPreferences
                                                 .getString(EcommerceApp.userUID)
-                                        ? likeButton(context, il)
+                                        ? il["Stock"] == 0
+                                            ? disableLikeButton(context)
+                                            : likeButton(context, il)
                                         : itemEditButton(
                                             context, il, widget.id),
                                     StreamBuilder<

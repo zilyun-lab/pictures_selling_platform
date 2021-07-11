@@ -17,8 +17,10 @@ import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Authentication/publicUserPage.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Counters/Likeitemcounter.dart';
+import 'package:selling_pictures_platform/Models/GetLikeItemsModel.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/HomeItem(provider).dart';
+import 'package:selling_pictures_platform/Models/LikeItemsList.dart';
 import 'package:selling_pictures_platform/Models/UploadItemList.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
@@ -279,72 +281,74 @@ List<Widget> addressText(String title, String text) {
 
 Widget sourceInfoForMains(UploadItems model, BuildContext context,
     {Color background, removeCartFunction}) {
-  return Card(
-    color: Colors.white,
-    child: InkWell(
-      onTap: () {
-        Route route = MaterialPageRoute(
-          builder: (c) => ProductPage(
-            id: model.id,
-          ),
-        );
-        Navigator.pushReplacement(
-          context,
-          route,
-        );
-      },
-      splashColor: Colors.black,
-      child: Column(
-        children: [
-          Center(
-            child: Container(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
-                child: Image.network(
-                  model.thumbnailUrl,
-                  fit: BoxFit.cover,
-                  width: 100,
-                  height: MediaQuery.of(context).size.height * 0.15,
+  return Expanded(
+    child: Card(
+      color: Colors.white,
+      child: InkWell(
+        onTap: () {
+          Route route = MaterialPageRoute(
+            builder: (c) => ProductPage(
+              id: model.id,
+            ),
+          );
+          Navigator.pushReplacement(
+            context,
+            route,
+          );
+        },
+        splashColor: Colors.black,
+        child: Column(
+          children: [
+            Center(
+              child: Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.network(
+                    model.thumbnailUrl,
+                    fit: BoxFit.cover,
+                    width: 100,
+                    height: MediaQuery.of(context).size.height * 0.15,
+                  ),
+                ),
+                width: MediaQuery.of(context).size.width,
+                // color: Colors.white,
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              width: MediaQuery.of(context).size.width,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 5, right: 13.0, left: 13.0, bottom: 5),
+                child: Column(
+                  children: [
+                    DefaultTextStyle(
+                      style: new TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      child: new Text(model.shortInfo),
+                    ),
+                    DefaultTextStyle(
+                      style: new TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: mainColorOfLEEWAY),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      child: new Text(
+                        model.price.toString() + "円",
+                      ),
+                    ),
+                  ],
+                  crossAxisAlignment: CrossAxisAlignment.start,
                 ),
               ),
-              width: MediaQuery.of(context).size.width,
-              // color: Colors.white,
             ),
-          ),
-          Container(
-            color: Colors.white,
-            width: MediaQuery.of(context).size.width,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 5, right: 13.0, left: 13.0, bottom: 5),
-              child: Column(
-                children: [
-                  DefaultTextStyle(
-                    style: new TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    child: new Text(model.shortInfo),
-                  ),
-                  DefaultTextStyle(
-                    style: new TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: mainColorOfLEEWAY),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    child: new Text(
-                      model.price.toString() + "円",
-                    ),
-                  ),
-                ],
-                crossAxisAlignment: CrossAxisAlignment.start,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   );
@@ -737,34 +741,45 @@ Widget checkOutItemButton(BuildContext context, Map il, String id) {
 }
 
 Widget soldOutButton(BuildContext context) {
-  return Container(
-    color: Colors.black54,
-    width: MediaQuery.of(
-          context,
-        ).size.width *
-        0.47,
-    height: 50,
+  return Expanded(
     child: Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 4.5),
-              child: Icon(
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(primary: Colors.grey),
+              onPressed: () {},
+              icon: Icon(
                 Icons.check,
                 color: Colors.white,
               ),
+              label: Text("売り切れ"),
             ),
-            Padding(
-              padding: const EdgeInsets.only(right: 40),
-              child: Text(
-                "売り切れ",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+Widget disableLikeButton(BuildContext context) {
+  return Expanded(
+    child: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(primary: Colors.grey),
+              onPressed: () {},
+              icon: Icon(
+                Icons.favorite,
+                color: Colors.white,
               ),
+              label: Text("いいね"),
             ),
           ],
         ),
@@ -1104,6 +1119,263 @@ beginBuildingCart(BuildContext context, String title, String sub) {
         Text(title),
         Text(sub),
       ],
+    ),
+  );
+}
+
+Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
+    {Color background, removeCartFunction}) {
+  return Card(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    color: Colors.white,
+    child: InkWell(
+      onTap: () {
+        Route route = MaterialPageRoute(
+          builder: (c) => ProductPage(
+            id: model.id,
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          route,
+        );
+      },
+      splashColor: Colors.black,
+      child: Column(
+        children: [
+          Center(
+            child: Container(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  model.thumbnailUrl,
+                  fit: BoxFit.cover,
+                  width: 100,
+                  height: 120,
+                ),
+              ),
+              width: MediaQuery.of(context).size.width,
+              // color: Colors.white,
+            ),
+          ),
+          Container(
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 5, right: 13.0, left: 13.0, bottom: 5),
+              child: Column(
+                children: [
+                  DefaultTextStyle(
+                    style: new TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    child: new Text(model.shortInfo),
+                  ),
+                  DefaultTextStyle(
+                    style: new TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: mainColorOfLEEWAY),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    child: new Text(
+                      model.price.toString() + "円",
+                    ),
+                  ),
+                ],
+                crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget sourceInfoForMainOfLikex1(LikeItems model, BuildContext context,
+    {Color background, removeCartFunction}) {
+  return Padding(
+    padding: const EdgeInsets.all(5.0),
+    child: Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      color: Colors.white,
+      child: InkWell(
+        onTap: () {
+          Route route = MaterialPageRoute(
+            builder: (c) => ProductPage(
+              id: model.id,
+            ),
+          );
+          Navigator.pushReplacement(
+            context,
+            route,
+          );
+        },
+        splashColor: Colors.black,
+        child: Column(
+          children: [
+            Center(
+              child: Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.network(
+                    model.thumbnailUrl,
+                    fit: BoxFit.cover,
+                    width: 100,
+                    height: 270,
+                  ),
+                ),
+                width: MediaQuery.of(context).size.width,
+                // color: Colors.white,
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              width: MediaQuery.of(context).size.width,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 5, right: 13.0, left: 13.0, bottom: 5),
+                child: Column(
+                  children: [
+                    DefaultTextStyle(
+                      style: new TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      child: new Text(model.shortInfo),
+                    ),
+                    DefaultTextStyle(
+                      style: new TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: mainColorOfLEEWAY),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      child: new Text(
+                        model.price.toString() + "円",
+                      ),
+                    ),
+                  ],
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+Widget sourceInfoForMainOfLikex3(LikeItems model, BuildContext context,
+    {Color background, removeCartFunction}) {
+  return Card(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    color: Colors.white,
+    child: InkWell(
+      onTap: () {
+        Route route = MaterialPageRoute(
+          builder: (c) => ProductPage(
+            id: model.id,
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          route,
+        );
+      },
+      splashColor: Colors.black,
+      child: Column(
+        children: [
+          Center(
+            child: Container(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.network(
+                  model.thumbnailUrl,
+                  fit: BoxFit.cover,
+                  width: 100,
+                  height: 70,
+                ),
+              ),
+              width: MediaQuery.of(context).size.width,
+              // color: Colors.white,
+            ),
+          ),
+          Container(
+            color: Colors.white,
+            width: MediaQuery.of(context).size.width,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 5, right: 13.0, left: 13.0, bottom: 5),
+              child: Column(
+                children: [
+                  DefaultTextStyle(
+                    style: new TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    child: new Text(model.shortInfo),
+                  ),
+                  DefaultTextStyle(
+                    style: new TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: mainColorOfLEEWAY),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    child: new Text(
+                      model.price.toString() + "円",
+                    ),
+                  ),
+                ],
+                crossAxisAlignment: CrossAxisAlignment.start,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget NoLikes(BuildContext context) {
+  Expanded(
+    child: Center(
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.insert_emoticon,
+                size: 50,
+                color: Colors.black,
+              ),
+              Text("作品をいいねしてみませんか？"),
+              Text("作品をいいねしてみませんか？"),
+            ],
+          ),
+        ),
+        width: MediaQuery.of(context).size.width * 0.9,
+        color: mainColorOfLEEWAY.withOpacity(0.8),
+      ),
     ),
   );
 }

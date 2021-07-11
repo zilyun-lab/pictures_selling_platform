@@ -110,37 +110,101 @@ class _StoreHomeState extends State<StoreHome>
                             crossAxisCount: 2,
                             children: items
                                 .map(
-                                  (item) => Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: Card(
-                                        elevation: 0,
-                                        color: Colors.white,
-                                        clipBehavior: Clip.antiAlias,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(24),
-                                        ),
-                                        child: InkWell(
-                                            onTap: () {
-                                              Route route = MaterialPageRoute(
-                                                builder: (c) => ProductPage(
-                                                  id: item.id,
+                                  (item) => item.Stock == 0
+                                      ? Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Stack(
+                                              children: [
+                                                Card(
+                                                  elevation: 0,
+                                                  color: Colors.white,
+                                                  clipBehavior: Clip.antiAlias,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            24),
+                                                  ),
+                                                  child: InkWell(
+                                                      onTap: () {
+                                                        Route route =
+                                                            MaterialPageRoute(
+                                                          builder: (c) =>
+                                                              ProductPage(
+                                                            id: item.id,
+                                                          ),
+                                                        );
+                                                        Navigator.push(
+                                                          context,
+                                                          route,
+                                                        );
+                                                      },
+                                                      splashColor: Colors.black,
+                                                      child: gridItems(
+                                                          item.thumbnailUrl,
+                                                          item.shortInfo,
+                                                          item.price
+                                                              .toString())),
                                                 ),
-                                              );
-                                              Navigator.push(
-                                                context,
-                                                route,
-                                              );
-                                            },
-                                            splashColor: Colors.black,
-                                            child: gridItems(
-                                                item.thumbnailUrl,
-                                                item.shortInfo,
-                                                item.price.toString())),
-                                      ),
-                                    ),
-                                  ),
+                                                Center(
+                                                  child: Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.464,
+                                                    height: 50,
+                                                    child: Center(
+                                                      child: Text(
+                                                        "SOLD OUT",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20),
+                                                      ),
+                                                    ),
+                                                    color: Colors.redAccent
+                                                        .withOpacity(0.85),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Card(
+                                              elevation: 0,
+                                              color: Colors.white,
+                                              clipBehavior: Clip.antiAlias,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(24),
+                                              ),
+                                              child: InkWell(
+                                                  onTap: () {
+                                                    Route route =
+                                                        MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          ProductPage(
+                                                        id: item.id,
+                                                      ),
+                                                    );
+                                                    Navigator.push(
+                                                      context,
+                                                      route,
+                                                    );
+                                                  },
+                                                  splashColor: Colors.black,
+                                                  child: gridItems(
+                                                      item.thumbnailUrl,
+                                                      item.shortInfo,
+                                                      item.price.toString())),
+                                            ),
+                                          ),
+                                        ),
                                 )
                                 .toList(),
                           );
@@ -156,37 +220,101 @@ class _StoreHomeState extends State<StoreHome>
                             crossAxisCount: 2,
                             children: items
                                 .map(
-                                  (item) => Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: Card(
-                                        elevation: 0,
-                                        color: Colors.white,
-                                        clipBehavior: Clip.antiAlias,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(24),
-                                        ),
-                                        child: InkWell(
-                                            onTap: () {
-                                              Route route = MaterialPageRoute(
-                                                builder: (c) => ProductPage(
-                                                  id: item.id,
+                                  (item) => item.Stock == 0
+                                      ? Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Stack(
+                                              children: [
+                                                Card(
+                                                  elevation: 0,
+                                                  color: Colors.white,
+                                                  clipBehavior: Clip.antiAlias,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            24),
+                                                  ),
+                                                  child: InkWell(
+                                                      onTap: () {
+                                                        Route route =
+                                                            MaterialPageRoute(
+                                                          builder: (c) =>
+                                                              ProductPage(
+                                                            id: item.id,
+                                                          ),
+                                                        );
+                                                        Navigator.push(
+                                                          context,
+                                                          route,
+                                                        );
+                                                      },
+                                                      splashColor: Colors.black,
+                                                      child: gridItems(
+                                                          item.thumbnailUrl,
+                                                          item.shortInfo,
+                                                          item.price
+                                                              .toString())),
                                                 ),
-                                              );
-                                              Navigator.push(
-                                                context,
-                                                route,
-                                              );
-                                            },
-                                            splashColor: Colors.black,
-                                            child: gridItems(
-                                                item.thumbnailUrl,
-                                                item.shortInfo,
-                                                item.price.toString())),
-                                      ),
-                                    ),
-                                  ),
+                                                Center(
+                                                  child: Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.464,
+                                                    height: 50,
+                                                    child: Center(
+                                                      child: Text(
+                                                        "SOLD OUT",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20),
+                                                      ),
+                                                    ),
+                                                    color: Colors.redAccent
+                                                        .withOpacity(0.85),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Card(
+                                              elevation: 0,
+                                              color: Colors.white,
+                                              clipBehavior: Clip.antiAlias,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(24),
+                                              ),
+                                              child: InkWell(
+                                                  onTap: () {
+                                                    Route route =
+                                                        MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          ProductPage(
+                                                        id: item.id,
+                                                      ),
+                                                    );
+                                                    Navigator.push(
+                                                      context,
+                                                      route,
+                                                    );
+                                                  },
+                                                  splashColor: Colors.black,
+                                                  child: gridItems(
+                                                      item.thumbnailUrl,
+                                                      item.shortInfo,
+                                                      item.price.toString())),
+                                            ),
+                                          ),
+                                        ),
                                 )
                                 .toList(),
                           );
@@ -202,37 +330,101 @@ class _StoreHomeState extends State<StoreHome>
                             crossAxisCount: 2,
                             children: items
                                 .map(
-                                  (item) => Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: Card(
-                                        elevation: 0,
-                                        color: Colors.white,
-                                        clipBehavior: Clip.antiAlias,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(24),
-                                        ),
-                                        child: InkWell(
-                                            onTap: () {
-                                              Route route = MaterialPageRoute(
-                                                builder: (c) => ProductPage(
-                                                  id: item.id,
+                                  (item) => item.Stock == 0
+                                      ? Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Stack(
+                                              children: [
+                                                Card(
+                                                  elevation: 0,
+                                                  color: Colors.white,
+                                                  clipBehavior: Clip.antiAlias,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            24),
+                                                  ),
+                                                  child: InkWell(
+                                                      onTap: () {
+                                                        Route route =
+                                                            MaterialPageRoute(
+                                                          builder: (c) =>
+                                                              ProductPage(
+                                                            id: item.id,
+                                                          ),
+                                                        );
+                                                        Navigator.push(
+                                                          context,
+                                                          route,
+                                                        );
+                                                      },
+                                                      splashColor: Colors.black,
+                                                      child: gridItems(
+                                                          item.thumbnailUrl,
+                                                          item.shortInfo,
+                                                          item.price
+                                                              .toString())),
                                                 ),
-                                              );
-                                              Navigator.push(
-                                                context,
-                                                route,
-                                              );
-                                            },
-                                            splashColor: Colors.black,
-                                            child: gridItems(
-                                                item.thumbnailUrl,
-                                                item.shortInfo,
-                                                item.price.toString())),
-                                      ),
-                                    ),
-                                  ),
+                                                Center(
+                                                  child: Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.464,
+                                                    height: 50,
+                                                    child: Center(
+                                                      child: Text(
+                                                        "SOLD OUT",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20),
+                                                      ),
+                                                    ),
+                                                    color: Colors.redAccent
+                                                        .withOpacity(0.85),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Card(
+                                              elevation: 0,
+                                              color: Colors.white,
+                                              clipBehavior: Clip.antiAlias,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(24),
+                                              ),
+                                              child: InkWell(
+                                                  onTap: () {
+                                                    Route route =
+                                                        MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          ProductPage(
+                                                        id: item.id,
+                                                      ),
+                                                    );
+                                                    Navigator.push(
+                                                      context,
+                                                      route,
+                                                    );
+                                                  },
+                                                  splashColor: Colors.black,
+                                                  child: gridItems(
+                                                      item.thumbnailUrl,
+                                                      item.shortInfo,
+                                                      item.price.toString())),
+                                            ),
+                                          ),
+                                        ),
                                 )
                                 .toList(),
                           );
@@ -248,37 +440,101 @@ class _StoreHomeState extends State<StoreHome>
                             crossAxisCount: 2,
                             children: items
                                 .map(
-                                  (item) => Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: Card(
-                                        elevation: 0,
-                                        color: Colors.white,
-                                        clipBehavior: Clip.antiAlias,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(24),
-                                        ),
-                                        child: InkWell(
-                                            onTap: () {
-                                              Route route = MaterialPageRoute(
-                                                builder: (c) => ProductPage(
-                                                  id: item.id,
+                                  (item) => item.Stock == 0
+                                      ? Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Stack(
+                                              children: [
+                                                Card(
+                                                  elevation: 0,
+                                                  color: Colors.white,
+                                                  clipBehavior: Clip.antiAlias,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            24),
+                                                  ),
+                                                  child: InkWell(
+                                                      onTap: () {
+                                                        Route route =
+                                                            MaterialPageRoute(
+                                                          builder: (c) =>
+                                                              ProductPage(
+                                                            id: item.id,
+                                                          ),
+                                                        );
+                                                        Navigator.push(
+                                                          context,
+                                                          route,
+                                                        );
+                                                      },
+                                                      splashColor: Colors.black,
+                                                      child: gridItems(
+                                                          item.thumbnailUrl,
+                                                          item.shortInfo,
+                                                          item.price
+                                                              .toString())),
                                                 ),
-                                              );
-                                              Navigator.push(
-                                                context,
-                                                route,
-                                              );
-                                            },
-                                            splashColor: Colors.black,
-                                            child: gridItems(
-                                                item.thumbnailUrl,
-                                                item.shortInfo,
-                                                item.price.toString())),
-                                      ),
-                                    ),
-                                  ),
+                                                Center(
+                                                  child: Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.464,
+                                                    height: 50,
+                                                    child: Center(
+                                                      child: Text(
+                                                        "SOLD OUT",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20),
+                                                      ),
+                                                    ),
+                                                    color: Colors.redAccent
+                                                        .withOpacity(0.85),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Card(
+                                              elevation: 0,
+                                              color: Colors.white,
+                                              clipBehavior: Clip.antiAlias,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(24),
+                                              ),
+                                              child: InkWell(
+                                                  onTap: () {
+                                                    Route route =
+                                                        MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          ProductPage(
+                                                        id: item.id,
+                                                      ),
+                                                    );
+                                                    Navigator.push(
+                                                      context,
+                                                      route,
+                                                    );
+                                                  },
+                                                  splashColor: Colors.black,
+                                                  child: gridItems(
+                                                      item.thumbnailUrl,
+                                                      item.shortInfo,
+                                                      item.price.toString())),
+                                            ),
+                                          ),
+                                        ),
                                 )
                                 .toList(),
                           );
@@ -294,37 +550,101 @@ class _StoreHomeState extends State<StoreHome>
                             crossAxisCount: 2,
                             children: items
                                 .map(
-                                  (item) => Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(3.0),
-                                      child: Card(
-                                        elevation: 0,
-                                        color: Colors.white,
-                                        clipBehavior: Clip.antiAlias,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(24),
-                                        ),
-                                        child: InkWell(
-                                            onTap: () {
-                                              Route route = MaterialPageRoute(
-                                                builder: (c) => ProductPage(
-                                                  id: item.id,
+                                  (item) => item.Stock == 0
+                                      ? Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Stack(
+                                              children: [
+                                                Card(
+                                                  elevation: 0,
+                                                  color: Colors.white,
+                                                  clipBehavior: Clip.antiAlias,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            24),
+                                                  ),
+                                                  child: InkWell(
+                                                      onTap: () {
+                                                        Route route =
+                                                            MaterialPageRoute(
+                                                          builder: (c) =>
+                                                              ProductPage(
+                                                            id: item.id,
+                                                          ),
+                                                        );
+                                                        Navigator.push(
+                                                          context,
+                                                          route,
+                                                        );
+                                                      },
+                                                      splashColor: Colors.black,
+                                                      child: gridItems(
+                                                          item.thumbnailUrl,
+                                                          item.shortInfo,
+                                                          item.price
+                                                              .toString())),
                                                 ),
-                                              );
-                                              Navigator.push(
-                                                context,
-                                                route,
-                                              );
-                                            },
-                                            splashColor: Colors.black,
-                                            child: gridItems(
-                                                item.thumbnailUrl,
-                                                item.shortInfo,
-                                                item.price.toString())),
-                                      ),
-                                    ),
-                                  ),
+                                                Center(
+                                                  child: Container(
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.464,
+                                                    height: 50,
+                                                    child: Center(
+                                                      child: Text(
+                                                        "SOLD OUT",
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20),
+                                                      ),
+                                                    ),
+                                                    color: Colors.redAccent
+                                                        .withOpacity(0.85),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : Container(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Card(
+                                              elevation: 0,
+                                              color: Colors.white,
+                                              clipBehavior: Clip.antiAlias,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(24),
+                                              ),
+                                              child: InkWell(
+                                                  onTap: () {
+                                                    Route route =
+                                                        MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          ProductPage(
+                                                        id: item.id,
+                                                      ),
+                                                    );
+                                                    Navigator.push(
+                                                      context,
+                                                      route,
+                                                    );
+                                                  },
+                                                  splashColor: Colors.black,
+                                                  child: gridItems(
+                                                      item.thumbnailUrl,
+                                                      item.shortInfo,
+                                                      item.price.toString())),
+                                            ),
+                                          ),
+                                        ),
                                 )
                                 .toList(),
                           );

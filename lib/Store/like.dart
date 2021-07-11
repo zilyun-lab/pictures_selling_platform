@@ -21,6 +21,7 @@ class LikePage extends StatefulWidget {
 class _LikePageState extends State<LikePage> {
   final mainColor = HexColor("E67928");
   double totalAmount;
+  int gridCount = 1;
   @override
   void initState() {
     // TODO: implement initState
@@ -36,89 +37,120 @@ class _LikePageState extends State<LikePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: HexColor("#E67928"),
+        backgroundColor: mainColor,
         body: ChangeNotifierProvider<GetLikeItemsModel>(
           create: (_) => GetLikeItemsModel()..fetchItems(),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.1,
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: HexColor("e5e2df"),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(125),
-                    ),
-                  ),
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: mySizedBox(MediaQuery.of(context).size.height * 0.04),
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  color: mainColorOfLEEWAY,
                   child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Consumer<GetLikeItemsModel>(
-                      builder: (context, model, child) {
-                        final items = model.items;
-                        final listTiles = items
-                            .map((item) => Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: mainColor, width: 3),
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
-                                    ),
-                                    child: ListTile(
-                                      onTap: () {
-                                        Route route = MaterialPageRoute(
-                                          builder: (c) => ProductPage(
-                                            id: item.id,
-                                          ),
-                                        );
-                                        Navigator.pushReplacement(
-                                          context,
-                                          route,
-                                        );
-                                      },
-                                      leading: Image.network(
-                                        item.thumbnailUrl,
-                                        height: 50,
-                                        fit: BoxFit.scaleDown,
-                                      ),
-                                      title: Text(
-                                        item.shortInfo.toString(),
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      trailing: IconButton(
-                                        color: Colors.black,
-                                        icon: Icon(
-                                          Icons.delete,
-                                          color: mainColor,
-                                        ),
-                                        onPressed: () => removeItemFromLike(
-                                            item.shortInfo, context),
-                                      ),
-                                    ),
-                                  ),
-                                ))
-                            .toList();
-                        return items.length == 0
-                            ? Text(EcommerceApp.sharedPreferences
-                                .getStringList(EcommerceApp.userLikeList)
-                                .toString())
-                            : ListView(
-                                shrinkWrap: true,
-                                children: listTiles,
-                              );
-                      },
+                    padding: const EdgeInsets.only(
+                        left: 15.0, right: 15, top: 8, bottom: 6),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "いいね",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              child: Card(
+                                child: Icon(
+                                  Icons.crop_square,
+                                  size: 40,
+                                  color: mainColorOfLEEWAY,
+                                ),
+                                color: Colors.white,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  gridCount = 1;
+                                });
+                              },
+                            ),
+                            InkWell(
+                              child: Card(
+                                child: Icon(
+                                  Icons.grid_view_outlined,
+                                  size: 40,
+                                  color: mainColorOfLEEWAY,
+                                ),
+                                color: Colors.white,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  gridCount = 2;
+                                });
+                              },
+                            ),
+                            InkWell(
+                              child: Card(
+                                color: Colors.white,
+                                child: Icon(
+                                  Icons.grid_3x3_outlined,
+                                  size: 40,
+                                  color: mainColorOfLEEWAY,
+                                ),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  gridCount = 3;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              Consumer<GetLikeItemsModel>(
+                builder: (context, model, child) {
+                  final items = model.items;
+                  if (items.length == 0) {
+                    return SliverToBoxAdapter(child: Container());
+                  } else {
+                    if (gridCount == 2) {
+                      return SliverGrid.count(
+                        crossAxisCount: gridCount,
+                        children: items
+                            .map((item) =>
+                                sourceInfoForMainOfLikex2(item, context))
+                            .toList(),
+                      );
+                    } else if (gridCount == 1) {
+                      return SliverGrid.count(
+                        crossAxisCount: gridCount,
+                        children: items
+                            .map((item) =>
+                                sourceInfoForMainOfLikex1(item, context))
+                            .toList(),
+                      );
+                    } else {
+                      return SliverGrid.count(
+                        crossAxisCount: gridCount,
+                        children: items
+                            .map((item) =>
+                                sourceInfoForMainOfLikex3(item, context))
+                            .toList(),
+                      );
+                    }
+                  }
+                },
+              ),
+            ],
           ),
         ));
   }

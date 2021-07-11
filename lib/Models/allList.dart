@@ -474,8 +474,7 @@ List<BottomNavigationEntity> navigationList = [
                     builder: (context, model, child) {
                       final item = model.items;
                       return EcommerceApp.sharedPreferences
-                                  .getStringList(EcommerceApp.userLikeList)
-                                  .length ==
+                                  .getStringList(EcommerceApp.userLikeList) ==
                               null
                           ? Text(
                               "0",
