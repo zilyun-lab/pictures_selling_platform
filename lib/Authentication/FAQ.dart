@@ -7,28 +7,25 @@ class FAQ extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          leading: InkWell(
-            child: Icon(
-              Icons.arrow_back_ios_outlined,
-              color: Colors.black,
-            ),
-            onTap: () {
-              Route route = MaterialPageRoute(
-                builder: (c) => MainPage(),
-              );
-              Navigator.pushReplacement(context, route);
-            },
+    return Scaffold(
+      appBar: AppBar(
+        leading: InkWell(
+          child: Icon(
+            Icons.arrow_back_ios_outlined,
+            color: Colors.black,
           ),
-          backgroundColor: Colors.white,
-          title: Text(
-            "よくある質問",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w100),
-          ),
+          onTap: () {
+            Navigator.pop(context);
+          },
         ),
-        body: Column(
+        backgroundColor: Colors.white,
+        title: Text(
+          "よくある質問",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w100),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
           children: [
             SizedBox(
               height: 20,
@@ -98,6 +95,9 @@ class FAQ extends StatelessWidget {
                   child: Text("A:SNSでの宣伝は問題ありません。SNSなどで公開し宣伝しましょう。"),
                 ),
               ],
+            ),
+            SizedBox(
+              height: 20,
             ),
           ],
         ),

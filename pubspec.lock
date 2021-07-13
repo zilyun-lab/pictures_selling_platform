@@ -22,13 +22,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  arkit_plugin:
+    dependency: "direct main"
+    description:
+      name: arkit_plugin
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   async:
     dependency: transitive
     description:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.7.0"
+    version: "2.6.1"
   awesome_card:
     dependency: transitive
     description:
@@ -63,7 +70,7 @@ packages:
       name: charcode
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.1"
+    version: "1.2.0"
   clock:
     dependency: transitive
     description:
@@ -112,7 +119,7 @@ packages:
       name: credit_card_validator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0-nullsafety.0"
+    version: "2.0.0"
   cross_file:
     dependency: transitive
     description:
@@ -400,7 +407,7 @@ packages:
       name: image_picker_for_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   image_picker_platform_interface:
     dependency: transitive
     description:
@@ -422,6 +429,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.1"
   like_button:
     dependency: "direct main"
     description:
@@ -449,7 +463,7 @@ packages:
       name: meta
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.0"
+    version: "1.3.0"
   nested:
     dependency: transitive
     description:
@@ -519,7 +533,7 @@ packages:
       name: petitparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.0"
+    version: "4.1.0"
   platform:
     dependency: transitive
     description:
@@ -643,7 +657,7 @@ packages:
       name: stripe_payment
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.3"
+    version: "1.1.4"
   stripe_sdk:
     dependency: "direct main"
     description:
@@ -678,7 +692,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.1"
+    version: "0.3.0"
   transparent_image:
     dependency: "direct main"
     description:
@@ -714,6 +728,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.0+2"
+  universal_platform:
+    dependency: "direct main"
+    description:
+      name: universal_platform
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0+1"
   url_launcher:
     dependency: "direct main"
     description:

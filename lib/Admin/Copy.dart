@@ -73,19 +73,20 @@ class _OriginalUploadPageState extends State<Copy> {
           onPressed: () {
             clearFormInfo();
 
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (c) => MainPage(),
-                ));
+            Navigator.pop(context);
           },
         ),
-        title: Text(
-          "出品ページ",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 24,
-            fontWeight: FontWeight.w100,
+        title: InkWell(
+          onTap: () {
+            print(_imagesURL);
+          },
+          child: Text(
+            "出品ページ",
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 24,
+              fontWeight: FontWeight.w100,
+            ),
           ),
         ),
       ),
@@ -549,40 +550,75 @@ class _OriginalUploadPageState extends State<Copy> {
   saveToFB() {
     final itemRef =
         FirebaseFirestore.instance.collection("items").doc(productID);
-    final model = CopyStickerPostCardModel(
-      shortInfo: _shortInfoTextEditingController.text.trim(),
-      longDescription: _descriptiontextEditingController.text.trim(),
-      price: int.parse(_pricetextEditingController.text),
-      publishedDate: DateTime.now(),
-      status: "available",
-      thumbnailUrl: _imagesURL[0],
-      postBy: EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-      attribute: "Copy",
-      Stock: int.parse(_stockInfoTextEditingController.text),
-      id: itemRef.id,
-      color1: selectedItem1.trim(),
-      color2: selectedItem2.trim(),
-      postName: EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-      itemWidth: _widthtextEditingController.text,
-      itemHeight: _heighttextEditingController.text,
-      finalGetProceeds: int.parse(_pricetextEditingController.text) * 0.7,
-      shipsPayment: _selectShipsPayment,
-      shipsDate:
+
+    FirebaseFirestore.instance.collection("items").doc(productID).set({
+      "shortInfo": _shortInfoTextEditingController.text.trim(),
+      "longDescription": _descriptiontextEditingController.text.trim(),
+      "price": int.parse(_pricetextEditingController.text),
+      "publishedDate": DateTime.now(),
+      "status": "available",
+      "thumbnailUrl": _imagesURL[0],
+      "postBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+      "attribute": "Copy",
+      "Stock": _stockInfoTextEditingController.text.isNotEmpty
+          ? int.parse(_stockInfoTextEditingController.text)
+          : null,
+      "id": itemRef.id,
+      "color1": selectedItem1.trim(),
+      "color2": selectedItem2.trim(),
+      "postName":
+          EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+      "itemWidth": _widthtextEditingController.text,
+      "itemHeight": _heighttextEditingController.text,
+      "finalGetProceeds": int.parse(_pricetextEditingController.text) * 0.7,
+      "shipsPayment": _selectShipsPayment,
+      "shipsDate":
           _isStock == "在庫あり" ? _selectShipsDays : _selectShipsDaysWhenNoStock,
-      paper: _paperTextEditingController.text.trim(),
-      howToCopy: _howToCopy,
-      isFrame: _selectFrame,
-      stockType: _isStock,
-    ).toJson();
-    setData("items", model, productID);
-    setDataMultiple(
-        EcommerceApp.collectionUser,
-        EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-        "MyUploadItems",
-        productID,
-        model);
-    setDataMultiple(
-        "items", productID, "itemImages", productID, {'images': _imagesURL});
+      "paper": _paperTextEditingController.text.trim(),
+      "howToCopy": _howToCopy,
+      "isFrame": _selectFrame,
+      "stockType": _isStock,
+    });
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("MyUploadItems")
+        .doc(productID)
+        .set({
+      "shortInfo": _shortInfoTextEditingController.text.trim(),
+      "longDescription": _descriptiontextEditingController.text.trim(),
+      "price": int.parse(_pricetextEditingController.text),
+      "publishedDate": DateTime.now(),
+      "status": "available",
+      "thumbnailUrl": _imagesURL[0],
+      "postBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+      "attribute": "Copy",
+      "Stock": _stockInfoTextEditingController.text.isNotEmpty
+          ? int.parse(_stockInfoTextEditingController.text)
+          : null,
+      "id": itemRef.id,
+      "color1": selectedItem1.trim(),
+      "color2": selectedItem2.trim(),
+      "postName":
+          EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+      "itemWidth": _widthtextEditingController.text,
+      "itemHeight": _heighttextEditingController.text,
+      "finalGetProceeds": int.parse(_pricetextEditingController.text) * 0.7,
+      "shipsPayment": _selectShipsPayment,
+      "shipsDate":
+          _isStock == "在庫あり" ? _selectShipsDays : _selectShipsDaysWhenNoStock,
+      "paper": _paperTextEditingController.text.trim(),
+      "howToCopy": _howToCopy,
+      "isFrame": _selectFrame,
+      "stockType": _isStock,
+    });
+    FirebaseFirestore.instance
+        .collection("items")
+        .doc(productID)
+        .collection("itemImages")
+        .doc(productID)
+        .set({'images': _imagesURL});
+
     setState(() {
       _imagesURL = [];
     });

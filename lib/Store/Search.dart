@@ -20,7 +20,7 @@ class _SearchProductState extends State<SearchProduct> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(90.0),
+        preferredSize: Size.fromHeight(65.0),
         child: AppBar(
           title: searchWidget(),
           leading: IconButton(
@@ -112,14 +112,21 @@ class _SearchProductState extends State<SearchProduct> {
         width: MediaQuery.of(context).size.width - 40,
         height: 50,
         decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(6),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black12.withOpacity(0.2),
+                blurRadius: 8.0,
+                spreadRadius: 1.0,
+                offset: Offset(5, 8))
+          ],
+          color: HexColor("F9DAC4"),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           children: [
             Padding(
               padding: EdgeInsets.only(
-                left: 8,
+                left: 15,
               ),
               child: Icon(
                 Icons.search,

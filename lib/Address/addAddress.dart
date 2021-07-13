@@ -49,38 +49,9 @@ class _AddAddressState extends State<AddAddress> {
             ),
           ),
         ),
-        floatingActionButton: myFloatingActionButton("追加", () {
-          //print(selectedItem);
-          if (formKey.currentState.validate()) {
-            final model = AddressModel(
-              lastName: cLastName.text.trim(),
-              firstName: cFirstName.text.trim(),
-              postalCode: cPostalCode.text,
-              prefectures: selectedItem.trim(),
-              //prefectures: cPrefectures.text.trim(),
-              city: cCity.text.trim(),
-              address: cAddress.text,
-              phoneNumber: cPhoneNumber.text,
-              secondAddress: cSecondAddress.text,
-            ).toJson();
-            // todo: firestoreに追加
-            setDataMultiple(
-              EcommerceApp.collectionUser,
-              EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-              EcommerceApp.subCollectionAddress,
-              DateTime.now().millisecondsSinceEpoch.toString(),
-              model,
-            );
 
-            final snack = SnackBar(content: Text("新規お届け先を追加しました"));
-            scaffoldKey.currentState.showSnackBar(snack);
-            FocusScope.of(context).requestFocus(FocusNode());
-            formKey.currentState.reset();
-            Navigator.pop(context);
-            // Route route = MaterialPageRoute(builder: (c) => Address());
-            // Navigator.pushReplacement(context, route);
-          }
-        }, Icons.add),
+        //print(selectedItem);
+
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -98,8 +69,12 @@ class _AddAddressState extends State<AddAddress> {
                       hint: "例) 太郎",
                       controller: cFirstName,
                     ),
-                    serachAddress(cPostalCode, cCity),
-                    selectPrefectures(),
+                    serachAddress(cPostalCode, cCity, cPrefectures),
+                    MyTextField(
+                      label: "都道府県",
+                      hint: "例) 北海道",
+                      controller: cPrefectures,
+                    ),
                     MyTextField(
                       label: "市区町村",
                       hint: "例) 札幌市中央区",
@@ -118,45 +93,49 @@ class _AddAddressState extends State<AddAddress> {
                       "例) 09012345678",
                       11,
                     ),
+                    mySizedBox(15),
+                    ElevatedButton.icon(
+                        onPressed: () {
+                          if (formKey.currentState.validate()) {
+                            final model = AddressModel(
+                              lastName: cLastName.text.trim(),
+                              firstName: cFirstName.text.trim(),
+                              postalCode: cPostalCode.text,
+                              prefectures: cPrefectures.text,
+                              //prefectures: cPrefectures.text.trim(),
+                              city: cCity.text.trim(),
+                              address: cAddress.text,
+                              phoneNumber: cPhoneNumber.text,
+                              secondAddress: cSecondAddress.text,
+                            ).toJson();
+                            // todo: firestoreに追加
+                            setDataMultiple(
+                              EcommerceApp.collectionUser,
+                              EcommerceApp.sharedPreferences
+                                  .getString(EcommerceApp.userUID),
+                              EcommerceApp.subCollectionAddress,
+                              DateTime.now().millisecondsSinceEpoch.toString(),
+                              model,
+                            );
+
+                            final snack =
+                                SnackBar(content: Text("新規お届け先を追加しました"));
+                            scaffoldKey.currentState.showSnackBar(snack);
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            formKey.currentState.reset();
+                            Navigator.pop(context);
+                            // Route route = MaterialPageRoute(builder: (c) => Address());
+                            // Navigator.pushReplacement(context, route);
+                          }
+                        },
+                        icon: Icon(Icons.add_location_alt_outlined),
+                        label: Text("追加する"))
                   ],
                 ),
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget selectPrefectures() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: DropdownButtonFormField<String>(
-        value: selectedItem,
-        onChanged: (String newValue) {
-          setState(() {
-            selectedItem = newValue;
-          });
-        },
-        selectedItemBuilder: (context) {
-          return items.map((String item) {
-            return Text(
-              item,
-              style: TextStyle(color: Colors.black),
-            );
-          }).toList();
-        },
-        items: items.map((String item) {
-          return DropdownMenuItem(
-            value: item,
-            child: Text(
-              item,
-              style: item == selectedItem
-                  ? TextStyle(fontWeight: FontWeight.bold)
-                  : TextStyle(fontWeight: FontWeight.normal),
-            ),
-          );
-        }).toList(),
       ),
     );
   }
@@ -192,8 +171,8 @@ class MyTextField extends StatelessWidget {
   }
 }
 
-Widget serachAddress(
-    TextEditingController PostalCode, TextEditingController City) {
+Widget serachAddress(TextEditingController PostalCode,
+    TextEditingController City, TextEditingController prefecture) {
   return Row(
     children: [
       Expanded(
@@ -216,6 +195,7 @@ Widget serachAddress(
                 onPressed: () {
                   PostalCode.clear();
                   City.clear();
+                  prefecture.clear();
                 },
                 splashColor: Colors.transparent,
               ),
@@ -234,6 +214,7 @@ Widget serachAddress(
           var result = await get(Uri.parse(
               'https://zipcloud.ibsnet.co.jp/api/search?zipcode=${PostalCode.text}'));
           Map<String, dynamic> map = jsonDecode(result.body)['results'][0];
+          prefecture.text = '${map['address1']}';
           City.text = '${map['address2']}${map['address3']}';
         },
       ),

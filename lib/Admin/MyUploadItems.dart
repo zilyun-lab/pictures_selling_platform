@@ -13,51 +13,48 @@ class MyUploadItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: MyAppBar(
-          title: Text("出品履歴"),
-        ),
-        body: ChangeNotifierProvider<UploadItemModel>(
-          create: (_) => UploadItemModel()..fetchItems(),
+    return Scaffold(
+      appBar: MyAppBar(
+        title: Text("出品履歴"),
+      ),
+      body: ChangeNotifierProvider<UploadItemModel>(
+        create: (_) => UploadItemModel()..fetchItems(),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 5.0, bottom: 8),
           child: Padding(
-            padding: const EdgeInsets.only(top: 5.0, bottom: 8),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CustomScrollView(
-                slivers: [
-                  Consumer<UploadItemModel>(
-                    builder: (context, model, child) {
-                      final items = model.items;
-                      return items.length == 0
-                          ? SliverToBoxAdapter(child: Container())
-                          : SliverToBoxAdapter(
-                              child: Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 5.0, bottom: 8),
-                              child: Text(
-                                "出品数：" + items.length.toString(),
-                                style: TextStyle(fontSize: 25),
-                              ),
-                            ));
-                    },
-                  ),
-                  Consumer<UploadItemModel>(
-                    builder: (context, model, child) {
-                      final items = model.items;
-                      return items.length == 0
-                          ? SliverToBoxAdapter(child: beginUpload(context))
-                          : SliverGrid.count(
-                              crossAxisCount: 2,
-                              children: items
-                                  .map((item) =>
-                                      sourceInfoForMains(item, context))
-                                  .toList(),
-                            );
-                    },
-                  ),
-                ],
-              ),
+            padding: const EdgeInsets.all(8.0),
+            child: CustomScrollView(
+              slivers: [
+                Consumer<UploadItemModel>(
+                  builder: (context, model, child) {
+                    final items = model.items;
+                    return items.length == 0
+                        ? SliverToBoxAdapter(child: Container())
+                        : SliverToBoxAdapter(
+                            child: Padding(
+                            padding: const EdgeInsets.only(top: 5.0, bottom: 8),
+                            child: Text(
+                              "出品数：" + items.length.toString(),
+                              style: TextStyle(fontSize: 25),
+                            ),
+                          ));
+                  },
+                ),
+                Consumer<UploadItemModel>(
+                  builder: (context, model, child) {
+                    final items = model.items;
+                    return items.length == 0
+                        ? SliverToBoxAdapter(child: beginUpload(context))
+                        : SliverGrid.count(
+                            crossAxisCount: 2,
+                            children: items
+                                .map(
+                                    (item) => sourceInfoForMains(item, context))
+                                .toList(),
+                          );
+                  },
+                ),
+              ],
             ),
           ),
         ),

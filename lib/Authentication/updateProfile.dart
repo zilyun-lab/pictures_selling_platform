@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:selling_pictures_platform/Config/config.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 
 import 'MyPage.dart';
 
@@ -66,12 +67,12 @@ class _ChangeProfileState extends State<ChangeProfile> {
           iconTheme: IconThemeData(
             color: Colors.black, //change your color here
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: HexColor("e67928"),
           title: Text(
-            "LEEWAY",
-            style: GoogleFonts.sortsMillGoudy(
-              color: Colors.black,
-              fontSize: 35,
+            "プロフィール編集",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
               fontWeight: FontWeight.w100,
             ),
           ),
@@ -205,13 +206,14 @@ class _ChangeProfileState extends State<ChangeProfile> {
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.black,
+                        primary: Colors.redAccent,
                       ),
                       onPressed: () {
                         Route route = MaterialPageRoute(
+                          fullscreenDialog: true,
                           builder: (c) => MyPage(),
                         );
-                        Navigator.pushReplacement(context, route);
+                        Navigator.pop(context);
                       },
                       child: Text(
                         "キャンセル",
@@ -222,9 +224,6 @@ class _ChangeProfileState extends State<ChangeProfile> {
                       width: 10,
                     ),
                     ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.black,
-                      ),
                       onPressed: () {
                         print(EcommerceApp.sharedPreferences
                             .getString(EcommerceApp.FaceBookURL));
@@ -355,7 +354,7 @@ class _ChangeProfileState extends State<ChangeProfile> {
       "FaceBookURL",
       _facebookEditingController.text,
     );
-    Route route = MaterialPageRoute(builder: (c) => MyPage());
-    Navigator.pushReplacement(context, route);
+
+    Navigator.pop(context);
   }
 }

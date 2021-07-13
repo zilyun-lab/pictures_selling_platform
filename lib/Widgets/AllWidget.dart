@@ -32,7 +32,7 @@ import 'package:selling_pictures_platform/Store/product_page.dart';
 
 import '../main.dart';
 
-final lilBrown = HexColor("e5e2df");
+final lilBrown = HexColor("FFB47C");
 
 final mainColorOfLEEWAY = HexColor("E67928");
 final String productID = DateTime.now().millisecondsSinceEpoch.toString();
@@ -164,10 +164,6 @@ void checkItemInLike(String shortInfoAsID, BuildContext context) {
           .contains(shortInfoAsID)
       ? removeItemFromLike(shortInfoAsID, context)
       : addItemToLike(shortInfoAsID, context);
-  Route route = MaterialPageRoute(
-    builder: (c) => LikePage(),
-  );
-  Navigator.push(context, route);
 }
 
 Future<bool> onLikeButtonTapped(
@@ -227,10 +223,10 @@ Widget myFloatingActionButton(String title, Function func, IconData icon) {
   return Container(
     width: 100,
     height: 100,
-    child: FloatingActionButton(
+    child: FloatingActionButton.extended(
       backgroundColor: mainColorOfLEEWAY,
       onPressed: func,
-      child: Padding(
+      label: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
@@ -479,8 +475,11 @@ class BubbleBorder extends ShapeBorder {
   ShapeBorder scale(double t) => this;
 }
 
-const boldTextStyle =
-    TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white);
+const boldTextStyle = TextStyle(
+  fontWeight: FontWeight.bold,
+  fontSize: 20,
+  color: Colors.white,
+);
 const largeTextStyle = TextStyle(fontWeight: FontWeight.normal, fontSize: 20);
 
 class StripeTransactionResponse {
@@ -500,7 +499,7 @@ Widget userLink(Map il) {
     ),
     child: Center(
       child: Container(
-        color: HexColor("#481DE2"),
+        color: HexColor("#2971E5"),
         child: Padding(
             padding: const EdgeInsets.all(1.0),
             child: StreamBuilder<DocumentSnapshot>(
@@ -568,47 +567,58 @@ Widget userLink(Map il) {
 }
 
 likeButton(BuildContext context, Map il) {
-  return ElevatedButton.icon(
-    onPressed: () => checkItemInLike(il["shortInfo"], context),
-    icon: Icon(
-      Icons.favorite,
-      color: Colors.white,
-    ),
-    label: StreamBuilder<QuerySnapshot>(
-        stream: null,
-        builder: (context, snapshot) {
-          return Padding(
-            padding: const EdgeInsets.only(
-              right: 0.5,
-            ),
-            child: !EcommerceApp.sharedPreferences
-                    .getStringList(EcommerceApp.userLikeList)
-                    .contains(il["shortInfo"])
-                ? Text(
-                    "いいねに追加",
-                    style: TextStyle(
-                      color: Colors.white,
+  return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+      stream: FirebaseFirestore.instance
+          .collection("users")
+          .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+          .snapshots(),
+      builder: (context, snapshot) {
+        return !snapshot.hasData
+            ? null
+            : snapshot.data.data()["userLike"].contains(il["shortInfo"])
+                ? SizedBox(
+                    width: 65,
+                    height: 60,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(primary: Colors.white),
+                      onPressed: () =>
+                          checkItemInLike(il["shortInfo"], context),
+                      child: Center(
+                        child: Icon(
+                          Icons.favorite,
+                          color: Colors.pinkAccent,
+                          size: 35,
+                        ),
+                      ),
                     ),
                   )
-                : Text(
-                    "いいねから外す",
-                    style: TextStyle(
-                      color: Colors.white,
+                : SizedBox(
+                    width: 65,
+                    height: 60,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(primary: Colors.white),
+                      onPressed: () =>
+                          checkItemInLike(il["shortInfo"], context),
+                      child: Icon(
+                        Icons.favorite_outline_outlined,
+                        color: Colors.pinkAccent,
+                        size: 35,
+                      ),
                     ),
-                  ),
-          );
-        }),
-  );
+                  );
+      });
 }
 
 itemEditButton(BuildContext context, Map il, String id) {
   return Expanded(
-    child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          ElevatedButton.icon(
+    child: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          height: 60,
+          width: 260,
+          child: ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(primary: HexColor("2997E5")),
             onPressed: () {
               Navigator.push(
                   context,
@@ -620,16 +630,13 @@ itemEditButton(BuildContext context, Map il, String id) {
                             price: il["price"],
                           )));
             },
-            icon: Icon(
-              Icons.edit,
-              color: Colors.white,
+            label: Text(
+              "編集する",
+              style: TextStyle(fontSize: 20),
             ),
-            label: Text("編集する",
-                style: TextStyle(
-                  color: Colors.white,
-                )),
+            icon: Icon(Icons.edit),
           ),
-        ],
+        ),
       ),
     ),
   );
@@ -683,22 +690,17 @@ checkOutByNewUser(BuildContext context) {
 }
 
 Widget deleteItemButton(BuildContext context, Function func) {
-  return Expanded(
-    child: Center(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton.icon(
-              onPressed: func,
-              icon: Icon(
-                Icons.delete,
-                color: Colors.white,
-              ),
-              label: Text("削除する"),
-            ),
-          ],
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: SizedBox(
+      height: 60,
+      width: 65,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(primary: Colors.redAccent),
+        onPressed: func,
+        child: Icon(
+          Icons.delete,
+          size: 30,
         ),
       ),
     ),
@@ -710,30 +712,32 @@ Widget checkOutItemButton(BuildContext context, Map il, String id) {
     child: Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton.icon(
-              onPressed: () {
-                Route route = MaterialPageRoute(
-                  fullscreenDialog: true,
-                  builder: (c) => CheckOutPage(
-                    il: il,
-                    id: id,
-                  ),
-                );
-                Navigator.push(
-                  context,
-                  route,
-                );
-              },
-              icon: Icon(
-                Icons.check,
-                color: Colors.white,
+        child: SizedBox(
+          width: 260,
+          height: 60,
+          child: ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(primary: HexColor("2997E5")),
+            onPressed: () {
+              Route route = MaterialPageRoute(
+                fullscreenDialog: true,
+                builder: (c) => CheckOutPage(
+                  il: il,
+                  id: id,
+                ),
+              );
+              Navigator.push(
+                context,
+                route,
+              );
+            },
+            icon: Icon(Icons.shopping_cart_outlined),
+            label: Center(
+              child: Text(
+                "購入する",
+                style: TextStyle(fontSize: 25),
               ),
-              label: Text("購入する"),
             ),
-          ],
+          ),
         ),
       ),
     ),
@@ -745,19 +749,17 @@ Widget soldOutButton(BuildContext context) {
     child: Center(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(primary: Colors.grey),
-              onPressed: () {},
-              icon: Icon(
-                Icons.check,
-                color: Colors.white,
-              ),
-              label: Text("売り切れ"),
+        child: SizedBox(
+          height: 60,
+          width: 325,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(primary: Colors.grey),
+            onPressed: () {},
+            child: Text(
+              "SOLD OUT",
+              style: TextStyle(fontSize: 25),
             ),
-          ],
+          ),
         ),
       ),
     ),
@@ -995,6 +997,13 @@ Widget sliderItem(
     child: Container(
       width: 80,
       decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+              color: Colors.black12,
+              blurRadius: 8.0,
+              spreadRadius: 1.0,
+              offset: Offset(10, 10))
+        ],
         color: HexColor("#E67928"),
         borderRadius: BorderRadius.all(
           Radius.circular(12),
@@ -1127,7 +1136,7 @@ Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
     {Color background, removeCartFunction}) {
   return Card(
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(8),
     ),
     color: Colors.white,
     child: InkWell(
@@ -1137,7 +1146,7 @@ Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
             id: model.id,
           ),
         );
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           route,
         );
@@ -1148,7 +1157,10 @@ Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
           Center(
             child: Container(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                ),
                 child: Image.network(
                   model.thumbnailUrl,
                   fit: BoxFit.cover,
@@ -1166,30 +1178,58 @@ Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
             child: Padding(
               padding: const EdgeInsets.only(
                   top: 5, right: 13.0, left: 13.0, bottom: 5),
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  DefaultTextStyle(
-                    style: new TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    child: new Text(model.shortInfo),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        DefaultTextStyle(
+                          style: new TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          child: new Text(model.shortInfo),
+                        ),
+                        RichText(
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: mainColorOfLEEWAY,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: model.price.toString(),
+                              ),
+                              TextSpan(
+                                text: "円",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: mainColorOfLEEWAY,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                    ),
                   ),
-                  DefaultTextStyle(
-                    style: new TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: mainColorOfLEEWAY),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    child: new Text(
-                      model.price.toString() + "円",
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 3.0),
+                    child: Text(
+                      "詳しく見る",
+                      style: TextStyle(fontSize: 12, color: Colors.black54),
                     ),
                   ),
                 ],
-                crossAxisAlignment: CrossAxisAlignment.start,
               ),
             ),
           ),
@@ -1226,7 +1266,10 @@ Widget sourceInfoForMainOfLikex1(LikeItems model, BuildContext context,
             Center(
               child: Container(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(8.0),
+                    topLeft: Radius.circular(8.0),
+                  ),
                   child: Image.network(
                     model.thumbnailUrl,
                     fit: BoxFit.cover,
@@ -1244,30 +1287,58 @@ Widget sourceInfoForMainOfLikex1(LikeItems model, BuildContext context,
               child: Padding(
                 padding: const EdgeInsets.only(
                     top: 5, right: 13.0, left: 13.0, bottom: 5),
-                child: Column(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    DefaultTextStyle(
-                      style: new TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      child: new Text(model.shortInfo),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          DefaultTextStyle(
+                            style: new TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            child: new Text(model.shortInfo),
+                          ),
+                          RichText(
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: mainColorOfLEEWAY,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: model.price.toString(),
+                                ),
+                                TextSpan(
+                                  text: "円",
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                    color: mainColorOfLEEWAY,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                      ),
                     ),
-                    DefaultTextStyle(
-                      style: new TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          color: mainColorOfLEEWAY),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      child: new Text(
-                        model.price.toString() + "円",
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 3.0),
+                      child: Text(
+                        "詳しく見る",
+                        style: TextStyle(fontSize: 20, color: Colors.black54),
                       ),
                     ),
                   ],
-                  crossAxisAlignment: CrossAxisAlignment.start,
                 ),
               ),
             ),
@@ -1303,7 +1374,10 @@ Widget sourceInfoForMainOfLikex3(LikeItems model, BuildContext context,
           Center(
             child: Container(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(8.0),
+                  topLeft: Radius.circular(8.0),
+                ),
                 child: Image.network(
                   model.thumbnailUrl,
                   fit: BoxFit.cover,
@@ -1332,15 +1406,28 @@ Widget sourceInfoForMainOfLikex3(LikeItems model, BuildContext context,
                     maxLines: 1,
                     child: new Text(model.shortInfo),
                   ),
-                  DefaultTextStyle(
-                    style: new TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: mainColorOfLEEWAY),
+                  RichText(
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
-                    child: new Text(
-                      model.price.toString() + "円",
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: mainColorOfLEEWAY,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: model.price.toString(),
+                        ),
+                        TextSpan(
+                          text: "円",
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: mainColorOfLEEWAY,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

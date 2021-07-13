@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/GetLikeItemsModel.dart';
@@ -56,7 +57,7 @@ class _LikePageState extends State<LikePage> {
                       children: [
                         Text(
                           "いいね",
-                          style: TextStyle(
+                          style: GoogleFonts.kosugi(
                               color: Colors.white,
                               fontSize: 25,
                               fontWeight: FontWeight.bold),

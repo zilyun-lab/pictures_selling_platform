@@ -327,7 +327,7 @@ exports.sendEmailWhenCancelFinishedToSeller = functions.firestore
             from: `no-reply@leewayjp.net`,
             to: change.after.data().email,
             subject: '取引キャンセル完了のお知らせ',
-            html: `<p>${change.after.data().name} 様<br><br>${change.after.data().orderBy} 様との取引のキャンセルの申請を確認し、キャンセルが成立しました。<br>
+            html: `<p>${change.after.data().postName} 様<br><br>${change.after.data().orderBy} 様との取引のキャンセルの申請を確認し、キャンセルが成立しました。<br>
             <br>
             <p>ご注文ID：${change.after.data().id}</p>
             <p>商品名：${change.after.data().productIDs}</p>
@@ -374,7 +374,7 @@ exports.sendEmailWhenCancelFinishedToBuyer = functions.firestore
             from: `no-reply@leewayjp.net`,
             to: change.after.data().email,
             subject: '取引キャンセル完了のお知らせ',
-            html: `<p>${change.after.data().name} 様<br><br>${change.after.data().postName} 様との取引のキャンセルの申請を確認し、キャンセルが成立しました。<br>
+            html: `<p>${change.after.data().orderByName} 様<br><br>${change.after.data().postName} 様との取引のキャンセルの申請を確認し、キャンセルが成立しました。<br>
             <br>
             <p>ご注文ID：${change.after.data().id}</p>
             <p>商品名：${change.after.data().productIDs}</p>

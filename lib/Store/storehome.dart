@@ -9,6 +9,7 @@ import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/searchBox.dart';
 
 double width;
@@ -705,8 +706,13 @@ class _StoreHomeState extends State<StoreHome>
       children: [
         Center(
           child: Container(
+            //todo:保留
+            height: MediaQuery.of(context).size.height * 0.15,
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
               child: Image.network(
                 url,
                 fit: BoxFit.cover,
@@ -722,31 +728,59 @@ class _StoreHomeState extends State<StoreHome>
           width: MediaQuery.of(context).size.width,
           child: Padding(
             padding: const EdgeInsets.only(
-                top: 5, right: 13.0, left: 13.0, bottom: 5),
-            child: Column(
+                top: 5, right: 13.0, left: 13.0, bottom: 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                DefaultTextStyle(
-                  style: new TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  child: new Text(title),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text(
+                        title,
+                        style: new TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      RichText(
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: mainColorOfLEEWAY,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: price.toString(),
+                            ),
+                            TextSpan(
+                              text: "円",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: mainColorOfLEEWAY,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
                 ),
-                DefaultTextStyle(
-                  style: new TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: mainColor),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                  child: new Text(
-                    price + "円",
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 3.0),
+                  child: Text(
+                    "詳しく見る",
+                    style: TextStyle(fontSize: 10),
                   ),
                 ),
               ],
-              crossAxisAlignment: CrossAxisAlignment.start,
             ),
           ),
         ),

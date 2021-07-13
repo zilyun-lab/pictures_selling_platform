@@ -32,11 +32,11 @@ class _MyOrdersState extends State<MyOrders> {
               Route route = MaterialPageRoute(
                 builder: (c) => MainPage(),
               );
-              Navigator.pushReplacement(context, route);
+              Navigator.push(context, route);
             },
             icon: Icon(
-              Icons.home_outlined,
-              size: 35,
+              Icons.arrow_back_ios_rounded,
+              size: 25,
             )),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
@@ -48,17 +48,6 @@ class _MyOrdersState extends State<MyOrders> {
             fontWeight: FontWeight.w100,
           ),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.arrow_drop_down_circle,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              SystemNavigator.pop();
-            },
-          ),
-        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: EcommerceApp.firestore

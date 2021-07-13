@@ -60,8 +60,7 @@ class _TransactionPageState extends State<TransactionPage>
                 text: "取引完了",
               ),
             ],
-            indicatorColor: Colors.black,
-            indicatorWeight: 2.5,
+            indicatorWeight: 3,
           ),
         ),
         body: TabBarView(children: [

@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:flutter/material.dart';
@@ -91,8 +91,7 @@ class _ProductPageState extends State<ProductPage> {
                         ),
                         Text(
                           il["longDescription"],
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                          style: boldTextStyle,
                         ),
                         Divider(
                           thickness: 1,
@@ -175,9 +174,29 @@ class _ProductPageState extends State<ProductPage> {
                             color: Colors.white,
                           ),
                         ),
-                        Text(
-                          "${il["price"].toString()} 円",
-                          style: boldTextStyle,
+                        RichText(
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          text: TextSpan(
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: il["price"].toString(),
+                              ),
+                              TextSpan(
+                                text: "円",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         Divider(
                           thickness: 1,
@@ -193,45 +212,38 @@ class _ProductPageState extends State<ProductPage> {
                             color: Colors.white,
                           ),
                         ),
-                        StreamBuilder<QuerySnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection(
-                                "items",
-                              )
-                              .snapshots(),
-                          builder: (context, dataSnapshot) {
-                            if (il["attribute"] == "Original") {
-                              return Text(
-                                "こちらは原画の為、１点限りとなります。",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                ),
-                              );
-                            } else if (il["attribute"] == "Sticker") {
-                              return Text(
-                                "この商品はステッカーです",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                ),
-                              );
-                            } else if (il["attribute"] == "PostCard") {
-                              return Text(
-                                "この商品はポストカードです",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                ),
-                              );
-                            } else {
-                              return Text(
-                                "こちらは複製画の為、受注生産となります。",
-                                style: boldTextStyle,
-                              );
-                            }
-                          },
-                        ),
+                        (() {
+                          if (il["attribute"] == "Original") {
+                            return Text(
+                              "こちらは原画の為、１点限りとなります。",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            );
+                          } else if (il["attribute"] == "Sticker") {
+                            return Text(
+                              "ステッカー",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            );
+                          } else if (il["attribute"] == "PostCard") {
+                            return Text(
+                              "ポストカード",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            );
+                          } else {
+                            return Text(
+                              "複製画",
+                              style: boldTextStyle,
+                            );
+                          }
+                        }()),
                         Divider(
                           thickness: 1,
                           color: Colors.white,
@@ -257,63 +269,154 @@ class _ProductPageState extends State<ProductPage> {
                         SizedBox(
                           height: 10,
                         ),
+                        Text(
+                          "在庫",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
+                        ),
+                        il["Stock"] == null
+                            ? Text(
+                                "こちらの商品は受注生産でございます。",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 10,
+                              )
+                            : RichText(
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: il["Stock"].toString(),
+                                    ),
+                                    TextSpan(
+                                      text: " 点",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                        Divider(
+                          thickness: 1,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "発送日時",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          "${il["shipsDate"]}",
+                          style: boldTextStyle,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 10,
+                        ),
+                        Divider(
+                          thickness: 1,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         userLink(il),
                         Padding(
                           padding: EdgeInsets.only(
                             top: 8,
                           ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    il["postBy"] !=
-                                            EcommerceApp.sharedPreferences
-                                                .getString(EcommerceApp.userUID)
-                                        ? il["Stock"] == 0
-                                            ? disableLikeButton(context)
-                                            : likeButton(context, il)
-                                        : itemEditButton(
-                                            context, il, widget.id),
-                                    StreamBuilder<
-                                        QuerySnapshot<Map<String, dynamic>>>(
-                                      stream: FirebaseFirestore.instance
-                                          .collection(
-                                            "items",
-                                          )
-                                          .snapshots(),
-                                      builder: (context, snapshot) {
-                                        return !snapshot.hasData
-                                            ? Container()
-                                            : il["postBy"] ==
-                                                    EcommerceApp
-                                                        .sharedPreferences
-                                                        .getString(EcommerceApp
-                                                            .userUID)
-                                                ? deleteItemButton(context, () {
-                                                    beforeDeleteDialog(
-                                                        context, il, widget.id);
-                                                  })
-                                                : il["attribute"] != "Original"
-                                                    ? checkOutItemButton(
-                                                        context, il, widget.id)
-                                                    : il["Stock"] != 0
-                                                        ? checkOutItemButton(
-                                                            context,
-                                                            il,
-                                                            widget.id)
-                                                        : soldOutButton(
-                                                            context);
-                                      },
+                          child: Center(
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 65,
+                                  height: 60,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.grey),
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Icon(
+                                      Icons.cancel,
+                                      color: Colors.white,
+                                      size: 35,
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      StreamBuilder<
+                                          QuerySnapshot<Map<String, dynamic>>>(
+                                        stream: FirebaseFirestore.instance
+                                            .collection(
+                                              "items",
+                                            )
+                                            .snapshots(),
+                                        builder: (context, snapshot) {
+                                          return !snapshot.hasData
+                                              ? Container()
+                                              : il["postBy"] ==
+                                                      EcommerceApp
+                                                          .sharedPreferences
+                                                          .getString(
+                                                              EcommerceApp
+                                                                  .userUID)
+                                                  ? itemEditButton(
+                                                      context, il, widget.id)
+                                                  : il["attribute"] !=
+                                                          "Original"
+                                                      ? checkOutItemButton(
+                                                          context,
+                                                          il,
+                                                          widget.id)
+                                                      : il["Stock"] != 0
+                                                          ? checkOutItemButton(
+                                                              context,
+                                                              il,
+                                                              widget.id)
+                                                          : soldOutButton(
+                                                              context);
+                                        },
+                                      ),
+                                      il["postBy"] !=
+                                              EcommerceApp.sharedPreferences
+                                                  .getString(
+                                                      EcommerceApp.userUID)
+                                          ? il["Stock"] == 0
+                                              ? Container()
+                                              : likeButton(context, il)
+                                          : deleteItemButton(context, () {
+                                              beforeDeleteDialog(
+                                                  context, il, widget.id);
+                                            }),
+                                    ],
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
+                        mySizedBox(30),
                       ],
                     ),
                   ),
@@ -334,6 +437,8 @@ class _ProductPageState extends State<ProductPage> {
             style: TextStyle(
               color: HexColor("#E67928"),
             ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
           ),
         ),
         leading: IconButton(
@@ -342,6 +447,7 @@ class _ProductPageState extends State<ProductPage> {
             color: HexColor("#E67928"),
           ),
           onPressed: () {
+            // Navigator.pop(context);
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -374,10 +480,27 @@ class _ProductPageState extends State<ProductPage> {
                         itemCount: snapshot.data.data()["images"].length,
                         itemBuilder:
                             (BuildContext context, int index, int realIndex) {
-                          return Image.network(
-                            snapshot.data.data()["images"][index].toString(),
-                            fit: BoxFit.scaleDown,
-                            height: MediaQuery.of(context).size.height,
+                          return Stack(
+                            children: [
+                              Center(
+                                child: Image.network(
+                                  snapshot.data
+                                      .data()["images"][index]
+                                      .toString(),
+                                  fit: BoxFit.scaleDown,
+                                  height: MediaQuery.of(context).size.height,
+                                ),
+                              ),
+                              Center(
+                                child: Text(
+                                  "LEEWAY",
+                                  style: GoogleFonts.notoSerif(
+                                      fontWeight: FontWeight.w100,
+                                      color: Colors.grey.withOpacity(0.6),
+                                      fontSize: 50),
+                                ),
+                              )
+                            ],
                           );
                         },
                       );

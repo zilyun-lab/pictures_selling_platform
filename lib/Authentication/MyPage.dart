@@ -89,24 +89,25 @@ class _MyPageState extends State<MyPage> {
                                                                 EcommerceApp
                                                                     .userName)),
                                                       ))),
-                                              InkWell(
-                                                child: Icon(
-                                                  Icons.edit,
-                                                  color: mainColorOfLEEWAY,
-                                                ),
-                                                onTap: () {
-                                                  Route route =
-                                                      MaterialPageRoute(
-                                                    fullscreenDialog: true,
-                                                    builder: (c) =>
-                                                        ChangeProfile(),
-                                                  );
-                                                  Navigator.push(
-                                                    context,
-                                                    route,
-                                                  );
-                                                },
-                                              )
+
+                                              // InkWell(
+                                              //   child: Icon(
+                                              //     Icons.settings,
+                                              //     color: Colors.black54,
+                                              //   ),
+                                              //   onTap: () {
+                                              //     Route route =
+                                              //         MaterialPageRoute(
+                                              //       fullscreenDialog: true,
+                                              //       builder: (c) =>
+                                              //           ChangeProfile(),
+                                              //     );
+                                              //     Navigator.push(
+                                              //       context,
+                                              //       route,
+                                              //     );
+                                              //   },
+                                              // )
                                             ],
                                           )
                                         : Text(
@@ -129,19 +130,54 @@ class _MyPageState extends State<MyPage> {
                                     .snapshots(),
                                 builder: (context, snapshot) {
                                   return snapshot.hasData
-                                      ? Text(
-                                          "${snapshot.data.docs[0]["Proceeds"].toString()} 円",
-                                          style: TextStyle(
-                                              color: mainColorOfLEEWAY,
+                                      ? RichText(
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          text: TextSpan(
+                                            style: TextStyle(
+                                              fontSize: 25,
                                               fontWeight: FontWeight.w900,
-                                              fontSize: 25),
+                                              color: mainColorOfLEEWAY,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    "${snapshot.data.docs[0]["Proceeds"].toString()} ",
+                                              ),
+                                              TextSpan(
+                                                text: "円",
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: mainColorOfLEEWAY,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         )
-                                      : Text(
-                                          "0 円",
-                                          style: TextStyle(
-                                              color: mainColorOfLEEWAY,
+                                      : RichText(
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          text: TextSpan(
+                                            style: TextStyle(
+                                              fontSize: 25,
                                               fontWeight: FontWeight.w900,
-                                              fontSize: 25),
+                                              color: mainColorOfLEEWAY,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text: "0",
+                                              ),
+                                              TextSpan(
+                                                text: "円",
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: mainColorOfLEEWAY,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         );
                                 }),
                             myPageSliderItems(context),
@@ -151,7 +187,7 @@ class _MyPageState extends State<MyPage> {
                     ),
                   ),
                   Positioned.fill(
-                    top: 60,
+                    top: 50,
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: ClipRRect(
@@ -168,9 +204,36 @@ class _MyPageState extends State<MyPage> {
                     ),
                   ),
                   Positioned(
-                    child: Container(
-                      width: 100,
-                      height: 350,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        InkWell(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(15.0, 35, 0, 0),
+                            child: Icon(
+                              Icons.settings,
+                              color: Colors.black45,
+                              size: 30,
+                            ),
+                          ),
+                          onTap: () {
+                            Route route = MaterialPageRoute(
+                              fullscreenDialog: true,
+                              builder: (c) => ChangeProfile(),
+                            );
+                            Navigator.push(
+                              context,
+                              route,
+                            );
+                          },
+                        ),
+                        Container(
+                          // color: Colors.red,
+                          width: 100,
+                          height: 275,
+                        ),
+                      ],
                     ),
                   )
                 ],

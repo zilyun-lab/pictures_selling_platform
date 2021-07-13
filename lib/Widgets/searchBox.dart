@@ -23,37 +23,42 @@ class SearchBoxDelegate extends SliverPersistentHeaderDelegate {
                 route,
               );
             },
-            child: InkWell(
-              child: Container(
-                // width: MediaQuery.of(
-                //   context,
-                // ).size.width,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.5),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(25),
+            child: Container(
+              // width: MediaQuery.of(
+              //   context,
+              // ).size.width,
+              height: 80,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black12.withOpacity(0.2),
+                      blurRadius: 8.0,
+                      spreadRadius: 1.0,
+                      offset: Offset(5, 8))
+                ],
+                color: HexColor("F9DAC4"),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(12),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 10,
+                    ),
+                    child: Icon(
+                      Icons.search,
+                      color: Colors.blueGrey,
+                    ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 8,
-                      ),
-                      child: Icon(
-                        Icons.search,
-                        color: Colors.blueGrey,
-                      ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: 8,
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 8,
-                      ),
-                      child: Text("探す"),
-                    ),
-                  ],
-                ),
+                    child: Text("探す"),
+                  ),
+                ],
               ),
             ),
           ),

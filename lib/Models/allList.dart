@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Authentication/MyPage.dart';
@@ -470,33 +471,24 @@ List<BottomNavigationEntity> navigationList = [
                   //top: 0.1,
                   //bottom: 0.1,
                   left: 5,
-                  child: Consumer<GetLikeItemsModel>(
-                    builder: (context, model, child) {
-                      final item = model.items;
-                      return EcommerceApp.sharedPreferences
-                                  .getStringList(EcommerceApp.userLikeList) ==
-                              null
-                          ? Text(
-                              "0",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500),
-                            )
-                          : Text(
-                              (EcommerceApp.sharedPreferences
-                                          .getStringList(
-                                              EcommerceApp.userLikeList)
-                                          .length -
-                                      1)
-                                  .toString(),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500),
-                            );
-                    },
-                  ),
+                  child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                      stream: FirebaseFirestore.instance
+                          .collection("users")
+                          .doc(EcommerceApp.sharedPreferences
+                              .getString(EcommerceApp.userUID))
+                          .snapshots(),
+                      builder: (c, snap) {
+                        return !snap.hasData
+                            ? Container()
+                            : Text(
+                                (snap.data.data()["userLike"].length - 1)
+                                    .toString(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w500),
+                              );
+                      }),
                 ),
               ],
             ),

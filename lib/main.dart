@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:selling_pictures_platform/Authentication/Notify.dart';
 import 'package:selling_pictures_platform/Authentication/register.dart';
 import 'package:selling_pictures_platform/Models/StarRatingModel.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -18,6 +19,8 @@ import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
+import 'package:universal_platform/universal_platform.dart';
+import 'Admin/test.dart';
 import 'Authentication/SubmitBirthDay.dart';
 import 'Counters/Likeitemcounter.dart';
 import 'Counters/changeAddresss.dart';
@@ -169,15 +172,17 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: (() {
         if (selectedIndex == 0) {
-          return MyAppBar(
+          return AppBar(
+            leading: null,
+            elevation: 0,
             title: Padding(
               padding: const EdgeInsets.all(125.0),
               child: InkWell(
+                child: Image.asset("images/NoColor_horizontal.png"),
                 onTap: () {
                   Navigator.push(
-                      context, MaterialPageRoute(builder: (c) => Register()));
+                      context, MaterialPageRoute(builder: (c) => Test()));
                 },
-                child: Image.asset("images/NoColor_horizontal.png"),
               ),
             ),
           );
@@ -217,7 +222,7 @@ class _MainPageState extends State<MainPage> {
         width: MediaQuery.of(context).size.width - 40,
         height: 50,
         decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.5),
+          color: HexColor("ED9B5E"),
           borderRadius: BorderRadius.circular(6),
         ),
         child: Row(
