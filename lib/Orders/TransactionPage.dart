@@ -1,12 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:selling_pictures_platform/Widgets/orderCard.dart';
-
 import '../main.dart';
 
 class TransactionPage extends StatefulWidget {
@@ -30,13 +34,16 @@ class _TransactionPageState extends State<TransactionPage>
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              Route route = MaterialPageRoute(
-                builder: (c) => MainPage(),
+              // Route route = MaterialPageRoute(
+              //   builder: (c) => MainPage(),
+              // );
+              // Navigator.push(context, route);
+              Navigator.pop(
+                context,
               );
-              Navigator.pushReplacement(context, route);
             },
             icon: Icon(
-              Icons.home_outlined,
+              Icons.arrow_back_ios_rounded,
               size: 35,
             ),
           ),

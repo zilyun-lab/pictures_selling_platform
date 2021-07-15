@@ -1,8 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
@@ -327,14 +332,11 @@ class NormalCheckBoxDialogState extends State<NormalCheckBoxDialog> {
 
 class CommonCheckBoxDialog extends StatefulWidget {
   CommonCheckBoxDialog(
-    this.title,
-    this.message,
-    this.checkBoxCaption, [
-    this.positiveCaption,
-    this.onPositive,
-    this.negativeCaption,
-    this.onNegative,
-  ]);
+      this.title, this.message, this.checkBoxCaption, this.content,
+      [this.positiveCaption,
+      this.onPositive,
+      this.negativeCaption,
+      this.onNegative]);
 
   final String title;
   final String message;
@@ -343,6 +345,7 @@ class CommonCheckBoxDialog extends StatefulWidget {
   final Function onPositive;
   final String negativeCaption;
   final Function onNegative;
+  final Widget content;
 
   @override
   CommonCheckBoxDialogState createState() => CommonCheckBoxDialogState();
@@ -362,6 +365,7 @@ class CommonCheckBoxDialogState extends State<CommonCheckBoxDialog> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text(widget.message),
+            widget.content,
             Container(
               padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: CheckboxListTile(

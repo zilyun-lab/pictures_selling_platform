@@ -1,18 +1,22 @@
+// Dart imports:
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
-import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
+// Project imports:
 import 'package:selling_pictures_platform/Config/config.dart';
+import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
+import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
-
 import 'MyPage.dart';
 
 class ChangeProfile extends StatefulWidget {
@@ -60,184 +64,180 @@ class _ChangeProfileState extends State<ChangeProfile> {
     //       .getString(EcommerceApp.userAvatarUrl)
     //       .toString();
     // });
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          iconTheme: IconThemeData(
-            color: Colors.black, //change your color here
-          ),
-          backgroundColor: HexColor("e67928"),
-          title: Text(
-            "プロフィール編集",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w100,
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        iconTheme: IconThemeData(
+          color: Colors.black, //change your color here
+        ),
+        backgroundColor: HexColor("e67928"),
+        title: Text(
+          "プロフィール編集",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w100,
           ),
         ),
-        body: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                InkWell(
-                  onTap: _selectAndPickImage,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 15.0,
-                    ),
-                    child: CircleAvatar(
-                      radius: _screenWidth * 0.15,
-                      backgroundImage: _imageFile == null
-                          ? NetworkImage(userImageUrl)
-                          : FileImage(_imageFile),
-                      child: _imageFile == null ? null : null,
-                    ),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              InkWell(
+                onTap: _selectAndPickImage,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    top: 15.0,
+                  ),
+                  child: CircleAvatar(
+                    radius: _screenWidth * 0.15,
+                    backgroundImage: _imageFile == null
+                        ? NetworkImage(userImageUrl)
+                        : FileImage(_imageFile),
+                    child: _imageFile == null ? null : null,
                   ),
                 ),
-                SizedBox(
-                  height: 8.0,
-                ),
-                Form(
-                  key: _formkey,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: TextFormField(
-                          obscureText: false,
-                          controller:
-                              _nameEditingController, //..text = nameData,
-
-                          decoration: InputDecoration(
-                              hintText: "ユーザーネーム",
-                              prefixIcon: Icon(
-                                Icons.perm_identity,
-                                color: Colors.black,
-                              )),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: TextFormField(
-                          obscureText: false,
-                          controller:
-                              _descriptionEditingController, //..text = descriptionData,
-
-                          decoration: InputDecoration(
-                              hintText: "自己紹介",
-                              prefixIcon: Icon(
-                                Icons.article_outlined,
-                                color: Colors.black,
-                              )),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: TextFormField(
-                          obscureText: false,
-                          controller: _facebookEditingController,
-                          decoration: InputDecoration(
-                              hintText: "FaceBook",
-                              prefixIcon: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 8.0,
-                                    bottom: 8.0,
-                                    right: 8.0,
-                                    left: 14),
-                                child: FaIcon(
-                                  FontAwesomeIcons.facebookSquare,
-                                  color: Colors.black,
-                                ),
-                              )),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: TextFormField(
-                          obscureText: false,
-                          controller: _twitterEditingController,
-                          onChanged: (text) => {},
-                          decoration: InputDecoration(
-                              hintText: "Twitter",
-                              prefixIcon: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 8.0,
-                                  bottom: 8.0,
-                                  right: 8.0,
-                                  left: 14,
-                                ),
-                                child: FaIcon(
-                                  FontAwesomeIcons.twitterSquare,
-                                  color: Colors.black,
-                                ),
-                              )),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: TextFormField(
-                          obscureText: false,
-                          controller:
-                              _instagramEditingController, //..text = descriptionData,
-                          onChanged: (text) => {},
-                          decoration: InputDecoration(
-                              hintText: "Instagram",
-                              prefixIcon: Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 8.0,
-                                  bottom: 8.0,
-                                  right: 8.0,
-                                  left: 14,
-                                ),
-                                child: FaIcon(
-                                  FontAwesomeIcons.instagramSquare,
-                                  color: Colors.black,
-                                ),
-                              )),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Wrap(
+              ),
+              SizedBox(
+                height: 8.0,
+              ),
+              Form(
+                key: _formkey,
+                child: Column(
                   children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.redAccent,
-                      ),
-                      onPressed: () {
-                        Route route = MaterialPageRoute(
-                          fullscreenDialog: true,
-                          builder: (c) => MyPage(),
-                        );
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        "キャンセル",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: TextFormField(
+                        obscureText: false,
+                        controller: _nameEditingController, //..text = nameData,
+
+                        decoration: InputDecoration(
+                            hintText: "ユーザーネーム",
+                            prefixIcon: Icon(
+                              Icons.perm_identity,
+                              color: Colors.black,
+                            )),
                       ),
                     ),
-                    SizedBox(
-                      width: 10,
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: TextFormField(
+                        obscureText: false,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        controller:
+                            _descriptionEditingController, //..text = descriptionData,
+
+                        decoration: InputDecoration(
+                            hintText: "自己紹介",
+                            prefixIcon: Icon(
+                              Icons.article_outlined,
+                              color: Colors.black,
+                            )),
+                      ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        print(EcommerceApp.sharedPreferences
-                            .getString(EcommerceApp.FaceBookURL));
-                        uploadAndSaveImage();
-                      },
-                      child: Text(
-                        "  更新する  ",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: TextFormField(
+                        obscureText: false,
+                        controller: _facebookEditingController,
+                        decoration: InputDecoration(
+                            hintText: "FaceBook",
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 8.0, bottom: 8.0, right: 8.0, left: 14),
+                              child: FaIcon(
+                                FontAwesomeIcons.facebookSquare,
+                                color: Colors.black,
+                              ),
+                            )),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: TextFormField(
+                        obscureText: false,
+                        controller: _twitterEditingController,
+                        onChanged: (text) => {},
+                        decoration: InputDecoration(
+                            hintText: "Twitter",
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 8.0,
+                                bottom: 8.0,
+                                right: 8.0,
+                                left: 14,
+                              ),
+                              child: FaIcon(
+                                FontAwesomeIcons.twitterSquare,
+                                color: Colors.black,
+                              ),
+                            )),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: TextFormField(
+                        obscureText: false,
+                        controller:
+                            _instagramEditingController, //..text = descriptionData,
+                        onChanged: (text) => {},
+                        decoration: InputDecoration(
+                            hintText: "Instagram",
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 8.0,
+                                bottom: 8.0,
+                                right: 8.0,
+                                left: 14,
+                              ),
+                              child: FaIcon(
+                                FontAwesomeIcons.instagramSquare,
+                                color: Colors.black,
+                              ),
+                            )),
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              Wrap(
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.redAccent,
+                    ),
+                    onPressed: () {
+                      Route route = MaterialPageRoute(
+                        fullscreenDialog: true,
+                        builder: (c) => MyPage(),
+                      );
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "キャンセル",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      print(EcommerceApp.sharedPreferences
+                          .getString(EcommerceApp.FaceBookURL));
+                      uploadAndSaveImage();
+                    },
+                    child: Text(
+                      "  更新する  ",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

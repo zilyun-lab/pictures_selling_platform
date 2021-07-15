@@ -1,12 +1,20 @@
+// Dart imports:
 import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:http/http.dart' as http;
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:stripe_payment/stripe_payment.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/Address/addAddress.dart';
 import 'package:selling_pictures_platform/Address/address.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
@@ -17,8 +25,6 @@ import 'package:selling_pictures_platform/Orders/myOrders.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/WidgetOfFirebase.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
-import 'package:stripe_payment/stripe_payment.dart';
-
 import '../main.dart';
 import 'TransactionPage.dart';
 

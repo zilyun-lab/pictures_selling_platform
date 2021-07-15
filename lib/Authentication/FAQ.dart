@@ -1,5 +1,8 @@
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/main.dart';
 
 class FAQ extends StatelessWidget {

@@ -1,7 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
-import 'package:selling_pictures_platform/Config/config.dart';
 
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+// Project imports:
+import 'package:selling_pictures_platform/Config/config.dart';
 import 'UploadItemList.dart';
 
 class UploadItemModel extends ChangeNotifier {

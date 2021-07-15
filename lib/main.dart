@@ -1,34 +1,30 @@
+// Dart imports:
 import 'dart:async';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:selling_pictures_platform/Authentication/Notify.dart';
-import 'package:selling_pictures_platform/Authentication/register.dart';
-import 'package:selling_pictures_platform/Models/StarRatingModel.dart';
-import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
-import 'package:transparent_image/transparent_image.dart';
+
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:selling_pictures_platform/Authentication/MyPage.dart';
-import 'package:selling_pictures_platform/Authentication/login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:selling_pictures_platform/Models/bottom_navigation.dart';
-import 'package:selling_pictures_platform/Store/like.dart';
-import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// Project imports:
+
+import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:universal_platform/universal_platform.dart';
+import 'package:selling_pictures_platform/Models/StarRatingModel.dart';
 import 'Admin/test.dart';
-import 'Authentication/SubmitBirthDay.dart';
 import 'Counters/Likeitemcounter.dart';
 import 'Counters/changeAddresss.dart';
-
 import 'Models/GetLikeItemsModel.dart';
 import 'Models/HEXCOLOR.dart';
 import 'Models/allList.dart';
-import 'Store/storehome.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -99,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen> {
         if (await EcommerceApp.auth.currentUser != null && mounted) {
           //todo:もしログインしていたら以下
 
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             PageTransition(
               type: PageTransitionType.fade,
@@ -181,7 +177,7 @@ class _MainPageState extends State<MainPage> {
                 child: Image.asset("images/NoColor_horizontal.png"),
                 onTap: () {
                   Navigator.push(
-                      context, MaterialPageRoute(builder: (c) => Test()));
+                      context, MaterialPageRoute(builder: (c) => Bubbles()));
                 },
               ),
             ),

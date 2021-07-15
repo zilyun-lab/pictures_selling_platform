@@ -1,21 +1,24 @@
+// Dart imports:
 import 'dart:io';
+
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:selling_pictures_platform/Authentication/NewUserSplashScreen.dart';
-import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
-import 'package:selling_pictures_platform/Widgets/customTextField.dart';
-import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
-import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import '../Store/storehome.dart';
-import 'package:selling_pictures_platform/Config/config.dart';
+import 'package:page_transition/page_transition.dart';
 
-import 'SubmitBirthDay.dart';
+// Project imports:
+import 'package:selling_pictures_platform/Authentication/NewUserSplashScreen.dart';
+import 'package:selling_pictures_platform/Config/config.dart';
+import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
+import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
+import 'package:selling_pictures_platform/Widgets/customTextField.dart';
 import 'login.dart';
 
 class Register extends StatefulWidget {

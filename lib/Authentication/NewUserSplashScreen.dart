@@ -1,6 +1,8 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 
+// Project imports:
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'SubmitBirthDay.dart';
 
 class NewUserSplashScreen extends StatelessWidget {

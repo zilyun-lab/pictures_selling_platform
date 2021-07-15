@@ -1,9 +1,13 @@
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:selling_pictures_platform/Authentication/login.dart';
 
+// Package imports:
+import 'package:google_fonts/google_fonts.dart';
+
+// Project imports:
+import 'package:selling_pictures_platform/Authentication/login.dart';
 import '../main.dart';
 import 'Models/HEXCOLOR.dart';
 

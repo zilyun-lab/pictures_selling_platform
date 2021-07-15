@@ -1,18 +1,25 @@
+// Dart imports:
 import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:grouped_buttons/grouped_buttons.dart';
+import 'package:image_picker/image_picker.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/CheckBox.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:selling_pictures_platform/main.dart';
-import 'package:grouped_buttons/grouped_buttons.dart';
 
 final mainColor = HexColor("E67928");
 String selectedItem1 = "レッド";
@@ -42,6 +49,7 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
 
         print(_selectShipsDays);
       });
+
   String _selectFrame = '';
 
   void _handleFrameRadioButton(String frame) => setState(() {

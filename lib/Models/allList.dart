@@ -1,16 +1,18 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/Authentication/MyPage.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Store/BSTransaction.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
-
 import '../LEEWAY.dart';
 import '../main.dart';
-import 'GetLikeItemsModel.dart';
 import 'bottom_navigation.dart';
 
 List<String> shipsDays = ["選択してください", "1~2日後", "2~3日後", "4~7日後"];

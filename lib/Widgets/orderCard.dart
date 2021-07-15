@@ -1,8 +1,13 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+// Project imports:
+import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Orders/AdminOrderDetailsPage.dart';
 import 'package:selling_pictures_platform/Orders/OrderDetailsPage.dart';
-import 'package:selling_pictures_platform/Models/item.dart';
-import 'package:flutter/material.dart';
 import '../Store/storehome.dart';
 
 int counter = 0;

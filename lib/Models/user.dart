@@ -1,5 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
+
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
   User(DocumentSnapshot doc) {

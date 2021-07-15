@@ -1,7 +1,9 @@
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 
+// Project imports:
+import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import '../Store/Search.dart';
 
 class SearchBoxDelegate extends SliverPersistentHeaderDelegate {

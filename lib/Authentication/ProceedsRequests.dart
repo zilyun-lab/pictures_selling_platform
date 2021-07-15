@@ -1,11 +1,20 @@
+// Flutter imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Package imports:
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
+import 'package:selling_pictures_platform/Widgets/CheckBox.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/Authentication/MyPage.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ProceedsRequests extends StatefulWidget {
   const ProceedsRequests({Key key}) : super(key: key);
@@ -25,16 +34,35 @@ class _ProceedsRequestsState extends State<ProceedsRequests> {
   String selectedItem = "みずほ銀行";
   String holder = "";
 
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    getProceeds();
+  }
+
+  Future<int> getProceeds() async {
+    QuerySnapshot qSnapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("MyProceeds")
+        .get();
+
+    return proceeds = qSnapshot.docs[0]["Proceeds"];
+  }
+
   void getValue() {
     setState(() {
       holder = selectedItem;
     });
   }
 
+  int proceeds;
+  String requestPrice = "0";
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         leading: InkWell(
             onTap: () {
@@ -64,65 +92,184 @@ class _ProceedsRequestsState extends State<ProceedsRequests> {
       body: Container(
         padding: const EdgeInsets.all(30),
         child: SingleChildScrollView(
-          child: Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                textFieldOfHereWithText(lastNameController, 'タナカ', "口座名義(セイ)"),
-                textFieldOfHereWithText(firstNameController, 'タロウ', "口座名義(メイ)"),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Expanded(
-                    child: DropdownButtonFormField<String>(
-                      isExpanded: true,
-                      value: selectedItem,
-                      onChanged: (String newValue) {
-                        setState(() {
-                          selectedItem = newValue;
-                        });
-                      },
-                      selectedItemBuilder: (context) {
-                        return bankList.map((String item) {
-                          return Text(
-                            item,
-                            style: TextStyle(color: Colors.black),
-                          );
-                        }).toList();
-                      },
-                      items: bankList.map((String item) {
-                        return DropdownMenuItem(
-                          value: item,
-                          child: Text(
-                            item,
-                            style: item == selectedItem
-                                ? TextStyle(fontWeight: FontWeight.bold)
-                                : TextStyle(fontWeight: FontWeight.normal),
-                          ),
-                        );
-                      }).toList(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              textFieldOfHereWithText(lastNameController, 'タナカ', "口座名義(セイ)"),
+              textFieldOfHereWithText(firstNameController, 'タロウ', "口座名義(メイ)"),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  value: selectedItem,
+                  onChanged: (String newValue) {
+                    setState(() {
+                      selectedItem = newValue;
+                    });
+                  },
+                  selectedItemBuilder: (context) {
+                    return bankList.map((String item) {
+                      return Text(
+                        item,
+                        style: TextStyle(color: Colors.black),
+                      );
+                    }).toList();
+                  },
+                  items: bankList.map((String item) {
+                    return DropdownMenuItem(
+                      value: item,
+                      child: Text(
+                        item,
+                        style: item == selectedItem
+                            ? TextStyle(fontWeight: FontWeight.bold)
+                            : TextStyle(fontWeight: FontWeight.normal),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+              textFieldOfHereWithNumber(shitenController, 3, '支店コード', '支店コード'),
+              textFieldOfHereWithNumber(
+                  bankAccountController, 7, '口座番号', '口座番号'),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: TextFormField(
+                  onChanged: (String v) {
+                    setState(() {
+                      requestPrice = v;
+                    });
+                  },
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(8),
+                  ],
+                  keyboardType: TextInputType.number,
+                  controller: priceController,
+                  decoration: InputDecoration(
+                    hintText: "ご希望の申請金額を入力してください",
+                    labelText: 'ご希望の申請金額(申請可能金額：${proceeds.toString()}円)',
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: RichText(
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black54,
                     ),
+                    children: [
+                      TextSpan(
+                        text: "*",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.red,
+                        ),
+                      ),
+                      TextSpan(
+                        text: "振り込み手数料(200円)は申請者負担となります。",
+                      ),
+                    ],
                   ),
                 ),
-                textFieldOfHereWithNumber(
-                    shitenController, 3, '支店コード', '支店コード'),
-                textFieldOfHereWithNumber(
-                    bankAccountController, 7, '口座番号', '口座番号'),
-                textFieldOfHereWithNumber(
-                    priceController, 8, 'ご希望の申請金額を入力してください', 'ご希望の申請金額'),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.black, //ボタンの背景色
-                  ),
-                  child: Text(''
-                      '確定する'),
-                  onPressed: _openMailApp,
-                ),
-              ],
-            ),
+              ),
+              mySizedBox(20),
+              requestPrice != "0" &&
+                      int.parse(
+                            requestPrice ?? "0",
+                          ) >=
+                          proceeds
+                  ? Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.grey, //ボタンの背景色
+                        ),
+                        child: Text('確定する'),
+                        onPressed: () {},
+                      ),
+                    )
+                  : Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.black, //ボタンの背景色
+                        ),
+                        child: Text('確認へ進む'),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (c) {
+                                return CommonCheckBoxDialog(
+                                    "最終確認",
+                                    "下記の入力情報に\nお間違いありませんか？\n",
+                                    "確認しました。",
+                                    Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                "口座名義：${lastNameController.text} ${firstNameController.text}"),
+                                            Text("銀行名：　$selectedItem"),
+                                            Text(
+                                                "支店番号：${shitenController.text}"),
+                                            Text(
+                                                "口座番号：${bankAccountController.text}"),
+                                            Text(
+                                                "申請金額：${priceController.text} 円")
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    "OK",
+                                    () {
+                                      FirebaseFirestore.instance
+                                          .collection("requestProceeds")
+                                          .doc(EcommerceApp.sharedPreferences
+                                              .getString(EcommerceApp.userUID))
+                                          .set({
+                                        "email": EcommerceApp.sharedPreferences
+                                            .getString(EcommerceApp.userEmail),
+                                        "requestProceeds": priceController.text,
+                                        "requestUser": EcommerceApp
+                                            .sharedPreferences
+                                            .getString(EcommerceApp.userName),
+                                        "requestUserID": EcommerceApp
+                                            .sharedPreferences
+                                            .getString(EcommerceApp.userUID),
+                                        "userBankName": selectedItem,
+                                        "userBankSecondName":
+                                            shitenController.text,
+                                        "userBankNumber":
+                                            bankAccountController.text,
+                                        "lastName": lastNameController.text,
+                                        "firstName": firstNameController.text,
+                                      });
+                                      Fluttertoast.showToast(
+                                        msg:
+                                            "売り上げ申請行いました。売り上げ申請行いました。\n運営からのお知らせをお待ち下さい。",
+                                        backgroundColor: Colors.lightBlueAccent,
+                                      );
+                                      Navigator.pop(context);
+                                    },
+                                    "キャンセル",
+                                    () {
+                                      Navigator.pop(context);
+                                    });
+                              });
+                        },
+                      ),
+                    ),
+            ],
           ),
         ),
       ),
-    ));
+    );
   }
 
   void _openMailApp() async {

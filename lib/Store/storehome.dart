@@ -1,14 +1,19 @@
+// Flutter imports:
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/HomeItemsModel(provider).dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/searchBox.dart';
 
@@ -811,15 +816,15 @@ class _StoreHomeState extends State<StoreHome>
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.symmetric(horizontal: 5.0),
                           child: ClipRRect(
-                            // child: AdWidget(
-                            //   ad: BannerAd(
-                            //     adUnitId:
-                            //         "ca-app-pub-3940256099942544/2934735716",
-                            //     size: AdSize.banner,
-                            //     request: AdRequest(),
-                            //     listener: BannerAdListener(),
-                            //   )..load(),
-                            // ),
+                            child: AdWidget(
+                              ad: BannerAd(
+                                adUnitId:
+                                    "ca-app-pub-3940256099942544/2934735716",
+                                size: AdSize.banner,
+                                request: AdRequest(),
+                                listener: BannerAdListener(),
+                              )..load(),
+                            ),
                             borderRadius: BorderRadius.circular(
                               15.0,
                             ),

@@ -1,6 +1,9 @@
-import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+// Project imports:
+import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 
 class LoadingAlertDialog extends StatelessWidget {
   final String message;

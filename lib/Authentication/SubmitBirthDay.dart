@@ -1,12 +1,18 @@
+// Dart imports:
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+// Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_date_picker/dropdown_date_picker.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/Address/address.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
-import 'package:dropdown_date_picker/dropdown_date_picker.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/main.dart';
 

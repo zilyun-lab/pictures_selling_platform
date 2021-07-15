@@ -1,10 +1,15 @@
+// Flutter imports:
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/Address/addAddress.dart';
 import 'package:selling_pictures_platform/Admin/Copy.dart';
 import 'package:selling_pictures_platform/Admin/MyUploadItems.dart';
@@ -29,7 +34,6 @@ import 'package:selling_pictures_platform/Orders/myOrders.dart';
 import 'package:selling_pictures_platform/Store/UpdateItem.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
-
 import '../main.dart';
 
 final lilBrown = HexColor("FFB47C");
@@ -101,7 +105,8 @@ Widget sourceInfoForMain(ItemModel model, BuildContext context,
           Center(
             child: Container(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(6), topRight: Radius.circular(6)),
                 child: Image.network(
                   model.thumbnailUrl,
                   fit: BoxFit.cover,
@@ -120,31 +125,46 @@ Widget sourceInfoForMain(ItemModel model, BuildContext context,
               padding: const EdgeInsets.only(
                   top: 5, right: 13.0, left: 13.0, bottom: 5),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      DefaultTextStyle(
-                        style: new TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        child: new Text(model.shortInfo),
+                      Column(
+                        children: [
+                          DefaultTextStyle(
+                            style: new TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            child: new Text(model.shortInfo),
+                          ),
+                          DefaultTextStyle(
+                            style: new TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: mainColorOfLEEWAY),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            child: new Text(
+                              model.price.toString() + "円",
+                            ),
+                          ),
+                        ],
+                        crossAxisAlignment: CrossAxisAlignment.start,
                       ),
-                      DefaultTextStyle(
-                        style: new TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: mainColorOfLEEWAY),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        child: new Text(
-                          model.price.toString() + "円",
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 3.0),
+                        child: Text(
+                          "詳しく見る",
+                          style: TextStyle(fontSize: 15, color: Colors.black54),
                         ),
                       ),
                     ],
-                    crossAxisAlignment: CrossAxisAlignment.start,
                   ),
                 ],
               ),
@@ -158,31 +178,31 @@ Widget sourceInfoForMain(ItemModel model, BuildContext context,
 
 //todo:以下商品ページ
 
-void checkItemInLike(String shortInfoAsID, BuildContext context) {
+void checkItemInLike(String itemID, BuildContext context) {
   EcommerceApp.sharedPreferences
           .getStringList(EcommerceApp.userLikeList)
-          .contains(shortInfoAsID)
-      ? removeItemFromLike(shortInfoAsID, context)
-      : addItemToLike(shortInfoAsID, context);
+          .contains(itemID)
+      ? removeItemFromLike(itemID, context)
+      : addItemToLike(itemID, context);
 }
 
 Future<bool> onLikeButtonTapped(
-    bool isLiked, String shortInfoAsID, BuildContext context) async {
+    bool isLiked, String itemID, BuildContext context) async {
   EcommerceApp.sharedPreferences
           .getStringList(EcommerceApp.userLikeList)
-          .contains(shortInfoAsID)
-      ? removeItemFromLike(shortInfoAsID, context)
-      : addItemToLike(shortInfoAsID, context);
+          .contains(itemID)
+      ? removeItemFromLike(itemID, context)
+      : addItemToLike(itemID, context);
   return !isLiked;
 }
 
 addItemToLike(
-  String shortInfoAsID,
+  String itemID,
   BuildContext context,
 ) {
   List tempLikeList =
       EcommerceApp.sharedPreferences.getStringList(EcommerceApp.userLikeList);
-  tempLikeList.add(shortInfoAsID);
+  tempLikeList.add(itemID);
   EcommerceApp.firestore
       .collection(EcommerceApp.collectionUser)
       .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
@@ -197,12 +217,12 @@ addItemToLike(
 }
 
 removeItemFromLike(
-  String shortInfoAsID,
+  String itemID,
   BuildContext context,
 ) {
   List tempCartList =
       EcommerceApp.sharedPreferences.getStringList(EcommerceApp.userLikeList);
-  tempCartList.remove(shortInfoAsID);
+  tempCartList.remove(itemID);
   EcommerceApp.firestore
       .collection(EcommerceApp.collectionUser)
       .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
@@ -547,7 +567,7 @@ Widget userLink(Map il) {
                                 horizontal: 10.0,
                               ),
                               child: Text(
-                                '${snapshot.data["description"]}',
+                                snapshot.data["description"].toString(),
                                 style: TextStyle(fontSize: 12),
                               ),
                               decoration: ShapeDecoration(
@@ -581,8 +601,7 @@ likeButton(BuildContext context, Map il) {
                     height: 60,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(primary: Colors.white),
-                      onPressed: () =>
-                          checkItemInLike(il["shortInfo"], context),
+                      onPressed: () => checkItemInLike(il["id"], context),
                       child: Center(
                         child: Icon(
                           Icons.favorite,
@@ -597,8 +616,7 @@ likeButton(BuildContext context, Map il) {
                     height: 60,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(primary: Colors.white),
-                      onPressed: () =>
-                          checkItemInLike(il["shortInfo"], context),
+                      onPressed: () => checkItemInLike(il["id"], context),
                       child: Icon(
                         Icons.favorite_outline_outlined,
                         color: Colors.pinkAccent,
@@ -906,12 +924,12 @@ Widget myPageSliderItems(BuildContext context) {
           ProceedsRequests(),
           Icons.atm_outlined,
         ),
-        sliderItem(
-          context,
-          "口座登録",
-          SubmitBankAccount(),
-          Icons.atm_outlined,
-        ),
+        // sliderItem(
+        //   context,
+        //   "口座登録",
+        //   SubmitBankAccount(),
+        //   Icons.atm_outlined,
+        // ),
         sliderItem(
           context,
           "出品履歴",
@@ -928,7 +946,7 @@ Widget myPageSliderItems(BuildContext context) {
           context,
           "購入履歴",
           MyOrders(),
-          Icons.history_outlined,
+          Icons.shopping_cart_outlined,
         ),
         sliderItem(
           context,
@@ -1115,9 +1133,8 @@ beforeDeleteDialog(BuildContext context, Map il, String id) {
 
 beginBuildingCart(BuildContext context, String title, String sub) {
   return Container(
-    color: HexColor("E67928").withOpacity(0.8),
     width: MediaQuery.of(context).size.width,
-    height: 20,
+    height: 100,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

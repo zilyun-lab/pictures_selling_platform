@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/foundation.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/Config/config.dart';
 
 class LikeItemCounter extends ChangeNotifier {

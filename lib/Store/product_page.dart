@@ -1,9 +1,14 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
-import 'package:flutter/material.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import '../main.dart';
 
@@ -448,11 +453,12 @@ class _ProductPageState extends State<ProductPage> {
           ),
           onPressed: () {
             // Navigator.pop(context);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (c) => MainPage(),
-                ));
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //       builder: (c) => MainPage(),
+            //     ));
+            Navigator.pop(context);
           },
         ),
       ),

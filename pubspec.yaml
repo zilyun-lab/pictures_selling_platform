@@ -46,6 +46,9 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   dropdown_date_picker: ^0.1.1+2
   grouped_buttons: ^1.0.4
+  import_sorter: ^4.6.0
+  simple_animations: ^3.1.1
+  flutter_brand_palettes: ^0.3.8
 
 
 

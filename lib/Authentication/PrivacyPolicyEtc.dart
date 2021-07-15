@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:selling_pictures_platform/Authentication/MyPage.dart';
 import 'package:selling_pictures_platform/Models/PrivacyPolicyAndTermsText.dart';
 
@@ -7,8 +10,7 @@ class PrivacyPolicyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       appBar: AppBar(
         leading: InkWell(
           child: Icon(
@@ -61,6 +63,6 @@ class PrivacyPolicyPage extends StatelessWidget {
           ],
         ),
       ),
-    ));
+    );
   }
 }

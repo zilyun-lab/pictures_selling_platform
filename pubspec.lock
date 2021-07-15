@@ -126,7 +126,7 @@ packages:
       name: cross_file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.1+3"
+    version: "0.3.1+4"
   crypto:
     dependency: transitive
     description:
@@ -148,6 +148,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1+2"
+  eo_color:
+    dependency: transitive
+    description:
+      name: eo_color
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.5"
   fake_async:
     dependency: transitive
     description:
@@ -237,6 +244,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_brand_palettes:
+    dependency: "direct main"
+    description:
+      name: flutter_brand_palettes
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.8"
   flutter_credit_card:
     dependency: "direct main"
     description:
@@ -400,7 +414,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.1+3"
+    version: "0.8.1+4"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -415,6 +429,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.0"
+  import_sorter:
+    dependency: "direct main"
+    description:
+      name: import_sorter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.6.0"
   intl:
     dependency: "direct main"
     description:
@@ -605,7 +626,7 @@ packages:
     source: hosted
     version: "2.0.0"
   simple_animations:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: simple_animations
       url: "https://pub.dartlang.org"
@@ -693,6 +714,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.0"
+  tint:
+    dependency: transitive
+    description:
+      name: tint
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   transparent_image:
     dependency: "direct main"
     description:
