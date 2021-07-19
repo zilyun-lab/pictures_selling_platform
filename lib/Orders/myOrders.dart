@@ -34,10 +34,7 @@ class _MyOrdersState extends State<MyOrders> {
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              Route route = MaterialPageRoute(
-                builder: (c) => MainPage(),
-              );
-              Navigator.push(context, route);
+              Navigator.pop(context);
             },
             icon: Icon(
               Icons.arrow_back_ios_rounded,

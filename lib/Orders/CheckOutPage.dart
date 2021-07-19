@@ -109,57 +109,113 @@ class _CheckOutPageState extends State<CheckOutPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-                height: 75,
-                color: Colors.white,
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    ListTile(
-                      leading: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+              height: 225,
+              color: Colors.white,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Center(
+                      child: Image.network(
+                        widget.il["thumbnailUrl"],
+                        //width: 100,
+                        height: 150,
+                        fit: BoxFit.scaleDown,
+                      ),
+                    ),
+                  ),
+                  mySizedBox(10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Image.network(
-                              widget.il["thumbnailUrl"],
-                              //width: 100,
-                              height: 100,
-                              fit: BoxFit.scaleDown,
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 0),
+                            child: Text(
+                              "作品名：" + widget.il["shortInfo"],
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection(
+                                  "users",
+                                )
+                                .where("uid", isEqualTo: widget.il["postBy"])
+                                .snapshots(),
+                            builder: (context, dataSnapshot) {
+                              return dataSnapshot.data == null
+                                  ? Container()
+                                  : Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          8.0, 0, 8, 8),
+                                      child: Text(
+                                        "作者名：" +
+                                            dataSnapshot.data.docs[0]["name"]
+                                                .toString(),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    );
+                            },
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          widget.il["shipsPayment"] == "送料込み(出品者負担)"
+                              ? Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: HexColor("#5229E5"),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Text(
+                                        "送料別途",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 12),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: HexColor("#E52971"),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Text(
+                                        "送料込み",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 12),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Text(
+                              "¥ " + widget.il["price"].toString(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20.0),
+                              //textAlign: TextAlign.right,
                             ),
                           ),
                         ],
                       ),
-                      title: Text(
-                        "作品名：" + widget.il["shortInfo"],
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection(
-                              "users",
-                            )
-                            .where("uid", isEqualTo: widget.il["postBy"])
-                            .snapshots(),
-                        builder: (context, dataSnapshot) {
-                          return dataSnapshot.data == null
-                              ? Container()
-                              : Text(
-                                  "作者名：" +
-                                      dataSnapshot.data.docs[0]["name"]
-                                          .toString(),
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                );
-                        },
-                      ),
-                      trailing: Text(
-                        "¥ " + widget.il["price"].toString(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20.0),
-                        //textAlign: TextAlign.right,
-                      ),
-                    )
-                  ],
-                )),
-            mySizedBox(40),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            mySizedBox(20),
             Container(
               color: Colors.white,
               child: ListTile(
@@ -170,12 +226,22 @@ class _CheckOutPageState extends State<CheckOutPage> {
                 trailing: Text("クレジットカード"),
               ),
             ),
-            mySizedBox(40),
+            mySizedBox(20),
+            Container(
+              color: Colors.white,
+              child: ListTile(
+                leading: Text(
+                  "送料",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
+                ),
+                trailing: Text(widget.il["shipsPayment"]),
+              ),
+            ),
+            mySizedBox(20),
             Container(
               color: Colors.white,
               child: Column(
                 children: [
-                  Divider(),
                   ListTile(
                     leading: Text(
                       "支払い金額",
@@ -530,7 +596,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                   context:
                                                                       context,
                                                                   builder: (_) {
-                                                                    return CupertinoAlertDialog(
+                                                                    return AlertDialog(
                                                                       title:
                                                                           Center(
                                                                         child:
@@ -553,95 +619,169 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                       actions: <
                                                                           Widget>[
                                                                         // ボタン領域
-                                                                        ElevatedButton(
-                                                                          child:
-                                                                              Text("キャンセル"),
-                                                                          onPressed: () =>
-                                                                              Navigator.pop(context),
-                                                                        ),
-                                                                        ElevatedButton(
-                                                                          child:
-                                                                              Text(
-                                                                            "購入する",
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontWeight: FontWeight.bold,
+                                                                        Row(
+                                                                          children: [
+                                                                            Expanded(
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.all(8.0),
+                                                                                child: ElevatedButton(
+                                                                                  child: Text("キャンセル"),
+                                                                                  onPressed: () => Navigator.pop(context),
+                                                                                ),
+                                                                              ),
                                                                             ),
-                                                                          ),
-                                                                          onPressed:
-                                                                              () {
-                                                                            final creditCard = CreditCard(
-                                                                                number: _cardNumberEditingController.text.toString(),
-                                                                                expMonth: int.parse(_expMonthEditingController.text),
-                                                                                expYear: int.parse(_expYearEditingController.text),
-                                                                                cvc: _cvcNumberEditingController.text.toString());
-                                                                            StripeService(price: widget.il["price"]).payViaExistingCard(creditCard);
-                                                                            widget.il["attribute"] == "Original"
-                                                                                ? FirebaseFirestore.instance.collection("items").doc(widget.id).update({
-                                                                                    "Stock": 0,
-                                                                                  })
-                                                                                : FirebaseFirestore.instance.collection("items").doc(widget.id).update({
-                                                                                    // "Stock": widget.stock - 1,
-                                                                                    "Stock": FieldValue.increment(-1),
-                                                                                  });
-                                                                            final ref =
-                                                                                EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID)).collection(EcommerceApp.collectionOrders).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID) + DateTime.now().millisecondsSinceEpoch.toString());
-                                                                            ref.set(
-                                                                              {
-                                                                                "id": ref.id,
-                                                                                "imageURL": widget.il["imageURL"],
-                                                                                EcommerceApp.addressID: snapshot.data.docs[index].id,
-                                                                                "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-                                                                                "orderByName": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-                                                                                EcommerceApp.productID: widget.il["shortInfo"],
-                                                                                EcommerceApp.paymentDetails: "クレジットカード",
-                                                                                EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
-                                                                                EcommerceApp.isSuccess: true,
-                                                                                "boughtFrom": widget.il["postBy"],
-                                                                                "totalPrice": widget.il["price"],
-                                                                                "isTransactionFinished": "inComplete",
-                                                                                "isDelivery": "inComplete",
-                                                                                "itemPrice": widget.il["price"],
-                                                                                "postName": widget.il["postName"],
-                                                                                "email": EcommerceApp.sharedPreferences.getString(EcommerceApp.userEmail),
-                                                                                "CancelRequest": false,
-                                                                                "CancelRequestTo": false,
-                                                                                "cancelTransactionFinished": false,
-                                                                                "itemID": widget.id
-                                                                              },
-                                                                            ).whenComplete(
-                                                                              () => {
-                                                                                finishedCheckOut(),
-                                                                              },
-                                                                            );
-                                                                            EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(widget.il["postBy"]).collection("Notify").doc(ref.id).set({
-                                                                              "id": ref.id,
-                                                                              "imageURL": widget.il["imageURL"],
-                                                                              EcommerceApp.addressID: snapshot.data.docs[index].id,
-                                                                              "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-                                                                              "orderByName": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-                                                                              EcommerceApp.productID: widget.il["shortInfo"],
-                                                                              EcommerceApp.paymentDetails: "代金引換",
-                                                                              EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
-                                                                              EcommerceApp.isSuccess: true,
-                                                                              "boughtFrom": widget.il["postName"],
-                                                                              "totalPrice": widget.il["price"],
-                                                                              "NotifyMessage": "${EcommerceApp.sharedPreferences.getString(
-                                                                                EcommerceApp.userName,
-                                                                              )} さんが${widget.il["shortInfo"]}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
-                                                                              "isTransactionFinished": "inComplete",
-                                                                              "isBuyerDelivery": "inComplete",
-                                                                              "itemPrice": widget.il["price"],
-                                                                              "buyerID": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-                                                                              "email": _email,
-                                                                              "finalGetProceeds": widget.il["finalGetProceeds"],
-                                                                              "CancelRequest": false,
-                                                                              "CancelRequestTo": false,
-                                                                              "cancelTransactionFinished": false,
-                                                                              "itemID": widget.id
-                                                                            });
-                                                                          },
-                                                                        )
+                                                                            Expanded(
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.all(8.0),
+                                                                                child: ElevatedButton(
+                                                                                  child: Text(
+                                                                                    "購入する",
+                                                                                    style: TextStyle(
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                    ),
+                                                                                  ),
+                                                                                  onPressed: () {
+                                                                                    final creditCard = CreditCard(number: _cardNumberEditingController.text.toString(), expMonth: int.parse(_expMonthEditingController.text), expYear: int.parse(_expYearEditingController.text), cvc: _cvcNumberEditingController.text.toString());
+                                                                                    StripeService(price: widget.il["price"]).payViaExistingCard(creditCard);
+                                                                                    widget.il["attribute"] == "Original"
+                                                                                        ? FirebaseFirestore.instance.collection("items").doc(widget.id).update({
+                                                                                            "Stock": 0,
+                                                                                          })
+                                                                                        : FirebaseFirestore.instance.collection("items").doc(widget.id).update({
+                                                                                            // "Stock": widget.stock - 1,
+                                                                                            "Stock": FieldValue.increment(-1),
+                                                                                          });
+                                                                                    final ref = EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID)).collection(EcommerceApp.collectionOrders).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID) + DateTime.now().millisecondsSinceEpoch.toString());
+                                                                                    ref.set(
+                                                                                      {
+                                                                                        "id": ref.id,
+                                                                                        "imageURL": widget.il["thumbnailUrl"],
+                                                                                        EcommerceApp.addressID: snapshot.data.docs[index].id,
+                                                                                        "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+                                                                                        "orderByName": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+                                                                                        EcommerceApp.productID: widget.il["shortInfo"],
+                                                                                        EcommerceApp.paymentDetails: "クレジットカード",
+                                                                                        EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
+                                                                                        EcommerceApp.isSuccess: true,
+                                                                                        "boughtFrom": widget.il["postBy"],
+                                                                                        "totalPrice": widget.il["price"],
+                                                                                        "isTransactionFinished": "inComplete",
+                                                                                        "isDelivery": "inComplete",
+                                                                                        "itemPrice": widget.il["price"],
+                                                                                        "postName": widget.il["postName"],
+                                                                                        "email": EcommerceApp.sharedPreferences.getString(EcommerceApp.userEmail),
+                                                                                        "CancelRequest": false,
+                                                                                        "CancelRequestTo": false,
+                                                                                        "cancelTransactionFinished": false,
+                                                                                        "itemID": widget.id
+                                                                                      },
+                                                                                    ).whenComplete(
+                                                                                      () => {
+                                                                                        finishedCheckOut(),
+                                                                                      },
+                                                                                    );
+                                                                                    EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(widget.il["postBy"]).collection("Notify").doc(ref.id).set({
+                                                                                      "id": ref.id,
+                                                                                      "imageURL": widget.il["thumbnailUrl"],
+                                                                                      EcommerceApp.addressID: snapshot.data.docs[index].id,
+                                                                                      "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+                                                                                      "orderByName": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+                                                                                      EcommerceApp.productID: widget.il["shortInfo"],
+                                                                                      EcommerceApp.paymentDetails: "代金引換",
+                                                                                      EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
+                                                                                      EcommerceApp.isSuccess: true,
+                                                                                      "boughtFrom": widget.il["postName"],
+                                                                                      "totalPrice": widget.il["price"],
+                                                                                      "NotifyMessage": "${EcommerceApp.sharedPreferences.getString(
+                                                                                        EcommerceApp.userName,
+                                                                                      )} さんが${widget.il["shortInfo"]}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
+                                                                                      "isTransactionFinished": "inComplete",
+                                                                                      "isBuyerDelivery": "inComplete",
+                                                                                      "itemPrice": widget.il["price"],
+                                                                                      "buyerID": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+                                                                                      "email": _email,
+                                                                                      "finalGetProceeds": widget.il["finalGetProceeds"],
+                                                                                      "CancelRequest": false,
+                                                                                      "CancelRequestTo": false,
+                                                                                      "cancelTransactionFinished": false,
+                                                                                      "itemID": widget.id
+                                                                                    });
+                                                                                    FirebaseFirestore.instance.collection("orders").doc(ref.id).set(
+                                                                                      {
+                                                                                        "id": ref.id,
+                                                                                        "imageURL": widget.il["thumbnailUrl"],
+                                                                                        EcommerceApp.addressID: snapshot.data.docs[index].id,
+                                                                                        "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+                                                                                        "orderByName": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+                                                                                        EcommerceApp.productID: widget.il["shortInfo"],
+                                                                                        EcommerceApp.paymentDetails: "代金引換",
+                                                                                        EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
+                                                                                        EcommerceApp.isSuccess: true,
+                                                                                        "boughtFrom": widget.il["postName"],
+                                                                                        "totalPrice": widget.il["price"],
+                                                                                        "NotifyMessage": "${EcommerceApp.sharedPreferences.getString(
+                                                                                          EcommerceApp.userName,
+                                                                                        )} さんが${widget.il["shortInfo"]}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
+                                                                                        "isTransactionFinished": "inComplete",
+                                                                                        "isBuyerDelivery": "inComplete",
+                                                                                        "itemPrice": widget.il["price"],
+                                                                                        "buyerID": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+                                                                                        "email": _email,
+                                                                                        "finalGetProceeds": widget.il["finalGetProceeds"],
+                                                                                        "CancelRequest": false,
+                                                                                        "CancelRequestTo": false,
+                                                                                        "cancelTransactionFinished": false,
+                                                                                        "itemID": widget.id
+                                                                                      },
+                                                                                    );
+                                                                                    FirebaseFirestore.instance
+                                                                                        .collection("users")
+                                                                                        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+                                                                                        .collection("AllNotify")
+                                                                                        .doc(
+                                                                                          EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+                                                                                        )
+                                                                                        .collection("Guide")
+                                                                                        .doc(ref.id)
+                                                                                        .set(
+                                                                                      {
+                                                                                        "Tag": "Buyer",
+                                                                                        "orderID": ref.id,
+                                                                                        "CancelRequest": false,
+                                                                                        "CancelRequestTo": false,
+                                                                                        "cancelTransactionFinished": false,
+                                                                                        "isTransactionFinished": false,
+                                                                                        "isBuyerDelivery": false,
+                                                                                      },
+                                                                                    );
+                                                                                    FirebaseFirestore.instance
+                                                                                        .collection("users")
+                                                                                        .doc(
+                                                                                          widget.il["postBy"],
+                                                                                        )
+                                                                                        .collection("AllNotify")
+                                                                                        .doc(widget.il["postBy"])
+                                                                                        .collection("Guide")
+                                                                                        .doc(ref.id)
+                                                                                        .set(
+                                                                                      {
+                                                                                        "Tag": "Seller",
+                                                                                        "orderID": ref.id,
+                                                                                        "CancelRequest": false,
+                                                                                        "CancelRequestTo": false,
+                                                                                        "cancelTransactionFinished": false,
+                                                                                        "isTransactionFinished": false,
+                                                                                        "isBuyerDelivery": false,
+                                                                                      },
+                                                                                    );
+                                                                                  },
+                                                                                ),
+                                                                              ),
+                                                                            )
+                                                                          ],
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.center,
+                                                                        ),
                                                                       ],
                                                                     );
                                                                   },
@@ -726,22 +866,37 @@ class _CheckOutPageState extends State<CheckOutPage> {
           content: Text(
               "よろしければ「${widget.il["shortInfo"]}」の作者である\n「${widget.il["postName"]}」さんをフォローして応援しませんか？"),
           actions: [
-            ElevatedButton(
-              child: Text("フォローしない"),
-              onPressed: () => Navigator.pop(context),
-            ),
-            ElevatedButton(
-              child: Text("フォローする"),
-              onPressed: () {
-                FirebaseFirestore.instance
-                    .collection("users")
-                    .doc(widget.il["postBy"])
-                    .collection("Followers")
-                    .doc(EcommerceApp.sharedPreferences
-                        .getString(EcommerceApp.userUID))
-                    .set({"isFollow": true});
-                Navigator.pop(context);
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      child: Text("フォローしない"),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      child: Text("フォローする"),
+                      onPressed: () {
+                        FirebaseFirestore.instance
+                            .collection("users")
+                            .doc(widget.il["postBy"])
+                            .collection("Followers")
+                            .doc(EcommerceApp.sharedPreferences
+                                .getString(EcommerceApp.userUID))
+                            .set({"isFollow": true});
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         );

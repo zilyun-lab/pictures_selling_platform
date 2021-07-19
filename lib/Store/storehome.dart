@@ -816,15 +816,15 @@ class _StoreHomeState extends State<StoreHome>
                           width: MediaQuery.of(context).size.width,
                           margin: EdgeInsets.symmetric(horizontal: 5.0),
                           child: ClipRRect(
-                            child: AdWidget(
-                              ad: BannerAd(
-                                adUnitId:
-                                    "ca-app-pub-3940256099942544/2934735716",
-                                size: AdSize.banner,
-                                request: AdRequest(),
-                                listener: BannerAdListener(),
-                              )..load(),
-                            ),
+                            // child: AdWidget(
+                            //   ad: BannerAd(
+                            //     adUnitId:
+                            //         "ca-app-pub-3940256099942544/2934735716",
+                            //     size: AdSize.banner,
+                            //     request: AdRequest(),
+                            //     listener: BannerAdListener(),
+                            //   )..load(),
+                            // ),
                             borderRadius: BorderRadius.circular(
                               15.0,
                             ),

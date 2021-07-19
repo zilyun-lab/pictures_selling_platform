@@ -211,6 +211,28 @@ class _ProductPageState extends State<ProductPage> {
                           height: 10,
                         ),
                         Text(
+                          "送料",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          il["shipsPayment"],
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Divider(
+                          thickness: 1,
+                          color: Colors.white,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
                           "カテゴリー",
                           style: TextStyle(
                             fontSize: 12,

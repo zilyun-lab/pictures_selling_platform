@@ -49,6 +49,8 @@ dependencies:
   import_sorter: ^4.6.0
   simple_animations: ^3.1.1
   flutter_brand_palettes: ^0.3.8
+  firebase_messaging: ^10.0.4
+  flutter_local_notifications: ^6.0.0
 
 
 

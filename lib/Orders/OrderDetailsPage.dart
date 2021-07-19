@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 // Package imports:
@@ -78,7 +79,7 @@ class OrderDetails extends StatelessWidget {
                                                 .sharedPreferences
                                                 .getString(
                                                     EcommerceApp.userUID)),
-                                        speakingToID,
+                                        snap.data["boughtFrom"],
                                         orderID,
                                         speakingToName,
                                         EcommerceApp.sharedPreferences
@@ -175,9 +176,31 @@ class OrderDetails extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(4.0),
-                            child: Text("ご注文ID: " + getOrderId),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.all(4.0),
+                                  child: Text("ご注文ID: " + getOrderId),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.edit,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () async {
+                                    final data =
+                                        ClipboardData(text: getOrderId);
+                                    await Clipboard.setData(data);
+                                    print(data.text);
+                                  },
+                                ),
+                              )
+                            ],
                           ),
                           Padding(
                             padding: EdgeInsets.all(4.0),
@@ -424,141 +447,192 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                 dataMap = snapshot.data.data();
               }
 
-              return snapshot.data["cancelTransactionFinished"]
-                  ? Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Container(
-                        color: Colors.grey,
-                        width: MediaQuery.of(context).size.width,
-                        height: 50,
-                        child: Center(
-                          child: Text(
-                            "この注文はキャンセルされました。",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  : Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.all(
-                            5,
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              print(widget.postBy);
-
-                              print(widget.orderID);
-                              return showDialog(
-                                context: context,
-                                builder: (_) {
-                                  return SimpleDialog(
-                                    title: Center(
-                                      child: Text(
-                                        "受け取り確認・評価",
-                                      ),
-                                    ),
-                                    children: [
-                                      Center(
-                                        child: RatingBar.builder(
-                                          initialRating: 3,
-                                          minRating: 1,
-                                          direction: Axis.horizontal,
-                                          allowHalfRating: true,
-                                          itemCount: 5,
-                                          itemPadding: EdgeInsets.symmetric(
-                                              horizontal: 4.0),
-                                          itemBuilder: (context, _) => Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
-                                          ),
-                                          onRatingUpdate: (rating) {
-                                            getReviewCount = rating;
-                                            print(getReviewCount);
-                                            print(rating);
-                                          },
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Center(
-                                          child: Container(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: TextField(
-                                                controller:
-                                                    reviewTextController,
-                                                decoration: InputDecoration(
-                                                    hintStyle: TextStyle(
-                                                        color: Colors.grey,
-                                                        fontSize: 12),
-                                                    hintText:
-                                                        "作者に何かメッセージを送ってみましょう！",
-                                                    border: InputBorder.none),
-                                              ),
-                                            ),
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                border: Border.all(
-                                                    color: HexColor("3e1300"),
-                                                    width: 3)),
-                                            height: 80,
-                                          ),
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text("キャンセル")),
-                                          ElevatedButton(
-                                              onPressed: () {
-                                                completeTransactionAndNotifySellar(
-                                                    context, getOrderId);
-                                                saveReviewCount();
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (c) =>
-                                                            MainPage()));
-                                              },
-                                              child: Text("送信する")),
-                                        ],
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-
-                              // print(proceeds);
-                            },
-                            child: Container(
-                              color: Colors.black,
-                              width: MediaQuery.of(context).size.width,
-                              height: 50,
-                              child: Center(
-                                child: Text(
-                                  "受け取り確認へ進む",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                  ),
+              return !snapshot.hasData
+                  ? Container()
+                  : snapshot.data["cancelTransactionFinished"]
+                      ? Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Container(
+                            color: Colors.grey,
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            child: Center(
+                              child: Text(
+                                "この注文はキャンセルされました。",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
+                        )
+                      : dataMap["isDelivery"] == "inComplete"
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                color: Colors.black,
+                                width: MediaQuery.of(context).size.width,
+                                height: 50,
+                                child: Center(
+                                  child: Text(
+                                    "出品者の発送をお待ち下さい",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : dataMap["isTransactionFinished"] == "Complete"
+                              ? Container(
+                                  color: Colors.grey,
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 50,
+                                  child: Center(
+                                    child: Text(
+                                      "取引終了です。\n引き続きLEEWAYをお楽しみ下さい。",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(
+                                        5,
+                                      ),
+                                      child: InkWell(
+                                        onTap: () {
+                                          print(widget.postBy);
+
+                                          print(widget.orderID);
+                                          return showDialog(
+                                            context: context,
+                                            builder: (_) {
+                                              return SimpleDialog(
+                                                title: Center(
+                                                  child: Text(
+                                                    "受け取り確認・評価",
+                                                  ),
+                                                ),
+                                                children: [
+                                                  Center(
+                                                    child: RatingBar.builder(
+                                                      initialRating: 3,
+                                                      minRating: 1,
+                                                      direction:
+                                                          Axis.horizontal,
+                                                      allowHalfRating: true,
+                                                      itemCount: 5,
+                                                      itemPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 4.0),
+                                                      itemBuilder:
+                                                          (context, _) => Icon(
+                                                        Icons.star,
+                                                        color: Colors.amber,
+                                                      ),
+                                                      onRatingUpdate: (rating) {
+                                                        getReviewCount = rating;
+                                                        print(getReviewCount);
+                                                        print(rating);
+                                                      },
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Center(
+                                                      child: Container(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: TextField(
+                                                            controller:
+                                                                reviewTextController,
+                                                            decoration: InputDecoration(
+                                                                hintStyle: TextStyle(
+                                                                    color: Colors
+                                                                        .grey,
+                                                                    fontSize:
+                                                                        12),
+                                                                hintText:
+                                                                    "作者に何かメッセージを送ってみましょう！",
+                                                                border:
+                                                                    InputBorder
+                                                                        .none),
+                                                          ),
+                                                        ),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            border: Border.all(
+                                                                color: HexColor(
+                                                                    "3e1300"),
+                                                                width: 3)),
+                                                        height: 80,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: Text("キャンセル")),
+                                                      ElevatedButton(
+                                                          onPressed: () {
+                                                            completeTransactionAndNotifySellar(
+                                                                context,
+                                                                getOrderId);
+                                                            saveReviewCount();
+                                                            Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder: (c) =>
+                                                                        MainPage()));
+                                                          },
+                                                          child: Text("送信する")),
+                                                    ],
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+
+                                          // print(proceeds);
+                                        },
+                                        child: Container(
+                                          color: Colors.black,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          height: 50,
+                                          child: Center(
+                                            child: Text(
+                                              "受け取り確認へ進む",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
             },
           ),
           SizedBox(
@@ -656,6 +730,53 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                                                       ),
                                                       ElevatedButton(
                                                         onPressed: () {
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(EcommerceApp
+                                                                  .sharedPreferences
+                                                                  .getString(
+                                                                      EcommerceApp
+                                                                          .userUID))
+                                                              .collection(
+                                                                  "AllNotify")
+                                                              .doc(EcommerceApp
+                                                                  .sharedPreferences
+                                                                  .getString(
+                                                                      EcommerceApp
+                                                                          .userUID))
+                                                              .collection(
+                                                                  "Guide")
+                                                              .doc(widget
+                                                                  .orderID)
+                                                              .update({
+                                                            "CancelRequest":
+                                                                true,
+                                                            "cancelTransactionFinished":
+                                                                true,
+                                                          });
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(
+                                                                  widget.postBy)
+                                                              .collection(
+                                                                  "AllNotify")
+                                                              .doc(
+                                                                  widget.postBy)
+                                                              .collection(
+                                                                  "Guide")
+                                                              .doc(widget
+                                                                  .orderID)
+                                                              .update({
+                                                            "CancelRequest":
+                                                                true,
+                                                            "cancelTransactionFinished":
+                                                                true,
+                                                          });
+
                                                           FirebaseFirestore
                                                               .instance
                                                               .collection(
@@ -824,13 +945,38 @@ class _ShippingDetailsState extends State<ShippingDetails> {
     );
 
     EcommerceApp.firestore
-        .collection(EcommerceApp.collectionUser)
-        .doc(widget.postBy)
-        .collection("MyProceeds")
-        .doc()
+        .collection("users")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("AllNotify")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("Guide")
+        .doc(mOrderId)
         .update(
-      {"Proceeds": FieldValue.increment(proceed)},
+      {
+        "isTransactionFinished": true,
+      },
     );
+    EcommerceApp.firestore
+        .collection("users")
+        .doc(widget.postBy)
+        .collection("AllNotify")
+        .doc(widget.postBy)
+        .collection("Guide")
+        .doc(mOrderId)
+        .update(
+      {
+        "isTransactionFinished": true,
+      },
+    );
+
+    // EcommerceApp.firestore
+    //     .collection(EcommerceApp.collectionUser)
+    //     .doc(widget.postBy)
+    //     .collection("MyProceeds")
+    //     .doc(widget.postBy)
+    //     .update(
+    //   {"Proceeds": FieldValue.increment(proceed)},
+    // );
 
     getOrderId = "";
     Route route = MaterialPageRoute(builder: (c) => StoreHome());
@@ -859,7 +1005,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: HexColor(
@@ -910,53 +1056,58 @@ class _ChatPageState extends State<ChatPage> {
               height: 1.0,
               thickness: 3,
             ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              color: Colors.white,
-              // margin: EdgeInsets.only(bottom: 20.0, right: 10.0, left: 10.0),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: <Widget>[
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 10.0,
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: mainColor, width: 3),
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
+            Expanded(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                color: Colors.white,
+                margin: EdgeInsets.only(bottom: 20.0, right: 10.0, left: 10.0),
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: <Widget>[
+                          Flexible(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 10.0,
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: new TextField(
-                                  controller: _messageController,
-                                  onSubmitted: _handleSubmit,
-                                  decoration: new InputDecoration.collapsed(
-                                      hintText: "メッセージの送信"),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: mainColor, width: 3),
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: new TextField(
+                                    keyboardType: TextInputType.multiline,
+                                    maxLines: null,
+                                    controller: _messageController,
+                                    onSubmitted: _myHandleSubmit,
+                                    decoration: new InputDecoration.collapsed(
+                                        hintText: "メッセージの送信"),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        new Container(
-                          child: IconButton(
-                              icon: Icon(
-                                Icons.send,
-                                size: 30,
-                                color: HexColor("#E67928"),
-                              ),
-                              onPressed: () {
-                                _handleSubmit(_messageController.text);
-                              }),
-                        ),
-                      ],
-                    ),
-                  ],
+                          new Container(
+                            child: IconButton(
+                                icon: Icon(
+                                  Icons.send,
+                                  size: 30,
+                                  color: HexColor("#E67928"),
+                                ),
+                                onPressed: () {
+                                  _myHandleSubmit(_messageController.text);
+                                }),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -1031,19 +1182,52 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
-  _handleSubmit(String message) {
+  _myHandleSubmit(String message) {
     _messageController.text = "";
-    var db = FirebaseFirestore.instance;
-    db.collection("chat_room").doc(widget.orderId).collection("chat").add({
+    // var db = FirebaseFirestore.instance
+    //     .collection("users")
+    //     .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+    //     .collection("orders")
+    //     .doc(widget.orderId);
+    // db.collection("chat_room").doc(widget.orderId).collection("chat").add({
+    //   "user_name":
+    //       EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+    //   "myId": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+    //   "message": message,
+    //   "created_at": DateTime.now().millisecondsSinceEpoch.toString()
+    // });
+    var db2 = FirebaseFirestore.instance;
+    db2.collection("chat_room").doc(widget.orderId).collection("chat").add({
       "user_name":
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
       "myId": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
       "message": message,
       "created_at": DateTime.now().millisecondsSinceEpoch.toString()
-    }).then((val) {
-      print("成功です");
-    }).catchError((err) {
-      print(err);
+    });
+
+    var db3 = FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.speakingToId)
+        .collection("Notify")
+        .doc(widget.orderId);
+    db3.collection("chat_room").doc(widget.orderId).collection("chat").add({
+      "user_name":
+          EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+      "myId": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+      "message": message,
+      "created_at": DateTime.now().millisecondsSinceEpoch.toString()
+    });
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.speakingToId)
+        .collection("chat")
+        .add({
+      "orderID": widget.orderId,
+      "user_name":
+          EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+      "myId": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+      "message": message,
+      "created_at": DateTime.now().millisecondsSinceEpoch.toString()
     });
   }
 }

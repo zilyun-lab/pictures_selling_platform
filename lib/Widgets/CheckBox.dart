@@ -295,6 +295,29 @@ class NormalCheckBoxDialogState extends State<NormalCheckBoxDialog> {
                                   backgroundColor: HexColor("#E67928"),
                                 );
                               });
+
+                              FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(EcommerceApp.sharedPreferences
+                                      .getString(EcommerceApp.userUID))
+                                  .collection("AllNotify")
+                                  .doc(widget.orderID)
+                                  .collection("Guide")
+                                  .doc(widget.orderID)
+                                  .update({
+                                "CancelRequestTo": true,
+                              });
+                              FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(widget.postBy)
+                                  .collection("AllNotify")
+                                  .doc(widget.orderID)
+                                  .collection("Guide")
+                                  .doc(widget.orderID)
+                                  .update({
+                                "CancelRequestTo": true,
+                              });
+
                               FirebaseFirestore.instance
                                   .collection("cancelReport")
                                   .doc(widget.orderID)

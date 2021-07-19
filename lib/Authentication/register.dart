@@ -447,7 +447,7 @@ class _RegisterState extends State<Register> {
         .collection("users")
         .doc(fUser.uid)
         .collection("MyProceeds")
-        .doc()
+        .doc(fUser.uid)
         .set(
       {
         "Proceeds": 0,
@@ -464,10 +464,28 @@ class _RegisterState extends State<Register> {
     FirebaseFirestore.instance
         .collection("users")
         .doc(fUser.uid)
+        .collection("AllNotify")
+        .doc(fUser.uid)
+        .set(
+      {},
+    );
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(fUser.uid)
         .collection("BankAccount")
         .doc()
         .set(
       {"Submit": "false"},
+    );
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(fUser.uid)
+        .collection("AllNotify")
+        .doc(fUser.uid)
+        .collection("From Admin")
+        .doc()
+        .set(
+      {"message": "会員登録ありがとうございます。", "date": DateTime.now(), "Tag": "Admin"},
     );
 
     await EcommerceApp.sharedPreferences.setString(

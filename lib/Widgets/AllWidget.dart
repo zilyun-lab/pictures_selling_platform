@@ -577,7 +577,7 @@ Widget userLink(Map il) {
                                   radius: 10,
                                 ),
                               ),
-                            ), //["PostBy"]}\nshortInfo:${document.data()["shortInfo"]}'),
+                            ),
                           ),
                         );
                 })),
@@ -944,13 +944,13 @@ Widget myPageSliderItems(BuildContext context) {
         ),
         sliderItem(
           context,
-          "購入履歴",
+          "購入取引",
           MyOrders(),
           Icons.shopping_cart_outlined,
         ),
         sliderItem(
           context,
-          "取引履歴",
+          "販売取引",
           TransactionPage(),
           Icons.history_outlined,
         ),

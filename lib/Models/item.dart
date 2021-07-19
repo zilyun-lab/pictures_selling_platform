@@ -17,7 +17,7 @@ class ItemModel {
   String postName;
   String itemWidth;
   String itemHeight;
-  double finalGetProceeds;
+  int finalGetProceeds;
   String shipsPayment;
   String shipsDate;
   String paper;

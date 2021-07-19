@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Project imports:
 import 'package:selling_pictures_platform/Authentication/MyPage.dart';
+import 'package:selling_pictures_platform/Authentication/Notification.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Store/BSTransaction.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
@@ -500,6 +501,10 @@ List<BottomNavigationEntity> navigationList = [
       page: LikePage()),
   // BottomNavigationEntity(
   //     title: "検索", icon: Icon(Icons.search), page: SearchProduct()),
+  BottomNavigationEntity(
+      title: "通知",
+      icon: Icon(Icons.notifications_active_outlined),
+      page: UserNotification()),
   BottomNavigationEntity(
       title: "マイページ", icon: Icon(Icons.perm_identity), page: MyPage()),
 ];

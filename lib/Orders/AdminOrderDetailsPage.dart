@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -10,19 +12,16 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:selling_pictures_platform/Address/address.dart';
 import 'package:selling_pictures_platform/Admin/uploadItems.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/address.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
-import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/CheckBox.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:selling_pictures_platform/Widgets/orderCard.dart';
-import 'package:selling_pictures_platform/main.dart';
 
 String getOrderId = "";
 String getNotifyID = "";
@@ -74,7 +73,7 @@ class AdminOrderDetails extends StatelessWidget {
                                                 .sharedPreferences
                                                 .getString(
                                                     EcommerceApp.userUID)),
-                                        speakingToID,
+                                        snap.data["buyerID"],
                                         orderID,
                                         speakingToName,
                                         EcommerceApp.sharedPreferences
@@ -172,7 +171,7 @@ class AdminOrderDetails extends StatelessWidget {
                           ),
                           Padding(
                             padding: EdgeInsets.all(4.0),
-                            child: Text("ご注文ID: " + getOrderId),
+                            child: Text("ご注文ID: " + orderID),
                           ),
                           Padding(
                             padding: EdgeInsets.all(4.0),
@@ -297,6 +296,7 @@ class _ShippingDetailsState extends State<ShippingDetails> {
   }
 
   bool isShipped = false;
+  bool isPressed = false;
   @override
   Widget build(BuildContext context) {
     getOrderId = widget.orderID;
@@ -309,78 +309,202 @@ class _ShippingDetailsState extends State<ShippingDetails> {
         SizedBox(
           height: 20,
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Text(
-            "お届け先",
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 80, vertical: 5),
-          width: screenWidth,
-          child: Table(
-            children: [
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: KeyText(msg: "氏名"),
-                  ),
-                  Text(widget.model.lastName + " " + widget.model.firstName),
-                ],
-              ),
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: KeyText(msg: "郵便番号"),
-                  ),
-                  Text(widget.model.postalCode),
-                ],
-              ),
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: KeyText(msg: "都道府県"),
-                  ),
-                  Text(widget.model.prefectures),
-                ],
-              ),
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: KeyText(msg: "市区町村"),
-                  ),
-                  Text(widget.model.city),
-                ],
-              ),
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: KeyText(msg: "番地および\n任意の建物名"),
-                  ),
-                  Text(widget.model.address),
-                ],
-              ),
-              TableRow(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: KeyText(msg: "電話番号"),
-                  ),
-                  Text(widget.model.phoneNumber),
-                ],
-              ),
-            ],
-          ),
-        ),
+        StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+            stream: FirebaseFirestore.instance
+                .collection("users")
+                .doc(EcommerceApp.sharedPreferences
+                    .getString(EcommerceApp.userUID))
+                .collection("Notify")
+                .doc(getOrderId)
+                .snapshots(),
+            builder: (context, snapshot) {
+              return !snapshot.hasData
+                  ? Container()
+                  : snapshot.data.data()["isBuyerDelivery"] == "inComplete"
+                      ? isPressed == false
+                          ? InkWell(
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (c) {
+                                      return AlertDialog(
+                                        title: Text("送り先情報を確認しますか？"),
+                                        content: RichText(
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          text: TextSpan(
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.black,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text: "*",
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: "表示は5分間のみです。\n表示しますか？",
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        actions: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                        print(getOrderId);
+                                                        print(buyerIDFromFB);
+                                                      },
+                                                      child: Text("いいえ")),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: ElevatedButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          isPressed = true;
+                                                        });
+                                                        Navigator.pop(context);
+                                                        Timer(
+                                                            Duration(
+                                                              seconds: 10,
+                                                            ), () {
+                                                          setState(() {
+                                                            isPressed = false;
+                                                          });
+                                                        });
+                                                      },
+                                                      child: Text("はい")),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      );
+                                    });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  color: Colors.redAccent,
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 50,
+                                  child: Center(
+                                    child: Text(
+                                      "送り先住所を確認する",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Column(
+                              children: [
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Text(
+                                    "お届け先",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 80, vertical: 5),
+                                  width: screenWidth,
+                                  child: Table(
+                                    children: [
+                                      TableRow(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 3.0),
+                                            child: KeyText(msg: "氏名"),
+                                          ),
+                                          Text(widget.model.lastName +
+                                              " " +
+                                              widget.model.firstName),
+                                        ],
+                                      ),
+                                      TableRow(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 3.0),
+                                            child: KeyText(msg: "郵便番号"),
+                                          ),
+                                          Text(widget.model.postalCode),
+                                        ],
+                                      ),
+                                      TableRow(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 3.0),
+                                            child: KeyText(msg: "都道府県"),
+                                          ),
+                                          Text(widget.model.prefectures),
+                                        ],
+                                      ),
+                                      TableRow(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 3.0),
+                                            child: KeyText(msg: "市区町村"),
+                                          ),
+                                          Text(widget.model.city),
+                                        ],
+                                      ),
+                                      TableRow(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 3.0),
+                                            child:
+                                                KeyText(msg: "番地および\n任意の建物名"),
+                                          ),
+                                          Text(widget.model.address),
+                                        ],
+                                      ),
+                                      TableRow(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 3.0),
+                                            child: KeyText(msg: "電話番号"),
+                                          ),
+                                          Text(widget.model.phoneNumber),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
+                      : Container();
+            }),
         SizedBox(
           height: 15,
         ),
@@ -435,7 +559,7 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                                             onPressed: () {
                                               completeTransactionAndNotifySellar(
                                                   context,
-                                                  orderIDFromFB,
+                                                  widget.orderID,
                                                   buyerIDFromFB);
                                             },
                                             child: Text(
@@ -491,23 +615,41 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                               ),
                             ),
                           )
-                        : Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Container(
-                              color: Colors.black,
-                              width: MediaQuery.of(context).size.width,
-                              height: 50,
-                              child: Center(
-                                child: Text(
-                                  "購入者の受け取りをお待ちください。",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
+                        : dataMap["isTransactionFinished"] == "Complete"
+                            ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  color: Colors.grey,
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 50,
+                                  child: Center(
+                                    child: Text(
+                                      "取引終了です。\n引き続きLEEWAYをお楽しみ下さい。",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          )
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Container(
+                                  color: Colors.black,
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 50,
+                                  child: Center(
+                                    child: Text(
+                                      "購入者の受け取りをお待ちください。",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
                 : Container();
           },
         ),
@@ -587,27 +729,45 @@ class _ShippingDetailsState extends State<ShippingDetails> {
       "message": "本日作品を発送しました。\n到着まで少々お待ちください。",
       "created_at": DateTime.now().millisecondsSinceEpoch.toString()
     });
-    final order = EcommerceApp.firestore
-        .collection(EcommerceApp.collectionUser)
-        .doc(cId)
-        .collection(EcommerceApp.collectionOrders)
-        .doc(mOrderId)
-        .get();
 
     EcommerceApp.firestore
-        .collection(EcommerceApp.collectionUser)
+        .collection("users")
         .doc(cId)
-        .collection(EcommerceApp.collectionOrders)
+        .collection("orders")
         .doc(mOrderId)
         .update(
       {
-        "isBuyerDelivery": "Complete",
+        "isDelivery": "Complete",
       },
     );
     EcommerceApp.firestore
-        .collection(EcommerceApp.collectionUser)
+        .collection("users")
+        .doc(cId)
+        .collection("AllNotify")
+        .doc(cId)
+        .collection("Guide")
+        .doc(mOrderId)
+        .update(
+      {
+        "isBuyerDelivery": true,
+      },
+    );
+    EcommerceApp.firestore
+        .collection("users")
         .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
-        .collection(EcommerceApp.collectionOrders)
+        .collection("AllNotify")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("Guide")
+        .doc(mOrderId)
+        .update(
+      {
+        "isBuyerDelivery": true,
+      },
+    );
+    EcommerceApp.firestore
+        .collection("users")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("Notify")
         .doc(mOrderId)
         .update(
       {
@@ -652,7 +812,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       appBar: new AppBar(
         backgroundColor: HexColor(
@@ -663,41 +823,43 @@ class _ChatPageState extends State<ChatPage> {
       body: Container(
         child: Column(
           children: <Widget>[
-            Container(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection("chat_room")
-                    .doc(widget.orderId)
-                    .collection("chat")
-                    .orderBy("created_at", descending: true)
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) return Container();
-                  return new ListView.builder(
-                    shrinkWrap: true,
-                    padding: new EdgeInsets.all(8.0),
-                    reverse: true,
-                    itemBuilder: (_, int index) {
-                      DocumentSnapshot document = snapshot.data.docs[index];
+            Expanded(
+              child: Container(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection("chat_room")
+                      .doc(widget.orderId)
+                      .collection("chat")
+                      .orderBy("created_at", descending: true)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) return Container();
+                    return new ListView.builder(
+                      shrinkWrap: true,
+                      padding: new EdgeInsets.all(8.0),
+                      reverse: true,
+                      itemBuilder: (_, int index) {
+                        DocumentSnapshot document = snapshot.data.docs[index];
 
-                      bool isOwnMessage = false;
-                      if (document['myId'] ==
-                          EcommerceApp.sharedPreferences
-                              .getString(EcommerceApp.userUID)) {
-                        isOwnMessage = true;
-                      }
-                      return isOwnMessage
-                          ? _ownMessage(document['message'],
-                              document['user_name'], document['created_at'])
-                          : _message(document['message'], document['user_name'],
-                              document['created_at']);
-                    },
-                    itemCount: snapshot.data.docs.length,
-                  );
-                },
+                        bool isOwnMessage = false;
+                        if (document['myId'] ==
+                            EcommerceApp.sharedPreferences
+                                .getString(EcommerceApp.userUID)) {
+                          isOwnMessage = true;
+                        }
+                        return isOwnMessage
+                            ? _ownMessage(document['message'],
+                                document['user_name'], document['created_at'])
+                            : _message(document['message'],
+                                document['user_name'], document['created_at']);
+                      },
+                      itemCount: snapshot.data.docs.length,
+                    );
+                  },
+                ),
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height * 0.81,
               ),
-              color: Colors.white,
-              height: MediaQuery.of(context).size.height * 0.81,
             ),
             new Divider(
               height: 1.0,
@@ -706,7 +868,7 @@ class _ChatPageState extends State<ChatPage> {
             Container(
               width: MediaQuery.of(context).size.width,
               color: Colors.white,
-              // margin: EdgeInsets.only(bottom: 20.0, right: 10.0, left: 10.0),
+              margin: EdgeInsets.only(bottom: 20.0, right: 10.0, left: 10.0),
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Column(
@@ -727,6 +889,8 @@ class _ChatPageState extends State<ChatPage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: new TextField(
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null,
                                   controller: _messageController,
                                   onSubmitted: _handleSubmit,
                                   decoration: new InputDecoration.collapsed(
@@ -828,6 +992,50 @@ class _ChatPageState extends State<ChatPage> {
     _messageController.text = "";
     var db = FirebaseFirestore.instance;
     db.collection("chat_room").doc(widget.orderId).collection("chat").add({
+      "user_name":
+          EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+      "myId": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+      "message": message,
+      "created_at": DateTime.now().millisecondsSinceEpoch.toString()
+    });
+
+    // db
+    //     .collection("users")
+    //     .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+    //     .collection("Notify")
+    //     .doc(widget.orderId)
+    //     .collection("chat_room")
+    //     .doc(widget.orderId)
+    //     .collection("chat")
+    //     .add({
+    //   "user_name":
+    //       EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+    //   "myId": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+    //   "message": message,
+    //   "created_at": DateTime.now().millisecondsSinceEpoch.toString()
+    // });
+
+    db
+        .collection("users")
+        .doc(widget.speakingToId)
+        .collection("orders")
+        .doc(widget.orderId)
+        .collection("chat_room")
+        .doc(widget.orderId)
+        .collection("chat")
+        .add({
+      "user_name":
+          EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+      "myId": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+      "message": message,
+      "created_at": DateTime.now().millisecondsSinceEpoch.toString()
+    });
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.speakingToId)
+        .collection("chat")
+        .add({
+      "orderID": widget.orderId,
       "user_name":
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
       "myId": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
