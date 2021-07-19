@@ -333,12 +333,22 @@ class _ShippingDetailsState extends State<ShippingDetails> {
     itemID = snap.data()['itemID'];
   }
 
+  getOrderData() async {
+    DocumentSnapshot<Map<String, dynamic>> snap = await FirebaseFirestore
+        .instance
+        .collection("orders")
+        .doc(widget.orderID)
+        .get();
+    return snap.data();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     fetchGetProceeds();
     fetchItemData();
+    getOrderData();
   }
 
   @override
@@ -941,6 +951,41 @@ class _ShippingDetailsState extends State<ShippingDetails> {
       {
         "isTransactionFinished": "Complete",
         "isBuyerDelivery": "Complete",
+      },
+    );
+    EcommerceApp.firestore.collection("orders").doc(widget.orderID).update(
+      {
+        "isTransactionFinished": "Complete",
+        "isBuyerDelivery": "Complete",
+      },
+    );
+
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("AllNotify")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("From Admin")
+        .doc()
+        .set(
+      {
+        "date": DateTime.now(),
+        "Tag": "Transaction",
+        "id": widget.orderID,
+      },
+    );
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.postBy)
+        .collection("AllNotify")
+        .doc(widget.postBy)
+        .collection("From Admin")
+        .doc()
+        .set(
+      {
+        "date": DateTime.now(),
+        "Tag": "Transaction",
+        "id": widget.orderID,
       },
     );
 

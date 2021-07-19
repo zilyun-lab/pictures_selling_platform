@@ -1,10 +1,12 @@
 // Flutter imports:
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
@@ -13,9 +15,12 @@ import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/HomeItemsModel(provider).dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
+import 'package:selling_pictures_platform/PushNotifications/message.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/searchBox.dart';
+
+import '../main.dart';
 
 double width;
 
@@ -47,6 +52,43 @@ class _StoreHomeState extends State<StoreHome>
     super.initState();
     initAd();
     _tabcontroller = TabController(length: 5, vsync: this);
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage message) {
+      if (message != null) {
+        Navigator.pushNamed(context, '/message',
+            arguments: MessageArguments(message, openedApplication: true));
+      }
+    });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      final notification = message.notification;
+      final android = message.notification?.android;
+
+      if (notification != null && android != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channel.description,
+                // ignore: flutter_style_todos
+                // TODO add a proper drawable resource to android, for now using
+                //      one that already exists in example app.
+                icon: 'launch_background',
+              ),
+            ));
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('新規メッセージイベントがありました。');
+      Navigator.pushNamed(context, '/message',
+          arguments: MessageArguments(message, openedApplication: true));
+    });
   }
 
   @override

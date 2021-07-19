@@ -2,13 +2,14 @@
 import 'dart:async';
 
 // Flutter imports:
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
@@ -20,12 +21,32 @@ import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/StarRatingModel.dart';
 import 'Admin/test.dart';
+import 'Authentication/Notification.dart';
 import 'Counters/Likeitemcounter.dart';
 import 'Counters/changeAddresss.dart';
 import 'Models/GetLikeItemsModel.dart';
 import 'Models/HEXCOLOR.dart';
 import 'Models/allList.dart';
+import 'PushNotifications/PushNotificationPage.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
+  print('Handling a background message ${message.messageId}');
+}
+
+/// Create a [AndroidNotificationChannel] for heads up notifications
+const AndroidNotificationChannel channel = AndroidNotificationChannel(
+  'high_importance_channel', // id
+  'High Importance Notifications', // title
+  'This channel is used for important notifications.', // description
+  importance: Importance.high,
+);
+
+/// Initialize the [FlutterLocalNotificationsPlugin] package.
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 final navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
@@ -36,6 +57,24 @@ Future<void> main() async {
   EcommerceApp.auth = FirebaseAuth.instance;
   EcommerceApp.sharedPreferences = await SharedPreferences.getInstance();
   EcommerceApp.firestore = FirebaseFirestore.instance;
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  /// Create an Android Notification Channel.
+  ///
+  /// We use this channel in the `AndroidManifest.xml` file to override the
+  /// default FCM channel to enable heads up notifications.
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+  /// Update the iOS foreground notification presentation options to allow
+  /// heads up notifications.
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
   runApp(
     MyApp(),
   );
@@ -67,6 +106,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: HexColor("#E67928"),
         ),
+        routes: {
+          '/message': (context) => UserNotification(),
+        },
       ),
     );
   }
@@ -176,8 +218,8 @@ class _MainPageState extends State<MainPage> {
               child: InkWell(
                 child: Image.asset("images/NoColor_horizontal.png"),
                 onTap: () {
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (c) => Bubbles()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (c) => Application()));
                 },
               ),
             ),

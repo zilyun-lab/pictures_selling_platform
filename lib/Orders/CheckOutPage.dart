@@ -708,6 +708,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                                     });
                                                                                     FirebaseFirestore.instance.collection("orders").doc(ref.id).set(
                                                                                       {
+                                                                                        "sellerID": widget.il["postBy"],
                                                                                         "id": ref.id,
                                                                                         "imageURL": widget.il["thumbnailUrl"],
                                                                                         EcommerceApp.addressID: snapshot.data.docs[index].id,

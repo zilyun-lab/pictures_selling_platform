@@ -327,7 +327,7 @@ exports.sendEmailWhenCancelFinishedToSeller = functions.firestore
             from: `no-reply@leewayjp.net`,
             to: change.after.data().email,
             subject: '取引キャンセル完了のお知らせ',
-            html: `<p>${change.after.data().postName} 様<br><br>${change.after.data().orderBy} 様との取引のキャンセルの申請を確認し、キャンセルが成立しました。<br>
+            html: `<p>${change.after.data().boughtFrom} 様<br><br>${change.after.data().orderBy} 様との取引のキャンセルの申請を確認し、キャンセルが成立しました。<br>
             <br>
             <p>ご注文ID：${change.after.data().id}</p>
             <p>商品名：${change.after.data().productIDs}</p>
@@ -402,5 +402,54 @@ exports.sendEmailWhenCancelFinishedToBuyer = functions.firestore
             }
             console.log("Sent!")
         });
+    }
+});
+
+
+
+exports.onCreateChat = functions.firestore
+.document('/users/{userId}/chat/{chatId}')
+.onCreate(async (snapshot, context) =>
+{
+    const userId = context.params.userId;
+    const userRef = admin.firestore().doc(`users/${userId}`);
+    const doc = await userRef.get();
+
+
+    const messageToken = doc.data().iOSToken;
+    const createActivityFeedItem = snapshot.data();
+
+    if(messageToken)
+    {
+        sendNotification(messageToken, createActivityFeedItem);
+    }
+    else
+    {
+        console.log("No token for user, can not send notification.")
+    }
+
+    function sendNotification(messageToken, activityFeedItem)
+    {
+        let body;
+
+        body = `${snapshot.data().user_name} 様よりメッセージが届いています。\nチャットにて確認してみましょう`;
+
+        const message =
+        {
+            notification: { body },
+            token: messageToken,
+            data: { recipient: body },
+        };
+
+        admin.messaging().send(message)
+        .then(response =>
+        {
+            console.log("Successfully sent message", response);
+        })
+        .catch(error =>
+        {
+            console.log("Error sending message", error);
+        })
+
     }
 });

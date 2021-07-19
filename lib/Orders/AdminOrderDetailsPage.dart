@@ -775,6 +775,11 @@ class _ShippingDetailsState extends State<ShippingDetails> {
       },
     );
 
+    EcommerceApp.firestore.collection("orders").doc(mOrderId).update(
+      {
+        "isBuyerDelivery": "Complete",
+      },
+    );
     // EcommerceApp.firestore
     //     .collection(EcommerceApp.collectionUser)
     //     .doc(postBy)

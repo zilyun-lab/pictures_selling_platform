@@ -76,40 +76,241 @@ class _UserNotificationState extends State<UserNotification>
                           .snapshots(),
                       builder: (c, snap) {
                         return !snap.hasData
-                            ? Container(
-                                color: Colors.red,
-                              )
+                            ? Container()
                             : ListView.builder(
                                 itemBuilder: (c, index) {
-                                  return ListTile(
-                                    title:
-                                        Text(snap.data.docs[index]["message"]),
-                                    subtitle: Text(
-                                        DateFormat("yyyy年M月d日 HH時mm分")
-                                            .format(snap
-                                                .data.docs[index]["date"]
-                                                .toDate())
-                                            .toString()),
-                                    leading: Container(
-                                      child: CircleAvatar(
-                                        backgroundColor: Colors.white,
-                                        backgroundImage: AssetImage(
-                                            "images/isColor_Vertical.png"),
-                                      ),
-                                    ),
-                                  );
+                                  return snap.data.docs[index]["Tag"] ==
+                                          "Transaction"
+                                      ? ListTile(
+                                          title: Text("取引完了"),
+                                          subtitle: Text(
+                                              DateFormat("yyyy年M月d日 HH時mm分")
+                                                  .format(snap
+                                                      .data.docs[index]["date"]
+                                                      .toDate())
+                                                  .toString()),
+                                          leading: Container(
+                                            child: CircleAvatar(
+                                              backgroundColor: Colors.white,
+                                              backgroundImage: AssetImage(
+                                                  "images/isColor_Vertical.png"),
+                                            ),
+                                          ),
+                                        )
+                                      : ListTile(
+                                          title: Text(
+                                              snap.data.docs[index]["message"]),
+                                          subtitle: Text(
+                                              DateFormat("yyyy年M月d日 HH時mm分")
+                                                  .format(snap
+                                                      .data.docs[index]["date"]
+                                                      .toDate())
+                                                  .toString()),
+                                          leading: Container(
+                                            child: CircleAvatar(
+                                              backgroundColor: Colors.white,
+                                              backgroundImage: AssetImage(
+                                                  "images/isColor_Vertical.png"),
+                                            ),
+                                          ),
+                                        );
                                 },
                                 itemCount: snap.data.docs.length,
                               );
                       }),
-                  Text(""),
+                  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                    stream: FirebaseFirestore.instance
+                        .collection("orders")
+                        .snapshots(),
+                    builder: (c, snap) {
+                      return !snap.hasData
+                          ? Container()
+                          : ListView.builder(
+                              itemCount: snap.data.docs.length,
+                              itemBuilder: (c, index) {
+                                return (() {
+                                  if (snap.data.docs[index]["buyerID"] ==
+                                      EcommerceApp.sharedPreferences
+                                          .getString(EcommerceApp.userUID)) {
+                                    //todo:自分が買った時
+                                    return (() {
+                                      if (snap.data.docs[index]
+                                                  ["isBuyerDelivery"] ==
+                                              "inComplete" &&
+                                          snap.data.docs[index]["sellerID"] !=
+                                              EcommerceApp.sharedPreferences
+                                                  .getString(
+                                                      EcommerceApp.userUID)) {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: ListTile(
+                                            trailing: Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: HexColor("e67928"),
+                                            ),
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          OrderDetails(
+                                                            orderID: snap.data
+                                                                    .docs[index]
+                                                                ["id"],
+                                                            totalPrice: snap
+                                                                    .data
+                                                                    .docs[index]
+                                                                ["totalPrice"],
+                                                          )));
+                                            },
+                                            title: Text(
+                                                "支払いが完了しました。\n販売者の発送をお待ち下さい！"),
+                                            leading: Image.network(
+                                              snap.data.docs[index]["imageURL"]
+                                                  .toString(),
+                                              height: 50,
+                                              fit: BoxFit.scaleDown,
+                                            ),
+                                          ),
+                                        );
+                                      } else if (snap.data.docs[index]
+                                                  ["isTransactionFinished"] ==
+                                              "inComplete" &&
+                                          snap.data.docs[index]
+                                                  ["isBuyerDelivery"] ==
+                                              "Complete") {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: ListTile(
+                                            trailing: Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: HexColor("e67928"),
+                                            ),
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          OrderDetails(
+                                                            orderID: snap.data
+                                                                    .docs[index]
+                                                                ["id"],
+                                                            totalPrice: snap
+                                                                    .data
+                                                                    .docs[index]
+                                                                ["totalPrice"],
+                                                          )));
+                                            },
+                                            title: Text(
+                                                "作品が発送されました。\n作品が届きましたら販売者の評価をしましょう！"),
+                                            leading: Image.network(
+                                              snap.data.docs[index]["imageURL"]
+                                                  .toString(),
+                                              height: 50,
+                                              fit: BoxFit.scaleDown,
+                                            ),
+                                          ),
+                                        );
+                                      } else if (snap.data.docs[index]
+                                              ["isTransactionFinished"] ==
+                                          "Complete") {
+                                        return ListTile();
+                                      }
+                                    })();
+                                  } else {
+                                    //todo:自分が売った時
+                                    return (() {
+                                      if (snap.data.docs[index]
+                                              ["isBuyerDelivery"] ==
+                                          "inComplete") {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: ListTile(
+                                            trailing: Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: HexColor("e67928"),
+                                            ),
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          AdminOrderDetails(
+                                                            orderID: snap.data
+                                                                    .docs[index]
+                                                                ["id"],
+                                                            totalPrice: snap
+                                                                    .data
+                                                                    .docs[index]
+                                                                ["totalPrice"],
+                                                          )));
+                                            },
+                                            title: Text(
+                                                "作品が購入されました。\n商品の発送を行いましょう！"),
+                                            leading: Image.network(
+                                              snap.data.docs[index]["imageURL"]
+                                                  .toString(),
+                                              height: 50,
+                                              fit: BoxFit.scaleDown,
+                                            ),
+                                          ),
+                                        );
+                                      } else if (snap.data.docs[index]
+                                                  ["isTransactionFinished"] ==
+                                              "inComplete" &&
+                                          snap.data.docs[index]
+                                                  ["isBuyerDelivery"] ==
+                                              "Complete") {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: ListTile(
+                                            trailing: Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: HexColor("e67928"),
+                                            ),
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          AdminOrderDetails(
+                                                            orderID: snap.data
+                                                                    .docs[index]
+                                                                ["id"],
+                                                            totalPrice: snap
+                                                                    .data
+                                                                    .docs[index]
+                                                                ["totalPrice"],
+                                                          )));
+                                            },
+                                            title: Text(
+                                                "作品を発送しました。\n購入者の評価を待ちましょう！"),
+                                            leading: Image.network(
+                                              snap.data.docs[index]["imageURL"]
+                                                  .toString(),
+                                              height: 50,
+                                              fit: BoxFit.scaleDown,
+                                            ),
+                                          ),
+                                        );
+                                      } else if (snap.data.docs[index]
+                                              ["isTransactionFinished"] ==
+                                          "Complete") {
+                                        return ListTile();
+                                      }
+                                    })();
+                                  }
+                                })();
+                              });
+                    },
+                  ),
                   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                       stream: FirebaseFirestore.instance
                           .collection("users")
                           .doc(EcommerceApp.sharedPreferences
                               .getString(EcommerceApp.userUID))
                           .collection("chat")
-                          .orderBy("created_at", descending: false)
+                          .orderBy("created_at", descending: true)
                           .snapshots(),
                       builder: (c, snap) {
                         return !snap.hasData
@@ -128,6 +329,11 @@ class _UserNotificationState extends State<UserNotification>
                                         return !snap.hasData
                                             ? Container()
                                             : ListTile(
+                                                trailing: Icon(
+                                                  Icons
+                                                      .arrow_forward_ios_outlined,
+                                                  color: HexColor("e67928"),
+                                                ),
                                                 onTap: () {
                                                   ss.data.data()["buyerID"] ==
                                                           EcommerceApp

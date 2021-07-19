@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -18,6 +19,7 @@ import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
 import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
+import 'package:selling_pictures_platform/PushNotifications/permissions.dart';
 import 'package:selling_pictures_platform/Widgets/customTextField.dart';
 import 'login.dart';
 
@@ -37,6 +39,48 @@ class _RegisterState extends State<Register> {
   String userImageUrl = "";
   File _imageFile;
   bool isChecked = false;
+  bool _requested = false;
+  bool _fetching = false;
+  NotificationSettings _settings;
+  String _token;
+  Stream<String> _tokenStream;
+
+  void setToken(String token) {
+    print('FCM Token: $token');
+
+    setState(() {
+      _token = token;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FirebaseMessaging.instance.getToken().then((setToken));
+
+    _tokenStream = FirebaseMessaging.instance.onTokenRefresh;
+    _tokenStream.listen(setToken);
+  }
+
+  Future<void> requestPermissions() async {
+    setState(() {
+      _fetching = true;
+    });
+
+    final settings = await FirebaseMessaging.instance.requestPermission(
+      announcement: true,
+      carPlay: true,
+      criticalAlert: true,
+    );
+
+    setState(() {
+      _requested = true;
+      _fetching = false;
+      _settings = settings;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width,
@@ -59,9 +103,14 @@ class _RegisterState extends State<Register> {
                     SizedBox(
                       height: 50,
                     ),
-                    Image.asset(
-                      "images/NoColor_horizontal.png",
-                      height: 75,
+                    InkWell(
+                      onTap: () {
+                        requestPermissions();
+                      },
+                      child: Image.asset(
+                        "images/NoColor_horizontal.png",
+                        height: 75,
+                      ),
                     ),
                     InkWell(
                       onTap: _selectAndPickImage,
@@ -430,6 +479,7 @@ class _RegisterState extends State<Register> {
   Future saveUserInfoToFirestore(User fUser) async {
     FirebaseFirestore.instance.collection("users").doc(fUser.uid).set(
       {
+        "iOSToken": _token,
         "isFreeze": false,
         "uid": fUser.uid,
         "email": fUser.email,
