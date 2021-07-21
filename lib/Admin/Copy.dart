@@ -575,7 +575,8 @@ class _OriginalUploadPageState extends State<Copy> {
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
       "itemWidth": _widthtextEditingController.text,
       "itemHeight": _heighttextEditingController.text,
-      "finalGetProceeds": int.parse(_pricetextEditingController.text) * 0.7,
+      "finalGetProceeds":
+          (int.parse(_pricetextEditingController.text) * 0.7).toInt(),
       "shipsPayment": _selectShipsPayment,
       "shipsDate":
           _isStock == "在庫あり" ? _selectShipsDays : _selectShipsDaysWhenNoStock,
@@ -608,7 +609,8 @@ class _OriginalUploadPageState extends State<Copy> {
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
       "itemWidth": _widthtextEditingController.text,
       "itemHeight": _heighttextEditingController.text,
-      "finalGetProceeds": int.parse(_pricetextEditingController.text) * 0.7,
+      "finalGetProceeds":
+          (int.parse(_pricetextEditingController.text) * 0.7).toInt(),
       "shipsPayment": _selectShipsPayment,
       "shipsDate":
           _isStock == "在庫あり" ? _selectShipsDays : _selectShipsDaysWhenNoStock,

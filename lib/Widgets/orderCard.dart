@@ -19,7 +19,7 @@ class OrderCard extends StatelessWidget {
   final String orderID;
   final String speakingToID;
   final String speakingToName;
-  final double finalGetProceeds;
+  final int finalGetProceeds;
 
   OrderCard(
       {Key key,

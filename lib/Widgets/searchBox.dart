@@ -20,7 +20,7 @@ class SearchBoxDelegate extends SliverPersistentHeaderDelegate {
               Route route = MaterialPageRoute(
                 builder: (c) => SearchProduct(),
               );
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 route,
               );

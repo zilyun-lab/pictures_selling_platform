@@ -404,6 +404,8 @@ class _OriginalUploadPageState extends State<Sticker> {
       "itemWidth": "0",
       "shipsPayment": _selectShipsPayment,
       "shipsDate": _selectShipsDays,
+      "finalGetProceeds":
+          (int.parse(_pricetextEditingController.text) * 0.85).toInt(),
     });
     final itemRef =
         FirebaseFirestore.instance.collection("items").doc(productID);
@@ -424,7 +426,8 @@ class _OriginalUploadPageState extends State<Sticker> {
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
       "itemHeight": "0",
       "itemWidth": "0",
-      "finalGetProceeds": int.parse(_pricetextEditingController.text) * 0.85,
+      "finalGetProceeds":
+          (int.parse(_pricetextEditingController.text) * 0.85).toInt(),
       "shipsPayment": _selectShipsPayment,
       "shipsDate": _selectShipsDays,
     });

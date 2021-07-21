@@ -15,7 +15,7 @@ exports.sendReportEmail = functions.firestore
             secure: false,
             
             auth: {
-                user: "mjw12.birth@leewayjp.net",
+                user: "user-report@leewayjp.net",
                 pass: gmailPassword,
             }
           });
@@ -53,7 +53,7 @@ exports.sendCancelEmail = functions.firestore
             secure: false,
             
             auth: {
-                user: "mjw12.birth@leewayjp.net",
+                user: "user-report@leewayjp.net",
                 pass: gmailPassword,
             }
           });
@@ -92,7 +92,7 @@ exports.sendEmailToNewUser = functions.firestore
             secure: false,
             
             auth: {
-                user: "mjw12.birth@leewayjp.net",
+                user: "no-reply@leewayjp.net",
                 pass: gmailPassword,
             }
           });
@@ -131,7 +131,7 @@ exports.sendEmailToSeller = functions.firestore
             secure: false,
             
             auth: {
-                user: "mjw12.birth@leewayjp.net",
+                user: "no-reply@leewayjp.net",
                 pass: gmailPassword,
             }
           });
@@ -189,7 +189,7 @@ exports.sendEmailToBuyer = functions.firestore
             secure: false,
             
             auth: {
-                user: "mjw12.birth@leewayjp.net",
+                user: "no-reply@leewayjp.net",
                 pass: gmailPassword,
             }
           });
@@ -225,10 +225,10 @@ exports.sendEmailToBuyer = functions.firestore
             <br><br>
             <p>お届け先</p>
             
-            <p>氏名；${addressDoc.data().lastName} ${addressDoc.data().firstName}</p>
-            <p>郵便番号；${addressDoc.data().postalCode}</p>
-            <p>住所；${addressDoc.data().prefectures}${addressDoc.data().city}${addressDoc.data().address}</p>
-            <p>任意の住所；${addressDoc.data().secondAddress}</p>
+            <p>氏名：${addressDoc.data().lastName} ${addressDoc.data().firstName}</p>
+            <p>郵便番号：${addressDoc.data().postalCode}</p>
+            <p>住所：${addressDoc.data().prefectures}${addressDoc.data().city}${addressDoc.data().address}</p>
+            <p>任意の住所：${addressDoc.data().secondAddress}</p>
             <br>
             <hr style="border:none;border-top:dashed 1px #000000;height:1px;color:#FFFFFF;">
             <br>
@@ -262,7 +262,7 @@ exports.sendEmailWhenTransactionFinished = functions.firestore
             secure: false,
             
             auth: {
-                user: "mjw12.birth@leewayjp.net",
+                user: "no-reply@leewayjp.net",
                 pass: gmailPassword,
             }
           });
@@ -318,7 +318,7 @@ exports.sendEmailWhenCancelFinishedToSeller = functions.firestore
             secure: false,
             
             auth: {
-                user: "mjw12.birth@leewayjp.net",
+                user: "no-reply@leewayjp.net",
                 pass: gmailPassword,
             }
           });
@@ -365,7 +365,7 @@ exports.sendEmailWhenCancelFinishedToBuyer = functions.firestore
             secure: false,
             
             auth: {
-                user: "mjw12.birth@leewayjp.net",
+                user: "no-reply@leewayjp.net",
                 pass: gmailPassword,
             }
           });
@@ -432,8 +432,484 @@ exports.onCreateChat = functions.firestore
     {
         let body;
 
-        body = `${snapshot.data().user_name} 様よりメッセージが届いています。\nチャットにて確認してみましょう`;
+        title = "[メッセージが届いています]";
+        body = `${activityFeedItem.user_name} 様よりメッセージが届いています。\nチャットにて確認してみましょう`;
 
+        const message =
+        {
+            notification: { body },
+            token: messageToken,
+            data: { recipient: body },
+        };
+
+        admin.messaging().send(message)
+        .then(response =>
+        {
+            console.log("Successfully sent message", response);
+        })
+        .catch(error =>
+        {
+            console.log("Error sending message", error);
+        })
+
+    }
+});
+
+
+
+exports.onCreatePNFromAdmin = functions.firestore
+.document('/users/{userId}/AllNotify/{AllNotifyId}/From Admin/{AdminMessege}')
+.onCreate(async (snapshot, context) =>
+{
+    const userId = context.params.userId;
+    const userRef = admin.firestore().doc(`users/${userId}`);
+    const doc = await userRef.get();
+
+
+    const messageToken = doc.data().iOSToken;
+    const createActivityFeedItem = snapshot.data();
+
+    if(messageToken)
+    {
+        sendNotification(messageToken, createActivityFeedItem);
+    }
+    else
+    {
+        console.log("No token for user, can not send notification.")
+    }
+
+    function sendNotification(messageToken, activityFeedItem)
+    {
+        let body;
+
+        title = `運営からのメッセージ`;
+        body = activityFeedItem.message;
+
+        const message =
+        {
+            notification: { body },
+            token: messageToken,
+            data: { recipient: body },
+        };
+
+        admin.messaging().send(message)
+        .then(response =>
+        {
+            console.log("Successfully sent message", response);
+        })
+        .catch(error =>
+        {
+            console.log("Error sending message", error);
+        })
+
+    }
+});
+
+
+exports.onCreatePNToSeller = functions.firestore
+.document('/users/{userId}/Notify/{NotifyId}')
+.onCreate(async (snapshot, context) =>
+{
+    const userId = context.params.userId;
+    const userRef = admin.firestore().doc(`users/${userId}`);
+    const doc = await userRef.get();
+
+
+    const messageToken = doc.data().iOSToken;
+    const createActivityFeedItem = snapshot.data();
+
+    
+    if(messageToken)
+    {
+        sendNotification(messageToken, createActivityFeedItem);
+    }
+    else
+    {
+        console.log("No token for user, can not send notification.")
+    }
+
+    function sendNotification(messageToken, createActivityFeedItem)
+    {
+        let body;
+
+        
+        const orderByName = createActivityFeedItem.orderByName;
+        const itemName = createActivityFeedItem.productIDs;
+
+        title = "[取引開始のお知らせ]";
+
+        body = `${orderByName} 様より 「${itemName}」をご注文いただきました。\n発送を行いましょう。`;
+        const message =
+        {
+            notification: { body },
+            token: messageToken,
+            data: { recipient: body },
+        };
+
+        admin.messaging().send(message)
+        .then(response =>
+        {
+            console.log("Successfully sent message", response);
+        })
+        .catch(error =>
+        {
+            console.log("Error sending message", error);
+        })
+
+    }
+});
+
+
+exports.onCreatePNToBuyer = functions.firestore
+.document('/users/{userId}/orders/{OrderId}')
+.onCreate(async (snapshot, context) =>
+{
+    const userId = context.params.userId;
+    const userRef = admin.firestore().doc(`users/${userId}`);
+    const doc = await userRef.get();
+
+
+    const messageToken = doc.data().iOSToken;
+    const createActivityFeedItem = snapshot.data();
+
+    
+    if(messageToken)
+    {
+        sendNotification(messageToken, createActivityFeedItem);
+    }
+    else
+    {
+        console.log("No token for user, can not send notification.")
+    }
+
+    function sendNotification(messageToken, createActivityFeedItem)
+    {
+        let body;
+
+        
+        const itemName = createActivityFeedItem.productIDs;
+
+
+        title = "[取引開始のお知らせ]";
+        body = `「${itemName}」をご注文いただきありがとうございます。\n商品の発送をお待ち下さい。`;
+        const message =
+        {
+            notification: { body },
+            token: messageToken,
+            data: { recipient: body },
+        };
+
+        admin.messaging().send(message)
+        .then(response =>
+        {
+            console.log("Successfully sent message", response);
+        })
+        .catch(error =>
+        {
+            console.log("Error sending message", error);
+        })
+
+    }
+});
+
+
+
+exports.onCreatePNToBuyerWhenShipsDetail = functions.firestore
+.document('/users/{userId}/orders/{OrderId}')
+.onUpdate(async (change, context) =>
+{
+    const userId = context.params.userId;
+    const userRef = admin.firestore().doc(`users/${userId}`);
+    const doc = await userRef.get();
+
+
+    const messageToken = doc.data().iOSToken;
+    const createActivityFeedItem = change.after.data();
+
+    
+    if(messageToken && createActivityFeedItem.isDelivery === "Complete" )
+    {
+        sendNotification(messageToken, createActivityFeedItem);
+    }
+    else
+    {
+        console.log("No token for user, can not send notification.")
+    }
+
+    function sendNotification(messageToken, createActivityFeedItem)
+    {
+        let body;
+
+        
+        const sellerName = createActivityFeedItem.postName;
+        const itemName = createActivityFeedItem.productIDs;
+
+        title = "[発送完了のお知らせ]";
+        body = `${sellerName} 様より「${itemName}」が発送されました。\n受け取り次第、作者の評価を行いましょう！`;
+    
+        const message =
+        {
+            notification: { body },
+            token: messageToken,
+            data: { recipient: body },
+        };
+
+        admin.messaging().send(message)
+        .then(response =>
+        {
+            console.log("Successfully sent message", response);
+        })
+        .catch(error =>
+        {
+            console.log("Error sending message", error);
+        })
+
+    }
+});
+
+
+exports.onCreatePNToSellerWhenReviewSeller = functions.firestore
+.document('/users/{userId}/Notify/{NotifyId}')
+.onUpdate(async (change, context) =>
+{
+    const userId = context.params.userId;
+    const userRef = admin.firestore().doc(`users/${userId}`);
+    const doc = await userRef.get();
+
+
+    const messageToken = doc.data().iOSToken;
+    const createActivityFeedItem = change.after.data();
+
+    
+    if(messageToken && createActivityFeedItem.isBuyerDelivery === "Complete" && createActivityFeedItem.isTransactionFinished === "Complete")
+    {
+        sendNotification(messageToken, createActivityFeedItem);
+    }
+    else
+    {
+        console.log("No token for user, can not send notification.")
+    }
+
+    function sendNotification(messageToken, createActivityFeedItem)
+    {
+        let body;
+
+        
+        const buyerName = createActivityFeedItem.orderByName;
+        const itemName = createActivityFeedItem.productIDs;
+
+        title = "[取引完了のお知らせ]";
+        body = `${buyerName} 様より「${itemName}」がの評価をいただきました。`;
+        const message =
+        {
+            notification: { body },
+            token: messageToken,
+            data: { recipient: body },
+        };
+
+        admin.messaging().send(message)
+        .then(response =>
+        {
+            console.log("Successfully sent message", response);
+        })
+        .catch(error =>
+        {
+            console.log("Error sending message", error);
+        })
+
+    }
+});
+
+
+exports.onCreatePNToBuyerWhenFinishedOrder = functions.firestore
+.document('/users/{userId}/orders/{OrderId}')
+.onUpdate(async (change, context) =>
+{
+    const userId = context.params.userId;
+    const userRef = admin.firestore().doc(`users/${userId}`);
+    const doc = await userRef.get();
+
+
+    const messageToken = doc.data().iOSToken;
+    const createActivityFeedItem = change.after.data();
+
+    
+    if(messageToken && createActivityFeedItem.isDelivery === "Complete" && createActivityFeedItem.isTransactionFinished === "Complete")
+    {
+        sendNotification(messageToken, createActivityFeedItem);
+    }
+    else
+    {
+        console.log("No token for user, can not send notification.")
+    }
+
+    function sendNotification(messageToken, createActivityFeedItem)
+    {
+        let body;
+
+        
+        const sellerName = createActivityFeedItem.postName;
+        const itemName = createActivityFeedItem.productIDs;
+
+        title = "[取引完了のお知らせ]";
+        body = `${sellerName} 様との取引が完了しました。`;
+        const message =
+        {
+            notification: { body },
+            token: messageToken,
+            data: { recipient: body },
+        };
+
+        admin.messaging().send(message)
+        .then(response =>
+        {
+            console.log("Successfully sent message", response);
+        })
+        .catch(error =>
+        {
+            console.log("Error sending message", error);
+        })
+
+    }
+});
+
+
+exports.onCreatePNToBuyerWhenCancelReqouest = functions.firestore
+.document('/users/{userId}/orders/{OrderId}')
+.onUpdate(async (change, context) =>
+{
+    const userId = context.params.userId;
+    const userRef = admin.firestore().doc(`users/${userId}`);
+    const doc = await userRef.get();
+
+
+    const messageToken = doc.data().iOSToken;
+    const createActivityFeedItem = change.after.data();
+
+    
+    if(messageToken && createActivityFeedItem.CancelRequestTo === true )
+    {
+        sendNotification(messageToken, createActivityFeedItem);
+    }
+    else
+    {
+        console.log("No token for user, can not send notification.")
+    }
+
+    function sendNotification(messageToken, createActivityFeedItem)
+    {
+        let body;
+
+        
+        const sellerName = createActivityFeedItem.postName;
+        const itemName = createActivityFeedItem.productIDs;
+
+        
+        body = `${sellerName} 様よりキャンセル申請が届いています。\nご確認ください。`;
+        const message =
+        {
+            notification: { body },
+            token: messageToken,
+            data: { recipient: body },
+        };
+
+        admin.messaging().send(message)
+        .then(response =>
+        {
+            console.log("Successfully sent message", response);
+        })
+        .catch(error =>
+        {
+            console.log("Error sending message", error);
+        })
+
+    }
+});
+
+exports.onCreatePNToBuyerWhenCancelReqouestAgreement = functions.firestore
+.document('/users/{userId}/Notify/{NotifyId}')
+.onUpdate(async (change, context) =>
+{
+    const userId = context.params.userId;
+    const userRef = admin.firestore().doc(`users/${userId}`);
+    const doc = await userRef.get();
+
+
+    const messageToken = doc.data().iOSToken;
+    const createActivityFeedItem = change.after.data();
+
+    
+    if(messageToken && createActivityFeedItem.CancelRequest === true && createActivityFeedItem.cancelTransactionFinished === true)
+    {
+        sendNotification(messageToken, createActivityFeedItem);
+    }
+    else
+    {
+        console.log("No token for user, can not send notification.")
+    }
+
+    function sendNotification(messageToken, createActivityFeedItem)
+    {
+        let body;
+
+        
+        const buyerName = createActivityFeedItem.orderByName;
+        const itemName = createActivityFeedItem.productIDs;
+
+        
+        body = `${buyerName} 様よりキャンセル申請の同意が完了しました。\nご確認ください。`;
+        const message =
+        {
+            notification: { body },
+            token: messageToken,
+            data: { recipient: body },
+        };
+
+        admin.messaging().send(message)
+        .then(response =>
+        {
+            console.log("Successfully sent message", response);
+        })
+        .catch(error =>
+        {
+            console.log("Error sending message", error);
+        })
+
+    }
+});
+
+exports.onCreatePNToBuyerWhenCancelReqouestFinished = functions.firestore
+.document('/users/{userId}/orders/{OrderId}')
+.onUpdate(async (change, context) =>
+{
+    const userId = context.params.userId;
+    const userRef = admin.firestore().doc(`users/${userId}`);
+    const doc = await userRef.get();
+
+
+    const messageToken = doc.data().iOSToken;
+    const createActivityFeedItem = change.after.data();
+
+    
+    if(messageToken && createActivityFeedItem.CancelRequest === true && createActivityFeedItem.cancelTransactionFinished === true)
+    {
+        sendNotification(messageToken, createActivityFeedItem);
+    }
+    else
+    {
+        console.log("No token for user, can not send notification.")
+    }
+
+    function sendNotification(messageToken, createActivityFeedItem)
+    {
+        let body;
+
+        
+        const sellerName = createActivityFeedItem.postName;
+        const itemName = createActivityFeedItem.productIDs;
+        
+
+        body = `${sellerName} 様との取引がキャンセルされました。\nご確認ください。`;
         const message =
         {
             notification: { body },

@@ -642,11 +642,11 @@ itemEditButton(BuildContext context, Map il, String id) {
                   context,
                   MaterialPageRoute(
                       builder: (c) => UpdateItemInfo(
-                            shortInfo: il["shortInfo"],
-                            id: id,
-                            longDescription: il["longDescription"],
-                            price: il["price"],
-                          )));
+                          shortInfo: il["shortInfo"],
+                          id: id,
+                          longDescription: il["longDescription"],
+                          price: il["price"],
+                          attribute: il["attribute"])));
             },
             label: Text(
               "編集する",
@@ -914,7 +914,9 @@ Widget mySizedBox(double height) {
   );
 }
 
-Widget myPageSliderItems(BuildContext context) {
+Widget myPageSliderItems(
+  BuildContext context,
+) {
   return Expanded(
     child: CarouselSlider(
       items: [

@@ -388,6 +388,8 @@ class _OriginalUploadPageState extends State<PostCard> {
       "itemWidth": "100",
       "shipsPayment": _selectShipsPayment,
       "shipsDate": _selectShipsDays,
+      "finalGetProceeds":
+          (int.parse(_pricetextEditingController.text) * 0.85).toInt(),
     });
     final itemRef =
         FirebaseFirestore.instance.collection("items").doc(productID);
@@ -408,7 +410,8 @@ class _OriginalUploadPageState extends State<PostCard> {
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
       "itemHeight": "148",
       "itemWidth": "100",
-      "finalGetProceeds": int.parse(_pricetextEditingController.text) * 0.85,
+      "finalGetProceeds":
+          (int.parse(_pricetextEditingController.text) * 0.85).toInt(),
       "shipsPayment": _selectShipsPayment,
       "shipsDate": _selectShipsDays,
     });

@@ -10,18 +10,20 @@ import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import '../main.dart';
 
 class UpdateItemInfo extends StatefulWidget {
-  UpdateItemInfo({
-    Key key,
-    this.shortInfo,
-    this.id,
-    this.longDescription,
-    this.price,
-  }) : super(key: key);
+  UpdateItemInfo(
+      {Key key,
+      this.shortInfo,
+      this.id,
+      this.longDescription,
+      this.price,
+      this.attribute})
+      : super(key: key);
 
   final String shortInfo;
   final String id;
   final String longDescription;
   final int price;
+  final String attribute;
 
   @override
   State<UpdateItemInfo> createState() => _UpdateItemInfoState(
@@ -110,6 +112,10 @@ class _UpdateItemInfoState extends State<UpdateItemInfo> {
                 "shortInfo": _shortInfoController.text.trim(),
                 "longDescription": _longDescriptionController.text.trim(),
                 "price": int.parse(_priceController.text.trim()),
+                "finalGetProceeds": widget.attribute == "PostCard" ||
+                        widget.attribute == "Sticker"
+                    ? (int.parse(_priceController.text.trim()) * 0.85).toInt()
+                    : (int.parse(_priceController.text.trim()) * 0.7).toInt(),
               }).whenComplete(() {
                 Navigator.push(
                     context, MaterialPageRoute(builder: (c) => MainPage()));

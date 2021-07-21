@@ -218,8 +218,12 @@ class _MainPageState extends State<MainPage> {
               child: InkWell(
                 child: Image.asset("images/NoColor_horizontal.png"),
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (c) => Application()));
+                  EcommerceApp.sharedPreferences.setString(
+                    "Registration Time",
+                    "${(DateTime.now().millisecondsSinceEpoch / 1000).toInt()}",
+                  );
+                  print(EcommerceApp.sharedPreferences
+                      .getString("Registration Time"));
                 },
               ),
             ),

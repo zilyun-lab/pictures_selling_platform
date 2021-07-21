@@ -408,19 +408,13 @@ class _ProductPageState extends State<ProductPage> {
                                                                   .userUID)
                                                   ? itemEditButton(
                                                       context, il, widget.id)
-                                                  : il["attribute"] !=
-                                                          "Original"
-                                                      ? checkOutItemButton(
+                                                  //todo　後で直す
+                                                  : il["Stock"] < 0
+                                                      ? soldOutButton(context)
+                                                      : checkOutItemButton(
                                                           context,
                                                           il,
-                                                          widget.id)
-                                                      : il["Stock"] != 0
-                                                          ? checkOutItemButton(
-                                                              context,
-                                                              il,
-                                                              widget.id)
-                                                          : soldOutButton(
-                                                              context);
+                                                          widget.id);
                                         },
                                       ),
                                       il["postBy"] !=

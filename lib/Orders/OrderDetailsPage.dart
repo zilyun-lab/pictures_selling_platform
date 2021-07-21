@@ -37,7 +37,7 @@ class OrderDetails extends StatelessWidget {
   final int totalPrice;
   final String speakingToID;
   final String speakingToName;
-  final double finalGetProceeds;
+  final int finalGetProceeds;
 
   OrderDetails(
       {Key key,
@@ -63,7 +63,8 @@ class OrderDetails extends StatelessWidget {
           builder: (c, snap) {
             return !snap.hasData
                 ? Container()
-                : !snap.data["cancelTransactionFinished"]
+                : !snap.data["cancelTransactionFinished"] &&
+                        snap.data["isTransactionFinished"] == "inComplete"
                     ? Container(
                         width: 125,
                         height: 125,
@@ -109,7 +110,51 @@ class OrderDetails extends StatelessWidget {
                                   BorderRadius.all(Radius.circular(50.0))),
                         ),
                       )
-                    : Container();
+                    : Container(
+                        width: 125,
+                        height: 125,
+                        child: FloatingActionButton(
+                          backgroundColor: Colors.grey,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (c) => ChatPageViewOnly(
+                                        EcommerceApp.sharedPreferences
+                                            .getString(EcommerceApp
+                                                .sharedPreferences
+                                                .getString(
+                                                    EcommerceApp.userUID)),
+                                        snap.data["boughtFrom"],
+                                        orderID,
+                                        speakingToName,
+                                        EcommerceApp.sharedPreferences
+                                            .getString(
+                                                EcommerceApp.userName))));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "メッセージ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Icon(
+                                  Icons.message_outlined,
+                                  size: 50,
+                                ),
+                              ],
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50.0))),
+                        ),
+                      );
           }),
       appBar: MyAppBar(),
       body: SingleChildScrollView(
@@ -314,12 +359,11 @@ class _ShippingDetailsState extends State<ShippingDetails> {
   void fetchGetProceeds() async {
     DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
         .instance
-        .collection('users')
-        .doc(widget.postBy)
-        .collection("Notify")
+        .collection('orders')
         .doc(widget.orderID)
         .get();
-    proceed = snapshot.data()['finalGetProceeds'].toInt();
+    proceed = snapshot.data()['totalPrice'];
+    print(proceed);
   }
 
   void fetchItemData() async {
@@ -349,6 +393,9 @@ class _ShippingDetailsState extends State<ShippingDetails> {
     fetchGetProceeds();
     fetchItemData();
     getOrderData();
+
+    print(widget.postBy);
+    print(widget.orderID);
   }
 
   @override
@@ -806,6 +853,56 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                                                             "cancelTransactionFinished":
                                                                 true,
                                                           });
+
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(EcommerceApp
+                                                                  .sharedPreferences
+                                                                  .getString(
+                                                                      EcommerceApp
+                                                                          .userUID))
+                                                              .collection(
+                                                                  "AllNotify")
+                                                              .doc(EcommerceApp
+                                                                  .sharedPreferences
+                                                                  .getString(
+                                                                      EcommerceApp
+                                                                          .userUID))
+                                                              .collection(
+                                                                  "From Admin")
+                                                              .doc(widget
+                                                                  .orderID)
+                                                              .set({
+                                                            "Tag": "Cancel",
+                                                            "date":
+                                                                DateTime.now(),
+                                                            "orderID":
+                                                                widget.orderID,
+                                                          });
+                                                          FirebaseFirestore
+                                                              .instance
+                                                              .collection(
+                                                                  "users")
+                                                              .doc(
+                                                                  widget.postBy)
+                                                              .collection(
+                                                                  "AllNotify")
+                                                              .doc(
+                                                                  widget.postBy)
+                                                              .collection(
+                                                                  "From Admin")
+                                                              .doc(widget
+                                                                  .orderID)
+                                                              .set({
+                                                            "Tag": "Cancel",
+                                                            "date":
+                                                                DateTime.now(),
+                                                            "orderID":
+                                                                widget.orderID,
+                                                          });
+
                                                           FirebaseFirestore
                                                               .instance
                                                               .collection(
@@ -971,7 +1068,7 @@ class _ShippingDetailsState extends State<ShippingDetails> {
       {
         "date": DateTime.now(),
         "Tag": "Transaction",
-        "id": widget.orderID,
+        "orderID": widget.orderID,
       },
     );
     FirebaseFirestore.instance
@@ -985,7 +1082,7 @@ class _ShippingDetailsState extends State<ShippingDetails> {
       {
         "date": DateTime.now(),
         "Tag": "Transaction",
-        "id": widget.orderID,
+        "orderID": widget.orderID,
       },
     );
 
@@ -1014,14 +1111,18 @@ class _ShippingDetailsState extends State<ShippingDetails> {
       },
     );
 
-    // EcommerceApp.firestore
-    //     .collection(EcommerceApp.collectionUser)
-    //     .doc(widget.postBy)
-    //     .collection("MyProceeds")
-    //     .doc(widget.postBy)
-    //     .update(
-    //   {"Proceeds": FieldValue.increment(proceed)},
-    // );
+    EcommerceApp.firestore
+        .collection(EcommerceApp.collectionUser)
+        .doc(widget.postBy)
+        .collection("MyProceeds")
+        .doc(widget.postBy)
+        .update(
+      {
+        "Proceeds": DateTime.now().millisecondsSinceEpoch < 1648738799999
+            ? FieldValue.increment((proceed * 0.85).toInt())
+            : FieldValue.increment((proceed * 0.7).toInt())
+      },
+    );
 
     getOrderId = "";
     Route route = MaterialPageRoute(builder: (c) => StoreHome());
@@ -1056,7 +1157,16 @@ class _ChatPageState extends State<ChatPage> {
         backgroundColor: HexColor(
           "E67928",
         ),
-        title: new Text("チャットページ"),
+        title: new StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+            stream: FirebaseFirestore.instance
+                .collection("users")
+                .doc(widget.speakingToId)
+                .snapshots(),
+            builder: (c, snap) {
+              return !snap.hasData
+                  ? Container()
+                  : Text(snap.data.data()["name"]);
+            }),
       ),
       body: Container(
         child: Column(
@@ -1197,7 +1307,34 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _message(String message, String userName, String date) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
+        StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+            stream: FirebaseFirestore.instance
+                .collection("users")
+                .doc(widget.speakingToId)
+                .snapshots(),
+            builder: (c, snap) {
+              return !snap.hasData
+                  ? Container(
+                      width: 50,
+                      height: 50,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        child: Icon(Icons.perm_identity),
+                      ),
+                    )
+                  : Container(
+                      width: 50,
+                      height: 50,
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(snap.data.data()["url"]),
+                      ),
+                    );
+            }),
+        SizedBox(
+          width: 5,
+        ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -1274,5 +1411,224 @@ class _ChatPageState extends State<ChatPage> {
       "message": message,
       "created_at": DateTime.now().millisecondsSinceEpoch.toString()
     });
+  }
+}
+
+class ChatPageViewOnly extends StatefulWidget {
+  ChatPageViewOnly(this.myId, this.speakingToId, this.orderId,
+      this.speakingToName, this.myName);
+
+  final String myId;
+  final String myName;
+  final String speakingToId;
+  final String speakingToName;
+  final String orderId;
+
+  @override
+  ChatPageViewOnlyState createState() => new ChatPageViewOnlyState();
+}
+
+class ChatPageViewOnlyState extends State<ChatPageViewOnly> {
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
+      appBar: new AppBar(
+        backgroundColor: HexColor(
+          "E67928",
+        ),
+        title: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+            stream: FirebaseFirestore.instance
+                .collection("users")
+                .doc(widget.speakingToId)
+                .snapshots(),
+            builder: (c, snap) {
+              return !snap.hasData
+                  ? Container()
+                  : Text(snap.data.data()["name"]);
+            }),
+      ),
+      body: Container(
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection("chat_room")
+                      .doc(widget.orderId)
+                      .collection("chat")
+                      .orderBy("created_at", descending: true)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) return Container();
+                    return new ListView.builder(
+                      shrinkWrap: true,
+                      padding: new EdgeInsets.all(8.0),
+                      reverse: true,
+                      itemBuilder: (_, int index) {
+                        DocumentSnapshot document = snapshot.data.docs[index];
+
+                        bool isOwnMessage = false;
+                        if (document['myId'] ==
+                            EcommerceApp.sharedPreferences
+                                .getString(EcommerceApp.userUID)) {
+                          isOwnMessage = true;
+                        }
+                        return isOwnMessage
+                            ? _ownMessage(document['message'],
+                                document['user_name'], document['created_at'])
+                            : _message(document['message'],
+                                document['user_name'], document['created_at']);
+                      },
+                      itemCount: snapshot.data.docs.length,
+                    );
+                  },
+                ),
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height * 0.81,
+              ),
+            ),
+            new Divider(
+              height: 1.0,
+              thickness: 3,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              color: Colors.white,
+              margin: EdgeInsets.only(bottom: 20.0, right: 10.0, left: 10.0),
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: <Widget>[
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 10.0,
+                            ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: mainColor, width: 3),
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                              ),
+                              child: Center(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "取引完了のためチャットは利用できません。",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                ),
+                              )),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _ownMessage(String message, String userName, String date) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                color: HexColor("#E67928"),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  message,
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            Text(DateFormat("MM/dd - HH:mm")
+                .format(DateTime.fromMillisecondsSinceEpoch(int.parse(date)))),
+            SizedBox(
+              height: 10,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _message(String message, String userName, String date) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+            stream: FirebaseFirestore.instance
+                .collection("users")
+                .doc(widget.speakingToId)
+                .snapshots(),
+            builder: (c, snap) {
+              return !snap.hasData
+                  ? Container(
+                      width: 50,
+                      height: 50,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        child: Icon(Icons.perm_identity),
+                      ),
+                    )
+                  : Container(
+                      width: 50,
+                      height: 50,
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(snap.data.data()["url"]),
+                      ),
+                    );
+            }),
+        SizedBox(
+          width: 5,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  message,
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+            Text(DateFormat("MM/dd - HH:mm")
+                .format(DateTime.fromMillisecondsSinceEpoch(int.parse(date)))),
+            SizedBox(
+              height: 10,
+            ),
+          ],
+        )
+      ],
+    );
   }
 }

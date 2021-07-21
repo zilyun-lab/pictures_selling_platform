@@ -51,6 +51,11 @@ dependencies:
   flutter_brand_palettes: ^0.3.8
   firebase_messaging: ^10.0.4
   flutter_local_notifications: ^6.0.0
+  in_app_review: ^2.0.2
+  package_info: ^2.0.2
+  firebase_remote_config: ^0.10.0+3
+  get_it: ^7.2.0
+
 
 
 

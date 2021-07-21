@@ -186,7 +186,9 @@ class _MyPageState extends State<MyPage> {
                                           ),
                                         );
                                 }),
-                            myPageSliderItems(context),
+                            myPageSliderItems(
+                              context,
+                            ),
                           ],
                         ),
                       ),

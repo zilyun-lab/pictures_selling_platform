@@ -17,7 +17,7 @@ import '../Widgets/orderCard.dart';
 class MyOrders extends StatefulWidget {
   final String name;
   final String id;
-  final double finalGetProceeds;
+  final int finalGetProceeds;
 
   const MyOrders({Key key, this.name, this.id, this.finalGetProceeds})
       : super(key: key);

@@ -78,26 +78,11 @@ class _UserNotificationState extends State<UserNotification>
                         return !snap.hasData
                             ? Container()
                             : ListView.builder(
+                                itemCount: snap.data.docs.length,
                                 itemBuilder: (c, index) {
-                                  return snap.data.docs[index]["Tag"] ==
-                                          "Transaction"
+                                  final tag = snap.data.docs[index]["Tag"];
+                                  return tag == "Admin"
                                       ? ListTile(
-                                          title: Text("取引完了"),
-                                          subtitle: Text(
-                                              DateFormat("yyyy年M月d日 HH時mm分")
-                                                  .format(snap
-                                                      .data.docs[index]["date"]
-                                                      .toDate())
-                                                  .toString()),
-                                          leading: Container(
-                                            child: CircleAvatar(
-                                              backgroundColor: Colors.white,
-                                              backgroundImage: AssetImage(
-                                                  "images/isColor_Vertical.png"),
-                                            ),
-                                          ),
-                                        )
-                                      : ListTile(
                                           title: Text(
                                               snap.data.docs[index]["message"]),
                                           subtitle: Text(
@@ -113,10 +98,84 @@ class _UserNotificationState extends State<UserNotification>
                                                   "images/isColor_Vertical.png"),
                                             ),
                                           ),
-                                        );
-                                },
-                                itemCount: snap.data.docs.length,
-                              );
+                                        )
+                                      : StreamBuilder<
+                                              DocumentSnapshot<
+                                                  Map<String, dynamic>>>(
+                                          stream: FirebaseFirestore.instance
+                                              .collection("orders")
+                                              .doc(snap.data.docs[index]
+                                                  ["orderID"])
+                                              .snapshots(),
+                                          builder: (c, ss) {
+                                            return !ss.hasData
+                                                ? Container()
+                                                : () {
+                                                    if (tag == "Transaction") {
+                                                      return ListTile(
+                                                          subtitle: Text(DateFormat(
+                                                                  "yyyy年M月d日 HH時mm分")
+                                                              .format(snap
+                                                                  .data
+                                                                  .docs[index]
+                                                                      ["date"]
+                                                                  .toDate())
+                                                              .toString()),
+                                                          leading:
+                                                              Image.network(
+                                                            ss.data
+                                                                .data()[
+                                                                    "imageURL"]
+                                                                .toString(),
+                                                            height: 50,
+                                                            fit: BoxFit
+                                                                .scaleDown,
+                                                          ),
+                                                          title: ss.data.data()["sellerID"] !=
+                                                                      EcommerceApp.sharedPreferences.getString(
+                                                                          EcommerceApp
+                                                                              .userUID) &&
+                                                                  ss.data.data()["buyerID"] ==
+                                                                      EcommerceApp
+                                                                          .sharedPreferences
+                                                                          .getString(EcommerceApp.userUID)
+                                                              ? Text("${ss.data.data()["boughtFrom"]} 様との 「${ss.data.data()["productIDs"]}」の取引が完了しました。")
+                                                              : Text("${ss.data.data()["orderByName"]} 様との 「${ss.data.data()["productIDs"]}」の取引が完了しました。"));
+                                                    } else if (tag ==
+                                                        "Cancel") {
+                                                      return ListTile(
+                                                          subtitle: Text(DateFormat(
+                                                                  "yyyy年M月d日 HH時mm分")
+                                                              .format(snap
+                                                                  .data
+                                                                  .docs[index]
+                                                                      ["date"]
+                                                                  .toDate())
+                                                              .toString()),
+                                                          leading:
+                                                              Image.network(
+                                                            ss.data
+                                                                .data()[
+                                                                    "imageURL"]
+                                                                .toString(),
+                                                            height: 50,
+                                                            fit: BoxFit
+                                                                .scaleDown,
+                                                          ),
+                                                          title: ss.data.data()["sellerID"] !=
+                                                                      EcommerceApp.sharedPreferences.getString(
+                                                                          EcommerceApp
+                                                                              .userUID) &&
+                                                                  ss.data.data()["buyerID"] ==
+                                                                      EcommerceApp
+                                                                          .sharedPreferences
+                                                                          .getString(EcommerceApp.userUID)
+                                                              ? Text("${ss.data.data()["boughtFrom"]} 様との 「${ss.data.data()["productIDs"]}」の取引キャンセルが成立しました。")
+                                                              : Text("${ss.data.data()["orderByName"]} 様との 「${ss.data.data()["productIDs"]}」の取引キャンセルが成立しました。"));
+                                                    }
+                                                  }();
+                                          });
+                                });
                       }),
                   StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                     stream: FirebaseFirestore.instance
@@ -214,7 +273,7 @@ class _UserNotificationState extends State<UserNotification>
                                       } else if (snap.data.docs[index]
                                               ["isTransactionFinished"] ==
                                           "Complete") {
-                                        return ListTile();
+                                        return Container();
                                       }
                                     })();
                                   } else {
@@ -296,7 +355,7 @@ class _UserNotificationState extends State<UserNotification>
                                       } else if (snap.data.docs[index]
                                               ["isTransactionFinished"] ==
                                           "Complete") {
-                                        return ListTile();
+                                        return Container();
                                       }
                                     })();
                                   }
@@ -318,82 +377,81 @@ class _UserNotificationState extends State<UserNotification>
                             : ListView.builder(
                                 itemCount: snap.data.docs.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  return StreamBuilder<
-                                          DocumentSnapshot<
-                                              Map<String, dynamic>>>(
-                                      stream: FirebaseFirestore.instance
-                                          .collection("orders")
-                                          .doc(snap.data.docs[index]["orderID"])
-                                          .snapshots(),
-                                      builder: (context, ss) {
-                                        return !snap.hasData
-                                            ? Container()
-                                            : ListTile(
-                                                trailing: Icon(
-                                                  Icons
-                                                      .arrow_forward_ios_outlined,
-                                                  color: HexColor("e67928"),
-                                                ),
-                                                onTap: () {
-                                                  ss.data.data()["buyerID"] ==
-                                                          EcommerceApp
-                                                              .sharedPreferences
-                                                              .getString(
-                                                                  EcommerceApp
-                                                                      .userUID)
-                                                      ? Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (c) =>
-                                                                  OrderDetails(
-                                                                    totalPrice: ss
+                                  return !snap.hasData
+                                      ? Container()
+                                      : StreamBuilder<
+                                              DocumentSnapshot<
+                                                  Map<String, dynamic>>>(
+                                          stream: FirebaseFirestore.instance
+                                              .collection("orders")
+                                              .doc(snap.data.docs[index]
+                                                  ["orderID"])
+                                              .snapshots(),
+                                          builder: (context, ss) {
+                                            return !snap.hasData
+                                                ? Container()
+                                                : ListTile(
+                                                    trailing: Icon(
+                                                      Icons
+                                                          .arrow_forward_ios_outlined,
+                                                      color: HexColor("e67928"),
+                                                    ),
+                                                    onTap: () {
+                                                      ss.data.data()[
+                                                                  "buyerID"] ==
+                                                              EcommerceApp
+                                                                  .sharedPreferences
+                                                                  .getString(
+                                                                      EcommerceApp
+                                                                          .userUID)
+                                                          ? Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (c) =>
+                                                                      OrderDetails(
+                                                                        totalPrice: ss
                                                                             .data
-                                                                            .data()[
-                                                                        "totalPrice"],
-                                                                    orderID: snap
+                                                                            .data()["totalPrice"],
+                                                                        orderID: snap
                                                                             .data
-                                                                            .docs[index]
-                                                                        [
-                                                                        "orderID"],
-                                                                  )))
-                                                      : Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (c) =>
-                                                                  AdminOrderDetails(
-                                                                    totalPrice: ss
+                                                                            .docs[index]["orderID"],
+                                                                      )))
+                                                          : Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (c) =>
+                                                                      AdminOrderDetails(
+                                                                        totalPrice: ss
                                                                             .data
-                                                                            .data()[
-                                                                        "totalPrice"],
-                                                                    orderID: snap
+                                                                            .data()["totalPrice"],
+                                                                        orderID: snap
                                                                             .data
-                                                                            .docs[index]
-                                                                        [
-                                                                        "orderID"],
-                                                                  )));
-                                                },
-                                                leading: Image.network(
-                                                  ss.data
-                                                      .data()["imageURL"]
-                                                      .toString(),
-                                                  height: 50,
-                                                  fit: BoxFit.scaleDown,
-                                                ),
-                                                title: Text(
-                                                  "${snap.data.docs[index]["user_name"]} 様より ${ss.data.data()["productIDs"]} にてメッセージが届いています。",
-                                                  style:
-                                                      TextStyle(fontSize: 15),
-                                                ),
-                                                subtitle: Text(DateFormat(
-                                                        "yyyy年MM月dd日 - HH時mm分")
-                                                    .format(DateTime
-                                                        .fromMillisecondsSinceEpoch(
-                                                            int.parse(snap.data
-                                                                    .docs[index]
-                                                                [
-                                                                "created_at"])))),
-                                              );
-                                      });
+                                                                            .docs[index]["orderID"],
+                                                                      )));
+                                                    },
+                                                    leading: Image.network(
+                                                      ss.data
+                                                          .data()["imageURL"]
+                                                          .toString(),
+                                                      height: 50,
+                                                      fit: BoxFit.scaleDown,
+                                                    ),
+                                                    title: Text(
+                                                      "${snap.data.docs[index]["user_name"]} 様より ${ss.data.data()["productIDs"]} にてメッセージが届いています。",
+                                                      style: TextStyle(
+                                                          fontSize: 15),
+                                                    ),
+                                                    subtitle: Text(DateFormat(
+                                                            "yyyy年MM月dd日 - HH時mm分")
+                                                        .format(DateTime
+                                                            .fromMillisecondsSinceEpoch(
+                                                                int.parse(snap
+                                                                            .data
+                                                                            .docs[
+                                                                        index][
+                                                                    "created_at"])))),
+                                                  );
+                                          });
                                 },
                               );
                       })

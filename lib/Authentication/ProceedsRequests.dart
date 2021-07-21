@@ -17,7 +17,8 @@ import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
 
 class ProceedsRequests extends StatefulWidget {
-  const ProceedsRequests({Key key}) : super(key: key);
+  const ProceedsRequests({Key key, this.myProceeds}) : super(key: key);
+  final int myProceeds;
 
   @override
   _ProceedsRequestsState createState() => _ProceedsRequestsState();
@@ -33,22 +34,28 @@ class _ProceedsRequestsState extends State<ProceedsRequests> {
 
   String selectedItem = "みずほ銀行";
   String holder = "";
+  int proceeds;
+
+  Future<Map<String, dynamic>> getProceeds() async {
+    DocumentSnapshot qSnapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("MyProceeds")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .get();
+
+    return qSnapshot.data();
+
+    // proceeds = qSnapshot.data()["Proceeds"].toInt();
+    // print(proceeds);
+  }
 
   @override
   void initState() {
     // TODO: implement initState
 
+    super.initState();
     getProceeds();
-  }
-
-  Future<int> getProceeds() async {
-    QuerySnapshot qSnapshot = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
-        .collection("MyProceeds")
-        .get();
-
-    return proceeds = qSnapshot.docs[0]["Proceeds"];
   }
 
   void getValue() {
@@ -57,7 +64,6 @@ class _ProceedsRequestsState extends State<ProceedsRequests> {
     });
   }
 
-  int proceeds;
   String requestPrice = "0";
 
   @override
@@ -66,13 +72,7 @@ class _ProceedsRequestsState extends State<ProceedsRequests> {
       appBar: AppBar(
         leading: InkWell(
             onTap: () {
-              Route route = MaterialPageRoute(
-                builder: (c) => MyPage(),
-              );
-              Navigator.pushReplacement(
-                context,
-                route,
-              );
+              Navigator.pop(context);
             },
             child: Center(
               child: Padding(
@@ -132,24 +132,34 @@ class _ProceedsRequestsState extends State<ProceedsRequests> {
               textFieldOfHereWithNumber(shitenController, 3, '支店コード', '支店コード'),
               textFieldOfHereWithNumber(
                   bankAccountController, 7, '口座番号', '口座番号'),
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: TextFormField(
-                  onChanged: (String v) {
-                    setState(() {
-                      requestPrice = v;
-                    });
-                  },
-                  inputFormatters: [
-                    LengthLimitingTextInputFormatter(8),
-                  ],
-                  keyboardType: TextInputType.number,
-                  controller: priceController,
-                  decoration: InputDecoration(
-                    hintText: "ご希望の申請金額を入力してください",
-                    labelText: 'ご希望の申請金額(申請可能金額：${proceeds.toString()}円)',
-                  ),
-                ),
+              FutureBuilder(
+                future: getProceeds(),
+                builder: (BuildContext context, snapshot) {
+                  if (snapshot.hasData) {
+                    return Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: TextFormField(
+                        onChanged: (String v) {
+                          setState(() {
+                            requestPrice = v;
+                          });
+                        },
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(8),
+                        ],
+                        keyboardType: TextInputType.number,
+                        controller: priceController,
+                        decoration: InputDecoration(
+                          hintText: "ご希望の申請金額を入力してください",
+                          labelText:
+                              'ご希望の申請金額(申請可能金額：${snapshot.data["Proceeds"]}円)',
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Text("データが存在しません");
+                  }
+                },
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 12.0),

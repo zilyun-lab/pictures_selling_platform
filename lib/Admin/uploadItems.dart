@@ -499,7 +499,8 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
       "postName":
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
       "shipsDate": _selectShipsDays,
-      "finalGetProceeds": int.parse(_pricetextEditingController.text) * 0.7,
+      "finalGetProceeds":
+          (int.parse(_pricetextEditingController.text) * 0.7).toInt(),
       "shipsPayment": _selectShipsPayment
     });
     FirebaseFirestore.instance
