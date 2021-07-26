@@ -8,9 +8,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Admin/test.dart';
+import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
@@ -26,7 +28,7 @@ import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import '../main.dart';
 
-class PublicUserPage extends StatelessWidget {
+class PublicUserPage extends StatefulWidget {
   final String uid;
   final String imageUrl;
   final String name;
@@ -45,7 +47,14 @@ class PublicUserPage extends StatelessWidget {
     this.IG,
     this.TW,
   }) : super(key: key);
+
+  @override
+  _PublicUserPageState createState() => _PublicUserPageState();
+}
+
+class _PublicUserPageState extends State<PublicUserPage> {
   Color moji = Colors.black;
+  String _verticalGroupValue = "";
 
   @override
   Widget build(BuildContext context) {
@@ -87,13 +96,14 @@ class PublicUserPage extends StatelessWidget {
                                           fontWeight: FontWeight.bold),
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
-                                      child: new Text(name)),
+                                      child: Text(widget.name)),
                                   SizedBox(
                                     height: 10,
                                   ),
                                   ChangeNotifierProvider<StarRatingModel>(
-                                      create: (_) => StarRatingModel(id: uid)
-                                        ..fetchItems(),
+                                      create: (_) =>
+                                          StarRatingModel(id: widget.uid)
+                                            ..fetchItems(),
                                       child: Consumer<StarRatingModel>(
                                           builder: (context, model, child) {
                                         final items = model.items;
@@ -103,8 +113,13 @@ class PublicUserPage extends StatelessWidget {
                                         }).toList();
                                         final sum = star != null
                                             ? star?.reduce((a, b) {
-                                                return a +
-                                                    b / (star.length - 1);
+                                                return (((a +
+                                                                b /
+                                                                    (star.length -
+                                                                        1)) *
+                                                            10)
+                                                        .round()) /
+                                                    10;
                                               })
                                             : 0;
                                         return Center(
@@ -150,7 +165,7 @@ class PublicUserPage extends StatelessWidget {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(25.0),
                           child: Image.network(
-                            imageUrl,
+                            widget.imageUrl,
                             fit: BoxFit.cover,
                             width: 125,
                             height: 100,
@@ -179,10 +194,10 @@ class PublicUserPage extends StatelessWidget {
   Widget carouselSliderItems() {
     return CarouselSlider(
       items: [
-        TW != ""
+        widget.TW != ""
             ? InkWell(
                 onTap: () {
-                  launch(TW);
+                  launch(widget.TW);
                 },
                 child: FaIcon(
                   FontAwesomeIcons.twitterSquare,
@@ -195,10 +210,10 @@ class PublicUserPage extends StatelessWidget {
                 color: Colors.grey,
                 size: 70,
               ),
-        FB != ""
+        widget.FB != ""
             ? InkWell(
                 onTap: () {
-                  launch(FB);
+                  launch(widget.FB);
                 },
                 child: FaIcon(
                   FontAwesomeIcons.facebookSquare,
@@ -211,7 +226,7 @@ class PublicUserPage extends StatelessWidget {
                 color: Colors.grey,
                 size: 70,
               ),
-        IG == ""
+        widget.IG == ""
             ? FaIcon(
                 FontAwesomeIcons.instagramSquare,
                 color: Colors.grey,
@@ -219,7 +234,7 @@ class PublicUserPage extends StatelessWidget {
               )
             : InkWell(
                 onTap: () {
-                  launch(IG);
+                  launch(widget.IG);
                 },
                 child: FaIcon(
                   FontAwesomeIcons.instagramSquare,
@@ -272,7 +287,7 @@ class PublicUserPage extends StatelessWidget {
                     child: StreamBuilder<QuerySnapshot>(
                       stream: EcommerceApp.firestore
                           .collection(EcommerceApp.collectionUser)
-                          .doc(uid)
+                          .doc(widget.uid)
                           .collection("MyUploadItems")
                           .orderBy(
                             "publishedDate",
@@ -307,7 +322,7 @@ class PublicUserPage extends StatelessWidget {
                 StreamBuilder<QuerySnapshot>(
                     stream: EcommerceApp.firestore
                         .collection(EcommerceApp.collectionUser)
-                        .doc(uid)
+                        .doc(widget.uid)
                         .collection("Review")
                         .snapshots(),
                     builder: (context, snap) {
@@ -380,7 +395,7 @@ class PublicUserPage extends StatelessWidget {
                 StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                     stream: FirebaseFirestore.instance
                         .collection("users")
-                        .doc(uid)
+                        .doc(widget.uid)
                         .snapshots(),
                     builder: (context, snapshot) {
                       return !snapshot.hasData
@@ -437,7 +452,7 @@ class PublicUserPage extends StatelessWidget {
                                         title: StreamBuilder<QuerySnapshot>(
                                             stream: FirebaseFirestore.instance
                                                 .collection("users")
-                                                .doc(uid)
+                                                .doc(widget.uid)
                                                 .collection("Followers")
                                                 .snapshots(),
                                             builder: (c, ss) {
@@ -482,7 +497,7 @@ class PublicUserPage extends StatelessWidget {
                                         title: StreamBuilder<QuerySnapshot>(
                                             stream: FirebaseFirestore.instance
                                                 .collection("users")
-                                                .doc(uid)
+                                                .doc(widget.uid)
                                                 .collection("MyUploadItems")
                                                 .snapshots(),
                                             builder: (c, ss) {
@@ -525,7 +540,7 @@ class PublicUserPage extends StatelessWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                 ),
-                                TW != ""
+                                widget.TW != ""
                                     ? Padding(
                                         padding: const EdgeInsets.fromLTRB(
                                             8.0, 3, 8, 3),
@@ -537,7 +552,7 @@ class PublicUserPage extends StatelessWidget {
                                               size: 50,
                                             ),
                                             onTap: () {
-                                              launch(TW);
+                                              launch(widget.TW);
                                             },
                                             title: Text("Twitter"),
                                             trailing: Icon(
@@ -564,7 +579,7 @@ class PublicUserPage extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                FB != ""
+                                widget.FB != ""
                                     ? Padding(
                                         padding: const EdgeInsets.fromLTRB(
                                             8.0, 3, 8, 3),
@@ -576,7 +591,7 @@ class PublicUserPage extends StatelessWidget {
                                               size: 50,
                                             ),
                                             onTap: () {
-                                              launch(FB);
+                                              launch(widget.FB);
                                             },
                                             title: Text("FaceBook"),
                                             trailing: Icon(
@@ -603,7 +618,7 @@ class PublicUserPage extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                IG == ""
+                                widget.IG == ""
                                     ? Padding(
                                         padding: const EdgeInsets.fromLTRB(
                                             8.0, 3, 8, 3),
@@ -648,7 +663,7 @@ class PublicUserPage extends StatelessWidget {
                                               size: 50,
                                             ),
                                             onTap: () {
-                                              launch(IG);
+                                              launch(widget.IG);
                                             },
                                             title: Text("Instagram"),
                                             trailing: Icon(
@@ -659,6 +674,146 @@ class PublicUserPage extends StatelessWidget {
                                           ),
                                         ),
                                       ),
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (c) {
+                                            return Container(
+                                              height: 200,
+                                              child: AlertDialog(
+                                                title: Center(
+                                                  child: Text(
+                                                    "通報",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 20),
+                                                  ),
+                                                ),
+                                                content: RadioButtonGroup(
+                                                  labels: reportTitle,
+                                                  onSelected:
+                                                      (String selected) {
+                                                    setState(() {
+                                                      _verticalGroupValue =
+                                                          selected;
+                                                    });
+                                                    print(_verticalGroupValue);
+                                                  },
+                                                ),
+                                                actions: [
+                                                  Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(8.0),
+                                                          child: ElevatedButton(
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child:
+                                                                Text("キャンセル"),
+                                                            style: ElevatedButton
+                                                                .styleFrom(
+                                                                    primary: Colors
+                                                                        .transparent),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      _verticalGroupValue == ""
+                                                          ? Expanded(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        8.0),
+                                                                child:
+                                                                    ElevatedButton(
+                                                                  onPressed:
+                                                                      () {},
+                                                                  child: Text(
+                                                                    "送信する",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .grey),
+                                                                  ),
+                                                                  style: ElevatedButton
+                                                                      .styleFrom(
+                                                                          primary:
+                                                                              Colors.transparent),
+                                                                ),
+                                                              ),
+                                                            )
+                                                          : Expanded(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        8.0),
+                                                                child:
+                                                                    ElevatedButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    FirebaseFirestore
+                                                                        .instance
+                                                                        .collection(
+                                                                            "report")
+                                                                        .doc()
+                                                                        .set({
+                                                                      "reportFrom": EcommerceApp
+                                                                          .sharedPreferences
+                                                                          .getString(
+                                                                              EcommerceApp.userUID),
+                                                                      "date": DateTime
+                                                                          .now(),
+                                                                      "reportTo":
+                                                                          widget
+                                                                              .uid,
+                                                                      "why":
+                                                                          _verticalGroupValue,
+                                                                      "Tag":
+                                                                          "UserReport"
+                                                                    });
+                                                                  },
+                                                                  child: Text(
+                                                                    "送信",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            )
+                                                    ],
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                    },
+                                    child: Center(
+                                      child: Text(
+                                        "このユーザーを通報する",
+                                        style: TextStyle(
+                                            color: Colors.redAccent,
+                                            fontSize: 15),
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             );
                     })

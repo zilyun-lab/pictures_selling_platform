@@ -26,6 +26,8 @@ String selectedItem3 = "選択してください";
 String selectedFrame = "額縁の有無";
 TextEditingController _pricetextEditingController = TextEditingController();
 
+TextEditingController _widthtextEditingController = TextEditingController();
+TextEditingController _heighttextEditingController = TextEditingController();
 TextEditingController _descriptiontextEditingController =
     TextEditingController();
 TextEditingController _stockInfoTextEditingController = TextEditingController();
@@ -71,15 +73,11 @@ class _OriginalUploadPageState extends State<Sticker> {
           onPressed: () {
             clearFormInfo();
 
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (c) => MainPage(),
-                ));
+            Navigator.pop(context);
           },
         ),
         title: Text(
-          "出品ページ",
+          "出品ページ（ステッカー）",
           style: TextStyle(
             color: Colors.black,
             fontSize: 24,
@@ -244,6 +242,61 @@ class _OriginalUploadPageState extends State<Sticker> {
                     ],
                   ),
                 ),
+                uploadTitle("作品サイズ(縦 × 横)", 8.0),
+                Container(
+                  color: Colors.white,
+                  child: Expanded(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              validator: (val) =>
+                                  _heighttextEditingController.text.isEmpty
+                                      ? "未記入の項目があります。"
+                                      : null,
+                              style: TextStyle(color: Colors.deepPurpleAccent),
+                              controller: _heighttextEditingController,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                labelText: "mm",
+                                hintText: "mm",
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Text("x"),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              validator: (val) =>
+                                  _widthtextEditingController.text.isEmpty
+                                      ? "未記入の項目があります。"
+                                      : null,
+                              style: TextStyle(color: Colors.deepPurpleAccent),
+                              controller: _widthtextEditingController,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                labelText: "mm",
+                                hintText: "mm",
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -339,13 +392,20 @@ class _OriginalUploadPageState extends State<Sticker> {
                   alignment: Alignment.bottomCenter,
                   child: ElevatedButton(
                     onPressed: () {
+                      uploadFile();
                       if (_formKey.currentState.validate()) {
-                        uploadFile();
                         confirmItemOfOriginal();
                         print(_imagesURL);
                       }
                     },
-                    child: Text("出品する"),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "出品する",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     style: ElevatedButton.styleFrom(primary: mainColor),
                   ),
                 ),
@@ -400,8 +460,8 @@ class _OriginalUploadPageState extends State<Sticker> {
       "color2": selectedItem2.trim(),
       "postName":
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-      "itemHeight": "0",
-      "itemWidth": "0",
+      "itemWidth": _widthtextEditingController.text,
+      "itemHeight": _heighttextEditingController.text,
       "shipsPayment": _selectShipsPayment,
       "shipsDate": _selectShipsDays,
       "finalGetProceeds":
@@ -424,8 +484,8 @@ class _OriginalUploadPageState extends State<Sticker> {
       "color2": selectedItem2.trim(),
       "postName":
           EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-      "itemHeight": "0",
-      "itemWidth": "0",
+      "itemWidth": _widthtextEditingController.text,
+      "itemHeight": _heighttextEditingController.text,
       "finalGetProceeds":
           (int.parse(_pricetextEditingController.text) * 0.85).toInt(),
       "shipsPayment": _selectShipsPayment,

@@ -508,3 +508,5 @@ List<BottomNavigationEntity> navigationList = [
   BottomNavigationEntity(
       title: "マイページ", icon: Icon(Icons.perm_identity), page: MyPage()),
 ];
+
+List<String> reportTitle = ["スパム/宣伝目的", "性的嫌がらせ/出会い目的", "迷惑行為", "その他"];

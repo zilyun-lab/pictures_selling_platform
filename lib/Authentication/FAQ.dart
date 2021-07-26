@@ -39,7 +39,7 @@ class FAQ extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Text(
-                      "A:売上金の振り込みは毎月15日と30日になっております。\n※該当日が土日祝日の場合は直近の平日に振り込まれます"),
+                      "A:売上金の振り込みは毎月15日と30日になっております。\n※該当日が土日祝日の場合は直近の平日に振り込まれます　　　　　　　"),
                 ),
               ],
             ),
@@ -48,7 +48,8 @@ class FAQ extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Text("A:注文確定後、約1週間程度でお届けいたします。"),
+                  child: Text(
+                      "A:注文確定後、約1週間程度でお届けいたします。　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　　"),
                 ),
               ],
             ),
@@ -77,7 +78,7 @@ class FAQ extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Text("A:発送時に送るメールの伝票番号から確認することが出来ます"),
+                  child: Text("A:発送時に送るメールの伝票番号から確認することが出来ます。"),
                 ),
               ],
             ),
@@ -86,7 +87,7 @@ class FAQ extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: Text("A:決済完了時にメールにて送らせていただきます。"),
+                  child: Text("A:決済完了時にメールにて送らせていただきます。　　　　　　　　"),
                 ),
               ],
             ),

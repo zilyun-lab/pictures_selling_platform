@@ -87,15 +87,11 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
           onPressed: () {
             clearFormInfo();
 
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (c) => MainPage(),
-                ));
+            Navigator.pop(context);
           },
         ),
         title: Text(
-          "出品ページ",
+          "出品ページ(原画)",
           style: TextStyle(
             color: Colors.black,
             fontSize: 24,
@@ -259,26 +255,6 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                     ],
                   ),
                 ),
-                uploadTitle("額縁の有無", 8.0),
-                Container(
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      children: [
-                        RadioButtonGroup(
-                          labels: isFrame,
-                          onSelected: (String selected) {
-                            setState(() {
-                              _selectFrame = selected;
-                            });
-                            print(_selectFrame);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
                 uploadTitle("作品サイズ(縦 × 横)", 8.0),
                 Container(
                   color: Colors.white,
@@ -334,6 +310,26 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                     ),
                   ),
                 ),
+                uploadTitle("額縁の有無", 8.0),
+                Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      children: [
+                        RadioButtonGroup(
+                          labels: isFrame,
+                          onSelected: (String selected) {
+                            setState(() {
+                              _selectFrame = selected;
+                            });
+                            print(_selectFrame);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 uploadTitle("発送予定日", 8.0),
                 Container(
                   color: Colors.white,
@@ -348,6 +344,26 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                               _selectShipsDays = selected;
                             });
                             print(_selectShipsDays);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                uploadTitle("送料", 8.0),
+                Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      children: [
+                        RadioButtonGroup(
+                          labels: shipsPayment,
+                          onSelected: (String selected) {
+                            setState(() {
+                              _selectShipsPayment = selected;
+                            });
+                            print(_selectShipsPayment);
                           },
                         ),
                       ],
@@ -377,26 +393,6 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                     ),
                   ),
                 ),
-                uploadTitle("送料", 8.0),
-                Container(
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      children: [
-                        RadioButtonGroup(
-                          labels: shipsPayment,
-                          onSelected: (String selected) {
-                            setState(() {
-                              _selectShipsPayment = selected;
-                            });
-                            print(_selectShipsPayment);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
                 SizedBox(
                   height: 20,
                 ),
@@ -404,13 +400,22 @@ class _OriginalUploadPageState extends State<OriginalUploadPage> {
                   alignment: Alignment.bottomCenter,
                   child: ElevatedButton(
                     onPressed: () {
-                      uploadFile();
+                      print(_imagesURL);
+                      uploadFile().whenComplete(() => print("アップロード"));
+
                       if (_formKey.currentState.validate()) {
                         confirmItemOfOriginal();
                         print(_imagesURL);
                       }
                     },
-                    child: Text("出品する"),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "出品する",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     style: ElevatedButton.styleFrom(primary: mainColor),
                   ),
                 ),

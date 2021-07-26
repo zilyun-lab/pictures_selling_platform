@@ -58,7 +58,8 @@ class AdminOrderDetails extends StatelessWidget {
             return !snap.hasData
                 ? Container()
                 : !snap.data["cancelTransactionFinished"] &&
-                        snap.data["isTransactionFinished"] == "inComplete"
+                        snap.data["isTransactionFinished"] == "inComplete" &&
+                        !snap.data["hold"]
                     ? Container(
                         width: 125,
                         height: 125,
@@ -179,8 +180,10 @@ class AdminOrderDetails extends StatelessWidget {
                               builder: (c, snap) {
                                 return !snap.hasData
                                     ? Container()
-                                    : snap.data["cancelTransactionFinished"]
-                                        ? Center(
+                                    : () {
+                                        if (snap.data[
+                                            "cancelTransactionFinished"]) {
+                                          return Center(
                                             child: Text(
                                               "この注文はキャンセルされました。",
                                               style: TextStyle(
@@ -188,8 +191,22 @@ class AdminOrderDetails extends StatelessWidget {
                                                   color: Colors.redAccent,
                                                   fontSize: 22),
                                             ),
-                                          )
-                                        : Container();
+                                          );
+                                        } else if (snap.data["hold"]) {
+                                          return Center(
+                                            child: Text(
+                                              "保留中...",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color:
+                                                      Colors.deepPurpleAccent,
+                                                  fontSize: 22),
+                                            ),
+                                          );
+                                        } else {
+                                          return Container();
+                                        }
+                                      }();
                               }),
                           SizedBox(
                             height: 10.0,
@@ -360,9 +377,12 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                 .doc(getOrderId)
                 .snapshots(),
             builder: (context, snapshot) {
+              final data = snapshot.data.data();
               return !snapshot.hasData
                   ? Container()
-                  : snapshot.data.data()["isBuyerDelivery"] == "inComplete"
+                  : snapshot.data.data()["isBuyerDelivery"] == "inComplete" &&
+                          !data["hold"] &&
+                          snapshot.data.data()["CancelRequestTo"] != true
                       ? isPressed == false
                           ? InkWell(
                               onTap: () {
@@ -567,131 +587,22 @@ class _ShippingDetailsState extends State<ShippingDetails> {
               dataMap = snapshot.data.data();
             }
             return snapshot.hasData
-                ? dataMap["isBuyerDelivery"] == "inComplete" &&
-                        !dataMap["cancelTransactionFinished"]
-                    ? Padding(
-                        padding: EdgeInsets.all(
-                          5,
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            showDialog(
-                                context: context,
-                                builder: (_) {
-                                  return AlertDialog(
-                                    title: Center(child: Text("発送通知")),
-                                    content: Text("購入者に発送通知を送ります。\nよろしいですか？"),
-                                    actions: [
-                                      Row(
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Text(
-                                              "キャンセル",
-                                              style: TextStyle(
-                                                  color: Colors.black),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                                elevation: 0,
-                                                primary: Colors.white),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              completeTransactionAndNotifySellar(
-                                                  context,
-                                                  widget.orderID,
-                                                  buyerIDFromFB);
-                                            },
-                                            child: Text(
-                                              "送信する",
-                                              style: TextStyle(
-                                                  color: Colors.black),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                                elevation: 0,
-                                                primary: Colors.white),
-                                          ),
-                                        ],
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                      ),
-                                    ],
-                                  );
-                                });
-
-                            // print(proceeds);
-                          },
-                          child: Container(
-                            color: Colors.black,
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            child: Center(
-                              child: Text(
-                                "発送通知を送る。",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    : dataMap["cancelTransactionFinished"]
-                        ? Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Container(
-                              color: Colors.grey,
-                              width: MediaQuery.of(context).size.width,
-                              height: 50,
-                              child: Center(
-                                child: Text(
-                                  "この取引はキャンセルされました。",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
-                        : dataMap["isTransactionFinished"] == "Complete"
-                            ? Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  color: Colors.grey,
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  child: Center(
-                                    child: Text(
-                                      "取引終了です。\n引き続きLEEWAYをお楽しみ下さい。",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Container(
-                                  color: Colors.black,
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 50,
-                                  child: Center(
-                                    child: Text(
-                                      "購入者の受け取りをお待ちください。",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 15,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
+                ? () {
+                    if (dataMap["isBuyerDelivery"] == "inComplete" &&
+                        !dataMap["CancelRequestTo"]) {
+                      return SendShipsNotification();
+                    } else if (dataMap["cancelTransactionFinished"]) {
+                      return CancelFinished(context);
+                    } else if (dataMap["isTransactionFinished"] == "Complete") {
+                      return TransactionFinished(context);
+                    } else if (dataMap["hold"]) {
+                      return HoldOrder(context);
+                    } else if (dataMap["CancelRequestTo"] == true) {
+                      return Container();
+                    } else {
+                      return WaitReserve(context);
+                    }
+                  }()
                 : Container();
           },
         ),
@@ -706,58 +617,72 @@ class _ShippingDetailsState extends State<ShippingDetails> {
                 .doc(widget.orderID)
                 .snapshots(),
             builder: (c, snapshot) {
-              return snapshot.hasData
-                  ? snapshot.data.data()["CancelRequestTo"] != true
-                      ? Center(
-                          child: InkWell(
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (_) {
-                                    return NormalCheckBoxDialog(
-                                      "キャンセル申請",
-                                      "",
-                                      "確認",
-                                      buyerIDFromFB,
-                                      orderIDFromFB,
-                                      widget.postBy,
-                                      EcommerceApp.sharedPreferences
-                                          .getString(EcommerceApp.userName),
-                                      widget.postByName,
-                                      whoBought,
-                                    );
-                                  });
-                            },
-                            child: Text(
-                              "この取引をキャンセルする",
-                              style: TextStyle(color: Colors.redAccent),
-                            ),
-                          ),
-                        )
-                      : StreamBuilder<DocumentSnapshot>(
-                          stream: FirebaseFirestore.instance
-                              .collection("users")
-                              .doc(EcommerceApp.sharedPreferences
-                                  .getString(EcommerceApp.userUID))
-                              .collection("Notify")
-                              .doc(widget.orderID)
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            return snapshot.hasData
-                                ? snapshot.data["cancelTransactionFinished"]
-                                    ? Container()
-                                    : Center(
-                                        child: Text(
-                                          "この取引のキャンセル申請を行いました。",
-                                          style: TextStyle(
-                                              color: Colors.blueAccent),
-                                        ),
-                                      )
-                                : Container();
-                          })
-                  : Container();
+              Map d;
+              if (snapshot.hasData) {
+                d = snapshot.data.data();
+              }
+              return () {
+                if (snapshot.data.data()["CancelRequestTo"] != true &&
+                    d["hold"] != true) {
+                  return SubmitCancel();
+                } else if (d["hold"]) {
+                  return Container();
+                } else {
+                  return snapshot.data["cancelTransactionFinished"] || d["hold"]
+                      ? Container()
+                      : () {
+                          if (!snapshot.data["firstCancelRequest"]) {
+                            return Center(
+                              child: Text(
+                                "この取引のキャンセル申請を行いました。",
+                                style: TextStyle(color: Colors.blueAccent),
+                              ),
+                            );
+                          } else if (d["hold"]) {
+                            return Container();
+                          } else {
+                            return Center(
+                              child: Text(
+                                "キャンセル申請が拒否されました。"
+                                "\n再度話し合いましょう。",
+                                style: TextStyle(color: Colors.redAccent),
+                              ),
+                            );
+                          }
+                        }();
+                }
+              }();
             })
       ],
+    );
+  }
+
+  Widget SubmitCancel() {
+    return Center(
+      child: InkWell(
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (_) {
+                return NormalCheckBoxDialog(
+                  "キャンセル申請",
+                  "",
+                  "確認",
+                  buyerIDFromFB,
+                  orderIDFromFB,
+                  widget.postBy,
+                  EcommerceApp.sharedPreferences
+                      .getString(EcommerceApp.userName),
+                  widget.postByName,
+                  whoBought,
+                );
+              });
+        },
+        child: Text(
+          "この取引をキャンセルする",
+          style: TextStyle(color: Colors.redAccent),
+        ),
+      ),
     );
   }
 
@@ -834,20 +759,76 @@ class _ShippingDetailsState extends State<ShippingDetails> {
         "isBuyerDelivery": "Complete",
       },
     );
-    // EcommerceApp.firestore
-    //     .collection(EcommerceApp.collectionUser)
-    //     .doc(postBy)
-    //     .collection("MyProceeds")
-    //     .doc()
-    //     .update(
-    //   {
-    //     "Proceeds": FieldValue.increment(proceeds),
-    //   },
-    // );
 
     getOrderId = "";
     Navigator.pop(context);
     Fluttertoast.showToast(msg: "購入者に発送通知を送信しました。\n受け取り確認完了まで少々お待ちください。");
+  }
+
+  Widget SendShipsNotification() {
+    return Padding(
+      padding: EdgeInsets.all(
+        5,
+      ),
+      child: InkWell(
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (_) {
+                return AlertDialog(
+                  title: Center(child: Text("発送通知")),
+                  content: Text("購入者に発送通知を送ります。\nよろしいですか？"),
+                  actions: [
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "キャンセル",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0, primary: Colors.white),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            completeTransactionAndNotifySellar(
+                                context, widget.orderID, buyerIDFromFB);
+                          },
+                          child: Text(
+                            "送信する",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0, primary: Colors.white),
+                        ),
+                      ],
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    ),
+                  ],
+                );
+              });
+
+          // print(proceeds);
+        },
+        child: Container(
+          color: Colors.black,
+          width: MediaQuery.of(context).size.width,
+          height: 50,
+          child: Center(
+            child: Text(
+              "発送通知を送る。",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

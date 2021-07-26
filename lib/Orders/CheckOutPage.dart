@@ -289,6 +289,7 @@ class _CheckOutPageState extends State<CheckOutPage> {
                             ? Container()
                             // ? noAddressCard()
                             : ExpansionTile(
+                                initiallyExpanded: true,
                                 collapsedBackgroundColor: Colors.white,
                                 leading: Icon(Icons.location_on_outlined),
                                 title: Text("マイアドレス"),
@@ -673,7 +674,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                                         "CancelRequest": false,
                                                                                         "CancelRequestTo": false,
                                                                                         "cancelTransactionFinished": false,
-                                                                                        "itemID": widget.id
+                                                                                        "itemID": widget.id,
+                                                                                        "firstCancelRequest": false,
+                                                                                        "secondCancelRequest": false,
+                                                                                        "hold": false,
                                                                                       },
                                                                                     ).whenComplete(
                                                                                       () => {
@@ -692,9 +696,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                                       EcommerceApp.isSuccess: true,
                                                                                       "boughtFrom": widget.il["postName"],
                                                                                       "totalPrice": widget.il["price"],
-                                                                                      "NotifyMessage": "${EcommerceApp.sharedPreferences.getString(
-                                                                                        EcommerceApp.userName,
-                                                                                      )} さんが${widget.il["shortInfo"]}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
                                                                                       "isTransactionFinished": "inComplete",
                                                                                       "isBuyerDelivery": "inComplete",
                                                                                       "itemPrice": widget.il["price"],
@@ -704,7 +705,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                                       "CancelRequest": false,
                                                                                       "CancelRequestTo": false,
                                                                                       "cancelTransactionFinished": false,
-                                                                                      "itemID": widget.id
+                                                                                      "itemID": widget.id,
+                                                                                      "firstCancelRequest": false,
+                                                                                      "secondCancelRequest": false,
+                                                                                      "hold": false,
                                                                                     });
                                                                                     FirebaseFirestore.instance.collection("orders").doc(ref.id).set(
                                                                                       {
@@ -720,9 +724,6 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                                         EcommerceApp.isSuccess: true,
                                                                                         "boughtFrom": widget.il["postName"],
                                                                                         "totalPrice": widget.il["price"],
-                                                                                        "NotifyMessage": "${EcommerceApp.sharedPreferences.getString(
-                                                                                          EcommerceApp.userName,
-                                                                                        )} さんが${widget.il["shortInfo"]}を購入しました。\n取引完了まで少々お待ちください。\nまた、売上金は取引完了後に付与されます。",
                                                                                         "isTransactionFinished": "inComplete",
                                                                                         "isBuyerDelivery": "inComplete",
                                                                                         "itemPrice": widget.il["price"],
@@ -732,7 +733,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                                         "CancelRequest": false,
                                                                                         "CancelRequestTo": false,
                                                                                         "cancelTransactionFinished": false,
-                                                                                        "itemID": widget.id
+                                                                                        "itemID": widget.id,
+                                                                                        "firstCancelRequest": false,
+                                                                                        "secondCancelRequest": false,
+                                                                                        "hold": false,
                                                                                       },
                                                                                     );
                                                                                     FirebaseFirestore.instance

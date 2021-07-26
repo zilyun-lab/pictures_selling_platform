@@ -28,7 +28,7 @@ class _TransactionPageState extends State<TransactionPage>
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         backgroundColor: HexColor("e5e2df"),
         appBar: AppBar(
@@ -66,6 +66,9 @@ class _TransactionPageState extends State<TransactionPage>
               Tab(
                 text: "取引完了",
               ),
+              Tab(
+                text: "取引キャンセル",
+              ),
             ],
             indicatorWeight: 3,
           ),
@@ -73,8 +76,51 @@ class _TransactionPageState extends State<TransactionPage>
         body: TabBarView(children: [
           Transactioning(),
           transactioned(),
+          canceled(),
         ]),
       ),
+    );
+  }
+
+  canceled() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: EcommerceApp.firestore
+          .collection("users")
+          .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+          .collection("Notify")
+          .where("cancelTransactionFinished", isEqualTo: true)
+          .snapshots(),
+      builder: (c, snapshot) {
+        return !snapshot.hasData
+            ? Container()
+            : ListView.builder(
+                itemCount: snapshot.data.docs.length,
+                itemBuilder: (c, index) {
+                  return StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("items")
+                        .where("shortInfo",
+                            isEqualTo: snapshot.data.docs[index]["productIDs"])
+                        .snapshots(),
+                    builder: (c, snap) {
+                      return snap.hasData
+                          ? AdminOrderCard(
+                              totalPrice: snapshot.data.docs[index]
+                                  ["totalPrice"],
+                              itemCount: snap.data.docs.length,
+                              data: snap.data.docs,
+                              orderID: snapshot.data.docs[index].id,
+                              speakingToID: widget.id,
+                              speakingToName: widget.name,
+                            )
+                          : Center(
+                              child: circularProgress(),
+                            );
+                    },
+                  );
+                },
+              );
+      },
     );
   }
 

@@ -1,9 +1,11 @@
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 // Project imports:
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import '../Store/Search.dart';
 
 class SearchBoxDelegate extends SliverPersistentHeaderDelegate {
@@ -11,7 +13,7 @@ class SearchBoxDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
           BuildContext context, double shrinkOffset, bool overlapsContent) =>
       Container(
-        color: HexColor("#E67928"),
+        color: bgColor,
         child: Padding(
           padding:
               const EdgeInsets.only(top: 8.0, left: 8, right: 8, bottom: 20),
@@ -25,42 +27,34 @@ class SearchBoxDelegate extends SliverPersistentHeaderDelegate {
                 route,
               );
             },
-            child: Container(
-              // width: MediaQuery.of(
-              //   context,
-              // ).size.width,
-              height: 80,
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                      color: Colors.black12.withOpacity(0.2),
-                      blurRadius: 8.0,
-                      spreadRadius: 1.0,
-                      offset: Offset(5, 8))
-                ],
-                color: HexColor("F9DAC4"),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(12),
-                ),
+            child: Neumorphic(
+              margin: EdgeInsets.only(left: 8, right: 8, top: 2, bottom: 4),
+              style: NeumorphicStyle(
+                depth: NeumorphicTheme.embossDepth(context),
+                boxShape: NeumorphicBoxShape.stadium(),
               ),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 10,
+              padding: EdgeInsets.symmetric(vertical: 2, horizontal: 18),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 10,
+                      ),
+                      child: Icon(
+                        Icons.search,
+                        color: Colors.blueGrey,
+                      ),
                     ),
-                    child: Icon(
-                      Icons.search,
-                      color: Colors.blueGrey,
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: 8,
+                      ),
+                      child: Text("探す"),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 8,
-                    ),
-                    child: Text("探す"),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

@@ -101,9 +101,10 @@ class _StoreHomeState extends State<StoreHome>
     width = MediaQuery.of(context).size.width;
     return Scaffold(
       //key: //_scaffoldKey,
-      backgroundColor: mainColor,
+      // backgroundColor: mainColor,
+      backgroundColor: HexColor("#e0e5ec"),
       body: Container(
-        color: mainColor,
+        color: HexColor("#e0e5ec"),
         child: CustomScrollView(
           slivers: <Widget>[
             SliverPersistentHeader(
@@ -123,7 +124,7 @@ class _StoreHomeState extends State<StoreHome>
                 length: 4,
                 child: SingleChildScrollView(
                   child: Container(
-                    color: HexColor("e5e2df"),
+                    color: bgColor,
                     child: TabBar(
                       isScrollable: true,
                       enableFeedback: false,
@@ -148,7 +149,7 @@ class _StoreHomeState extends State<StoreHome>
             ),
             SliverFillRemaining(
               child: Container(
-                color: HexColor("e5e2df"),
+                color: HexColor("#e0e5ec"),
                 child: TabBarView(
                   controller: _tabcontroller,
                   children: [
@@ -162,100 +163,66 @@ class _StoreHomeState extends State<StoreHome>
                             children: items
                                 .map(
                                   (item) => item.Stock == 0
-                                      ? Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(3.0),
-                                            child: Stack(
-                                              children: [
-                                                Card(
-                                                  elevation: 0,
-                                                  color: Colors.white,
-                                                  clipBehavior: Clip.antiAlias,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            24),
-                                                  ),
-                                                  child: InkWell(
-                                                      onTap: () {
-                                                        Route route =
-                                                            MaterialPageRoute(
-                                                          builder: (c) =>
-                                                              ProductPage(
-                                                            id: item.id,
-                                                          ),
-                                                        );
-                                                        Navigator.push(
-                                                          context,
-                                                          route,
-                                                        );
-                                                      },
-                                                      splashColor: Colors.black,
-                                                      child: gridItems(
-                                                          item.thumbnailUrl,
-                                                          item.shortInfo,
-                                                          item.price
-                                                              .toString())),
-                                                ),
-                                                Center(
-                                                  child: Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.464,
-                                                    height: 50,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "SOLD OUT",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 20),
-                                                      ),
+                                      ? Stack(
+                                          children: [
+                                            InkWell(
+                                                onTap: () {
+                                                  Route route =
+                                                      MaterialPageRoute(
+                                                    builder: (c) => ProductPage(
+                                                      id: item.id,
                                                     ),
-                                                    color: Colors.redAccent
-                                                        .withOpacity(0.85),
+                                                  );
+                                                  Navigator.push(
+                                                    context,
+                                                    route,
+                                                  );
+                                                },
+                                                splashColor: Colors.black,
+                                                child: gridItems(
+                                                    item.thumbnailUrl,
+                                                    item.shortInfo,
+                                                    item.price.toString())),
+                                            Center(
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.464,
+                                                height: 50,
+                                                child: Center(
+                                                  child: Text(
+                                                    "SOLD OUT",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 20),
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      : Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(3.0),
-                                            child: Card(
-                                              elevation: 0,
-                                              color: Colors.white,
-                                              clipBehavior: Clip.antiAlias,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(24),
+                                                ),
+                                                color: Colors.redAccent
+                                                    .withOpacity(0.85),
                                               ),
-                                              child: InkWell(
-                                                  onTap: () {
-                                                    Route route =
-                                                        MaterialPageRoute(
-                                                      builder: (c) =>
-                                                          ProductPage(
-                                                        id: item.id,
-                                                      ),
-                                                    );
-                                                    Navigator.push(
-                                                      context,
-                                                      route,
-                                                    );
-                                                  },
-                                                  splashColor: Colors.black,
-                                                  child: gridItems(
-                                                      item.thumbnailUrl,
-                                                      item.shortInfo,
-                                                      item.price.toString())),
-                                            ),
-                                          ),
-                                        ),
+                                            )
+                                          ],
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            Route route = MaterialPageRoute(
+                                              builder: (c) => ProductPage(
+                                                id: item.id,
+                                              ),
+                                            );
+                                            Navigator.push(
+                                              context,
+                                              route,
+                                            );
+                                          },
+                                          splashColor: Colors.black,
+                                          child: gridItems(
+                                              item.thumbnailUrl,
+                                              item.shortInfo,
+                                              item.price.toString())),
                                 )
                                 .toList(),
                           );
@@ -272,100 +239,66 @@ class _StoreHomeState extends State<StoreHome>
                             children: items
                                 .map(
                                   (item) => item.Stock == 0
-                                      ? Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(3.0),
-                                            child: Stack(
-                                              children: [
-                                                Card(
-                                                  elevation: 0,
-                                                  color: Colors.white,
-                                                  clipBehavior: Clip.antiAlias,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            24),
-                                                  ),
-                                                  child: InkWell(
-                                                      onTap: () {
-                                                        Route route =
-                                                            MaterialPageRoute(
-                                                          builder: (c) =>
-                                                              ProductPage(
-                                                            id: item.id,
-                                                          ),
-                                                        );
-                                                        Navigator.push(
-                                                          context,
-                                                          route,
-                                                        );
-                                                      },
-                                                      splashColor: Colors.black,
-                                                      child: gridItems(
-                                                          item.thumbnailUrl,
-                                                          item.shortInfo,
-                                                          item.price
-                                                              .toString())),
-                                                ),
-                                                Center(
-                                                  child: Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.464,
-                                                    height: 50,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "SOLD OUT",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 20),
-                                                      ),
+                                      ? Stack(
+                                          children: [
+                                            InkWell(
+                                                onTap: () {
+                                                  Route route =
+                                                      MaterialPageRoute(
+                                                    builder: (c) => ProductPage(
+                                                      id: item.id,
                                                     ),
-                                                    color: Colors.redAccent
-                                                        .withOpacity(0.85),
+                                                  );
+                                                  Navigator.push(
+                                                    context,
+                                                    route,
+                                                  );
+                                                },
+                                                splashColor: Colors.black,
+                                                child: gridItems(
+                                                    item.thumbnailUrl,
+                                                    item.shortInfo,
+                                                    item.price.toString())),
+                                            Center(
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.464,
+                                                height: 50,
+                                                child: Center(
+                                                  child: Text(
+                                                    "SOLD OUT",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 20),
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      : Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(3.0),
-                                            child: Card(
-                                              elevation: 0,
-                                              color: Colors.white,
-                                              clipBehavior: Clip.antiAlias,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(24),
+                                                ),
+                                                color: Colors.redAccent
+                                                    .withOpacity(0.85),
                                               ),
-                                              child: InkWell(
-                                                  onTap: () {
-                                                    Route route =
-                                                        MaterialPageRoute(
-                                                      builder: (c) =>
-                                                          ProductPage(
-                                                        id: item.id,
-                                                      ),
-                                                    );
-                                                    Navigator.push(
-                                                      context,
-                                                      route,
-                                                    );
-                                                  },
-                                                  splashColor: Colors.black,
-                                                  child: gridItems(
-                                                      item.thumbnailUrl,
-                                                      item.shortInfo,
-                                                      item.price.toString())),
-                                            ),
-                                          ),
-                                        ),
+                                            )
+                                          ],
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            Route route = MaterialPageRoute(
+                                              builder: (c) => ProductPage(
+                                                id: item.id,
+                                              ),
+                                            );
+                                            Navigator.push(
+                                              context,
+                                              route,
+                                            );
+                                          },
+                                          splashColor: Colors.black,
+                                          child: gridItems(
+                                              item.thumbnailUrl,
+                                              item.shortInfo,
+                                              item.price.toString())),
                                 )
                                 .toList(),
                           );
@@ -382,100 +315,66 @@ class _StoreHomeState extends State<StoreHome>
                             children: items
                                 .map(
                                   (item) => item.Stock == 0
-                                      ? Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(3.0),
-                                            child: Stack(
-                                              children: [
-                                                Card(
-                                                  elevation: 0,
-                                                  color: Colors.white,
-                                                  clipBehavior: Clip.antiAlias,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            24),
-                                                  ),
-                                                  child: InkWell(
-                                                      onTap: () {
-                                                        Route route =
-                                                            MaterialPageRoute(
-                                                          builder: (c) =>
-                                                              ProductPage(
-                                                            id: item.id,
-                                                          ),
-                                                        );
-                                                        Navigator.push(
-                                                          context,
-                                                          route,
-                                                        );
-                                                      },
-                                                      splashColor: Colors.black,
-                                                      child: gridItems(
-                                                          item.thumbnailUrl,
-                                                          item.shortInfo,
-                                                          item.price
-                                                              .toString())),
-                                                ),
-                                                Center(
-                                                  child: Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.464,
-                                                    height: 50,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "SOLD OUT",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 20),
-                                                      ),
+                                      ? Stack(
+                                          children: [
+                                            InkWell(
+                                                onTap: () {
+                                                  Route route =
+                                                      MaterialPageRoute(
+                                                    builder: (c) => ProductPage(
+                                                      id: item.id,
                                                     ),
-                                                    color: Colors.redAccent
-                                                        .withOpacity(0.85),
+                                                  );
+                                                  Navigator.push(
+                                                    context,
+                                                    route,
+                                                  );
+                                                },
+                                                splashColor: Colors.black,
+                                                child: gridItems(
+                                                    item.thumbnailUrl,
+                                                    item.shortInfo,
+                                                    item.price.toString())),
+                                            Center(
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.464,
+                                                height: 50,
+                                                child: Center(
+                                                  child: Text(
+                                                    "SOLD OUT",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 20),
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      : Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(3.0),
-                                            child: Card(
-                                              elevation: 0,
-                                              color: Colors.white,
-                                              clipBehavior: Clip.antiAlias,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(24),
+                                                ),
+                                                color: Colors.redAccent
+                                                    .withOpacity(0.85),
                                               ),
-                                              child: InkWell(
-                                                  onTap: () {
-                                                    Route route =
-                                                        MaterialPageRoute(
-                                                      builder: (c) =>
-                                                          ProductPage(
-                                                        id: item.id,
-                                                      ),
-                                                    );
-                                                    Navigator.push(
-                                                      context,
-                                                      route,
-                                                    );
-                                                  },
-                                                  splashColor: Colors.black,
-                                                  child: gridItems(
-                                                      item.thumbnailUrl,
-                                                      item.shortInfo,
-                                                      item.price.toString())),
-                                            ),
-                                          ),
-                                        ),
+                                            )
+                                          ],
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            Route route = MaterialPageRoute(
+                                              builder: (c) => ProductPage(
+                                                id: item.id,
+                                              ),
+                                            );
+                                            Navigator.push(
+                                              context,
+                                              route,
+                                            );
+                                          },
+                                          splashColor: Colors.black,
+                                          child: gridItems(
+                                              item.thumbnailUrl,
+                                              item.shortInfo,
+                                              item.price.toString())),
                                 )
                                 .toList(),
                           );
@@ -492,100 +391,66 @@ class _StoreHomeState extends State<StoreHome>
                             children: items
                                 .map(
                                   (item) => item.Stock == 0
-                                      ? Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(3.0),
-                                            child: Stack(
-                                              children: [
-                                                Card(
-                                                  elevation: 0,
-                                                  color: Colors.white,
-                                                  clipBehavior: Clip.antiAlias,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            24),
-                                                  ),
-                                                  child: InkWell(
-                                                      onTap: () {
-                                                        Route route =
-                                                            MaterialPageRoute(
-                                                          builder: (c) =>
-                                                              ProductPage(
-                                                            id: item.id,
-                                                          ),
-                                                        );
-                                                        Navigator.push(
-                                                          context,
-                                                          route,
-                                                        );
-                                                      },
-                                                      splashColor: Colors.black,
-                                                      child: gridItems(
-                                                          item.thumbnailUrl,
-                                                          item.shortInfo,
-                                                          item.price
-                                                              .toString())),
-                                                ),
-                                                Center(
-                                                  child: Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.464,
-                                                    height: 50,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "SOLD OUT",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 20),
-                                                      ),
+                                      ? Stack(
+                                          children: [
+                                            InkWell(
+                                                onTap: () {
+                                                  Route route =
+                                                      MaterialPageRoute(
+                                                    builder: (c) => ProductPage(
+                                                      id: item.id,
                                                     ),
-                                                    color: Colors.redAccent
-                                                        .withOpacity(0.85),
+                                                  );
+                                                  Navigator.push(
+                                                    context,
+                                                    route,
+                                                  );
+                                                },
+                                                splashColor: Colors.black,
+                                                child: gridItems(
+                                                    item.thumbnailUrl,
+                                                    item.shortInfo,
+                                                    item.price.toString())),
+                                            Center(
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.464,
+                                                height: 50,
+                                                child: Center(
+                                                  child: Text(
+                                                    "SOLD OUT",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 20),
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      : Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(3.0),
-                                            child: Card(
-                                              elevation: 0,
-                                              color: Colors.white,
-                                              clipBehavior: Clip.antiAlias,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(24),
+                                                ),
+                                                color: Colors.redAccent
+                                                    .withOpacity(0.85),
                                               ),
-                                              child: InkWell(
-                                                  onTap: () {
-                                                    Route route =
-                                                        MaterialPageRoute(
-                                                      builder: (c) =>
-                                                          ProductPage(
-                                                        id: item.id,
-                                                      ),
-                                                    );
-                                                    Navigator.push(
-                                                      context,
-                                                      route,
-                                                    );
-                                                  },
-                                                  splashColor: Colors.black,
-                                                  child: gridItems(
-                                                      item.thumbnailUrl,
-                                                      item.shortInfo,
-                                                      item.price.toString())),
-                                            ),
-                                          ),
-                                        ),
+                                            )
+                                          ],
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            Route route = MaterialPageRoute(
+                                              builder: (c) => ProductPage(
+                                                id: item.id,
+                                              ),
+                                            );
+                                            Navigator.push(
+                                              context,
+                                              route,
+                                            );
+                                          },
+                                          splashColor: Colors.black,
+                                          child: gridItems(
+                                              item.thumbnailUrl,
+                                              item.shortInfo,
+                                              item.price.toString())),
                                 )
                                 .toList(),
                           );
@@ -602,100 +467,66 @@ class _StoreHomeState extends State<StoreHome>
                             children: items
                                 .map(
                                   (item) => item.Stock == 0
-                                      ? Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(3.0),
-                                            child: Stack(
-                                              children: [
-                                                Card(
-                                                  elevation: 0,
-                                                  color: Colors.white,
-                                                  clipBehavior: Clip.antiAlias,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            24),
-                                                  ),
-                                                  child: InkWell(
-                                                      onTap: () {
-                                                        Route route =
-                                                            MaterialPageRoute(
-                                                          builder: (c) =>
-                                                              ProductPage(
-                                                            id: item.id,
-                                                          ),
-                                                        );
-                                                        Navigator.push(
-                                                          context,
-                                                          route,
-                                                        );
-                                                      },
-                                                      splashColor: Colors.black,
-                                                      child: gridItems(
-                                                          item.thumbnailUrl,
-                                                          item.shortInfo,
-                                                          item.price
-                                                              .toString())),
-                                                ),
-                                                Center(
-                                                  child: Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.464,
-                                                    height: 50,
-                                                    child: Center(
-                                                      child: Text(
-                                                        "SOLD OUT",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 20),
-                                                      ),
+                                      ? Stack(
+                                          children: [
+                                            InkWell(
+                                                onTap: () {
+                                                  Route route =
+                                                      MaterialPageRoute(
+                                                    builder: (c) => ProductPage(
+                                                      id: item.id,
                                                     ),
-                                                    color: Colors.redAccent
-                                                        .withOpacity(0.85),
+                                                  );
+                                                  Navigator.push(
+                                                    context,
+                                                    route,
+                                                  );
+                                                },
+                                                splashColor: Colors.black,
+                                                child: gridItems(
+                                                    item.thumbnailUrl,
+                                                    item.shortInfo,
+                                                    item.price.toString())),
+                                            Center(
+                                              child: Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.464,
+                                                height: 50,
+                                                child: Center(
+                                                  child: Text(
+                                                    "SOLD OUT",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 20),
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        )
-                                      : Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(3.0),
-                                            child: Card(
-                                              elevation: 0,
-                                              color: Colors.white,
-                                              clipBehavior: Clip.antiAlias,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(24),
+                                                ),
+                                                color: Colors.redAccent
+                                                    .withOpacity(0.85),
                                               ),
-                                              child: InkWell(
-                                                  onTap: () {
-                                                    Route route =
-                                                        MaterialPageRoute(
-                                                      builder: (c) =>
-                                                          ProductPage(
-                                                        id: item.id,
-                                                      ),
-                                                    );
-                                                    Navigator.push(
-                                                      context,
-                                                      route,
-                                                    );
-                                                  },
-                                                  splashColor: Colors.black,
-                                                  child: gridItems(
-                                                      item.thumbnailUrl,
-                                                      item.shortInfo,
-                                                      item.price.toString())),
-                                            ),
-                                          ),
-                                        ),
+                                            )
+                                          ],
+                                        )
+                                      : InkWell(
+                                          onTap: () {
+                                            Route route = MaterialPageRoute(
+                                              builder: (c) => ProductPage(
+                                                id: item.id,
+                                              ),
+                                            );
+                                            Navigator.push(
+                                              context,
+                                              route,
+                                            );
+                                          },
+                                          splashColor: Colors.black,
+                                          child: gridItems(
+                                              item.thumbnailUrl,
+                                              item.shortInfo,
+                                              item.price.toString())),
                                 )
                                 .toList(),
                           );
@@ -752,95 +583,149 @@ class _StoreHomeState extends State<StoreHome>
   }
 
   gridItems(String url, String title, String price) {
-    return Column(
-      children: [
-        Center(
-          child: Container(
-            //todo:保留
-            height: MediaQuery.of(context).size.height * 0.15,
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: HexColor("#e0e5ec"),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xFFFFFFFF),
+                spreadRadius: 1.0,
+                blurRadius: 10.0,
+                offset: Offset(-5, -5),
               ),
+              BoxShadow(
+                color: HexColor("#a3b1c6"),
+                spreadRadius: 1.0,
+                blurRadius: 12.0,
+                offset: Offset(2, 2),
+              ),
+            ]),
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: HexColor("#e0e5ec"),
+              boxShadow: [
+                BoxShadow(
+                  color: HexColor("#a3b1c6"),
+                  spreadRadius: 1.0,
+                  blurRadius: 12.0,
+                  offset: Offset(3, 3),
+                ),
+                BoxShadow(
+                  color: HexColor("#ffffff"),
+                  spreadRadius: 1.0,
+                  blurRadius: 10.0,
+                  offset: Offset(-3, -3),
+                ),
+              ]),
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Center(
               child: Image.network(
                 url,
                 fit: BoxFit.cover,
-                width: 100,
-                height: MediaQuery.of(context).size.height * 0.15,
+                height: 125,
               ),
             ),
-            width: MediaQuery.of(context).size.width,
-            // color: Colors.white,
           ),
         ),
-        Container(
-          width: MediaQuery.of(context).size.width,
-          child: Padding(
-            padding: const EdgeInsets.only(
-                top: 5, right: 13.0, left: 13.0, bottom: 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        title,
-                        style: new TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                      RichText(
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        text: TextSpan(
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: mainColorOfLEEWAY,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: price.toString(),
-                            ),
-                            TextSpan(
-                              text: "円",
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: mainColorOfLEEWAY,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 3.0),
-                  child: Text(
-                    "詳しく見る",
-                    style: TextStyle(fontSize: 10),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
+  // gridItems(String url, String title, String price) {
+  //   return Column(
+  //     children: [
+  //       Center(
+  //         child: Container(
+  //           //todo:保留
+  //           height: MediaQuery.of(context).size.height * 0.15,
+  //           child: ClipRRect(
+  //             borderRadius: BorderRadius.only(
+  //               topLeft: Radius.circular(8),
+  //               topRight: Radius.circular(8),
+  //             ),
+  //             child: Image.network(
+  //               url,
+  //               fit: BoxFit.cover,
+  //               width: 100,
+  //               height: MediaQuery.of(context).size.height * 0.15,
+  //             ),
+  //           ),
+  //           width: MediaQuery.of(context).size.width,
+  //           // color: Colors.white,
+  //         ),
+  //       ),
+  //       Container(
+  //         width: MediaQuery.of(context).size.width,
+  //         child: Padding(
+  //           padding: const EdgeInsets.only(
+  //               top: 5, right: 13.0, left: 13.0, bottom: 0),
+  //           child: Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //             crossAxisAlignment: CrossAxisAlignment.end,
+  //             children: [
+  //               Expanded(
+  //                 child: Column(
+  //                   children: [
+  //                     Text(
+  //                       title,
+  //                       style: new TextStyle(
+  //                           fontSize: 13,
+  //                           fontWeight: FontWeight.bold,
+  //                           color: Colors.black),
+  //                       overflow: TextOverflow.ellipsis,
+  //                       maxLines: 1,
+  //                     ),
+  //                     RichText(
+  //                       overflow: TextOverflow.ellipsis,
+  //                       maxLines: 1,
+  //                       text: TextSpan(
+  //                         style: TextStyle(
+  //                           fontSize: 18,
+  //                           fontWeight: FontWeight.bold,
+  //                           color: mainColorOfLEEWAY,
+  //                         ),
+  //                         children: [
+  //                           TextSpan(
+  //                             text: price.toString(),
+  //                           ),
+  //                           TextSpan(
+  //                             text: "円",
+  //                             style: TextStyle(
+  //                               fontSize: 12,
+  //                               fontWeight: FontWeight.bold,
+  //                               color: mainColorOfLEEWAY,
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                   ],
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                 ),
+  //               ),
+  //               Padding(
+  //                 padding: const EdgeInsets.only(bottom: 3.0),
+  //                 child: Text(
+  //                   "詳しく見る",
+  //                   style: TextStyle(fontSize: 10),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
   mainSlider() {
     return Container(
-      color: HexColor("E67928"),
+      color: HexColor("#e0e5ec"),
       child: Padding(
         padding: const EdgeInsets.only(bottom: 15),
         child: CarouselSlider(
@@ -886,6 +771,23 @@ class _StoreHomeState extends State<StoreHome>
                             );
                           },
                           child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: HexColor("#e0e5ec"),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0xFFFFFFFF),
+                                    spreadRadius: 1.0,
+                                    blurRadius: 10.0,
+                                    offset: Offset(-5, -5),
+                                  ),
+                                  BoxShadow(
+                                    color: HexColor("#a3b1c6"),
+                                    spreadRadius: 1.0,
+                                    blurRadius: 12.0,
+                                    offset: Offset(2, 2),
+                                  ),
+                                ]),
                             width: MediaQuery.of(context).size.width,
                             margin: EdgeInsets.symmetric(horizontal: 5.0),
                             child: ClipRRect(

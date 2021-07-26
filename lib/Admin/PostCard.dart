@@ -78,7 +78,7 @@ class _OriginalUploadPageState extends State<PostCard> {
           },
         ),
         title: Text(
-          "出品ページ",
+          "出品ページ（ポストカード）",
           style: TextStyle(
             color: Colors.black,
             fontSize: 24,
@@ -324,12 +324,19 @@ class _OriginalUploadPageState extends State<PostCard> {
                   alignment: Alignment.bottomCenter,
                   child: ElevatedButton(
                     onPressed: () {
+                      uploadFile();
                       if (_formKey.currentState.validate()) {
-                        uploadFile();
                         confirmItemOfOriginal();
                       }
                     },
-                    child: Text("出品する"),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "出品する",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     style: ElevatedButton.styleFrom(primary: mainColor),
                   ),
                 ),

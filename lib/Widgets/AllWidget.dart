@@ -40,6 +40,7 @@ final lilBrown = HexColor("FFB47C");
 
 final mainColorOfLEEWAY = HexColor("E67928");
 final String productID = DateTime.now().millisecondsSinceEpoch.toString();
+final bgColor = HexColor("#e0e5ec");
 
 Widget infoTiles({
   TextEditingController controller,
@@ -71,6 +72,7 @@ Widget infoTiles({
 
 Widget uploadTitle(String title, double pad) {
   return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       SizedBox(
         height: 20,
@@ -94,7 +96,7 @@ Widget sourceInfoForMain(ItemModel model, BuildContext context,
             id: model.id,
           ),
         );
-        Navigator.pushReplacement(
+        Navigator.push(
           context,
           route,
         );
@@ -143,15 +145,28 @@ Widget sourceInfoForMain(ItemModel model, BuildContext context,
                             maxLines: 1,
                             child: new Text(model.shortInfo),
                           ),
-                          DefaultTextStyle(
-                            style: new TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: mainColorOfLEEWAY),
+                          RichText(
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
-                            child: new Text(
-                              model.price.toString() + "円",
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: mainColorOfLEEWAY,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: model.price.toString(),
+                                ),
+                                TextSpan(
+                                  text: "円",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: mainColorOfLEEWAY,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
@@ -318,7 +333,9 @@ Widget sourceInfoForMains(UploadItems model, BuildContext context,
             Center(
               child: Container(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(8),
+                      topLeft: Radius.circular(8)),
                   child: Image.network(
                     model.thumbnailUrl,
                     fit: BoxFit.cover,
@@ -372,15 +389,32 @@ Widget sourceInfoForMains(UploadItems model, BuildContext context,
 
 Widget buildFooter(BuildContext context) {
   final visual = Container(
-    child: Icon(
-      Icons.keyboard_arrow_up_outlined,
-      color: Colors.white,
-    ),
-    height: 50,
     decoration: BoxDecoration(
-        color: HexColor("#E67928"),
+        color: HexColor("#e0e5ec"),
+        boxShadow: [
+          BoxShadow(
+            color: HexColor("#a3b1c6"),
+            spreadRadius: 1.0,
+            blurRadius: 12.0,
+            offset: Offset(10, 10),
+          ),
+          BoxShadow(
+            color: HexColor("#ffffff"),
+            spreadRadius: 1.0,
+            blurRadius: 10.0,
+            offset: Offset(-10, -10),
+          ),
+        ],
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(20), topRight: Radius.circular(20))),
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Icon(
+        Icons.keyboard_arrow_up_outlined,
+        color: mainColorOfLEEWAY,
+        size: 40,
+      ),
+    ),
   );
   return visual;
 }
@@ -497,10 +531,14 @@ class BubbleBorder extends ShapeBorder {
 
 const boldTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
-  fontSize: 20,
-  color: Colors.white,
+  fontSize: 15,
+  color: Colors.black,
 );
-const largeTextStyle = TextStyle(fontWeight: FontWeight.normal, fontSize: 20);
+const largeTextStyle = TextStyle(
+  fontWeight: FontWeight.w700,
+  fontSize: 20,
+  color: Colors.black,
+);
 
 class StripeTransactionResponse {
   StripeTransactionResponse({
@@ -594,19 +632,20 @@ likeButton(BuildContext context, Map il) {
           .snapshots(),
       builder: (context, snapshot) {
         return !snapshot.hasData
-            ? null
-            : snapshot.data.data()["userLike"].contains(il["shortInfo"])
+            ? Container()
+            : snapshot.data.data()["userLike"].contains(il["id"])
                 ? SizedBox(
                     width: 65,
                     height: 60,
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: Colors.white),
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.transparent, elevation: 0),
                       onPressed: () => checkItemInLike(il["id"], context),
                       child: Center(
                         child: Icon(
                           Icons.favorite,
                           color: Colors.pinkAccent,
-                          size: 35,
+                          size: 30,
                         ),
                       ),
                     ),
@@ -615,12 +654,13 @@ likeButton(BuildContext context, Map il) {
                     width: 65,
                     height: 60,
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(primary: Colors.white),
+                      style: ElevatedButton.styleFrom(
+                          primary: Colors.transparent, elevation: 0),
                       onPressed: () => checkItemInLike(il["id"], context),
                       child: Icon(
                         Icons.favorite_outline_outlined,
                         color: Colors.pinkAccent,
-                        size: 35,
+                        size: 30,
                       ),
                     ),
                   );
@@ -1154,9 +1194,6 @@ beginBuildingCart(BuildContext context, String title, String sub) {
 Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
     {Color background, removeCartFunction}) {
   return Card(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8),
-    ),
     color: Colors.white,
     child: InkWell(
       onTap: () {
@@ -1177,14 +1214,12 @@ Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
             child: Container(
               child: ClipRRect(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  topRight: Radius.circular(8),
-                ),
+                    topLeft: Radius.circular(6), topRight: Radius.circular(6)),
                 child: Image.network(
                   model.thumbnailUrl,
                   fit: BoxFit.cover,
                   width: 100,
-                  height: 120,
+                  height: MediaQuery.of(context).size.height * 0.15,
                 ),
               ),
               width: MediaQuery.of(context).size.width,
@@ -1197,56 +1232,60 @@ Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
             child: Padding(
               padding: const EdgeInsets.only(
                   top: 5, right: 13.0, left: 13.0, bottom: 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        DefaultTextStyle(
-                          style: new TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          child: new Text(model.shortInfo),
-                        ),
-                        RichText(
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          text: TextSpan(
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: mainColorOfLEEWAY,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: model.price.toString(),
-                              ),
-                              TextSpan(
-                                text: "円",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: mainColorOfLEEWAY,
-                                ),
-                              ),
-                            ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Column(
+                        children: [
+                          DefaultTextStyle(
+                            style: new TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            child: new Text(model.shortInfo),
                           ),
+                          RichText(
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: mainColorOfLEEWAY,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: model.price.toString(),
+                                ),
+                                TextSpan(
+                                  text: "円",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: mainColorOfLEEWAY,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 3.0),
+                        child: Text(
+                          "詳しく見る",
+                          style: TextStyle(fontSize: 15, color: Colors.black54),
                         ),
-                      ],
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 3.0),
-                    child: Text(
-                      "詳しく見る",
-                      style: TextStyle(fontSize: 12, color: Colors.black54),
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -1274,7 +1313,7 @@ Widget sourceInfoForMainOfLikex1(LikeItems model, BuildContext context,
               id: model.id,
             ),
           );
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             route,
           );
@@ -1293,7 +1332,7 @@ Widget sourceInfoForMainOfLikex1(LikeItems model, BuildContext context,
                     model.thumbnailUrl,
                     fit: BoxFit.cover,
                     width: 100,
-                    height: 270,
+                    height: 320,
                   ),
                 ),
                 width: MediaQuery.of(context).size.width,
@@ -1401,7 +1440,7 @@ Widget sourceInfoForMainOfLikex3(LikeItems model, BuildContext context,
                   model.thumbnailUrl,
                   fit: BoxFit.cover,
                   width: 100,
-                  height: 70,
+                  height: 90,
                 ),
               ),
               width: MediaQuery.of(context).size.width,
@@ -1409,8 +1448,11 @@ Widget sourceInfoForMainOfLikex3(LikeItems model, BuildContext context,
             ),
           ),
           Container(
-            color: Colors.white,
             width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
+            ),
             child: Padding(
               padding: const EdgeInsets.only(
                   top: 5, right: 13.0, left: 13.0, bottom: 5),
@@ -1508,4 +1550,146 @@ class MetaCard extends StatelessWidget {
                   _children,
                 ]))));
   }
+}
+
+Widget TransactionFinished(BuildContext context) {
+  return Container(
+    color: Colors.grey,
+    width: MediaQuery.of(context).size.width,
+    height: 50,
+    child: Center(
+      child: Text(
+        "取引終了です。\n引き続きLEEWAYをお楽しみ下さい。",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+        ),
+      ),
+    ),
+  );
+}
+
+Widget WaitShips(BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Container(
+      color: Colors.black,
+      width: MediaQuery.of(context).size.width,
+      height: 50,
+      child: Center(
+        child: Text(
+          "出品者の発送をお待ち下さい",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget WaitReserve(BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.all(5.0),
+    child: Container(
+      color: Colors.black,
+      width: MediaQuery.of(context).size.width,
+      height: 50,
+      child: Center(
+        child: Text(
+          "購入者の受け取りをお待ちください。",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget CancelFinished(BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.all(5.0),
+    child: Container(
+      color: Colors.grey,
+      width: MediaQuery.of(context).size.width,
+      height: 50,
+      child: Center(
+        child: Text(
+          "この注文はキャンセルされました。",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget HoldOrder(BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.all(5.0),
+    child: Container(
+      color: Colors.deepPurpleAccent,
+      width: MediaQuery.of(context).size.width,
+      height: 50,
+      child: Center(
+        child: Text(
+          "運営によるキャンセル申請の受理検討中です。",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget myNeumorphism(Widget w) {
+  return Container(
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        color: HexColor("#e0e5ec"),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFFFFFFFF),
+            spreadRadius: 1.0,
+            blurRadius: 10.0,
+            offset: Offset(-5, -5),
+          ),
+          BoxShadow(
+            color: HexColor("#a3b1c6"),
+            spreadRadius: 1.0,
+            blurRadius: 12.0,
+            offset: Offset(2, 2),
+          ),
+        ]),
+    child: Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          color: HexColor("#e0e5ec"),
+          boxShadow: [
+            BoxShadow(
+              color: HexColor("#a3b1c6"),
+              spreadRadius: 1.0,
+              blurRadius: 12.0,
+              offset: Offset(3, 3),
+            ),
+            BoxShadow(
+              color: HexColor("#ffffff"),
+              spreadRadius: 1.0,
+              blurRadius: 10.0,
+              offset: Offset(-3, -3),
+            ),
+          ]),
+      child: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: w,
+      ),
+    ),
+  );
 }

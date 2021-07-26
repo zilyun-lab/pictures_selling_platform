@@ -44,18 +44,27 @@ class _SearchProductState extends State<SearchProduct>
           children: <Widget>[
             TabBar(
               tabs: <Widget>[
-                Text("作品名検索"),
-                Text("金額検索"),
-                Text("カラー検索"),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("作品名検索"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("金額検索"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("カラー検索"),
+                ),
               ],
               controller: _tabController,
               isScrollable: true,
               enableFeedback: false,
-              labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               unselectedLabelStyle:
                   TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-              unselectedLabelColor: Colors.white,
-              labelColor: Colors.black,
+              labelColor: Colors.white,
+              unselectedLabelColor: Colors.blueAccent,
             ),
           ],
         ),
@@ -70,11 +79,7 @@ class _SearchProductState extends State<SearchProduct>
                 SingleChildScrollView(
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(child: searchWidget()),
-                        ],
-                      ),
+                      searchWidget(),
                       StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
                             .collection("items")
@@ -82,43 +87,17 @@ class _SearchProductState extends State<SearchProduct>
                             .snapshots(),
                         builder: (context, snap) {
                           return snap.hasData
-                              ? ListView.builder(
+                              ? GridView.builder(
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                  ),
                                   shrinkWrap: true,
                                   itemCount: snap.data.docs.length,
                                   itemBuilder: (context, index) {
                                     ItemModel model = ItemModel.fromJson(
                                         snap.data.docs[index].data());
-                                    return SizedBox(
-                                      height: 75,
-                                      child: Card(
-                                        color: HexColor("e5e2df"),
-                                        child: ListTile(
-                                          onTap: () {
-                                            Route route = MaterialPageRoute(
-                                              builder: (c) => ProductPage(
-                                                id: model.id,
-                                              ),
-                                            );
-                                            Navigator.pushReplacement(
-                                              context,
-                                              route,
-                                            );
-                                          },
-                                          trailing: Text(
-                                            model.price.toString() + "円",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          title: Text(model.shortInfo),
-                                          subtitle: Text(model.longDescription),
-                                          leading: Image.network(
-                                            model.thumbnailUrl,
-                                            height: 75,
-                                            fit: BoxFit.scaleDown,
-                                          ),
-                                        ),
-                                      ),
-                                    );
+                                    return sourceInfoForMain(model, context);
                                   },
                                 )
                               : Center(
@@ -146,43 +125,17 @@ class _SearchProductState extends State<SearchProduct>
                             .snapshots(),
                         builder: (context, snap) {
                           return snap.hasData
-                              ? ListView.builder(
+                              ? GridView.builder(
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                  ),
                                   shrinkWrap: true,
                                   itemCount: snap.data.docs.length,
                                   itemBuilder: (context, index) {
                                     ItemModel model = ItemModel.fromJson(
                                         snap.data.docs[index].data());
-                                    return SizedBox(
-                                      height: 75,
-                                      child: Card(
-                                        color: HexColor("e5e2df"),
-                                        child: ListTile(
-                                          onTap: () {
-                                            Route route = MaterialPageRoute(
-                                              builder: (c) => ProductPage(
-                                                id: model.id,
-                                              ),
-                                            );
-                                            Navigator.pushReplacement(
-                                              context,
-                                              route,
-                                            );
-                                          },
-                                          trailing: Text(
-                                            model.price.toString() + "円",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          title: Text(model.shortInfo),
-                                          subtitle: Text(model.longDescription),
-                                          leading: Image.network(
-                                            model.thumbnailUrl,
-                                            height: 75,
-                                            fit: BoxFit.scaleDown,
-                                          ),
-                                        ),
-                                      ),
-                                    );
+                                    return sourceInfoForMain(model, context);
                                   },
                                 )
                               : Center(
@@ -210,43 +163,17 @@ class _SearchProductState extends State<SearchProduct>
                             .snapshots(),
                         builder: (context, snap) {
                           return snap.hasData
-                              ? ListView.builder(
+                              ? GridView.builder(
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                  ),
                                   shrinkWrap: true,
                                   itemCount: snap.data.docs.length,
                                   itemBuilder: (context, index) {
                                     ItemModel model = ItemModel.fromJson(
                                         snap.data.docs[index].data());
-                                    return SizedBox(
-                                      height: 75,
-                                      child: Card(
-                                        color: HexColor("e5e2df"),
-                                        child: ListTile(
-                                          onTap: () {
-                                            Route route = MaterialPageRoute(
-                                              builder: (c) => ProductPage(
-                                                id: model.id,
-                                              ),
-                                            );
-                                            Navigator.pushReplacement(
-                                              context,
-                                              route,
-                                            );
-                                          },
-                                          trailing: Text(
-                                            model.price.toString() + "円",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          title: Text(model.shortInfo),
-                                          subtitle: Text(model.longDescription),
-                                          leading: Image.network(
-                                            model.thumbnailUrl,
-                                            height: 75,
-                                            fit: BoxFit.scaleDown,
-                                          ),
-                                        ),
-                                      ),
-                                    );
+                                    return sourceInfoForMain(model, context);
                                   },
                                 )
                               : Center(
@@ -280,14 +207,14 @@ class _SearchProductState extends State<SearchProduct>
         width: MediaQuery.of(context).size.width - 40,
         height: 50,
         decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black12.withOpacity(0.2),
-                blurRadius: 8.0,
-                spreadRadius: 1.0,
-                offset: Offset(5, 8))
-          ],
-          color: HexColor("F9DAC4"),
+          // boxShadow: [
+          //   // BoxShadow(
+          //   //     color: Colors.black12.withOpacity(0.2),
+          //   //     blurRadius: 8.0,
+          //   //     spreadRadius: 1.0,
+          //   //     offset: Offset(5, 8))
+          // ],
+          color: Colors.grey.withOpacity(0.4),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -321,29 +248,64 @@ class _SearchProductState extends State<SearchProduct>
     );
   }
 
+  changeToInt(double d) {
+    return d.toInt();
+  }
+
   Widget searchPriceWidget() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(25.0, 15, 0, 8),
-          child: Text(
-            "金額：$_labelText",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(25.0, 15, 0, 8),
+              child: Text(
+                "金額：$_labelText",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      if (priceQuery > 0) {
+                        setState(() {
+                          priceQuery = priceQuery - 1000;
+                          _labelText = '${changeToInt(priceQuery)} 円';
+                        });
+                      }
+                    },
+                    icon: Icon(Icons.remove),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      setState(() {
+                        priceQuery = priceQuery + 1000;
+                        _labelText = '${changeToInt(priceQuery)} 円';
+                      });
+                    },
+                    icon: Icon(Icons.add),
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
         Slider(
-          label: _labelText,
           value: priceQuery,
           min: 0,
-          max: 50000,
-          divisions: 1000,
+          max: 1000000,
+          divisions: priceQuery <= 50000 ? 1000 : 100,
           activeColor: mainColorOfLEEWAY,
           inactiveColor: Colors.blueAccent,
           onChanged: (double value) {
             setState(() {
               priceQuery = value.roundToDouble();
-              _labelText = '$priceQuery 円';
+              _labelText = '${changeToInt(priceQuery)} 円';
             });
           },
         ),
@@ -352,18 +314,40 @@ class _SearchProductState extends State<SearchProduct>
   }
 
   Widget searchColorWidget() {
+    final map = Map.fromIterables(
+        color1.map((e) => e.key).toList(), color1.map((e) => e.value).toList());
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(25.0, 15, 0, 8),
-          child: Text(
-            "選択カラー：$selectedItem1",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          padding: const EdgeInsets.all(15.0),
+          child: RichText(
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            text: TextSpan(
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: Colors.black,
+              ),
+              children: [
+                TextSpan(
+                  text: "選択カラー：",
+                ),
+                TextSpan(
+                  text: selectedItem1,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: map[selectedItem1]),
+                ),
+              ],
+            ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(15.0),
           child: DropdownButtonFormField<String>(
             dropdownColor: HexColor("#e5e2df"),
             isExpanded: true,

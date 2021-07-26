@@ -53,15 +53,13 @@ exports.sendCancelEmail = functions.firestore
             secure: false,
             
             auth: {
-                user: "user-report@leewayjp.net",
+                user: "cancel-order@leewayjp.net",
                 pass: gmailPassword,
             }
           });
-          
-
         const mailOptions = {
-            from: "user-report@leewayjp.net",
-            to: "user-report@leewayjp.net",
+            from: "cancel-order@leewayjp.net",
+            to: "cancel-order@leewayjp.net",
             subject: 'ユーザーよりキャンセルがありました。',
             html: `<p>
                                    <b>キャンセル申請ユーザー: </b>${snap.data().CancelRequestName}<br>
@@ -71,8 +69,6 @@ exports.sendCancelEmail = functions.firestore
                                    <b>注文ID: </b>${snap.data().orderID}<br>
                                 </p>`
         };
-
-
         return transporter.sendMail(mailOptions, (error, data) => {
             if (error) {
                 console.log(error)
@@ -227,8 +223,8 @@ exports.sendEmailToBuyer = functions.firestore
             
             <p>氏名：${addressDoc.data().lastName} ${addressDoc.data().firstName}</p>
             <p>郵便番号：${addressDoc.data().postalCode}</p>
-            <p>住所：${addressDoc.data().prefectures}${addressDoc.data().city}${addressDoc.data().address}</p>
-            <p>任意の住所：${addressDoc.data().secondAddress}</p>
+            <p>住所：${addressDoc.data().prefectures}${addressDoc.data().city}${addressDoc.data().address}${addressDoc.data().secondAddress}</p>
+          
             <br>
             <hr style="border:none;border-top:dashed 1px #000000;height:1px;color:#FFFFFF;">
             <br>
@@ -255,7 +251,7 @@ exports.sendEmailToBuyer = functions.firestore
 
 exports.sendEmailWhenTransactionFinished = functions.firestore
     .document('users/{userID}/Notify/{notifyID}')
-    .onUpdate((change, context) => {
+    .onUpdate(async(change, context) => {
         var transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 587,
@@ -266,12 +262,16 @@ exports.sendEmailWhenTransactionFinished = functions.firestore
                 pass: gmailPassword,
             }
           });
+        const userId = context.params.userID;
+        const userRef = admin.firestore().doc(`users/${userId}`);
+        const doc = await userRef.get();
+        const sellerName = doc.data().name;
 
         const mailOptions = {
             from: `no-reply@leewayjp.net`,
             to: change.after.data().email,
             subject: '取引終了のお知らせと口座登録のお願い',
-            html: `<p>${change.after.data().name} 様<br><br>取引が完了し、売上金を反映いたしました。<br>
+            html: `<p>${sellerName} 様<br><br>取引が完了し、売上金を反映いたしました。<br>
             <br>
             <p>ご注文ID：${change.after.data().id}</p>
             <p>商品名：${change.after.data().productIDs}</p>
@@ -309,6 +309,8 @@ exports.sendEmailWhenTransactionFinished = functions.firestore
 
 
 
+
+
 exports.sendEmailWhenCancelFinishedToSeller = functions.firestore
     .document('users/{userID}/Notify/{notifyID}')
     .onUpdate((change, context) => {
@@ -316,13 +318,11 @@ exports.sendEmailWhenCancelFinishedToSeller = functions.firestore
             host: 'smtp.gmail.com',
             port: 587,
             secure: false,
-            
             auth: {
                 user: "no-reply@leewayjp.net",
                 pass: gmailPassword,
             }
           });
-
         const mailOptions = {
             from: `no-reply@leewayjp.net`,
             to: change.after.data().email,

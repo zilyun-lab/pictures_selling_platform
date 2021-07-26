@@ -10,9 +10,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
+import 'package:selling_pictures_platform/test2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports:
@@ -21,6 +24,7 @@ import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/StarRatingModel.dart';
 import 'Admin/test.dart';
+import 'Authentication/FreezedUser.dart';
 import 'Authentication/Notification.dart';
 import 'Counters/Likeitemcounter.dart';
 import 'Counters/changeAddresss.dart';
@@ -103,9 +107,7 @@ class MyApp extends StatelessWidget {
         key: GlobalKey<ScaffoldState>(),
         debugShowCheckedModeBanner: false,
         home: SplashScreen(),
-        theme: ThemeData(
-          primaryColor: HexColor("#E67928"),
-        ),
+        theme: ThemeData(accentColor: bgColor, primaryColor: bgColor),
         routes: {
           '/message': (context) => UserNotification(),
         },
@@ -137,18 +139,42 @@ class _SplashScreenState extends State<SplashScreen> {
         if (await EcommerceApp.auth.currentUser != null && mounted) {
           //todo:もしログインしていたら以下
 
-          Navigator.pushReplacement(
-            context,
-            PageTransition(
-              type: PageTransitionType.fade,
-              child: MainPage(),
-              inheritTheme: true,
-              ctx: context,
-              duration: Duration(
-                milliseconds: 3000,
+          if (StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                  stream: FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(EcommerceApp.sharedPreferences
+                          .getString(EcommerceApp.userUID))
+                      .snapshots(),
+                  builder: (c, snap) {
+                    return snap.data.data()["isFreeze"];
+                  }) !=
+              false) {
+            Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.fade,
+                child: MainPage(),
+                inheritTheme: true,
+                ctx: context,
+                duration: Duration(
+                  milliseconds: 3000,
+                ),
               ),
-            ),
-          );
+            );
+          } else {
+            Navigator.push(
+              context,
+              PageTransition(
+                type: PageTransitionType.fade,
+                child: FreezeUser(),
+                inheritTheme: true,
+                ctx: context,
+                duration: Duration(
+                  milliseconds: 3000,
+                ),
+              ),
+            );
+          }
         } else {
           //todo:もしログインしていなかったら以下
 
@@ -208,6 +234,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: (() {
         if (selectedIndex == 0) {
           return AppBar(
@@ -216,8 +243,10 @@ class _MainPageState extends State<MainPage> {
             title: Padding(
               padding: const EdgeInsets.all(125.0),
               child: InkWell(
-                child: Image.asset("images/NoColor_horizontal.png"),
+                child: Image.asset("images/isColor_Horizontal.png"),
                 onTap: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (c) => NeumoTest()));
                   EcommerceApp.sharedPreferences.setString(
                     "Registration Time",
                     "${(DateTime.now().millisecondsSinceEpoch / 1000).toInt()}",
@@ -232,7 +261,7 @@ class _MainPageState extends State<MainPage> {
       })(),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
+        backgroundColor: bgColor,
         unselectedItemColor: Colors.grey,
         fixedColor: HexColor("E67928"),
         selectedLabelStyle:

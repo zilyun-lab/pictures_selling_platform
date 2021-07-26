@@ -86,7 +86,7 @@ class _OriginalUploadPageState extends State<Copy> {
             print(_imagesURL);
           },
           child: Text(
-            "出品ページ",
+            "出品ページ（コピー）",
             style: TextStyle(
               color: Colors.black,
               fontSize: 24,
@@ -250,6 +250,61 @@ class _OriginalUploadPageState extends State<Copy> {
                     ],
                   ),
                 ),
+                uploadTitle("作品サイズ(縦 × 横)", 8.0),
+                Container(
+                  color: Colors.white,
+                  child: Expanded(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              validator: (val) =>
+                                  _heighttextEditingController.text.isEmpty
+                                      ? "未記入の項目があります。"
+                                      : null,
+                              style: TextStyle(color: Colors.deepPurpleAccent),
+                              controller: _heighttextEditingController,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                labelText: "mm",
+                                hintText: "mm",
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Text("x"),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              validator: (val) =>
+                                  _widthtextEditingController.text.isEmpty
+                                      ? "未記入の項目があります。"
+                                      : null,
+                              style: TextStyle(color: Colors.deepPurpleAccent),
+                              controller: _widthtextEditingController,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                labelText: "mm",
+                                hintText: "mm",
+                                hintStyle: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 uploadTitle("印刷に関する情報", 8.0),
                 Container(
                   color: Colors.white,
@@ -342,61 +397,6 @@ class _OriginalUploadPageState extends State<Copy> {
                             });
                             print(_selectFrame);
                           },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                uploadTitle("作品サイズ(縦 × 横)", 8.0),
-                Container(
-                  color: Colors.white,
-                  child: Expanded(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              validator: (val) =>
-                                  _heighttextEditingController.text.isEmpty
-                                      ? "未記入の項目があります。"
-                                      : null,
-                              style: TextStyle(color: Colors.deepPurpleAccent),
-                              controller: _heighttextEditingController,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                labelText: "mm",
-                                hintText: "mm",
-                                hintStyle: TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Text("x"),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 12.0),
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              validator: (val) =>
-                                  _widthtextEditingController.text.isEmpty
-                                      ? "未記入の項目があります。"
-                                      : null,
-                              style: TextStyle(color: Colors.deepPurpleAccent),
-                              controller: _widthtextEditingController,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                labelText: "mm",
-                                hintText: "mm",
-                                hintStyle: TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                          ),
                         ),
                       ],
                     ),
@@ -511,14 +511,21 @@ class _OriginalUploadPageState extends State<Copy> {
                   alignment: Alignment.bottomCenter,
                   child: ElevatedButton(
                     onPressed: () {
+                      uploadFile();
                       if (_formKey.currentState.validate()) {
-                        uploadFile();
                         confirmItemOfOriginal();
                         print(_imagesURL);
                         print(_image);
                       }
                     },
-                    child: Text("出品する"),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "出品する",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
                     style: ElevatedButton.styleFrom(primary: mainColor),
                   ),
                 ),

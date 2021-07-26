@@ -32,14 +32,14 @@ class CustomTextField extends StatelessWidget {
             autofocus: true,
             controller: controller,
             obscureText: isObsecure,
-            cursorColor: Theme.of(context).primaryColor,
+            cursorColor: Colors.white,
             decoration: InputDecoration(
               border: InputBorder.none,
               prefixIcon: Icon(
                 data,
                 color: Colors.white,
               ),
-              focusColor: Theme.of(context).primaryColor,
+              focusColor: Colors.white,
               hintText: (hintText),
               hintStyle: TextStyle(color: HexColor("#f8f8ff")),
             ),

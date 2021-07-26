@@ -62,6 +62,8 @@ class _UpdateItemInfoState extends State<UpdateItemInfo> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
                 controller: _shortInfoController,
                 decoration: InputDecoration(
                   hintText: "作品名",
@@ -77,6 +79,8 @@ class _UpdateItemInfoState extends State<UpdateItemInfo> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
                 controller: _longDescriptionController,
                 decoration: InputDecoration(
                   hintText: "作品情報",

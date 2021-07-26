@@ -32,11 +32,6 @@ class _LikePageState extends State<LikePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // totalAmount = 0;
-    // Provider.of<TotalAmount>(
-    //   context,
-    //   listen: false,
-    // ).display(0);
   }
 
   @override

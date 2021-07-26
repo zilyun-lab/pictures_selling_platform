@@ -167,7 +167,9 @@ class NormalCheckBoxDialogState extends State<NormalCheckBoxDialog> {
                       setState(() {
                         cancelWhy = selected;
                       });
-                      print(cancelWhy);
+                      print(widget.postBy);
+                      print(widget.buyerID);
+                      print(widget.orderID);
                     },
                   ),
                 ),
@@ -253,12 +255,13 @@ class NormalCheckBoxDialogState extends State<NormalCheckBoxDialog> {
                               Navigator.pop(context);
                               FirebaseFirestore.instance
                                   .collection("users")
-                                  .doc(widget.postBy)
-                                  .collection("Notify")
                                   .doc(EcommerceApp.sharedPreferences
                                       .getString(EcommerceApp.userUID))
+                                  .collection("Notify")
+                                  .doc(widget.orderID)
                                   .collection("cancel")
-                                  .add({
+                                  .doc(widget.orderID)
+                                  .set({
                                 "why": whyController.text,
                                 "reason": cancelWhy,
                                 "orderID": widget.postBy,
@@ -284,7 +287,8 @@ class NormalCheckBoxDialogState extends State<NormalCheckBoxDialog> {
                               });
                               FirebaseFirestore.instance
                                   .collection("users")
-                                  .doc(widget.postBy)
+                                  .doc(EcommerceApp.sharedPreferences
+                                      .getString(EcommerceApp.userUID))
                                   .collection("Notify")
                                   .doc(widget.orderID)
                                   .update({
@@ -295,29 +299,6 @@ class NormalCheckBoxDialogState extends State<NormalCheckBoxDialog> {
                                   backgroundColor: HexColor("#E67928"),
                                 );
                               });
-
-                              FirebaseFirestore.instance
-                                  .collection("users")
-                                  .doc(EcommerceApp.sharedPreferences
-                                      .getString(EcommerceApp.userUID))
-                                  .collection("AllNotify")
-                                  .doc(widget.orderID)
-                                  .collection("Guide")
-                                  .doc(widget.orderID)
-                                  .update({
-                                "CancelRequestTo": true,
-                              });
-                              FirebaseFirestore.instance
-                                  .collection("users")
-                                  .doc(widget.postBy)
-                                  .collection("AllNotify")
-                                  .doc(widget.orderID)
-                                  .collection("Guide")
-                                  .doc(widget.orderID)
-                                  .update({
-                                "CancelRequestTo": true,
-                              });
-
                               FirebaseFirestore.instance
                                   .collection("cancelReport")
                                   .doc(widget.orderID)
@@ -326,19 +307,39 @@ class NormalCheckBoxDialogState extends State<NormalCheckBoxDialog> {
                                 "reason": cancelWhy,
                                 "orderID": widget.postBy,
                                 "whoCancelRequest": widget.orderID,
+                                "whoCancelRequestID": EcommerceApp
+                                    .sharedPreferences
+                                    .getString(EcommerceApp.userUID),
                                 "CancelRequestName": widget.postByName,
-                                "cancelTo": EcommerceApp.sharedPreferences
-                                    .getString(EcommerceApp.userName),
+                                "cancelTo": widget.buyerID,
                                 "cancelToID": EcommerceApp.sharedPreferences
                                     .getString(EcommerceApp.userUID),
                                 "cancelTime": refTime,
                                 "email": EcommerceApp.sharedPreferences
                                     .getString(EcommerceApp.userEmail)
-                              }).whenComplete(() {
-                                Fluttertoast.showToast(
-                                  msg: "キャンセル申請を送信しました。",
-                                  backgroundColor: HexColor("#E67928"),
-                                );
+                              });
+
+                              FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(EcommerceApp.sharedPreferences
+                                      .getString(EcommerceApp.userUID))
+                                  .collection("AllNotify")
+                                  .doc(EcommerceApp.sharedPreferences
+                                      .getString(EcommerceApp.userUID))
+                                  .collection("Guide")
+                                  .doc(widget.orderID)
+                                  .update({
+                                "CancelRequestTo": true,
+                              });
+                              FirebaseFirestore.instance
+                                  .collection("users")
+                                  .doc(widget.buyerID)
+                                  .collection("AllNotify")
+                                  .doc(widget.buyerID)
+                                  .collection("Guide")
+                                  .doc(widget.orderID)
+                                  .update({
+                                "CancelRequestTo": true,
                               });
                             }
                           : null),

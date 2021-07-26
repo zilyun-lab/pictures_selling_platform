@@ -9,7 +9,6 @@ import 'package:selling_pictures_platform/Config/config.dart';
 import 'UploadItemList.dart';
 
 class UploadItemModel extends ChangeNotifier {
-  //List<クラス名>　○○ = [];
   List<UploadItems> items = [];
 
   Future fetchItems() async {

@@ -112,66 +112,74 @@ class _UserNotificationState extends State<UserNotification>
                                                 ? Container()
                                                 : () {
                                                     if (tag == "Transaction") {
-                                                      return ListTile(
-                                                          subtitle: Text(DateFormat(
-                                                                  "yyyy年M月d日 HH時mm分")
-                                                              .format(snap
-                                                                  .data
-                                                                  .docs[index]
-                                                                      ["date"]
-                                                                  .toDate())
-                                                              .toString()),
-                                                          leading:
-                                                              Image.network(
-                                                            ss.data
-                                                                .data()[
-                                                                    "imageURL"]
-                                                                .toString(),
-                                                            height: 50,
-                                                            fit: BoxFit
-                                                                .scaleDown,
-                                                          ),
-                                                          title: ss.data.data()["sellerID"] !=
-                                                                      EcommerceApp.sharedPreferences.getString(
-                                                                          EcommerceApp
+                                                      return Column(
+                                                        children: [
+                                                          ListTile(
+                                                              subtitle: Text(DateFormat(
+                                                                      "yyyy年M月d日 HH時mm分")
+                                                                  .format(snap
+                                                                      .data
+                                                                      .docs[index][
+                                                                          "date"]
+                                                                      .toDate())
+                                                                  .toString()),
+                                                              leading:
+                                                                  Image.network(
+                                                                ss.data
+                                                                    .data()[
+                                                                        "imageURL"]
+                                                                    .toString(),
+                                                                height: 50,
+                                                                fit: BoxFit
+                                                                    .scaleDown,
+                                                              ),
+                                                              title: ss.data.data()["sellerID"] !=
+                                                                          EcommerceApp.sharedPreferences.getString(EcommerceApp
                                                                               .userUID) &&
-                                                                  ss.data.data()["buyerID"] ==
-                                                                      EcommerceApp
-                                                                          .sharedPreferences
-                                                                          .getString(EcommerceApp.userUID)
-                                                              ? Text("${ss.data.data()["boughtFrom"]} 様との 「${ss.data.data()["productIDs"]}」の取引が完了しました。")
-                                                              : Text("${ss.data.data()["orderByName"]} 様との 「${ss.data.data()["productIDs"]}」の取引が完了しました。"));
+                                                                      ss.data.data()["buyerID"] ==
+                                                                          EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID)
+                                                                  ? Text("${ss.data.data()["boughtFrom"]} 様との 「${ss.data.data()["productIDs"]}」の取引が完了しました。")
+                                                                  : Text("${ss.data.data()["orderByName"]} 様との 「${ss.data.data()["productIDs"]}」の取引が完了しました。")),
+                                                          Divider(
+                                                            thickness: 2,
+                                                          )
+                                                        ],
+                                                      );
                                                     } else if (tag ==
                                                         "Cancel") {
-                                                      return ListTile(
-                                                          subtitle: Text(DateFormat(
-                                                                  "yyyy年M月d日 HH時mm分")
-                                                              .format(snap
-                                                                  .data
-                                                                  .docs[index]
-                                                                      ["date"]
-                                                                  .toDate())
-                                                              .toString()),
-                                                          leading:
-                                                              Image.network(
-                                                            ss.data
-                                                                .data()[
-                                                                    "imageURL"]
-                                                                .toString(),
-                                                            height: 50,
-                                                            fit: BoxFit
-                                                                .scaleDown,
-                                                          ),
-                                                          title: ss.data.data()["sellerID"] !=
-                                                                      EcommerceApp.sharedPreferences.getString(
-                                                                          EcommerceApp
+                                                      return Column(
+                                                        children: [
+                                                          ListTile(
+                                                              subtitle: Text(DateFormat(
+                                                                      "yyyy年M月d日 HH時mm分")
+                                                                  .format(snap
+                                                                      .data
+                                                                      .docs[index][
+                                                                          "date"]
+                                                                      .toDate())
+                                                                  .toString()),
+                                                              leading:
+                                                                  Image.network(
+                                                                ss.data
+                                                                    .data()[
+                                                                        "imageURL"]
+                                                                    .toString(),
+                                                                height: 50,
+                                                                fit: BoxFit
+                                                                    .scaleDown,
+                                                              ),
+                                                              title: ss.data.data()["sellerID"] !=
+                                                                          EcommerceApp.sharedPreferences.getString(EcommerceApp
                                                                               .userUID) &&
-                                                                  ss.data.data()["buyerID"] ==
-                                                                      EcommerceApp
-                                                                          .sharedPreferences
-                                                                          .getString(EcommerceApp.userUID)
-                                                              ? Text("${ss.data.data()["boughtFrom"]} 様との 「${ss.data.data()["productIDs"]}」の取引キャンセルが成立しました。")
-                                                              : Text("${ss.data.data()["orderByName"]} 様との 「${ss.data.data()["productIDs"]}」の取引キャンセルが成立しました。"));
+                                                                      ss.data.data()["buyerID"] ==
+                                                                          EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID)
+                                                                  ? Text("${ss.data.data()["boughtFrom"]} 様との 「${ss.data.data()["productIDs"]}」の取引キャンセルが成立しました。")
+                                                                  : Text("${ss.data.data()["orderByName"]} 様との 「${ss.data.data()["productIDs"]}」の取引キャンセルが成立しました。")),
+                                                          Divider(
+                                                            thickness: 2,
+                                                          )
+                                                        ],
+                                                      );
                                                     }
                                                   }();
                                           });
@@ -202,34 +210,47 @@ class _UserNotificationState extends State<UserNotification>
                                                       EcommerceApp.userUID)) {
                                         return Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: ListTile(
-                                            trailing: Icon(
-                                              Icons.arrow_forward_ios_outlined,
-                                              color: HexColor("e67928"),
-                                            ),
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (c) =>
-                                                          OrderDetails(
-                                                            orderID: snap.data
-                                                                    .docs[index]
-                                                                ["id"],
-                                                            totalPrice: snap
-                                                                    .data
-                                                                    .docs[index]
-                                                                ["totalPrice"],
-                                                          )));
-                                            },
-                                            title: Text(
-                                                "支払いが完了しました。\n販売者の発送をお待ち下さい！"),
-                                            leading: Image.network(
-                                              snap.data.docs[index]["imageURL"]
-                                                  .toString(),
-                                              height: 50,
-                                              fit: BoxFit.scaleDown,
-                                            ),
+                                          child: Column(
+                                            children: [
+                                              ListTile(
+                                                trailing: Icon(
+                                                  Icons
+                                                      .arrow_forward_ios_outlined,
+                                                  color: HexColor("e67928"),
+                                                ),
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder:
+                                                              (c) =>
+                                                                  OrderDetails(
+                                                                    orderID: snap
+                                                                            .data
+                                                                            .docs[
+                                                                        index]["id"],
+                                                                    totalPrice: snap
+                                                                            .data
+                                                                            .docs[index]
+                                                                        [
+                                                                        "totalPrice"],
+                                                                  )));
+                                                },
+                                                title: Text(
+                                                    "支払いが完了しました。\n販売者の発送をお待ち下さい！"),
+                                                leading: Image.network(
+                                                  snap.data
+                                                      .docs[index]["imageURL"]
+                                                      .toString(),
+                                                  height: 50,
+                                                  width: 75,
+                                                  fit: BoxFit.scaleDown,
+                                                ),
+                                              ),
+                                              Divider(
+                                                thickness: 2,
+                                              )
+                                            ],
                                           ),
                                         );
                                       } else if (snap.data.docs[index]
@@ -240,34 +261,47 @@ class _UserNotificationState extends State<UserNotification>
                                               "Complete") {
                                         return Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: ListTile(
-                                            trailing: Icon(
-                                              Icons.arrow_forward_ios_outlined,
-                                              color: HexColor("e67928"),
-                                            ),
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (c) =>
-                                                          OrderDetails(
-                                                            orderID: snap.data
-                                                                    .docs[index]
-                                                                ["id"],
-                                                            totalPrice: snap
-                                                                    .data
-                                                                    .docs[index]
-                                                                ["totalPrice"],
-                                                          )));
-                                            },
-                                            title: Text(
-                                                "作品が発送されました。\n作品が届きましたら販売者の評価をしましょう！"),
-                                            leading: Image.network(
-                                              snap.data.docs[index]["imageURL"]
-                                                  .toString(),
-                                              height: 50,
-                                              fit: BoxFit.scaleDown,
-                                            ),
+                                          child: Column(
+                                            children: [
+                                              ListTile(
+                                                trailing: Icon(
+                                                  Icons
+                                                      .arrow_forward_ios_outlined,
+                                                  color: HexColor("e67928"),
+                                                ),
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder:
+                                                              (c) =>
+                                                                  OrderDetails(
+                                                                    orderID: snap
+                                                                            .data
+                                                                            .docs[
+                                                                        index]["id"],
+                                                                    totalPrice: snap
+                                                                            .data
+                                                                            .docs[index]
+                                                                        [
+                                                                        "totalPrice"],
+                                                                  )));
+                                                },
+                                                title: Text(
+                                                    "作品が発送されました。\n作品が届きましたら販売者の評価をしましょう！"),
+                                                leading: Image.network(
+                                                  snap.data
+                                                      .docs[index]["imageURL"]
+                                                      .toString(),
+                                                  height: 50,
+                                                  width: 75,
+                                                  fit: BoxFit.scaleDown,
+                                                ),
+                                              ),
+                                              Divider(
+                                                thickness: 2,
+                                              )
+                                            ],
                                           ),
                                         );
                                       } else if (snap.data.docs[index]
@@ -284,34 +318,46 @@ class _UserNotificationState extends State<UserNotification>
                                           "inComplete") {
                                         return Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: ListTile(
-                                            trailing: Icon(
-                                              Icons.arrow_forward_ios_outlined,
-                                              color: HexColor("e67928"),
-                                            ),
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (c) =>
-                                                          AdminOrderDetails(
-                                                            orderID: snap.data
-                                                                    .docs[index]
-                                                                ["id"],
-                                                            totalPrice: snap
-                                                                    .data
-                                                                    .docs[index]
-                                                                ["totalPrice"],
-                                                          )));
-                                            },
-                                            title: Text(
-                                                "作品が購入されました。\n商品の発送を行いましょう！"),
-                                            leading: Image.network(
-                                              snap.data.docs[index]["imageURL"]
-                                                  .toString(),
-                                              height: 50,
-                                              fit: BoxFit.scaleDown,
-                                            ),
+                                          child: Column(
+                                            children: [
+                                              ListTile(
+                                                trailing: Icon(
+                                                  Icons
+                                                      .arrow_forward_ios_outlined,
+                                                  color: HexColor("e67928"),
+                                                ),
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (c) =>
+                                                              AdminOrderDetails(
+                                                                orderID: snap
+                                                                        .data
+                                                                        .docs[
+                                                                    index]["id"],
+                                                                totalPrice: snap
+                                                                            .data
+                                                                            .docs[
+                                                                        index][
+                                                                    "totalPrice"],
+                                                              )));
+                                                },
+                                                title: Text(
+                                                    "作品が購入されました。\n商品の発送を行いましょう！"),
+                                                leading: Image.network(
+                                                  snap.data
+                                                      .docs[index]["imageURL"]
+                                                      .toString(),
+                                                  height: 50,
+                                                  width: 75,
+                                                  fit: BoxFit.scaleDown,
+                                                ),
+                                              ),
+                                              Divider(
+                                                thickness: 2,
+                                              )
+                                            ],
                                           ),
                                         );
                                       } else if (snap.data.docs[index]
@@ -322,34 +368,46 @@ class _UserNotificationState extends State<UserNotification>
                                               "Complete") {
                                         return Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: ListTile(
-                                            trailing: Icon(
-                                              Icons.arrow_forward_ios_outlined,
-                                              color: HexColor("e67928"),
-                                            ),
-                                            onTap: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (c) =>
-                                                          AdminOrderDetails(
-                                                            orderID: snap.data
-                                                                    .docs[index]
-                                                                ["id"],
-                                                            totalPrice: snap
-                                                                    .data
-                                                                    .docs[index]
-                                                                ["totalPrice"],
-                                                          )));
-                                            },
-                                            title: Text(
-                                                "作品を発送しました。\n購入者の評価を待ちましょう！"),
-                                            leading: Image.network(
-                                              snap.data.docs[index]["imageURL"]
-                                                  .toString(),
-                                              height: 50,
-                                              fit: BoxFit.scaleDown,
-                                            ),
+                                          child: Column(
+                                            children: [
+                                              ListTile(
+                                                trailing: Icon(
+                                                  Icons
+                                                      .arrow_forward_ios_outlined,
+                                                  color: HexColor("e67928"),
+                                                ),
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (c) =>
+                                                              AdminOrderDetails(
+                                                                orderID: snap
+                                                                        .data
+                                                                        .docs[
+                                                                    index]["id"],
+                                                                totalPrice: snap
+                                                                            .data
+                                                                            .docs[
+                                                                        index][
+                                                                    "totalPrice"],
+                                                              )));
+                                                },
+                                                title: Text(
+                                                    "作品を発送しました。\n購入者の評価を待ちましょう！"),
+                                                leading: Image.network(
+                                                  snap.data
+                                                      .docs[index]["imageURL"]
+                                                      .toString(),
+                                                  height: 50,
+                                                  width: 75,
+                                                  fit: BoxFit.scaleDown,
+                                                ),
+                                              ),
+                                              Divider(
+                                                thickness: 2,
+                                              )
+                                            ],
                                           ),
                                         );
                                       } else if (snap.data.docs[index]
@@ -390,66 +448,70 @@ class _UserNotificationState extends State<UserNotification>
                                           builder: (context, ss) {
                                             return !snap.hasData
                                                 ? Container()
-                                                : ListTile(
-                                                    trailing: Icon(
-                                                      Icons
-                                                          .arrow_forward_ios_outlined,
-                                                      color: HexColor("e67928"),
-                                                    ),
-                                                    onTap: () {
-                                                      ss.data.data()[
-                                                                  "buyerID"] ==
-                                                              EcommerceApp
-                                                                  .sharedPreferences
-                                                                  .getString(
-                                                                      EcommerceApp
-                                                                          .userUID)
-                                                          ? Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder: (c) =>
-                                                                      OrderDetails(
-                                                                        totalPrice: ss
-                                                                            .data
-                                                                            .data()["totalPrice"],
-                                                                        orderID: snap
-                                                                            .data
-                                                                            .docs[index]["orderID"],
-                                                                      )))
-                                                          : Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder: (c) =>
-                                                                      AdminOrderDetails(
-                                                                        totalPrice: ss
-                                                                            .data
-                                                                            .data()["totalPrice"],
-                                                                        orderID: snap
-                                                                            .data
-                                                                            .docs[index]["orderID"],
-                                                                      )));
-                                                    },
-                                                    leading: Image.network(
-                                                      ss.data
-                                                          .data()["imageURL"]
-                                                          .toString(),
-                                                      height: 50,
-                                                      fit: BoxFit.scaleDown,
-                                                    ),
-                                                    title: Text(
-                                                      "${snap.data.docs[index]["user_name"]} 様より ${ss.data.data()["productIDs"]} にてメッセージが届いています。",
-                                                      style: TextStyle(
-                                                          fontSize: 15),
-                                                    ),
-                                                    subtitle: Text(DateFormat(
-                                                            "yyyy年MM月dd日 - HH時mm分")
-                                                        .format(DateTime
-                                                            .fromMillisecondsSinceEpoch(
+                                                : Column(
+                                                    children: [
+                                                      ListTile(
+                                                        trailing: Icon(
+                                                          Icons
+                                                              .arrow_forward_ios_outlined,
+                                                          color: HexColor(
+                                                              "e67928"),
+                                                        ),
+                                                        onTap: () {
+                                                          ss.data.data()[
+                                                                      "buyerID"] ==
+                                                                  EcommerceApp
+                                                                      .sharedPreferences
+                                                                      .getString(
+                                                                          EcommerceApp
+                                                                              .userUID)
+                                                              ? Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (c) =>
+                                                                              OrderDetails(
+                                                                                totalPrice: ss.data.data()["totalPrice"],
+                                                                                orderID: snap.data.docs[index]["orderID"],
+                                                                              )))
+                                                              : Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder: (c) =>
+                                                                          AdminOrderDetails(
+                                                                            totalPrice:
+                                                                                ss.data.data()["totalPrice"],
+                                                                            orderID:
+                                                                                snap.data.docs[index]["orderID"],
+                                                                          )));
+                                                        },
+                                                        leading: Image.network(
+                                                          ss.data
+                                                              .data()[
+                                                                  "imageURL"]
+                                                              .toString(),
+                                                          height: 50,
+                                                          width: 75,
+                                                          fit: BoxFit.scaleDown,
+                                                        ),
+                                                        title: Text(
+                                                          "${snap.data.docs[index]["user_name"]} 様より ${ss.data.data()["productIDs"]} にてメッセージが届いています。",
+                                                          style: TextStyle(
+                                                              fontSize: 15),
+                                                        ),
+                                                        subtitle: Text(DateFormat(
+                                                                "yyyy年MM月dd日 - HH時mm分")
+                                                            .format(DateTime.fromMillisecondsSinceEpoch(
                                                                 int.parse(snap
                                                                             .data
                                                                             .docs[
                                                                         index][
                                                                     "created_at"])))),
+                                                      ),
+                                                      Divider(
+                                                        thickness: 2,
+                                                      )
+                                                    ],
                                                   );
                                           });
                                 },

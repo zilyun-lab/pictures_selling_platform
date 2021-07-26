@@ -167,7 +167,8 @@ class _AddressCardState extends State<AddressCard> {
                                   "住所",
                                   widget.model.prefectures +
                                       widget.model.city +
-                                      widget.model.address)),
+                                      widget.model.address +
+                                      widget.model.secondAddress)),
                         ],
                       ),
                     ),
