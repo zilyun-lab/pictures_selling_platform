@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
@@ -29,7 +30,7 @@ class _MyPageState extends State<MyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor("e5e2df"),
+      backgroundColor: bgColor,
       floatingActionButton: myFloatingActionButton(
           "出品", bottomSheetItems(context), Icons.camera_alt_outlined),
       body: SingleChildScrollView(
@@ -46,307 +47,162 @@ class _MyPageState extends State<MyPage> {
                       height: MediaQuery.of(context).size.height,
                       child: Column(
                         children: [
-                          Stack(
+                          SizedBox(
+                            height: 50,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Positioned(
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height: 235,
-                                  decoration: BoxDecoration(
-                                    color: HexColor("#E67928"),
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(90),
-                                      bottomRight: Radius.circular(90),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned.fill(
-                                top: 100,
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Container(
-                                    height: 225,
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.8,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(25),
-                                      ),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Expanded(
-                                          child: SingleChildScrollView(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                mySizedBox(55),
-                                                EcommerceApp.auth.currentUser !=
-                                                        null
-                                                    ? Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Center(
-                                                              child:
-                                                                  DefaultTextStyle(
-                                                                      style: TextStyle(
-                                                                          color: Colors
-                                                                              .lightBlueAccent,
-                                                                          fontSize:
-                                                                              25,
-                                                                          fontWeight: FontWeight
-                                                                              .bold),
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      maxLines:
-                                                                          1,
-                                                                      child:
-                                                                          Center(
-                                                                        child: new Text(snapshot
-                                                                            .data
-                                                                            .data()["name"]),
-                                                                      ))),
-
-                                                          // InkWell(
-                                                          //   child: Icon(
-                                                          //     Icons.settings,
-                                                          //     color: Colors.black54,
-                                                          //   ),
-                                                          //   onTap: () {
-                                                          //     Route route =
-                                                          //         MaterialPageRoute(
-                                                          //       fullscreenDialog: true,
-                                                          //       builder: (c) =>
-                                                          //           ChangeProfile(),
-                                                          //     );
-                                                          //     Navigator.push(
-                                                          //       context,
-                                                          //       route,
-                                                          //     );
-                                                          //   },
-                                                          // )
-                                                        ],
-                                                      )
-                                                    : Text(
-                                                        "ゲスト",
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 25,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                              ],
+                              Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: Neumorphic(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: RichText(
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      text: TextSpan(
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.w900,
+                                          color: mainColorOfLEEWAY,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: "0",
+                                          ),
+                                          TextSpan(
+                                            text: "円",
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: mainColorOfLEEWAY,
                                             ),
                                           ),
-                                        ),
-                                        StreamBuilder<QuerySnapshot>(
-                                            stream: EcommerceApp.firestore
-                                                .collection("users")
-                                                .doc(EcommerceApp
-                                                    .sharedPreferences
-                                                    .getString(
-                                                        EcommerceApp.userUID))
-                                                .collection("MyProceeds")
-                                                .snapshots(),
-                                            builder: (context, snapshot) {
-                                              return snapshot.hasData
-                                                  ? RichText(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      maxLines: 1,
-                                                      text: TextSpan(
-                                                        style: TextStyle(
-                                                          fontSize: 25,
-                                                          fontWeight:
-                                                              FontWeight.w900,
-                                                          color:
-                                                              mainColorOfLEEWAY,
-                                                        ),
-                                                        children: [
-                                                          TextSpan(
-                                                            text:
-                                                                "${snapshot.data.docs[0]["Proceeds"].toString()} ",
-                                                          ),
-                                                          TextSpan(
-                                                            text: "円",
-                                                            style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color:
-                                                                  mainColorOfLEEWAY,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  : RichText(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      maxLines: 1,
-                                                      text: TextSpan(
-                                                        style: TextStyle(
-                                                          fontSize: 25,
-                                                          fontWeight:
-                                                              FontWeight.w900,
-                                                          color:
-                                                              mainColorOfLEEWAY,
-                                                        ),
-                                                        children: [
-                                                          TextSpan(
-                                                            text: "0",
-                                                          ),
-                                                          TextSpan(
-                                                            text: "円",
-                                                            style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color:
-                                                                  mainColorOfLEEWAY,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                            }),
-                                        myPageSliderItems(
-                                          context,
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                              Positioned.fill(
-                                top: 50,
-                                child: Align(
-                                  alignment: Alignment.topCenter,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                    child: Image.network(
-                                      EcommerceApp.sharedPreferences.getString(
-                                        EcommerceApp.userAvatarUrl,
-                                      ),
-                                      fit: BoxFit.cover,
-                                      width: 125,
-                                      height: 100,
-                                    ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: NeumorphicButton(
+                                  style: NeumorphicStyle(
+                                    boxShape: NeumorphicBoxShape.circle(),
+                                  ),
+                                  onPressed: () {
+                                    Route route = MaterialPageRoute(
+                                      fullscreenDialog: true,
+                                      builder: (c) => ChangeProfile(),
+                                    );
+                                    Navigator.push(
+                                      context,
+                                      route,
+                                    );
+                                  },
+                                  child: Icon(
+                                    Icons.settings,
+                                    color: mainColorOfLEEWAY,
                                   ),
                                 ),
                               ),
-                              Positioned(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    InkWell(
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            15.0, 35, 0, 0),
-                                        child: Icon(
-                                          Icons.settings,
-                                          color: Colors.black45,
-                                          size: 30,
-                                        ),
-                                      ),
-                                      onTap: () {
-                                        Route route = MaterialPageRoute(
-                                          fullscreenDialog: true,
-                                          builder: (c) => ChangeProfile(),
-                                        );
-                                        Navigator.push(
-                                          context,
-                                          route,
-                                        );
-                                      },
-                                    ),
-                                    Container(
-                                      // color: Colors.red,
-                                      width: 100,
-                                      height: 275,
-                                    ),
-                                  ],
-                                ),
-                              )
                             ],
                           ),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                EcommerceApp.auth.currentUser != null
-                                    ? infoTile(
-                                        context,
-                                        Icons.notifications_active_outlined,
-                                        "お知らせ",
-                                        UserNotification())
-                                    : Container(),
-                                infoTile(context, Icons.privacy_tip_outlined,
-                                    "利用規約等", PrivacyPolicyPage()),
-                                infoTile(
-                                    context,
-                                    Icons.question_answer_outlined,
-                                    "よくある質問",
-                                    FAQ()),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 5, left: 8.0, right: 8),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: HexColor("E67928"), width: 3),
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.white,
+                          Neumorphic(
+                            style: NeumorphicStyle(
+                                boxShape: NeumorphicBoxShape.circle(),
+                                depth: 19,
+                                intensity: 10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Container(
+                                width: 150,
+                                height: 150,
+                                child: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                  EcommerceApp.sharedPreferences.getString(
+                                    EcommerceApp.userAvatarUrl,
+                                  ),
+                                )),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Center(
+                                child: DefaultTextStyle(
+                                    style: TextStyle(
+                                        color: Colors.blueAccent,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold),
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    child: Center(
+                                      child: new Text(
+                                          snapshot.data.data()["name"]),
+                                    ))),
+                          ),
+                          myPageSliderItems(context),
+                          Column(
+                            children: [
+                              EcommerceApp.auth.currentUser != null
+                                  ? infoTile(
+                                      context,
+                                      Icons.notifications_active_outlined,
+                                      "お知らせ",
+                                      UserNotification())
+                                  : Container(),
+                              infoTile(context, Icons.privacy_tip_outlined,
+                                  "利用規約等", PrivacyPolicyPage()),
+                              infoTile(context, Icons.question_answer_outlined,
+                                  "よくある質問", FAQ()),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 5, left: 8.0, right: 8),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: Neumorphic(
+                                    style: NeumorphicStyle(
+                                      color: bgColor,
+                                      shadowLightColor:
+                                          Colors.black.withOpacity(0.4),
+                                      shadowDarkColor:
+                                          Colors.black.withOpacity(0.6),
                                     ),
-                                    child: ListTile(
-                                      onTap: () {
-                                        _openMailApp();
-                                      },
-                                      leading: Icon(Icons.mail_outline,
-                                          color: HexColor("E67928")),
-                                      title: Text(
-                                        "お問い合わせ",
-                                        style: TextStyle(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: ListTile(
+                                        onTap: () {
+                                          _openMailApp();
+                                        },
+                                        leading: Icon(Icons.mail_outline,
                                             color: HexColor("E67928")),
-                                      ),
-                                      trailing: Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 18,
-                                        color: HexColor("E67928"),
+                                        title: Text(
+                                          "お問い合わせ",
+                                          style:
+                                              TextStyle(color: Colors.black87),
+                                        ),
+                                        trailing: Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 18,
+                                          color: HexColor("E67928"),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                                EcommerceApp.auth.currentUser != null
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 5, left: 8.0, right: 8),
-                                        child: Container(
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: mainColorOfLEEWAY,
-                                                  width: 3),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: Colors.white,
-                                            ),
-                                            child: logOutWidget(context)),
-                                      )
-                                    : infoTile(context, Icons.login_outlined,
-                                        "ログインまたは新規登録", Login()),
-                              ],
-                            ),
+                              ),
+                              EcommerceApp.auth.currentUser != null
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 5, left: 8.0, right: 8),
+                                      child: logOutWidget(context),
+                                    )
+                                  : infoTile(context, Icons.login_outlined,
+                                      "ログインまたは新規登録", Login()),
+                            ],
                           ),
-                          mySizedBox(10)
                         ],
                       ),
                     );

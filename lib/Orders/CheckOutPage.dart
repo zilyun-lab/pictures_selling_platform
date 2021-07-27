@@ -74,25 +74,11 @@ class _CheckOutPageState extends State<CheckOutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor("e5e2df"),
+      backgroundColor: bgColor,
       appBar: AppBar(
         leadingWidth: MediaQuery.of(context).size.width * 0.27,
-        leading: TextButton(
-          child: Text(
-            "キャンセル",
-            style: TextStyle(
-              color: Colors.black.withOpacity(0.8),
-              fontSize: 15.0,
-            ),
-          ),
-          onPressed: () {
-            // Route route = MaterialPageRoute(builder: (c) => MainPage());
-            // Navigator.pushReplacement(context, route);
-            Navigator.pop(context);
-          },
-        ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: bgColor,
         title: InkWell(
           onTap: () {
             print(widget.il["postName"]);
@@ -109,17 +95,31 @@ class _CheckOutPageState extends State<CheckOutPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 225,
-              color: Colors.white,
               child: Column(
                 children: [
-                  Expanded(
-                    child: Center(
-                      child: Image.network(
-                        widget.il["thumbnailUrl"],
-                        //width: 100,
-                        height: 150,
-                        fit: BoxFit.scaleDown,
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: Neumorphic(
+                        margin: EdgeInsets.only(
+                            left: 10, right: 10, top: 2, bottom: 1),
+                        style: NeumorphicStyle(
+                          shadowLightColor: Colors.white,
+                          shadowDarkColor: Colors.black.withOpacity(0.8),
+                          color: Colors.white38,
+                          boxShape: NeumorphicBoxShape.roundRect(
+                              BorderRadius.circular(20)),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Image.network(
+                            widget.il["thumbnailUrl"],
+                            //width: 100,
+                            height: 150,
+                            fit: BoxFit.scaleDown,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -162,113 +162,96 @@ class _CheckOutPageState extends State<CheckOutPage> {
                           ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          widget.il["shipsPayment"] == "送料込み(出品者負担)"
-                              ? Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: HexColor("#5229E5"),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: Text(
-                                        "送料別途",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 12),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: HexColor("#E52971"),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5.0),
-                                      child: Text(
-                                        "送料込み",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 12),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Text(
-                              "¥ " + widget.il["price"].toString(),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20.0),
-                              //textAlign: TextAlign.right,
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ],
               ),
             ),
-            mySizedBox(20),
-            Container(
-              color: Colors.white,
-              child: ListTile(
-                leading: Text(
-                  "支払い方法",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Neumorphic(
+                style: NeumorphicStyle(
+                  color: Colors.white,
+                  shadowLightColor: Colors.black.withOpacity(0.4),
+                  shadowDarkColor: Colors.black.withOpacity(0.6),
                 ),
-                trailing: Text("クレジットカード"),
-              ),
-            ),
-            mySizedBox(20),
-            Container(
-              color: Colors.white,
-              child: ListTile(
-                leading: Text(
-                  "送料",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
-                ),
-                trailing: Text(widget.il["shipsPayment"]),
-              ),
-            ),
-            mySizedBox(20),
-            Container(
-              color: Colors.white,
-              child: Column(
-                children: [
-                  ListTile(
-                    leading: Text(
-                      "支払い金額",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 20.0),
-                    ),
-                    trailing: Text(
-                      "¥ " + "${widget.il["price"]}",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 20.0),
-                    ),
+                child: ListTile(
+                  leading: Text(
+                    "支払い方法",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                   ),
-                ],
+                  trailing: Text("クレジットカード"),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Neumorphic(
+                style: NeumorphicStyle(
+                  color: Colors.white,
+                  shadowLightColor: Colors.black.withOpacity(0.4),
+                  shadowDarkColor: Colors.black.withOpacity(0.6),
+                ),
+                child: ListTile(
+                  leading: Text(
+                    "送料",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
+                  ),
+                  trailing: Text(widget.il["shipsPayment"]),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Neumorphic(
+                style: NeumorphicStyle(
+                  color: Colors.white,
+                  shadowLightColor: Colors.black.withOpacity(0.4),
+                  shadowDarkColor: Colors.black.withOpacity(0.6),
+                ),
+                child: ListTile(
+                  leading: Text(
+                    "支払い金額",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                  ),
+                  trailing: Text(
+                    "¥ " + "${widget.il["price"]}",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                  ),
+                ),
               ),
             ),
             SizedBox(
               height: 20,
             ),
-            Container(
-              color: Colors.white,
-              child: ListTile(
-                onTap: () {
-                  Route route = MaterialPageRoute(builder: (c) => AddAddress());
-                  Navigator.push(context, route);
-                },
-                leading: Icon(Icons.add),
-                title: Text("新規お届け先を追加"),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Neumorphic(
+                style: NeumorphicStyle(
+                  color: Colors.white,
+                  shadowLightColor: Colors.black.withOpacity(0.4),
+                  shadowDarkColor: Colors.black.withOpacity(0.6),
+                ),
+                child: ListTile(
+                  onTap: () {
+                    Route route =
+                        MaterialPageRoute(builder: (c) => AddAddress());
+                    Navigator.push(context, route);
+                  },
+                  leading: Icon(
+                    Icons.add,
+                    color: mainColorOfLEEWAY,
+                  ),
+                  title: Text("新規お届け先を追加"),
+                  trailing: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 20,
+                  ),
+                ),
               ),
             ),
             Consumer<AddressChanger>(
@@ -288,35 +271,55 @@ class _CheckOutPageState extends State<CheckOutPage> {
                         : snapshot.data.docs.length == 0
                             ? Container()
                             // ? noAddressCard()
-                            : ExpansionTile(
-                                initiallyExpanded: true,
-                                collapsedBackgroundColor: Colors.white,
-                                leading: Icon(Icons.location_on_outlined),
-                                title: Text("マイアドレス"),
-                                children: [
-                                  ListView.builder(
-                                    itemCount: snapshot.data.docs.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      BuyStepButton(
-                                        currentIndex: address.counter,
-                                        value: index,
-                                        model: AddressModel.fromJson(
-                                          snapshot.data.docs[index].data(),
-                                        ),
-                                        addressId: snapshot.data.docs[index].id,
-                                      );
-                                      return AddressCard(
-                                        currentIndex: address.counter,
-                                        value: index,
-                                        model: AddressModel.fromJson(
-                                          snapshot.data.docs[index].data(),
-                                        ),
-                                        addressId: snapshot.data.docs[index].id,
-                                      );
-                                    },
+                            : Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Neumorphic(
+                                  style: NeumorphicStyle(
+                                    color: Colors.white,
+                                    shadowLightColor:
+                                        Colors.black.withOpacity(0.4),
+                                    shadowDarkColor:
+                                        Colors.black.withOpacity(0.6),
                                   ),
-                                ],
+                                  child: ExpansionTile(
+                                    initiallyExpanded: true,
+                                    collapsedBackgroundColor: Colors.white,
+                                    leading: Icon(
+                                      Icons.location_on_outlined,
+                                      color: mainColorOfLEEWAY,
+                                    ),
+                                    title: Text(
+                                      "マイアドレス",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    children: [
+                                      ListView.builder(
+                                        itemCount: snapshot.data.docs.length,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          BuyStepButton(
+                                            currentIndex: address.counter,
+                                            value: index,
+                                            model: AddressModel.fromJson(
+                                              snapshot.data.docs[index].data(),
+                                            ),
+                                            addressId:
+                                                snapshot.data.docs[index].id,
+                                          );
+                                          return AddressCard(
+                                            currentIndex: address.counter,
+                                            value: index,
+                                            model: AddressModel.fromJson(
+                                              snapshot.data.docs[index].data(),
+                                            ),
+                                            addressId:
+                                                snapshot.data.docs[index].id,
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               );
                   },
                 );
@@ -344,83 +347,64 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                 itemCount: 1,
                                 shrinkWrap: true,
                                 itemBuilder: (context, index) {
-                                  return Center(
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5,
-                                      height: 45,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.redAccent,
+                                  return Row(
+                                    children: [
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: NeumorphicButton(
+                                            style: NeumorphicStyle(
+                                                color: Colors.grey
+                                                    .withOpacity(0.6)),
+                                            child: Center(
+                                              child: Text(
+                                                "キャンセル",
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Colors.black),
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
                                         ),
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (_) {
-                                              return AlertDialog(
-                                                title: Center(
-                                                  child: Text(
-                                                    "決済画面",
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                                content: SingleChildScrollView(
-                                                  child: Expanded(
-                                                      child: Form(
-                                                    child: Column(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(5.0),
-                                                          child: TextFormField(
-                                                            onChanged: (value) {
-                                                              setState(() {
-                                                                cNumber = value;
-                                                                cNumberbool =
-                                                                    !cNumberbool;
-                                                              });
-                                                            },
-                                                            inputFormatters: [
-                                                              LengthLimitingTextInputFormatter(
-                                                                  16),
-                                                            ],
-                                                            keyboardType:
-                                                                TextInputType
-                                                                    .number,
-                                                            validator:
-                                                                (String value) {
-                                                              return value.isEmpty ||
-                                                                      value.length >=
-                                                                          16
-                                                                  ? '正しいカードナンバーを入力して下さい'
-                                                                  : null;
-                                                            },
-                                                            decoration:
-                                                                InputDecoration(
-                                                              labelText:
-                                                                  "カードナンバー",
-                                                              icon: Icon(Icons
-                                                                  .credit_card),
-                                                              hintText:
-                                                                  "カードナンバー",
-                                                              hintStyle:
-                                                                  TextStyle(
-                                                                color:
-                                                                    Colors.grey,
-                                                              ),
-                                                            ),
-                                                            controller:
-                                                                _cardNumberEditingController,
-                                                          ),
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.5,
+                                            height: 45,
+                                            child: NeumorphicButton(
+                                              style: NeumorphicStyle(
+                                                  color: mainColorOfLEEWAY
+                                                      .withOpacity(0.6)),
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (_) {
+                                                    return AlertDialog(
+                                                      title: Center(
+                                                        child: Text(
+                                                          "決済画面",
+                                                          style: TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
                                                         ),
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Padding(
+                                                      ),
+                                                      content:
+                                                          SingleChildScrollView(
+                                                        child: Expanded(
+                                                            child: Form(
+                                                          child: Column(
+                                                            children: [
+                                                              Padding(
                                                                 padding:
                                                                     const EdgeInsets
                                                                             .all(
@@ -431,31 +415,36 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                       (value) {
                                                                     setState(
                                                                         () {
-                                                                      month =
+                                                                      cNumber =
                                                                           value;
+                                                                      cNumberbool =
+                                                                          !cNumberbool;
                                                                     });
-                                                                  },
-                                                                  validator:
-                                                                      (String
-                                                                          value) {
-                                                                    return value
-                                                                            .isEmpty
-                                                                        ? '正しいカード有効期限を入力して下さい'
-                                                                        : null;
                                                                   },
                                                                   inputFormatters: [
                                                                     LengthLimitingTextInputFormatter(
-                                                                        2),
+                                                                        16),
                                                                   ],
                                                                   keyboardType:
                                                                       TextInputType
                                                                           .number,
+                                                                  validator:
+                                                                      (String
+                                                                          value) {
+                                                                    return value.isEmpty ||
+                                                                            value.length >=
+                                                                                16
+                                                                        ? '正しいカードナンバーを入力して下さい'
+                                                                        : null;
+                                                                  },
                                                                   decoration:
                                                                       InputDecoration(
                                                                     labelText:
-                                                                        "MM",
+                                                                        "カードナンバー",
+                                                                    icon: Icon(Icons
+                                                                        .credit_card),
                                                                     hintText:
-                                                                        "MM",
+                                                                        "カードナンバー",
                                                                     hintStyle:
                                                                         TextStyle(
                                                                       color: Colors
@@ -463,350 +452,406 @@ class _CheckOutPageState extends State<CheckOutPage> {
                                                                     ),
                                                                   ),
                                                                   controller:
-                                                                      _expMonthEditingController,
+                                                                      _cardNumberEditingController,
                                                                 ),
                                                               ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        5.0),
-                                                                child:
-                                                                    TextFormField(
-                                                                  onChanged:
-                                                                      (value) {
-                                                                    setState(
-                                                                        () {
-                                                                      year =
-                                                                          value;
-                                                                    });
-                                                                  },
-                                                                  validator:
-                                                                      (String
-                                                                          value) {
-                                                                    return value
-                                                                            .isEmpty
-                                                                        ? '正しいカード有効期限を入力して下さい'
-                                                                        : null;
-                                                                  },
-                                                                  inputFormatters: [
-                                                                    LengthLimitingTextInputFormatter(
-                                                                        2),
-                                                                  ],
-                                                                  keyboardType:
-                                                                      TextInputType
-                                                                          .number,
-                                                                  decoration:
-                                                                      InputDecoration(
-                                                                    labelText:
-                                                                        "YY",
-                                                                    hintText:
-                                                                        "YY",
-                                                                    hintStyle:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .grey,
-                                                                    ),
-                                                                  ),
-                                                                  controller:
-                                                                      _expYearEditingController,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(5.0),
-                                                          child: TextFormField(
-                                                            onChanged: (value) {
-                                                              setState(() {
-                                                                cvc = value;
-                                                              });
-                                                            },
-                                                            validator:
-                                                                (String value) {
-                                                              return value.isEmpty ||
-                                                                      value.length >=
-                                                                          3
-                                                                  ? '正しいセキュリティーコードを入力して下さい'
-                                                                  : null;
-                                                            },
-                                                            inputFormatters: [
-                                                              LengthLimitingTextInputFormatter(
-                                                                  3),
-                                                            ],
-                                                            keyboardType:
-                                                                TextInputType
-                                                                    .number,
-                                                            decoration:
-                                                                InputDecoration(
-                                                              labelText:
-                                                                  "セキュリティーコード",
-                                                              hintText: "CVC",
-                                                              hintStyle:
-                                                                  TextStyle(
-                                                                color:
-                                                                    Colors.grey,
-                                                              ),
-                                                            ),
-                                                            controller:
-                                                                _cvcNumberEditingController,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )),
-                                                ),
-                                                actions: <Widget>[
-                                                  // ボタン領域
-                                                  Expanded(
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 15.0),
-                                                          child: ElevatedButton(
-                                                            child:
-                                                                Text(" キャンセル "),
-                                                            onPressed: () =>
-                                                                Navigator.pop(
-                                                                    context),
-                                                          ),
-                                                        ),
-                                                        Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    right:
-                                                                        15.0),
-                                                            child:
-                                                                ElevatedButton(
-                                                              child: Text(
-                                                                  "   購入する   "),
-                                                              onPressed: () {
-                                                                showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  builder: (_) {
-                                                                    return AlertDialog(
-                                                                      title:
-                                                                          Center(
-                                                                        child:
-                                                                            Text(
-                                                                          "購入確認",
-                                                                          style:
+                                                              Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                    child:
+                                                                        Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              5.0),
+                                                                      child:
+                                                                          TextFormField(
+                                                                        onChanged:
+                                                                            (value) {
+                                                                          setState(
+                                                                              () {
+                                                                            month =
+                                                                                value;
+                                                                          });
+                                                                        },
+                                                                        validator:
+                                                                            (String
+                                                                                value) {
+                                                                          return value.isEmpty
+                                                                              ? '正しいカード有効期限を入力して下さい'
+                                                                              : null;
+                                                                        },
+                                                                        inputFormatters: [
+                                                                          LengthLimitingTextInputFormatter(
+                                                                              2),
+                                                                        ],
+                                                                        keyboardType:
+                                                                            TextInputType.number,
+                                                                        decoration:
+                                                                            InputDecoration(
+                                                                          labelText:
+                                                                              "MM",
+                                                                          hintText:
+                                                                              "MM",
+                                                                          hintStyle:
                                                                               TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
+                                                                            color:
+                                                                                Colors.grey,
                                                                           ),
                                                                         ),
+                                                                        controller:
+                                                                            _expMonthEditingController,
                                                                       ),
-                                                                      content:
-                                                                          Container(
-                                                                        child:
-                                                                            Text(
-                                                                          "${widget.il["shortInfo"]} を購入します。\nよろしいですか？",
+                                                                    ),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child:
+                                                                        Padding(
+                                                                      padding:
+                                                                          const EdgeInsets.all(
+                                                                              5.0),
+                                                                      child:
+                                                                          TextFormField(
+                                                                        onChanged:
+                                                                            (value) {
+                                                                          setState(
+                                                                              () {
+                                                                            year =
+                                                                                value;
+                                                                          });
+                                                                        },
+                                                                        validator:
+                                                                            (String
+                                                                                value) {
+                                                                          return value.isEmpty
+                                                                              ? '正しいカード有効期限を入力して下さい'
+                                                                              : null;
+                                                                        },
+                                                                        inputFormatters: [
+                                                                          LengthLimitingTextInputFormatter(
+                                                                              2),
+                                                                        ],
+                                                                        keyboardType:
+                                                                            TextInputType.number,
+                                                                        decoration:
+                                                                            InputDecoration(
+                                                                          labelText:
+                                                                              "YY",
+                                                                          hintText:
+                                                                              "YY",
+                                                                          hintStyle:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Colors.grey,
+                                                                          ),
                                                                         ),
+                                                                        controller:
+                                                                            _expYearEditingController,
                                                                       ),
-                                                                      actions: <
-                                                                          Widget>[
-                                                                        // ボタン領域
-                                                                        Row(
-                                                                          children: [
-                                                                            Expanded(
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.all(8.0),
-                                                                                child: ElevatedButton(
-                                                                                  child: Text("キャンセル"),
-                                                                                  onPressed: () => Navigator.pop(context),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        5.0),
+                                                                child:
+                                                                    TextFormField(
+                                                                  onChanged:
+                                                                      (value) {
+                                                                    setState(
+                                                                        () {
+                                                                      cvc =
+                                                                          value;
+                                                                    });
+                                                                  },
+                                                                  validator:
+                                                                      (String
+                                                                          value) {
+                                                                    return value.isEmpty ||
+                                                                            value.length >=
+                                                                                3
+                                                                        ? '正しいセキュリティーコードを入力して下さい'
+                                                                        : null;
+                                                                  },
+                                                                  inputFormatters: [
+                                                                    LengthLimitingTextInputFormatter(
+                                                                        3),
+                                                                  ],
+                                                                  keyboardType:
+                                                                      TextInputType
+                                                                          .number,
+                                                                  decoration:
+                                                                      InputDecoration(
+                                                                    labelText:
+                                                                        "セキュリティーコード",
+                                                                    hintText:
+                                                                        "CVC",
+                                                                    hintStyle:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .grey,
+                                                                    ),
+                                                                  ),
+                                                                  controller:
+                                                                      _cvcNumberEditingController,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )),
+                                                      ),
+                                                      actions: <Widget>[
+                                                        // ボタン領域
+                                                        Expanded(
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            15.0),
+                                                                child:
+                                                                    ElevatedButton(
+                                                                  child: Text(
+                                                                      " キャンセル "),
+                                                                  onPressed: () =>
+                                                                      Navigator.pop(
+                                                                          context),
+                                                                ),
+                                                              ),
+                                                              Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .only(
+                                                                      right:
+                                                                          15.0),
+                                                                  child:
+                                                                      ElevatedButton(
+                                                                    child: Text(
+                                                                        "   購入する   "),
+                                                                    onPressed:
+                                                                        () {
+                                                                      showDialog(
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (_) {
+                                                                          return AlertDialog(
+                                                                            title:
+                                                                                Center(
+                                                                              child: Text(
+                                                                                "購入確認",
+                                                                                style: TextStyle(
+                                                                                  fontWeight: FontWeight.bold,
                                                                                 ),
                                                                               ),
                                                                             ),
-                                                                            Expanded(
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.all(8.0),
-                                                                                child: ElevatedButton(
-                                                                                  child: Text(
-                                                                                    "購入する",
-                                                                                    style: TextStyle(
-                                                                                      fontWeight: FontWeight.bold,
+                                                                            content:
+                                                                                Container(
+                                                                              child: Text(
+                                                                                "${widget.il["shortInfo"]} を購入します。\nよろしいですか？",
+                                                                              ),
+                                                                            ),
+                                                                            actions: <Widget>[
+                                                                              // ボタン領域
+                                                                              Row(
+                                                                                children: [
+                                                                                  Expanded(
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.all(8.0),
+                                                                                      child: ElevatedButton(
+                                                                                        child: Text("キャンセル"),
+                                                                                        onPressed: () => Navigator.pop(context),
+                                                                                      ),
                                                                                     ),
                                                                                   ),
-                                                                                  onPressed: () {
-                                                                                    final creditCard = CreditCard(number: _cardNumberEditingController.text.toString(), expMonth: int.parse(_expMonthEditingController.text), expYear: int.parse(_expYearEditingController.text), cvc: _cvcNumberEditingController.text.toString());
-                                                                                    StripeService(price: widget.il["price"]).payViaExistingCard(creditCard);
-                                                                                    widget.il["attribute"] == "Original"
-                                                                                        ? FirebaseFirestore.instance.collection("items").doc(widget.id).update({
-                                                                                            "Stock": 0,
-                                                                                          })
-                                                                                        : FirebaseFirestore.instance.collection("items").doc(widget.id).update({
-                                                                                            // "Stock": widget.stock - 1,
-                                                                                            "Stock": FieldValue.increment(-1),
+                                                                                  Expanded(
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.all(8.0),
+                                                                                      child: ElevatedButton(
+                                                                                        child: Text(
+                                                                                          "購入する",
+                                                                                          style: TextStyle(
+                                                                                            fontWeight: FontWeight.bold,
+                                                                                          ),
+                                                                                        ),
+                                                                                        onPressed: () {
+                                                                                          final creditCard = CreditCard(number: _cardNumberEditingController.text.toString(), expMonth: int.parse(_expMonthEditingController.text), expYear: int.parse(_expYearEditingController.text), cvc: _cvcNumberEditingController.text.toString());
+                                                                                          StripeService(price: widget.il["price"]).payViaExistingCard(creditCard);
+                                                                                          widget.il["attribute"] == "Original"
+                                                                                              ? FirebaseFirestore.instance.collection("items").doc(widget.id).update({
+                                                                                                  "Stock": 0,
+                                                                                                })
+                                                                                              : FirebaseFirestore.instance.collection("items").doc(widget.id).update({
+                                                                                                  // "Stock": widget.stock - 1,
+                                                                                                  "Stock": FieldValue.increment(-1),
+                                                                                                });
+                                                                                          final ref = EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID)).collection(EcommerceApp.collectionOrders).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID) + DateTime.now().millisecondsSinceEpoch.toString());
+                                                                                          ref.set(
+                                                                                            {
+                                                                                              "id": ref.id,
+                                                                                              "imageURL": widget.il["thumbnailUrl"],
+                                                                                              EcommerceApp.addressID: snapshot.data.docs[index].id,
+                                                                                              "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+                                                                                              "orderByName": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+                                                                                              EcommerceApp.productID: widget.il["shortInfo"],
+                                                                                              EcommerceApp.paymentDetails: "クレジットカード",
+                                                                                              EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
+                                                                                              EcommerceApp.isSuccess: true,
+                                                                                              "boughtFrom": widget.il["postBy"],
+                                                                                              "totalPrice": widget.il["price"],
+                                                                                              "isTransactionFinished": "inComplete",
+                                                                                              "isDelivery": "inComplete",
+                                                                                              "itemPrice": widget.il["price"],
+                                                                                              "postName": widget.il["postName"],
+                                                                                              "email": EcommerceApp.sharedPreferences.getString(EcommerceApp.userEmail),
+                                                                                              "CancelRequest": false,
+                                                                                              "CancelRequestTo": false,
+                                                                                              "cancelTransactionFinished": false,
+                                                                                              "itemID": widget.id,
+                                                                                              "firstCancelRequest": false,
+                                                                                              "secondCancelRequest": false,
+                                                                                              "hold": false,
+                                                                                            },
+                                                                                          ).whenComplete(
+                                                                                            () => {
+                                                                                              finishedCheckOut(),
+                                                                                            },
+                                                                                          );
+                                                                                          EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(widget.il["postBy"]).collection("Notify").doc(ref.id).set({
+                                                                                            "id": ref.id,
+                                                                                            "imageURL": widget.il["thumbnailUrl"],
+                                                                                            EcommerceApp.addressID: snapshot.data.docs[index].id,
+                                                                                            "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+                                                                                            "orderByName": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+                                                                                            EcommerceApp.productID: widget.il["shortInfo"],
+                                                                                            EcommerceApp.paymentDetails: "代金引換",
+                                                                                            EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
+                                                                                            EcommerceApp.isSuccess: true,
+                                                                                            "boughtFrom": widget.il["postName"],
+                                                                                            "totalPrice": widget.il["price"],
+                                                                                            "isTransactionFinished": "inComplete",
+                                                                                            "isBuyerDelivery": "inComplete",
+                                                                                            "itemPrice": widget.il["price"],
+                                                                                            "buyerID": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+                                                                                            "email": _email,
+                                                                                            "finalGetProceeds": widget.il["finalGetProceeds"],
+                                                                                            "CancelRequest": false,
+                                                                                            "CancelRequestTo": false,
+                                                                                            "cancelTransactionFinished": false,
+                                                                                            "itemID": widget.id,
+                                                                                            "firstCancelRequest": false,
+                                                                                            "secondCancelRequest": false,
+                                                                                            "hold": false,
                                                                                           });
-                                                                                    final ref = EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID)).collection(EcommerceApp.collectionOrders).doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID) + DateTime.now().millisecondsSinceEpoch.toString());
-                                                                                    ref.set(
-                                                                                      {
-                                                                                        "id": ref.id,
-                                                                                        "imageURL": widget.il["thumbnailUrl"],
-                                                                                        EcommerceApp.addressID: snapshot.data.docs[index].id,
-                                                                                        "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-                                                                                        "orderByName": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-                                                                                        EcommerceApp.productID: widget.il["shortInfo"],
-                                                                                        EcommerceApp.paymentDetails: "クレジットカード",
-                                                                                        EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
-                                                                                        EcommerceApp.isSuccess: true,
-                                                                                        "boughtFrom": widget.il["postBy"],
-                                                                                        "totalPrice": widget.il["price"],
-                                                                                        "isTransactionFinished": "inComplete",
-                                                                                        "isDelivery": "inComplete",
-                                                                                        "itemPrice": widget.il["price"],
-                                                                                        "postName": widget.il["postName"],
-                                                                                        "email": EcommerceApp.sharedPreferences.getString(EcommerceApp.userEmail),
-                                                                                        "CancelRequest": false,
-                                                                                        "CancelRequestTo": false,
-                                                                                        "cancelTransactionFinished": false,
-                                                                                        "itemID": widget.id,
-                                                                                        "firstCancelRequest": false,
-                                                                                        "secondCancelRequest": false,
-                                                                                        "hold": false,
-                                                                                      },
-                                                                                    ).whenComplete(
-                                                                                      () => {
-                                                                                        finishedCheckOut(),
-                                                                                      },
-                                                                                    );
-                                                                                    EcommerceApp.firestore.collection(EcommerceApp.collectionUser).doc(widget.il["postBy"]).collection("Notify").doc(ref.id).set({
-                                                                                      "id": ref.id,
-                                                                                      "imageURL": widget.il["thumbnailUrl"],
-                                                                                      EcommerceApp.addressID: snapshot.data.docs[index].id,
-                                                                                      "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-                                                                                      "orderByName": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-                                                                                      EcommerceApp.productID: widget.il["shortInfo"],
-                                                                                      EcommerceApp.paymentDetails: "代金引換",
-                                                                                      EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
-                                                                                      EcommerceApp.isSuccess: true,
-                                                                                      "boughtFrom": widget.il["postName"],
-                                                                                      "totalPrice": widget.il["price"],
-                                                                                      "isTransactionFinished": "inComplete",
-                                                                                      "isBuyerDelivery": "inComplete",
-                                                                                      "itemPrice": widget.il["price"],
-                                                                                      "buyerID": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-                                                                                      "email": _email,
-                                                                                      "finalGetProceeds": widget.il["finalGetProceeds"],
-                                                                                      "CancelRequest": false,
-                                                                                      "CancelRequestTo": false,
-                                                                                      "cancelTransactionFinished": false,
-                                                                                      "itemID": widget.id,
-                                                                                      "firstCancelRequest": false,
-                                                                                      "secondCancelRequest": false,
-                                                                                      "hold": false,
-                                                                                    });
-                                                                                    FirebaseFirestore.instance.collection("orders").doc(ref.id).set(
-                                                                                      {
-                                                                                        "sellerID": widget.il["postBy"],
-                                                                                        "id": ref.id,
-                                                                                        "imageURL": widget.il["thumbnailUrl"],
-                                                                                        EcommerceApp.addressID: snapshot.data.docs[index].id,
-                                                                                        "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-                                                                                        "orderByName": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
-                                                                                        EcommerceApp.productID: widget.il["shortInfo"],
-                                                                                        EcommerceApp.paymentDetails: "代金引換",
-                                                                                        EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
-                                                                                        EcommerceApp.isSuccess: true,
-                                                                                        "boughtFrom": widget.il["postName"],
-                                                                                        "totalPrice": widget.il["price"],
-                                                                                        "isTransactionFinished": "inComplete",
-                                                                                        "isBuyerDelivery": "inComplete",
-                                                                                        "itemPrice": widget.il["price"],
-                                                                                        "buyerID": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-                                                                                        "email": _email,
-                                                                                        "finalGetProceeds": widget.il["finalGetProceeds"],
-                                                                                        "CancelRequest": false,
-                                                                                        "CancelRequestTo": false,
-                                                                                        "cancelTransactionFinished": false,
-                                                                                        "itemID": widget.id,
-                                                                                        "firstCancelRequest": false,
-                                                                                        "secondCancelRequest": false,
-                                                                                        "hold": false,
-                                                                                      },
-                                                                                    );
-                                                                                    FirebaseFirestore.instance
-                                                                                        .collection("users")
-                                                                                        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
-                                                                                        .collection("AllNotify")
-                                                                                        .doc(
-                                                                                          EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
-                                                                                        )
-                                                                                        .collection("Guide")
-                                                                                        .doc(ref.id)
-                                                                                        .set(
-                                                                                      {
-                                                                                        "Tag": "Buyer",
-                                                                                        "orderID": ref.id,
-                                                                                        "CancelRequest": false,
-                                                                                        "CancelRequestTo": false,
-                                                                                        "cancelTransactionFinished": false,
-                                                                                        "isTransactionFinished": false,
-                                                                                        "isBuyerDelivery": false,
-                                                                                      },
-                                                                                    );
-                                                                                    FirebaseFirestore.instance
-                                                                                        .collection("users")
-                                                                                        .doc(
-                                                                                          widget.il["postBy"],
-                                                                                        )
-                                                                                        .collection("AllNotify")
-                                                                                        .doc(widget.il["postBy"])
-                                                                                        .collection("Guide")
-                                                                                        .doc(ref.id)
-                                                                                        .set(
-                                                                                      {
-                                                                                        "Tag": "Seller",
-                                                                                        "orderID": ref.id,
-                                                                                        "CancelRequest": false,
-                                                                                        "CancelRequestTo": false,
-                                                                                        "cancelTransactionFinished": false,
-                                                                                        "isTransactionFinished": false,
-                                                                                        "isBuyerDelivery": false,
-                                                                                      },
-                                                                                    );
-                                                                                  },
-                                                                                ),
+                                                                                          FirebaseFirestore.instance.collection("orders").doc(ref.id).set(
+                                                                                            {
+                                                                                              "sellerID": widget.il["postBy"],
+                                                                                              "id": ref.id,
+                                                                                              "imageURL": widget.il["thumbnailUrl"],
+                                                                                              EcommerceApp.addressID: snapshot.data.docs[index].id,
+                                                                                              "orderBy": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+                                                                                              "orderByName": EcommerceApp.sharedPreferences.getString(EcommerceApp.userName),
+                                                                                              EcommerceApp.productID: widget.il["shortInfo"],
+                                                                                              EcommerceApp.paymentDetails: "代金引換",
+                                                                                              EcommerceApp.orderTime: DateTime.now().millisecondsSinceEpoch.toString(),
+                                                                                              EcommerceApp.isSuccess: true,
+                                                                                              "boughtFrom": widget.il["postName"],
+                                                                                              "totalPrice": widget.il["price"],
+                                                                                              "isTransactionFinished": "inComplete",
+                                                                                              "isBuyerDelivery": "inComplete",
+                                                                                              "itemPrice": widget.il["price"],
+                                                                                              "buyerID": EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+                                                                                              "email": _email,
+                                                                                              "finalGetProceeds": widget.il["finalGetProceeds"],
+                                                                                              "CancelRequest": false,
+                                                                                              "CancelRequestTo": false,
+                                                                                              "cancelTransactionFinished": false,
+                                                                                              "itemID": widget.id,
+                                                                                              "firstCancelRequest": false,
+                                                                                              "secondCancelRequest": false,
+                                                                                              "hold": false,
+                                                                                            },
+                                                                                          );
+                                                                                          FirebaseFirestore.instance
+                                                                                              .collection("users")
+                                                                                              .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+                                                                                              .collection("AllNotify")
+                                                                                              .doc(
+                                                                                                EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID),
+                                                                                              )
+                                                                                              .collection("Guide")
+                                                                                              .doc(ref.id)
+                                                                                              .set(
+                                                                                            {
+                                                                                              "Tag": "Buyer",
+                                                                                              "orderID": ref.id,
+                                                                                              "CancelRequest": false,
+                                                                                              "CancelRequestTo": false,
+                                                                                              "cancelTransactionFinished": false,
+                                                                                              "isTransactionFinished": false,
+                                                                                              "isBuyerDelivery": false,
+                                                                                            },
+                                                                                          );
+                                                                                          FirebaseFirestore.instance
+                                                                                              .collection("users")
+                                                                                              .doc(
+                                                                                                widget.il["postBy"],
+                                                                                              )
+                                                                                              .collection("AllNotify")
+                                                                                              .doc(widget.il["postBy"])
+                                                                                              .collection("Guide")
+                                                                                              .doc(ref.id)
+                                                                                              .set(
+                                                                                            {
+                                                                                              "Tag": "Seller",
+                                                                                              "orderID": ref.id,
+                                                                                              "CancelRequest": false,
+                                                                                              "CancelRequestTo": false,
+                                                                                              "cancelTransactionFinished": false,
+                                                                                              "isTransactionFinished": false,
+                                                                                              "isBuyerDelivery": false,
+                                                                                            },
+                                                                                          );
+                                                                                        },
+                                                                                      ),
+                                                                                    ),
+                                                                                  )
+                                                                                ],
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
                                                                               ),
-                                                                            )
-                                                                          ],
-                                                                          mainAxisAlignment:
-                                                                              MainAxisAlignment.center,
-                                                                        ),
-                                                                      ],
-                                                                    );
-                                                                  },
-                                                                );
-                                                              },
-                                                            )),
+                                                                            ],
+                                                                          );
+                                                                        },
+                                                                      );
+                                                                    },
+                                                                  )),
+                                                            ],
+                                                          ),
+                                                        ),
                                                       ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        },
-                                        child: Text(
-                                          "決済する",
-                                          style: TextStyle(fontSize: 18),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              child: Center(
+                                                child: Text(
+                                                  "決済する",
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.black),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   );
                                 },
                               );

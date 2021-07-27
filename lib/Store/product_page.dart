@@ -14,6 +14,7 @@ import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import '../main.dart';
+import '../test2.dart';
 
 class ProductPage extends StatefulWidget {
   final String id;
@@ -53,11 +54,11 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: bgColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.0),
         child: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: bgColor,
           elevation: 0,
           title: Text(
             il["shortInfo"] ?? "",
@@ -180,13 +181,13 @@ class _ProductPageState extends State<ProductPage> {
                   })),
           mySizedBox(20),
           Neumorphic(
-            margin: EdgeInsets.only(left: 8, right: 8, top: 2, bottom: 4),
+            margin: EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 1),
             style: NeumorphicStyle(
-              lightSource: LightSource.topLeft,
-              color: Colors.white38,
-              shadowLightColorEmboss: Colors.black26,
-              shadowDarkColorEmboss: HexColor("#a3b1c6"),
-              depth: NeumorphicTheme.embossDepth(context),
+              shadowDarkColorEmboss: Colors.black.withOpacity(0.6),
+              shadowLightColorEmboss: Colors.black.withOpacity(0.4),
+              color: bgColor,
+              intensity: 1,
+              depth: -4,
               boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(8)),
             ),
             padding: EdgeInsets.symmetric(vertical: 2, horizontal: 18),
@@ -207,7 +208,7 @@ class _ProductPageState extends State<ProductPage> {
                     ],
                   ),
                   Text(
-                    il["longDescription"],
+                    il["longDescription"] ?? "",
                     style: boldTextStyle,
                   ),
                   (() {
@@ -367,7 +368,7 @@ class _ProductPageState extends State<ProductPage> {
                     style: boldTextStyle,
                   ),
                   Text(
-                    il["shipsPayment"],
+                    il["shipsPayment"] ?? "",
                     style: boldTextStyle,
                   ),
                   SizedBox(

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,6 +18,7 @@ import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
 import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'MyPage.dart';
 
 class ChangeProfile extends StatefulWidget {
@@ -59,22 +61,19 @@ class _ChangeProfileState extends State<ChangeProfile> {
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width;
 
-    // setState(() {
-    //   userImageUrl = EcommerceApp.sharedPreferences
-    //       .getString(EcommerceApp.userAvatarUrl)
-    //       .toString();
-    // });
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: AppBar(
+        elevation: 0,
         automaticallyImplyLeading: false,
         iconTheme: IconThemeData(
           color: Colors.black, //change your color here
         ),
-        backgroundColor: HexColor("e67928"),
+        backgroundColor: bgColor,
         title: Text(
           "プロフィール編集",
           style: TextStyle(
-            color: Colors.white,
+            color: mainColorOfLEEWAY,
             fontSize: 20,
             fontWeight: FontWeight.w100,
           ),
@@ -109,95 +108,143 @@ class _ChangeProfileState extends State<ChangeProfile> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: TextFormField(
-                        obscureText: false,
-                        controller: _nameEditingController, //..text = nameData,
+                      child: Neumorphic(
+                        style: NeumorphicStyle(
+                            depth: NeumorphicTheme.embossDepth(context),
+                            boxShape: NeumorphicBoxShape.stadium(),
+                            color: bgColor),
+                        child: TextFormField(
+                          obscureText: false,
+                          controller:
+                              _nameEditingController, //..text = nameData,
 
-                        decoration: InputDecoration(
-                            hintText: "ユーザーネーム",
-                            prefixIcon: Icon(
-                              Icons.perm_identity,
-                              color: Colors.black,
-                            )),
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "ユーザーネーム",
+                              prefixIcon: Icon(
+                                Icons.perm_identity,
+                                color: Colors.black,
+                              )),
+                        ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: TextFormField(
-                        obscureText: false,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        controller:
-                            _descriptionEditingController, //..text = descriptionData,
+                      child: Neumorphic(
+                        style: NeumorphicStyle(
+                            depth: NeumorphicTheme.embossDepth(context),
+                            boxShape: NeumorphicBoxShape.stadium(),
+                            color: bgColor),
+                        child: TextFormField(
+                          obscureText: false,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          controller:
+                              _descriptionEditingController, //..text = descriptionData,
 
-                        decoration: InputDecoration(
-                            hintText: "自己紹介",
-                            prefixIcon: Icon(
-                              Icons.article_outlined,
-                              color: Colors.black,
-                            )),
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "自己紹介",
+                              prefixIcon: Icon(
+                                Icons.article_outlined,
+                                color: Colors.black,
+                              )),
+                        ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: TextFormField(
-                        obscureText: false,
-                        controller: _facebookEditingController,
-                        decoration: InputDecoration(
-                            hintText: "FaceBook",
-                            prefixIcon: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 8.0, bottom: 8.0, right: 8.0, left: 14),
-                              child: FaIcon(
-                                FontAwesomeIcons.facebookSquare,
-                                color: Colors.black,
-                              ),
-                            )),
+                      child: Neumorphic(
+                        style: NeumorphicStyle(
+                            depth: NeumorphicTheme.embossDepth(context),
+                            boxShape: NeumorphicBoxShape.stadium(),
+                            color: bgColor),
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: TextFormField(
+                            obscureText: false,
+                            controller: _facebookEditingController,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "FaceBook",
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0,
+                                      bottom: 8.0,
+                                      right: 8.0,
+                                      left: 14),
+                                  child: FaIcon(
+                                    FontAwesomeIcons.facebookSquare,
+                                    color: Colors.black,
+                                  ),
+                                )),
+                          ),
+                        ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: TextFormField(
-                        obscureText: false,
-                        controller: _twitterEditingController,
-                        onChanged: (text) => {},
-                        decoration: InputDecoration(
-                            hintText: "Twitter",
-                            prefixIcon: Padding(
-                              padding: const EdgeInsets.only(
-                                top: 8.0,
-                                bottom: 8.0,
-                                right: 8.0,
-                                left: 14,
-                              ),
-                              child: FaIcon(
-                                FontAwesomeIcons.twitterSquare,
-                                color: Colors.black,
-                              ),
-                            )),
+                      child: Neumorphic(
+                        style: NeumorphicStyle(
+                            depth: NeumorphicTheme.embossDepth(context),
+                            boxShape: NeumorphicBoxShape.stadium(),
+                            color: bgColor),
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: TextFormField(
+                            obscureText: false,
+                            controller: _twitterEditingController,
+                            onChanged: (text) => {},
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Twitter",
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 8.0,
+                                    bottom: 8.0,
+                                    right: 8.0,
+                                    left: 14,
+                                  ),
+                                  child: FaIcon(
+                                    FontAwesomeIcons.twitterSquare,
+                                    color: Colors.black,
+                                  ),
+                                )),
+                          ),
+                        ),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(15.0),
-                      child: TextFormField(
-                        obscureText: false,
-                        controller:
-                            _instagramEditingController, //..text = descriptionData,
-                        onChanged: (text) => {},
-                        decoration: InputDecoration(
-                            hintText: "Instagram",
-                            prefixIcon: Padding(
-                              padding: const EdgeInsets.only(
-                                top: 8.0,
-                                bottom: 8.0,
-                                right: 8.0,
-                                left: 14,
-                              ),
-                              child: FaIcon(
-                                FontAwesomeIcons.instagramSquare,
-                                color: Colors.black,
-                              ),
-                            )),
+                      child: Neumorphic(
+                        style: NeumorphicStyle(
+                            depth: NeumorphicTheme.embossDepth(context),
+                            boxShape: NeumorphicBoxShape.stadium(),
+                            color: bgColor),
+                        child: Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: TextFormField(
+                            obscureText: false,
+                            controller:
+                                _instagramEditingController, //..text = descriptionData,
+                            onChanged: (text) => {},
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Instagram",
+                                prefixIcon: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 8.0,
+                                    bottom: 8.0,
+                                    right: 8.0,
+                                    left: 14,
+                                  ),
+                                  child: FaIcon(
+                                    FontAwesomeIcons.instagramSquare,
+                                    color: Colors.black,
+                                  ),
+                                )),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -205,10 +252,8 @@ class _ChangeProfileState extends State<ChangeProfile> {
               ),
               Wrap(
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.redAccent,
-                    ),
+                  NeumorphicButton(
+                    style: NeumorphicStyle(color: Colors.grey.withOpacity(0.5)),
                     onPressed: () {
                       Route route = MaterialPageRoute(
                         fullscreenDialog: true,
@@ -224,7 +269,8 @@ class _ChangeProfileState extends State<ChangeProfile> {
                   SizedBox(
                     width: 10,
                   ),
-                  ElevatedButton(
+                  NeumorphicButton(
+                    style: NeumorphicStyle(color: Colors.blueAccent),
                     onPressed: () {
                       print(EcommerceApp.sharedPreferences
                           .getString(EcommerceApp.FaceBookURL));

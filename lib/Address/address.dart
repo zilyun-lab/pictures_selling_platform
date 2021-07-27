@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:provider/provider.dart';
 
 // Project imports:
@@ -129,54 +130,61 @@ class _AddressCardState extends State<AddressCard> {
           listen: false,
         ).displayResult(widget.value);
       },
-      child: Card(
-        color: Colors.white,
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Radio(
-                  value: widget.value,
-                  groupValue: widget.currentIndex,
-                  onChanged: (val) {
-                    Provider.of<AddressChanger>(
-                      context,
-                      listen: false,
-                    ).displayResult(val);
-                  },
-                  activeColor: Colors.black,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      width: screenwidth * 0.8,
-                      child: Table(
-                        children: [
-                          TableRow(
-                              children: addressText(
-                                  "氏名",
-                                  widget.model.lastName +
-                                      widget.model.firstName)),
-                          TableRow(
-                              children:
-                                  addressText("郵便番号", widget.model.postalCode)),
-                          TableRow(
-                              children: addressText(
-                                  "住所",
-                                  widget.model.prefectures +
-                                      widget.model.city +
-                                      widget.model.address +
-                                      widget.model.secondAddress)),
-                        ],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Neumorphic(
+          style: NeumorphicStyle(
+            color: Colors.white,
+            shadowLightColor: Colors.black.withOpacity(0.2),
+            shadowDarkColor: Colors.black.withOpacity(0.6),
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Radio(
+                    value: widget.value,
+                    groupValue: widget.currentIndex,
+                    onChanged: (val) {
+                      Provider.of<AddressChanger>(
+                        context,
+                        listen: false,
+                      ).displayResult(val);
+                    },
+                    activeColor: mainColorOfLEEWAY,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(10),
+                        width: screenwidth * 0.8,
+                        child: Table(
+                          children: [
+                            TableRow(
+                                children: addressText(
+                                    "氏名",
+                                    widget.model.lastName +
+                                        widget.model.firstName)),
+                            TableRow(
+                                children: addressText(
+                                    "郵便番号", widget.model.postalCode)),
+                            TableRow(
+                                children: addressText(
+                                    "住所",
+                                    widget.model.prefectures +
+                                        widget.model.city +
+                                        widget.model.address +
+                                        widget.model.secondAddress)),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -4,6 +4,7 @@ import 'dart:convert';
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 // Package imports:
 import 'package:http/http.dart';
@@ -42,21 +43,18 @@ class _AddAddressState extends State<AddAddress> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor("e5e2df"),
+      backgroundColor: bgColor,
       key: scaffoldKey,
       appBar: MyAppBar(
         title: Text(
           "新しいお届け先を追加する",
           style: TextStyle(
-            color: Colors.white,
+            color: mainColorOfLEEWAY,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
         ),
       ),
-
-      //print(selectedItem);
-
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -74,7 +72,7 @@ class _AddAddressState extends State<AddAddress> {
                     hint: "例) 太郎",
                     controller: cFirstName,
                   ),
-                  serachAddress(cPostalCode, cCity, cPrefectures),
+                  serachAddress(cPostalCode, cCity, cPrefectures, context),
                   MyTextField(
                     label: "都道府県",
                     hint: "例) 北海道",
@@ -91,15 +89,12 @@ class _AddAddressState extends State<AddAddress> {
                     controller: cAddress,
                   ),
                   textField(cSecondAddress, "任意の建物名",
-                      "例) 北１条西2丁目　Leewayビル２階１２３号室", 500),
+                      "例) 北１条西2丁目　Leewayビル２階１２３号室", 500, context),
                   textField(
-                    cPhoneNumber,
-                    "電話番号",
-                    "例) 09012345678",
-                    11,
-                  ),
+                      cPhoneNumber, "電話番号", "例) 09012345678", 11, context),
                   mySizedBox(15),
-                  ElevatedButton.icon(
+                  NeumorphicButton(
+                      style: NeumorphicStyle(color: bgColor),
                       onPressed: () {
                         if (formKey.currentState.validate()) {
                           final model = AddressModel(
@@ -133,8 +128,10 @@ class _AddAddressState extends State<AddAddress> {
                           // Navigator.pushReplacement(context, route);
                         }
                       },
-                      icon: Icon(Icons.add_location_alt_outlined),
-                      label: Text("追加する"))
+                      child: Text("追加する")),
+                  SizedBox(
+                    height: 30,
+                  )
                 ],
               ),
             ),
@@ -158,88 +155,134 @@ class MyTextField extends StatelessWidget {
       padding: EdgeInsets.all(
         8,
       ),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(color: Colors.black),
-          hintText: hint,
-          hintStyle: TextStyle(
-              color: Colors.grey.withOpacity(
-            0.6,
-          )),
+      child: Container(
+        height: 60,
+        child: Neumorphic(
+          style: NeumorphicStyle(
+              depth: NeumorphicTheme.embossDepth(context),
+              boxShape: NeumorphicBoxShape.stadium(),
+              color: bgColor),
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: TextFormField(
+              controller: controller,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                // labelText: label,
+                // labelStyle: TextStyle(color: Colors.black),
+                hintText: hint,
+                hintStyle: TextStyle(
+                    color: Colors.grey.withOpacity(
+                  0.6,
+                )),
+              ),
+              validator: (val) => val.isEmpty ? "$hintが未記入です" : null,
+            ),
+          ),
         ),
-        validator: (val) => val.isEmpty ? "$hintが未記入です" : null,
       ),
     );
   }
 }
 
-Widget serachAddress(TextEditingController PostalCode,
-    TextEditingController City, TextEditingController prefecture) {
+Widget serachAddress(
+    TextEditingController PostalCode,
+    TextEditingController City,
+    TextEditingController prefecture,
+    BuildContext context) {
   return Row(
     children: [
       Expanded(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: TextFormField(
-            inputFormatters: [
-              LengthLimitingTextInputFormatter(7),
-            ],
-            validator: (val) => val.isEmpty ? "未記入の項目があります" : null,
-            maxLines: 1,
-            controller: PostalCode,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: '郵便番号',
-              labelStyle: TextStyle(color: Colors.black),
-              suffixIcon: IconButton(
-                highlightColor: Colors.transparent,
-                icon: Container(width: 36.0, child: new Icon(Icons.clear)),
-                onPressed: () {
-                  PostalCode.clear();
-                  City.clear();
-                  prefecture.clear();
-                },
-                splashColor: Colors.transparent,
+          child: Container(
+            height: 50,
+            child: Neumorphic(
+              style: NeumorphicStyle(
+                  depth: NeumorphicTheme.embossDepth(context),
+                  boxShape: NeumorphicBoxShape.stadium(),
+                  color: bgColor),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(7),
+                  ],
+                  validator: (val) => val.isEmpty ? "未記入の項目があります" : null,
+                  maxLines: 1,
+                  controller: PostalCode,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: '郵便番号',
+                    hintStyle: TextStyle(color: Colors.grey),
+                    suffixIcon: IconButton(
+                      highlightColor: Colors.transparent,
+                      icon:
+                          Container(width: 36.0, child: new Icon(Icons.clear)),
+                      onPressed: () {
+                        PostalCode.clear();
+                        City.clear();
+                        prefecture.clear();
+                      },
+                      splashColor: Colors.transparent,
+                    ),
+                  ),
+                ),
               ),
             ),
           ),
         ),
       ),
-      ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          primary: HexColor("E67928"), //ボタンの背景色
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: NeumorphicButton(
+          style: NeumorphicStyle(
+            color: bgColor, //ボタンの背景色
+          ),
+          child: Text(
+            '検索',
+          ),
+          onPressed: () async {
+            var result = await get(Uri.parse(
+                'https://zipcloud.ibsnet.co.jp/api/search?zipcode=${PostalCode.text}'));
+            Map<String, dynamic> map = jsonDecode(result.body)['results'][0];
+            prefecture.text = '${map['address1']}';
+            City.text = '${map['address2']}${map['address3']}';
+          },
         ),
-        child: Text(
-          '検索',
-        ),
-        onPressed: () async {
-          var result = await get(Uri.parse(
-              'https://zipcloud.ibsnet.co.jp/api/search?zipcode=${PostalCode.text}'));
-          Map<String, dynamic> map = jsonDecode(result.body)['results'][0];
-          prefecture.text = '${map['address1']}';
-          City.text = '${map['address2']}${map['address3']}';
-        },
       ),
     ],
   );
 }
 
-Widget textField(
-    TextEditingController controller, String label, String hint, int length) {
+Widget textField(TextEditingController controller, String label, String hint,
+    int length, BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
-    child: TextFormField(
-      inputFormatters: [LengthLimitingTextInputFormatter(length)],
-      // keyboardType: TextInputType.number,
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(color: Colors.black),
-        hintText: hint,
+    child: Container(
+      height: 60,
+      child: Neumorphic(
+        style: NeumorphicStyle(
+            depth: NeumorphicTheme.embossDepth(context),
+            boxShape: NeumorphicBoxShape.stadium(),
+            color: bgColor),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextFormField(
+            inputFormatters: [LengthLimitingTextInputFormatter(length)],
+            // keyboardType: TextInputType.number,
+            controller: controller,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              // labelText: label,
+              // labelStyle: TextStyle(color: Colors.black),
+              hintText: hint,
+            ),
+            validator: (val) => val.isEmpty ? null : null,
+          ),
+        ),
       ),
-      validator: (val) => val.isEmpty ? null : null,
     ),
   );
 }

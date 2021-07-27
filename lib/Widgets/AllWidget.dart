@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
@@ -87,105 +88,31 @@ Widget uploadTitle(String title, double pad) {
 
 Widget sourceInfoForMain(ItemModel model, BuildContext context,
     {Color background, removeCartFunction}) {
-  return Card(
-    color: Colors.white,
-    child: InkWell(
-      onTap: () {
-        Route route = MaterialPageRoute(
-          builder: (c) => ProductPage(
-            id: model.id,
+  return InkWell(
+    onTap: () {
+      Route route = MaterialPageRoute(
+        builder: (c) => ProductPage(
+          id: model.id,
+        ),
+      );
+      Navigator.push(
+        context,
+        route,
+      );
+    },
+    child: Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Neumorphic(
+        child: Container(
+          child: Image.network(
+            model.thumbnailUrl,
+            fit: BoxFit.cover,
+            width: 100,
+            height: MediaQuery.of(context).size.height * 0.15,
           ),
-        );
-        Navigator.push(
-          context,
-          route,
-        );
-      },
-      splashColor: Colors.black,
-      child: Column(
-        children: [
-          Center(
-            child: Container(
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(6), topRight: Radius.circular(6)),
-                child: Image.network(
-                  model.thumbnailUrl,
-                  fit: BoxFit.cover,
-                  width: 100,
-                  height: MediaQuery.of(context).size.height * 0.15,
-                ),
-              ),
-              width: MediaQuery.of(context).size.width,
-              // color: Colors.white,
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            width: MediaQuery.of(context).size.width,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 5, right: 13.0, left: 13.0, bottom: 5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Column(
-                        children: [
-                          DefaultTextStyle(
-                            style: new TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            child: new Text(model.shortInfo),
-                          ),
-                          RichText(
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            text: TextSpan(
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: mainColorOfLEEWAY,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: model.price.toString(),
-                                ),
-                                TextSpan(
-                                  text: "円",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: mainColorOfLEEWAY,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 3.0),
-                        child: Text(
-                          "詳しく見る",
-                          style: TextStyle(fontSize: 15, color: Colors.black54),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+          width: MediaQuery.of(context).size.width,
+          // color: Colors.white,
+        ),
       ),
     ),
   );
@@ -258,29 +185,29 @@ Widget myFloatingActionButton(String title, Function func, IconData icon) {
   return Container(
     width: 100,
     height: 100,
-    child: FloatingActionButton.extended(
-      backgroundColor: mainColorOfLEEWAY,
+    child: NeumorphicFloatingActionButton(
+      style: NeumorphicStyle(
+          color: bgColor, boxShape: NeumorphicBoxShape.circle()),
       onPressed: func,
-      label: Padding(
+      child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
             Text(
               title,
               style: TextStyle(
-                color: Colors.white,
+                color: mainColorOfLEEWAY,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Icon(
               icon,
               size: 45,
+              color: mainColorOfLEEWAY,
             ),
           ],
         ),
       ),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(50.0))),
     ),
   );
 }
@@ -957,7 +884,8 @@ Widget mySizedBox(double height) {
 Widget myPageSliderItems(
   BuildContext context,
 ) {
-  return Expanded(
+  return Padding(
+    padding: const EdgeInsets.all(15.0),
     child: CarouselSlider(
       items: [
         sliderItem(
@@ -966,12 +894,6 @@ Widget myPageSliderItems(
           ProceedsRequests(),
           Icons.atm_outlined,
         ),
-        // sliderItem(
-        //   context,
-        //   "口座登録",
-        //   SubmitBankAccount(),
-        //   Icons.atm_outlined,
-        // ),
         sliderItem(
           context,
           "出品履歴",
@@ -980,7 +902,7 @@ Widget myPageSliderItems(
         ),
         sliderItem(
           context,
-          "お届け先の追加",
+          "お届け先追加",
           AddAddress(),
           Icons.add_location_alt_outlined,
         ),
@@ -998,7 +920,7 @@ Widget myPageSliderItems(
         ),
       ],
       options: CarouselOptions(
-        height: 80,
+        height: 85,
         viewportFraction: 0.3,
         enableInfiniteScroll: true,
         enlargeCenterPage: true,
@@ -1011,31 +933,37 @@ Widget infoTile(
     BuildContext context, IconData icon, String title, Widget func) {
   return Padding(
     padding: const EdgeInsets.only(top: 5, left: 8.0, right: 8),
-    child: Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: HexColor("E67928"), width: 3),
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.white,
-      ),
-      child: ListTile(
-        onTap: () {
-          Route route = MaterialPageRoute(
-            builder: (c) => func,
-          );
-          Navigator.push(
-            context,
-            route,
-          );
-        },
-        leading: Icon(icon, color: HexColor("E67928")),
-        title: Text(
-          title,
-          style: TextStyle(color: HexColor("E67928")),
+    child: Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: Neumorphic(
+        style: NeumorphicStyle(
+          color: bgColor,
+          shadowLightColor: Colors.black.withOpacity(0.4),
+          shadowDarkColor: Colors.black.withOpacity(0.6),
         ),
-        trailing: Icon(
-          Icons.arrow_forward_ios,
-          size: 18,
-          color: HexColor("E67928"),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListTile(
+            onTap: () {
+              Route route = MaterialPageRoute(
+                builder: (c) => func,
+              );
+              Navigator.push(
+                context,
+                route,
+              );
+            },
+            leading: Icon(icon, color: HexColor("E67928")),
+            title: Text(
+              title,
+              style: TextStyle(color: Colors.black87),
+            ),
+            trailing: Icon(
+              Icons.arrow_forward_ios,
+              size: 18,
+              color: HexColor("E67928"),
+            ),
+          ),
         ),
       ),
     ),
@@ -1054,39 +982,29 @@ Widget sliderItem(
               ))
           : null;
     },
-    child: Container(
-      width: 80,
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black12,
-              blurRadius: 8.0,
-              spreadRadius: 1.0,
-              offset: Offset(10, 10))
-        ],
-        color: HexColor("#E67928"),
-        borderRadius: BorderRadius.all(
-          Radius.circular(12),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(3.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                color: Colors.white,
-                size: 45,
-              ),
-              Text(
-                title,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w100,
-                    fontSize: 10),
-              ),
-            ],
+    child: Neumorphic(
+      style: NeumorphicStyle(color: bgColor),
+      child: Container(
+        width: 80,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Icon(
+                  icon,
+                  color: mainColorOfLEEWAY,
+                  size: 45,
+                ),
+                Text(
+                  title,
+                  style: TextStyle(
+                      color: mainColorOfLEEWAY,
+                      fontWeight: FontWeight.w100,
+                      fontSize: 10),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -1095,45 +1013,59 @@ Widget sliderItem(
 }
 
 Widget logOutWidget(BuildContext context) {
-  return ListTile(
-    onTap: () {
-      showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-                title: Text("本当にログアウトしますか？"),
-                actions: [
-                  Row(
-                    children: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text("　キャンセル　")),
-                      ElevatedButton(
-                          onPressed: () {
-                            Route route = MaterialPageRoute(
-                              builder: (c) => Login(),
-                            );
-                            EcommerceApp.auth
-                                .signOut()
-                                .then((c) => Navigator.push(
-                                      context,
-                                      route,
-                                    ));
-                          },
-                          child: Text("ログアウトする")),
-                    ],
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  ),
-                ],
-              ));
-    },
-    leading: Icon(Icons.login_outlined, color: mainColorOfLEEWAY),
-    title: Text(
-      "ログアウト",
-      style: TextStyle(color: mainColorOfLEEWAY),
+  return Padding(
+    padding: const EdgeInsets.all(3.0),
+    child: Neumorphic(
+      style: NeumorphicStyle(
+        color: bgColor,
+        shadowLightColor: Colors.black.withOpacity(0.4),
+        shadowDarkColor: Colors.black.withOpacity(0.6),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListTile(
+          onTap: () {
+            showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                      title: Text("本当にログアウトしますか？"),
+                      actions: [
+                        Row(
+                          children: [
+                            ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text("　キャンセル　")),
+                            ElevatedButton(
+                                onPressed: () {
+                                  Route route = MaterialPageRoute(
+                                    builder: (c) => Login(),
+                                  );
+                                  EcommerceApp.auth
+                                      .signOut()
+                                      .then((c) => Navigator.push(
+                                            context,
+                                            route,
+                                          ));
+                                },
+                                child: Text("ログアウトする")),
+                          ],
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        ),
+                      ],
+                    ));
+          },
+          leading: Icon(Icons.login_outlined, color: mainColorOfLEEWAY),
+          title: Text(
+            "ログアウト",
+            style: TextStyle(color: Colors.black87),
+          ),
+          trailing:
+              Icon(Icons.arrow_forward_ios, size: 18, color: mainColorOfLEEWAY),
+        ),
+      ),
     ),
-    trailing: Icon(Icons.arrow_forward_ios, size: 18, color: mainColorOfLEEWAY),
   );
 }
 
@@ -1193,105 +1125,28 @@ beginBuildingCart(BuildContext context, String title, String sub) {
 
 Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
     {Color background, removeCartFunction}) {
-  return Card(
-    color: Colors.white,
-    child: InkWell(
-      onTap: () {
-        Route route = MaterialPageRoute(
-          builder: (c) => ProductPage(
-            id: model.id,
-          ),
-        );
-        Navigator.push(
-          context,
-          route,
-        );
-      },
-      splashColor: Colors.black,
-      child: Column(
-        children: [
-          Center(
-            child: Container(
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(6), topRight: Radius.circular(6)),
-                child: Image.network(
-                  model.thumbnailUrl,
-                  fit: BoxFit.cover,
-                  width: 100,
-                  height: MediaQuery.of(context).size.height * 0.15,
-                ),
-              ),
-              width: MediaQuery.of(context).size.width,
-              // color: Colors.white,
-            ),
-          ),
-          Container(
-            color: Colors.white,
-            width: MediaQuery.of(context).size.width,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 5, right: 13.0, left: 13.0, bottom: 5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Column(
-                        children: [
-                          DefaultTextStyle(
-                            style: new TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            child: new Text(model.shortInfo),
-                          ),
-                          RichText(
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            text: TextSpan(
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: mainColorOfLEEWAY,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: model.price.toString(),
-                                ),
-                                TextSpan(
-                                  text: "円",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    color: mainColorOfLEEWAY,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 3.0),
-                        child: Text(
-                          "詳しく見る",
-                          style: TextStyle(fontSize: 15, color: Colors.black54),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+  return InkWell(
+    onTap: () {
+      Route route = MaterialPageRoute(
+        builder: (c) => ProductPage(
+          id: model.id,
+        ),
+      );
+      Navigator.push(
+        context,
+        route,
+      );
+    },
+    splashColor: Colors.black,
+    child: Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Neumorphic(
+        child: Image.network(
+          model.thumbnailUrl,
+          fit: BoxFit.cover,
+          width: 100,
+          height: MediaQuery.of(context).size.height * 0.15,
+        ),
       ),
     ),
   );
@@ -1299,108 +1154,26 @@ Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
 
 Widget sourceInfoForMainOfLikex1(LikeItems model, BuildContext context,
     {Color background, removeCartFunction}) {
-  return Padding(
-    padding: const EdgeInsets.all(5.0),
-    child: Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      color: Colors.white,
-      child: InkWell(
-        onTap: () {
-          Route route = MaterialPageRoute(
-            builder: (c) => ProductPage(
-              id: model.id,
-            ),
-          );
-          Navigator.push(
-            context,
-            route,
-          );
-        },
-        splashColor: Colors.black,
-        child: Column(
-          children: [
-            Center(
-              child: Container(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(8.0),
-                    topLeft: Radius.circular(8.0),
-                  ),
-                  child: Image.network(
-                    model.thumbnailUrl,
-                    fit: BoxFit.cover,
-                    width: 100,
-                    height: 320,
-                  ),
-                ),
-                width: MediaQuery.of(context).size.width,
-                // color: Colors.white,
-              ),
-            ),
-            Container(
-              color: Colors.white,
-              width: MediaQuery.of(context).size.width,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 5, right: 13.0, left: 13.0, bottom: 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          DefaultTextStyle(
-                            style: new TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            child: new Text(model.shortInfo),
-                          ),
-                          RichText(
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            text: TextSpan(
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                color: mainColorOfLEEWAY,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: model.price.toString(),
-                                ),
-                                TextSpan(
-                                  text: "円",
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                    color: mainColorOfLEEWAY,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 3.0),
-                      child: Text(
-                        "詳しく見る",
-                        style: TextStyle(fontSize: 20, color: Colors.black54),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+  return InkWell(
+    onTap: () {
+      Route route = MaterialPageRoute(
+        builder: (c) => ProductPage(
+          id: model.id,
+        ),
+      );
+      Navigator.push(
+        context,
+        route,
+      );
+    },
+    child: Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Neumorphic(
+        child: Image.network(
+          model.thumbnailUrl,
+          fit: BoxFit.cover,
+          width: 100,
+          height: 320,
         ),
       ),
     ),
@@ -1409,94 +1182,27 @@ Widget sourceInfoForMainOfLikex1(LikeItems model, BuildContext context,
 
 Widget sourceInfoForMainOfLikex3(LikeItems model, BuildContext context,
     {Color background, removeCartFunction}) {
-  return Card(
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-    color: Colors.white,
-    child: InkWell(
-      onTap: () {
-        Route route = MaterialPageRoute(
-          builder: (c) => ProductPage(
-            id: model.id,
-          ),
-        );
-        Navigator.pushReplacement(
-          context,
-          route,
-        );
-      },
-      splashColor: Colors.black,
-      child: Column(
-        children: [
-          Center(
-            child: Container(
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(8.0),
-                  topLeft: Radius.circular(8.0),
-                ),
-                child: Image.network(
-                  model.thumbnailUrl,
-                  fit: BoxFit.cover,
-                  width: 100,
-                  height: 90,
-                ),
-              ),
-              width: MediaQuery.of(context).size.width,
-              // color: Colors.white,
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Colors.white,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 5, right: 13.0, left: 13.0, bottom: 5),
-              child: Column(
-                children: [
-                  DefaultTextStyle(
-                    style: new TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    child: new Text(model.shortInfo),
-                  ),
-                  RichText(
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: mainColorOfLEEWAY,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: model.price.toString(),
-                        ),
-                        TextSpan(
-                          text: "円",
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: mainColorOfLEEWAY,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-                crossAxisAlignment: CrossAxisAlignment.start,
-              ),
-            ),
-          ),
-        ],
+  return InkWell(
+    onTap: () {
+      Route route = MaterialPageRoute(
+        builder: (c) => ProductPage(
+          id: model.id,
+        ),
+      );
+      Navigator.pushReplacement(
+        context,
+        route,
+      );
+    },
+    child: Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Neumorphic(
+        child: Image.network(
+          model.thumbnailUrl,
+          fit: BoxFit.cover,
+          width: 100,
+          height: 90,
+        ),
       ),
     ),
   );

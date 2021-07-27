@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -29,15 +30,10 @@ class _LikePageState extends State<LikePage> {
   double totalAmount;
   int gridCount = 1;
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: mainColor,
+        backgroundColor: bgColor,
         body: ChangeNotifierProvider<GetLikeItemsModel>(
           create: (_) => GetLikeItemsModel()..fetchItems(),
           child: CustomScrollView(
@@ -47,7 +43,7 @@ class _LikePageState extends State<LikePage> {
               ),
               SliverToBoxAdapter(
                 child: Container(
-                  color: mainColorOfLEEWAY,
+                  color: bgColor,
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 15.0, right: 15, top: 8, bottom: 6),
@@ -57,7 +53,7 @@ class _LikePageState extends State<LikePage> {
                         Text(
                           "いいね",
                           style: GoogleFonts.kosugi(
-                              color: Colors.white,
+                              color: mainColorOfLEEWAY,
                               fontSize: 25,
                               fontWeight: FontWeight.bold),
                         ),
@@ -65,13 +61,12 @@ class _LikePageState extends State<LikePage> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             InkWell(
-                              child: Card(
-                                child: Icon(
-                                  Icons.crop_square,
-                                  size: 40,
+                              child: NeumorphicIcon(
+                                Icons.crop_square,
+                                size: 40,
+                                style: NeumorphicStyle(
                                   color: mainColorOfLEEWAY,
                                 ),
-                                color: Colors.white,
                               ),
                               onTap: () {
                                 setState(() {
@@ -80,13 +75,12 @@ class _LikePageState extends State<LikePage> {
                               },
                             ),
                             InkWell(
-                              child: Card(
-                                child: Icon(
-                                  Icons.grid_view_outlined,
-                                  size: 40,
+                              child: NeumorphicIcon(
+                                Icons.grid_view_outlined,
+                                size: 40,
+                                style: NeumorphicStyle(
                                   color: mainColorOfLEEWAY,
                                 ),
-                                color: Colors.white,
                               ),
                               onTap: () {
                                 setState(() {
@@ -95,11 +89,10 @@ class _LikePageState extends State<LikePage> {
                               },
                             ),
                             InkWell(
-                              child: Card(
-                                color: Colors.white,
-                                child: Icon(
-                                  Icons.grid_3x3_outlined,
-                                  size: 40,
+                              child: NeumorphicIcon(
+                                Icons.grid_3x3_outlined,
+                                size: 40,
+                                style: NeumorphicStyle(
                                   color: mainColorOfLEEWAY,
                                 ),
                               ),

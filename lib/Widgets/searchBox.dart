@@ -20,6 +20,7 @@ class SearchBoxDelegate extends SliverPersistentHeaderDelegate {
           child: InkWell(
             onTap: () {
               Route route = MaterialPageRoute(
+                fullscreenDialog: true,
                 builder: (c) => SearchProduct(),
               );
               Navigator.push(
@@ -30,9 +31,9 @@ class SearchBoxDelegate extends SliverPersistentHeaderDelegate {
             child: Neumorphic(
               margin: EdgeInsets.only(left: 8, right: 8, top: 2, bottom: 4),
               style: NeumorphicStyle(
-                depth: NeumorphicTheme.embossDepth(context),
-                boxShape: NeumorphicBoxShape.stadium(),
-              ),
+                  depth: NeumorphicTheme.embossDepth(context),
+                  boxShape: NeumorphicBoxShape.stadium(),
+                  color: bgColor),
               padding: EdgeInsets.symmetric(vertical: 2, horizontal: 18),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),

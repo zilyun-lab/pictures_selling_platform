@@ -14,6 +14,7 @@ import 'package:selling_pictures_platform/Counters/Likeitemcounter.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import '../main.dart';
 
 class MyAppBar extends StatelessWidget with PreferredSizeWidget {
@@ -27,7 +28,7 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
     return AppBar(
       elevation: 0,
       bottom: bottom,
-      backgroundColor: HexColor("E67928"),
+      backgroundColor: bgColor,
       title: title,
     );
   }
