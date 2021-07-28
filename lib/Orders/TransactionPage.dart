@@ -9,6 +9,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // Project imports:
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
 import 'package:selling_pictures_platform/Widgets/orderCard.dart';
 import '../main.dart';
@@ -30,35 +31,20 @@ class _TransactionPageState extends State<TransactionPage>
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: HexColor("e5e2df"),
+        backgroundColor: bgColor,
         appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              // Route route = MaterialPageRoute(
-              //   builder: (c) => MainPage(),
-              // );
-              // Navigator.push(context, route);
-              Navigator.pop(
-                context,
-              );
-            },
-            icon: Icon(
-              Icons.arrow_back_ios_rounded,
-              size: 35,
-            ),
-          ),
-          backgroundColor: HexColor("#E67928"),
-          iconTheme: IconThemeData(color: Colors.black),
+          elevation: 0,
+          backgroundColor: bgColor,
           centerTitle: true,
           title: Text(
             "取引履歴",
             style: TextStyle(
-              color: Colors.black,
+              color: Colors.blue,
               fontWeight: FontWeight.w100,
             ),
           ),
           bottom: new TabBar(
-            labelColor: Colors.black,
+            labelColor: mainColorOfLEEWAY,
             tabs: [
               Tab(
                 text: "取引中",

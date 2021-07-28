@@ -10,6 +10,7 @@ import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/main.dart';
 import '../Widgets/loadingWidget.dart';
 import '../Widgets/orderCard.dart';
@@ -30,18 +31,10 @@ class _MyOrdersState extends State<MyOrders> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor("e5e2df"),
+      backgroundColor: bgColor,
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back_ios_rounded,
-              size: 25,
-            )),
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
+        elevation: 0,
+        backgroundColor: bgColor,
         centerTitle: true,
         title: Text(
           "注文履歴",

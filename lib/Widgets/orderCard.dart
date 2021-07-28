@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 // Project imports:
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Orders/AdminOrderDetailsPage.dart';
 import 'package:selling_pictures_platform/Orders/OrderDetailsPage.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import '../Store/storehome.dart';
 
 int counter = 0;
@@ -54,7 +56,6 @@ class OrderCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          color: Colors.black,
           height: 90,
           child: ListView.builder(
             itemBuilder: (c, index) {
@@ -73,97 +74,70 @@ class OrderCard extends StatelessWidget {
       {Color background}) {
     width = MediaQuery.of(context).size.width;
 
-    return Container(
-      color: Colors.grey[100],
-      height: 90,
-      child: Row(
-        children: [
-          Image.network(
-            model.thumbnailUrl,
-            height: 100,
-            fit: BoxFit.scaleDown,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Neumorphic(
+        style: NeumorphicStyle(color: bgColor),
+        child: ListTile(
+          trailing: Icon(
+            Icons.arrow_forward_ios_outlined,
+            color: mainColorOfLEEWAY,
           ),
-          SizedBox(
-            width: 10,
+          leading: Container(
+            child: Image.network(
+              model.thumbnailUrl,
+              height: 50,
+              width: 75,
+              fit: BoxFit.scaleDown,
+            ),
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          model.shortInfo,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          model.longDescription,
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          title: Expanded(
+            child: Text(
+              model.shortInfo,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          subtitle: Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 1.0),
+                    child: Row(
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 1.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "合計金額: ",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Text(
-                                (totalPrice).toString(),
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Text(
-                                "円",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
+                        Text(
+                          "合計金額: ",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          (totalPrice).toString(),
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          "円",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ],
-            ),
-          )
-        ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -208,7 +182,6 @@ class AdminOrderCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Container(
-          color: Colors.black,
           height: 90,
           child: ListView.builder(
             itemBuilder: (c, index) {
@@ -227,97 +200,70 @@ class AdminOrderCard extends StatelessWidget {
       {Color background}) {
     width = MediaQuery.of(context).size.width;
 
-    return Container(
-      color: Colors.grey[100],
-      height: 90,
-      child: Row(
-        children: [
-          Image.network(
-            model.thumbnailUrl,
-            height: 100,
-            fit: BoxFit.scaleDown,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Neumorphic(
+        style: NeumorphicStyle(color: bgColor),
+        child: ListTile(
+          trailing: Icon(
+            Icons.arrow_forward_ios_outlined,
+            color: mainColorOfLEEWAY,
           ),
-          SizedBox(
-            width: 10,
+          leading: Container(
+            child: Image.network(
+              model.thumbnailUrl,
+              height: 50,
+              width: 75,
+              fit: BoxFit.scaleDown,
+            ),
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          model.shortInfo,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          model.longDescription,
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          title: Expanded(
+            child: Text(
+              model.shortInfo,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+              ),
+            ),
+          ),
+          subtitle: Row(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 1.0),
+                    child: Row(
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: 1.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                "合計金額: ",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Text(
-                                (totalPrice).toString(),
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Text(
-                                "円",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
+                        Text(
+                          "合計金額: ",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          (totalPrice).toString(),
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        Text(
+                          "円",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ],
-            ),
-          )
-        ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

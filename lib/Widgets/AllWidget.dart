@@ -17,10 +17,14 @@ import 'package:selling_pictures_platform/Admin/MyUploadItems.dart';
 import 'package:selling_pictures_platform/Admin/PostCard.dart';
 import 'package:selling_pictures_platform/Admin/Sticker.dart';
 import 'package:selling_pictures_platform/Admin/uploadItems.dart';
+import 'package:selling_pictures_platform/Authentication/FAQ.dart';
+import 'package:selling_pictures_platform/Authentication/Notification.dart';
+import 'package:selling_pictures_platform/Authentication/PrivacyPolicyEtc.dart';
 import 'package:selling_pictures_platform/Authentication/ProceedsRequests.dart';
 import 'package:selling_pictures_platform/Authentication/SubmitBankAccount.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Authentication/publicUserPage.dart';
+import 'package:selling_pictures_platform/Authentication/updateProfile.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Counters/Likeitemcounter.dart';
 import 'package:selling_pictures_platform/Models/GetLikeItemsModel.dart';
@@ -35,6 +39,7 @@ import 'package:selling_pictures_platform/Orders/myOrders.dart';
 import 'package:selling_pictures_platform/Store/UpdateItem.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../main.dart';
 
 final lilBrown = HexColor("FFB47C");
@@ -187,7 +192,11 @@ Widget myFloatingActionButton(String title, Function func, IconData icon) {
     height: 100,
     child: NeumorphicFloatingActionButton(
       style: NeumorphicStyle(
-          color: bgColor, boxShape: NeumorphicBoxShape.circle()),
+        shadowLightColor: Colors.white,
+        shadowDarkColor: Colors.black87,
+        color: mainColorOfLEEWAY,
+        boxShape: NeumorphicBoxShape.circle(),
+      ),
       onPressed: func,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -196,14 +205,14 @@ Widget myFloatingActionButton(String title, Function func, IconData icon) {
             Text(
               title,
               style: TextStyle(
-                color: mainColorOfLEEWAY,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Icon(
               icon,
               size: 45,
-              color: mainColorOfLEEWAY,
+              color: Colors.white,
             ),
           ],
         ),
@@ -509,7 +518,7 @@ Widget userLink(Map il) {
                                 description: snapshot.data["description"],
                               ),
                             );
-                            Navigator.pushReplacement(context, route);
+                            Navigator.push(context, route);
                           },
                           child: ListTile(
                             leading: Container(
@@ -890,12 +899,6 @@ Widget myPageSliderItems(
       items: [
         sliderItem(
           context,
-          "売り上げ申請",
-          ProceedsRequests(),
-          Icons.atm_outlined,
-        ),
-        sliderItem(
-          context,
           "出品履歴",
           MyUploadItems(),
           Icons.brush,
@@ -984,28 +987,11 @@ Widget sliderItem(
     },
     child: Neumorphic(
       style: NeumorphicStyle(color: bgColor),
-      child: Container(
-        width: 80,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Icon(
-                  icon,
-                  color: mainColorOfLEEWAY,
-                  size: 45,
-                ),
-                Text(
-                  title,
-                  style: TextStyle(
-                      color: mainColorOfLEEWAY,
-                      fontWeight: FontWeight.w100,
-                      fontSize: 10),
-                ),
-              ],
-            ),
-          ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Icon(
+          icon,
+          color: mainColorOfLEEWAY,
         ),
       ),
     ),
@@ -1396,6 +1382,242 @@ Widget myNeumorphism(Widget w) {
         padding: const EdgeInsets.all(30.0),
         child: w,
       ),
+    ),
+  );
+}
+
+Widget myPageIconGrid(BuildContext context) {
+  return Column(
+    children: [
+      Row(
+        children: [
+          myPageIcon(() {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (c) => ChangeProfile()));
+          }, Icons.settings, "　設定　"),
+          myPageIcon(() {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (c) => AddAddress()));
+          }, Icons.add_location_alt_outlined, "　追加　"),
+        ],
+      ),
+      Row(
+        children: [
+          myPageIcon(() {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (c) => ProceedsRequests()));
+          }, Icons.atm_outlined, "売上申請"),
+          myPageIcon(() {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (c) => MyUploadItems()));
+          }, Icons.edit_outlined, "出品履歴"),
+        ],
+      ),
+      Row(
+        children: [
+          myPageIcon(() {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (c) => TransactionPage()));
+          }, Icons.history_outlined, "取引履歴"),
+          myPageIcon(() {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (c) => MyOrders()));
+          }, Icons.history, "購入履歴"),
+        ],
+      )
+    ],
+  );
+}
+
+Widget myPageIcon(Function func, IconData icon, String title) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: NeumorphicButton(
+      style: NeumorphicStyle(color: bgColor),
+      onPressed: func,
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            size: 25,
+          ),
+          Text(
+            title,
+            style: TextStyle(fontSize: 10),
+          )
+        ],
+      ),
+    ),
+  );
+}
+
+Widget myPageProceeds() {
+  return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+    stream: FirebaseFirestore.instance
+        .collection("users")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("MyProceeds")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .snapshots(),
+    builder: (context, snapshot) {
+      return snapshot.hasData
+          ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Expanded(
+                child: Container(
+                  child: Neumorphic(
+                    style: NeumorphicStyle(
+                        depth: NeumorphicTheme.embossDepth(context),
+                        boxShape: NeumorphicBoxShape.roundRect(
+                            BorderRadius.circular(10)),
+                        shadowDarkColorEmboss: Colors.black54,
+                        shadowLightColorEmboss: Colors.black26,
+                        color: bgColor),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: RichText(
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w900,
+                            color: mainColorOfLEEWAY,
+                          ),
+                          children: [
+                            TextSpan(
+                              text:
+                                  "${snapshot.data.data()["Proceeds"].toString()} ",
+                            ),
+                            TextSpan(
+                              text: "円",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: mainColorOfLEEWAY,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Neumorphic(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: RichText(
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w900,
+                        color: mainColorOfLEEWAY,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "0",
+                        ),
+                        TextSpan(
+                          text: "円",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: mainColorOfLEEWAY,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+    },
+  );
+}
+
+Widget myPageList(BuildContext context) {
+  Future<void> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      final Error error = ArgumentError('Could not launch $url');
+      throw error;
+    }
+  }
+
+  void _openMailApp() async {
+    final title = Uri.encodeComponent(
+      '運営へのお問い合わせ',
+    );
+    final body = Uri.encodeComponent(
+      '氏名： ${EcommerceApp.sharedPreferences.getString(
+        EcommerceApp.userName,
+      )}\nユーザーID：${EcommerceApp.sharedPreferences.getString(
+        EcommerceApp.userUID,
+      )}\nお問い合わせ内容：',
+    );
+    const mailAddress = 'contact@leewayjp.net';
+
+    return _launchURL(
+      'mailto:$mailAddress?subject=$title&body=$body',
+    );
+  }
+
+  return Padding(
+    padding: const EdgeInsets.all(12.0),
+    child: Column(
+      children: [
+        EcommerceApp.auth.currentUser != null
+            ? infoTile(context, Icons.notifications_active_outlined, "お知らせ",
+                UserNotification())
+            : Container(),
+        infoTile(
+            context, Icons.privacy_tip_outlined, "利用規約等", PrivacyPolicyPage()),
+        infoTile(context, Icons.question_answer_outlined, "よくある質問", FAQ()),
+        Padding(
+          padding: const EdgeInsets.only(top: 5, left: 8.0, right: 8),
+          child: Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: Neumorphic(
+              style: NeumorphicStyle(
+                color: bgColor,
+                shadowLightColor: Colors.black.withOpacity(0.4),
+                shadowDarkColor: Colors.black.withOpacity(0.6),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ListTile(
+                  onTap: () {
+                    _openMailApp();
+                  },
+                  leading: Icon(Icons.mail_outline, color: HexColor("E67928")),
+                  title: Text(
+                    "お問い合わせ",
+                    style: TextStyle(color: Colors.black87),
+                  ),
+                  trailing: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 18,
+                    color: HexColor("E67928"),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        EcommerceApp.auth.currentUser != null
+            ? Padding(
+                padding: const EdgeInsets.only(top: 5, left: 8.0, right: 8),
+                child: logOutWidget(context),
+              )
+            : infoTile(context, Icons.login_outlined, "ログインまたは新規登録", Login()),
+      ],
     ),
   );
 }

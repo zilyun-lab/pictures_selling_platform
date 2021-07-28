@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
@@ -59,7 +60,7 @@ class _PublicUserPageState extends State<PublicUserPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: mainColorOfLEEWAY,
+      backgroundColor: bgColor,
       body: Stack(
         children: [
           Bubbles(),
@@ -72,103 +73,117 @@ class _PublicUserPageState extends State<PublicUserPage> {
                       top: 100,
                       child: Align(
                         alignment: Alignment.center,
-                        child: Container(
-                          height: 300,
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(25),
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 65,
-                                  ),
-                                  DefaultTextStyle(
-                                      style: TextStyle(
-                                          color: Colors.lightBlueAccent,
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold),
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      child: Text(widget.name)),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  ChangeNotifierProvider<StarRatingModel>(
-                                      create: (_) =>
-                                          StarRatingModel(id: widget.uid)
-                                            ..fetchItems(),
-                                      child: Consumer<StarRatingModel>(
-                                          builder: (context, model, child) {
-                                        final items = model.items;
-                                        final List star = [0.0];
-                                        final total = items.map((e) {
-                                          return star.add(e.starRating);
-                                        }).toList();
-                                        final sum = star != null
-                                            ? star?.reduce((a, b) {
-                                                return (((a +
-                                                                b /
-                                                                    (star.length -
-                                                                        1)) *
-                                                            10)
-                                                        .round()) /
-                                                    10;
-                                              })
-                                            : 0;
-                                        return Center(
-                                          child: RichText(
-                                            text: TextSpan(
-                                              style: TextStyle(
-                                                  color: Colors.black),
-                                              children: [
-                                                TextSpan(
-                                                    text: '平均評価： ',
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15,
-                                                    )),
-                                                TextSpan(
-                                                  text: '${sum.toString()}',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 25,
-                                                      color:
-                                                          HexColor("E67928")),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      })),
-                                  mySizedBox(10),
-                                  carouselSliderItems(),
-                                ],
+                        child: Neumorphic(
+                          child: Container(
+                            height: 300,
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            decoration: BoxDecoration(
+                              color: bgColor,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(25),
                               ),
-                            ],
+                            ),
+                            child: Column(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    SizedBox(
+                                      height: 65,
+                                    ),
+                                    DefaultTextStyle(
+                                        style: TextStyle(
+                                            color: Colors.lightBlueAccent,
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.bold),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        child: Text(widget.name)),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    ChangeNotifierProvider<StarRatingModel>(
+                                        create: (_) =>
+                                            StarRatingModel(id: widget.uid)
+                                              ..fetchItems(),
+                                        child: Consumer<StarRatingModel>(
+                                            builder: (context, model, child) {
+                                          final items = model.items;
+                                          final List star = [0.0];
+                                          final total = items.map((e) {
+                                            return star.add(e.starRating);
+                                          }).toList();
+                                          final sum = star != null
+                                              ? star?.reduce((a, b) {
+                                                  return (((a +
+                                                                  b /
+                                                                      (star.length -
+                                                                          1)) *
+                                                              10)
+                                                          .round()) /
+                                                      10;
+                                                })
+                                              : 0;
+                                          return Center(
+                                            child: RichText(
+                                              text: TextSpan(
+                                                style: TextStyle(
+                                                    color: Colors.black),
+                                                children: [
+                                                  TextSpan(
+                                                      text: '平均評価： ',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 15,
+                                                      )),
+                                                  TextSpan(
+                                                    text: '${sum.toString()}',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 25,
+                                                        color:
+                                                            HexColor("E67928")),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        })),
+                                    mySizedBox(10),
+                                    carouselSliderItems(),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                     Positioned.fill(
-                      top: 50,
+                      top: 25,
                       child: Align(
                         alignment: Alignment.topCenter,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(25.0),
-                          child: Image.network(
-                            widget.imageUrl,
-                            fit: BoxFit.cover,
-                            width: 125,
-                            height: 100,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Neumorphic(
+                            style: NeumorphicStyle(
+                              color: bgColor,
+                              boxShape: NeumorphicBoxShape.circle(),
+                              depth: 19,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Container(
+                                  width: 100,
+                                  height: 100,
+                                  child: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                      widget.imageUrl,
+                                    ),
+                                  )),
+                            ),
                           ),
                         ),
                       ),
@@ -254,7 +269,7 @@ class _PublicUserPageState extends State<PublicUserPage> {
 
   Widget _tabSection(BuildContext context) {
     return Container(
-      color: HexColor("e5e2df"),
+      color: bgColor,
       child: DefaultTabController(
         length: 3,
         child: Column(
@@ -341,50 +356,49 @@ class _PublicUserPageState extends State<PublicUserPage> {
                                   itemBuilder: (context, index) {
                                     return Padding(
                                       padding: const EdgeInsets.all(5.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(10),
-                                          ),
-                                        ),
-                                        child: ListTile(
-                                          trailing: Text(
-                                            "購入日: " +
-                                                DateFormat("yyyy年MM月dd日")
-                                                    .format(DateTime
-                                                        .fromMillisecondsSinceEpoch(
-                                                            int.parse(snap
-                                                                .data
-                                                                .docs[index][
-                                                                    "reviewDate"]
-                                                                .toString()))),
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 16.0),
-                                          ),
-                                          subtitle: Text(
-                                            snap.data.docs[index]["message"]
-                                                .toString(),
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black87),
-                                          ),
-                                          title: RatingBar.builder(
-                                            itemSize: 25,
-                                            initialRating: snap.data.docs[index]
-                                                ["starRating"],
-                                            minRating: 1,
-                                            direction: Axis.horizontal,
-                                            allowHalfRating: true,
-                                            itemCount: 5,
-                                            itemPadding: EdgeInsets.symmetric(
-                                                horizontal: 2.0),
-                                            itemBuilder: (context, _) => Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                              size: 8,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Neumorphic(
+                                          style:
+                                              NeumorphicStyle(color: bgColor),
+                                          child: ListTile(
+                                            trailing: Text(
+                                              "購入日: " +
+                                                  DateFormat("yyyy年MM月dd日")
+                                                      .format(DateTime
+                                                          .fromMillisecondsSinceEpoch(
+                                                              int.parse(snap
+                                                                  .data
+                                                                  .docs[index][
+                                                                      "reviewDate"]
+                                                                  .toString()))),
+                                              style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 16.0),
+                                            ),
+                                            subtitle: Text(
+                                              snap.data.docs[index]["message"]
+                                                  .toString(),
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black87),
+                                            ),
+                                            title: RatingBar.builder(
+                                              itemSize: 25,
+                                              initialRating: snap.data
+                                                  .docs[index]["starRating"],
+                                              minRating: 1,
+                                              direction: Axis.horizontal,
+                                              allowHalfRating: true,
+                                              itemCount: 5,
+                                              itemPadding: EdgeInsets.symmetric(
+                                                  horizontal: 2.0),
+                                              itemBuilder: (context, _) => Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                                size: 8,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -681,126 +695,118 @@ class _PublicUserPageState extends State<PublicUserPage> {
                                       showDialog(
                                           context: context,
                                           builder: (c) {
-                                            return Container(
-                                              height: 200,
-                                              child: AlertDialog(
-                                                title: Center(
-                                                  child: Text(
-                                                    "通報",
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 20),
-                                                  ),
+                                            return AlertDialog(
+                                              title: Center(
+                                                child: Text(
+                                                  "通報",
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 20),
                                                 ),
-                                                content: RadioButtonGroup(
-                                                  labels: reportTitle,
-                                                  onSelected:
-                                                      (String selected) {
-                                                    setState(() {
-                                                      _verticalGroupValue =
-                                                          selected;
-                                                    });
-                                                    print(_verticalGroupValue);
-                                                  },
-                                                ),
-                                                actions: [
-                                                  Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child: ElevatedButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child:
-                                                                Text("キャンセル"),
-                                                            style: ElevatedButton
-                                                                .styleFrom(
-                                                                    primary: Colors
-                                                                        .transparent),
-                                                          ),
+                                              ),
+                                              content: RadioButtonGroup(
+                                                labels: reportTitle,
+                                                onSelected: (String selected) {
+                                                  setState(() {
+                                                    _verticalGroupValue =
+                                                        selected;
+                                                  });
+                                                  print(_verticalGroupValue);
+                                                },
+                                              ),
+                                              actions: [
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: ElevatedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child: Text("キャンセル"),
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                                  primary: Colors
+                                                                      .transparent),
                                                         ),
                                                       ),
-                                                      _verticalGroupValue == ""
-                                                          ? Expanded(
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child:
-                                                                    ElevatedButton(
-                                                                  onPressed:
-                                                                      () {},
-                                                                  child: Text(
-                                                                    "送信する",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .grey),
-                                                                  ),
-                                                                  style: ElevatedButton
-                                                                      .styleFrom(
-                                                                          primary:
-                                                                              Colors.transparent),
+                                                    ),
+                                                    _verticalGroupValue == ""
+                                                        ? Expanded(
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child:
+                                                                  ElevatedButton(
+                                                                onPressed:
+                                                                    () {},
+                                                                child: Text(
+                                                                  "送信する",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .grey),
+                                                                ),
+                                                                style: ElevatedButton
+                                                                    .styleFrom(
+                                                                        primary:
+                                                                            Colors.transparent),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : Expanded(
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child:
+                                                                  ElevatedButton(
+                                                                onPressed: () {
+                                                                  FirebaseFirestore
+                                                                      .instance
+                                                                      .collection(
+                                                                          "report")
+                                                                      .doc()
+                                                                      .set({
+                                                                    "reportFrom": EcommerceApp
+                                                                        .sharedPreferences
+                                                                        .getString(
+                                                                            EcommerceApp.userUID),
+                                                                    "date":
+                                                                        DateTime
+                                                                            .now(),
+                                                                    "reportTo":
+                                                                        widget
+                                                                            .uid,
+                                                                    "why":
+                                                                        _verticalGroupValue,
+                                                                    "Tag":
+                                                                        "UserReport"
+                                                                  });
+                                                                },
+                                                                child: Text(
+                                                                  "送信",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white),
                                                                 ),
                                                               ),
-                                                            )
-                                                          : Expanded(
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child:
-                                                                    ElevatedButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    FirebaseFirestore
-                                                                        .instance
-                                                                        .collection(
-                                                                            "report")
-                                                                        .doc()
-                                                                        .set({
-                                                                      "reportFrom": EcommerceApp
-                                                                          .sharedPreferences
-                                                                          .getString(
-                                                                              EcommerceApp.userUID),
-                                                                      "date": DateTime
-                                                                          .now(),
-                                                                      "reportTo":
-                                                                          widget
-                                                                              .uid,
-                                                                      "why":
-                                                                          _verticalGroupValue,
-                                                                      "Tag":
-                                                                          "UserReport"
-                                                                    });
-                                                                  },
-                                                                  child: Text(
-                                                                    "送信",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            )
-                                                    ],
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                  ),
-                                                ],
-                                              ),
+                                                            ),
+                                                          )
+                                                  ],
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                ),
+                                              ],
                                             );
                                           });
                                     },

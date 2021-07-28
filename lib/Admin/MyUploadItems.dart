@@ -4,15 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 
 // Project imports:
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
-import 'package:selling_pictures_platform/Models/UploadItemList.dart';
-import 'package:selling_pictures_platform/Models/UploadItemModel.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
-import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 
@@ -22,6 +18,7 @@ class MyUploadItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: MyAppBar(
         title: Text("出品履歴"),
       ),

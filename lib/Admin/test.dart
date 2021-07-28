@@ -188,7 +188,7 @@ class _BubblesState extends State<Bubbles> with SingleTickerProviderStateMixin {
   AnimationController _controller;
   List<Bubble> bubbles;
   final int numberOfBubbles = 200;
-  final Color color = Colors.white;
+  final Color color = mainColorOfLEEWAY;
   final double maxBubbleSize = 10.0;
 
   @override
