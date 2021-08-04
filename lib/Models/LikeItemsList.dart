@@ -15,6 +15,17 @@ class LikeItems {
     Stock = doc["Stock"];
     id = doc["id"];
   }
+  LikeItems.fromJson(Map<String, dynamic> json) {
+    shortInfo = json['shortInfo'];
+    longDescription = json['longDescription'];
+    price = json['price'];
+
+    thumbnailUrl = json['thumbnailUrl'];
+    postBy = json['postBy'];
+    attribute = json['attribute'];
+    Stock = json['Stock'];
+    id = json['id'];
+  }
 
   String shortInfo;
   String thumbnailUrl;

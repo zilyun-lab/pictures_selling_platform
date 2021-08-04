@@ -11,27 +11,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
-import 'package:selling_pictures_platform/test2.dart';
+import 'package:selling_pictures_platform/test3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports:
 
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Models/StarRatingModel.dart';
-import 'Admin/test.dart';
 import 'Authentication/FreezedUser.dart';
 import 'Authentication/Notification.dart';
-import 'Counters/Likeitemcounter.dart';
-import 'Counters/changeAddresss.dart';
-import 'Models/GetLikeItemsModel.dart';
 import 'Models/HEXCOLOR.dart';
 import 'Models/allList.dart';
-import 'PushNotifications/PushNotificationPage.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
@@ -80,38 +76,22 @@ Future<void> main() async {
     sound: true,
   );
   runApp(
-    MyApp(),
+    ProviderScope(child: MyApp()),
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (c) => LikeItemCounter(),
-        ),
-        ChangeNotifierProvider(
-          create: (c) => AddressChanger(),
-        ),
-        ChangeNotifierProvider(
-          create: (c) => GetLikeItemsModel()..fetchItems(),
-        ),
-        ChangeNotifierProvider(
-          create: (c) => StarRatingModel()..fetchItems(),
-        ),
-      ],
-      child: MaterialApp(
-        navigatorKey: navigatorKey,
-        key: GlobalKey<ScaffoldState>(),
-        debugShowCheckedModeBanner: false,
-        home: SplashScreen(),
-        theme: ThemeData(accentColor: bgColor, primaryColor: bgColor),
-        routes: {
-          '/message': (context) => UserNotification(),
-        },
-      ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      key: GlobalKey<ScaffoldState>(),
+      debugShowCheckedModeBanner: false,
+      home: SplashScreen(),
+      theme: ThemeData(accentColor: bgColor, primaryColor: bgColor),
+      routes: {
+        '/message': (context) => UserNotification(),
+      },
     );
   }
 }
@@ -222,7 +202,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
 class MainPage extends StatefulWidget {
   const MainPage({Key key}) : super(key: key);
-
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -246,7 +225,7 @@ class _MainPageState extends State<MainPage> {
                 child: Image.asset("images/isColor_Horizontal.png"),
                 onTap: () {
                   Navigator.push(
-                      context, MaterialPageRoute(builder: (c) => NeumoTest()));
+                      context, MaterialPageRoute(builder: (c) => Test3()));
                   EcommerceApp.sharedPreferences.setString(
                     "Registration Time",
                     "${(DateTime.now().millisecondsSinceEpoch / 1000).toInt()}",
@@ -282,52 +261,5 @@ class _MainPageState extends State<MainPage> {
       ),
       body: navigationList[selectedIndex].page,
     );
-  }
-
-  Widget searchWidget() {
-    return Container(
-      alignment: Alignment.center,
-      width: MediaQuery.of(context).size.width,
-      height: 80,
-      child: Container(
-        width: MediaQuery.of(context).size.width - 40,
-        height: 50,
-        decoration: BoxDecoration(
-          color: HexColor("ED9B5E"),
-          borderRadius: BorderRadius.circular(6),
-        ),
-        child: Row(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                left: 8,
-              ),
-              child: Icon(
-                Icons.search,
-                color: Colors.blueGrey,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: 8,
-              ),
-              child: TextField(
-                onChanged: (val) {
-                  startSearching(val);
-                },
-                decoration: InputDecoration.collapsed(hintText: "検索する"),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future startSearching(String query) async {
-    docList = FirebaseFirestore.instance
-        .collection("items")
-        .where("shortInfo", isGreaterThanOrEqualTo: query)
-        .get();
   }
 }

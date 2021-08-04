@@ -15,6 +15,16 @@ class User {
     url = doc["url"];
   }
 
+  User.fromJson(Map<String, dynamic> json) {
+    uid = json['uid'];
+    name = json['name'];
+    FaceBookURL = json['FaceBookURL'];
+    InstagramURL = json['InstagramURL'];
+    TwitterURL = json['TwitterURL'];
+    description = json['description'];
+    url = json['url'];
+  }
+
   String documentID;
   String name;
   String FaceBookURL;
@@ -23,20 +33,4 @@ class User {
   String description;
   String uid;
   String url;
-}
-
-class UserModel extends ChangeNotifier {
-  //List<クラス名>　○○ = [];
-  List<User> users = [];
-
-  Future fetchItems() async {
-    final snapshots =
-        await FirebaseFirestore.instance.collection('users').snapshots();
-    snapshots.listen((snapshot) {
-      final docs = snapshot.docs;
-      final users = docs.map((doc) => User(doc)).toList();
-      this.users = users;
-      notifyListeners();
-    });
-  }
 }

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:selling_pictures_platform/Admin/Copy.dart';
+import 'package:selling_pictures_platform/Models/AllProviders.dart';
 
 // Project imports:
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
@@ -13,30 +15,30 @@ import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import '../main.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class SearchProduct extends StatefulWidget {
+class SearchProduct extends HookConsumerWidget {
   @override
-  _SearchProductState createState() => new _SearchProductState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final query = useState("");
+    final colorQuery = useState("");
+    final priceQuery = useState(0.0);
+    final selectedItem1 = useState("レッド");
+    final _labelText = useState("");
+    final _controller = useTabController(initialLength: 3);
+    final _index = useState(0);
 
-class _SearchProductState extends State<SearchProduct>
-    with SingleTickerProviderStateMixin {
-  String query = "";
-  String colorQuery = "";
-  double priceQuery = 0.0;
-  String selectedItem1 = "レッド";
-  String _labelText = "";
+    final AsyncValue search =
+        ref.watch(searchByWordStreamProvider(query.value));
+    final AsyncValue price =
+        ref.watch(searchByPriceStreamProvider(priceQuery.value));
+    final AsyncValue color =
+        ref.watch(searchByColorStreamProvider(colorQuery.value));
 
-  TabController _tabController;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  Widget build(BuildContext context) {
+    _controller.addListener(() {
+      _index.value = _controller.index;
+    });
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
@@ -60,7 +62,7 @@ class _SearchProductState extends State<SearchProduct>
                   child: Text("カラー検索"),
                 ),
               ],
-              controller: _tabController,
+              controller: _controller,
               isScrollable: true,
               enableFeedback: false,
               labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -77,119 +79,107 @@ class _SearchProductState extends State<SearchProduct>
           SliverFillRemaining(
             child: Container(
                 child: TabBarView(
-              controller: _tabController,
+              controller: _controller,
               children: [
                 SingleChildScrollView(
                   child: Column(
                     children: [
-                      searchWidget(),
-                      StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection("items")
-                            .where("shortInfo", isGreaterThanOrEqualTo: query)
-                            .snapshots(),
-                        builder: (context, snap) {
-                          return snap.hasData
-                              ? GridView.builder(
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
+                      searchWidget(context, query),
+                      search.when(
+                          data: (items) {
+                            return GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                              ),
+                              shrinkWrap: true,
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                final item = items[index];
+                                // ItemModel model = ItemModel.fromJson(items
+                                //     );
+                                return sourceInfoForMain(item, context);
+                              },
+                            );
+                          },
+                          loading: () => const CircularProgressIndicator(),
+                          error: (error, stack) => Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "お探しの作品が見つかりませんでした",
+                                    style: TextStyle(color: Colors.black),
                                   ),
-                                  shrinkWrap: true,
-                                  itemCount: snap.data.docs.length,
-                                  itemBuilder: (context, index) {
-                                    ItemModel model = ItemModel.fromJson(
-                                        snap.data.docs[index].data());
-                                    return sourceInfoForMain(model, context);
-                                  },
-                                )
-                              : Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "お探しの作品が見つかりませんでした",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ),
-                                );
-                        },
-                      ),
+                                ),
+                              ))
                     ],
                   ),
                 ),
                 SingleChildScrollView(
                   child: Column(
                     children: [
-                      searchPriceWidget(),
-                      StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection("items")
-                            .where("price", isLessThanOrEqualTo: priceQuery)
-                            .snapshots(),
-                        builder: (context, snap) {
-                          return snap.hasData
-                              ? GridView.builder(
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
+                      searchPriceWidget(_labelText, priceQuery),
+                      price.when(
+                          data: (items) {
+                            return GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                              ),
+                              shrinkWrap: true,
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                final item = items[index];
+                                // ItemModel model = ItemModel.fromJson(items
+                                //);
+                                return sourceInfoForMain(item, context);
+                              },
+                            );
+                          },
+                          loading: () => const CircularProgressIndicator(),
+                          error: (error, stack) => Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "お探しの作品が見つかりませんでした",
+                                    style: TextStyle(color: Colors.black),
                                   ),
-                                  shrinkWrap: true,
-                                  itemCount: snap.data.docs.length,
-                                  itemBuilder: (context, index) {
-                                    ItemModel model = ItemModel.fromJson(
-                                        snap.data.docs[index].data());
-                                    return sourceInfoForMain(model, context);
-                                  },
-                                )
-                              : Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "お探しの作品が見つかりませんでした",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ),
-                                );
-                        },
-                      ),
+                                ),
+                              ))
                     ],
                   ),
                 ),
                 SingleChildScrollView(
                   child: Column(
                     children: [
-                      searchColorWidget(),
-                      StreamBuilder<QuerySnapshot>(
-                        stream: FirebaseFirestore.instance
-                            .collection("items")
-                            .where("color1", isEqualTo: colorQuery)
-                            .snapshots(),
-                        builder: (context, snap) {
-                          return snap.hasData
-                              ? GridView.builder(
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
+                      searchColorWidget(selectedItem1, colorQuery),
+                      color.when(
+                          data: (items) {
+                            return GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                              ),
+                              shrinkWrap: true,
+                              itemCount: items.length,
+                              itemBuilder: (context, index) {
+                                final item = items[index];
+                                // ItemModel model = ItemModel.fromJson(items
+                                //);
+                                return sourceInfoForMain(item, context);
+                              },
+                            );
+                          },
+                          loading: () => const CircularProgressIndicator(),
+                          error: (error, stack) => Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "お探しの作品が見つかりませんでした",
+                                    style: TextStyle(color: Colors.black),
                                   ),
-                                  shrinkWrap: true,
-                                  itemCount: snap.data.docs.length,
-                                  itemBuilder: (context, index) {
-                                    ItemModel model = ItemModel.fromJson(
-                                        snap.data.docs[index].data());
-                                    return sourceInfoForMain(model, context);
-                                  },
-                                )
-                              : Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "お探しの作品が見つかりませんでした",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                  ),
-                                );
-                        },
-                      ),
+                                ),
+                              ))
                     ],
                   ),
                 )
@@ -201,7 +191,7 @@ class _SearchProductState extends State<SearchProduct>
     );
   }
 
-  Widget searchWidget() {
+  Widget searchWidget(BuildContext context, ValueNotifier<String> query) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Neumorphic(
@@ -232,9 +222,8 @@ class _SearchProductState extends State<SearchProduct>
                 ),
                 child: TextField(
                   onChanged: (val) {
-                    setState(() {
-                      query = val;
-                    });
+                    query.value = val;
+                    print(query.value);
                   },
                   decoration: InputDecoration.collapsed(hintText: "作品を探す"),
                 ),
@@ -250,7 +239,8 @@ class _SearchProductState extends State<SearchProduct>
     return d.toInt();
   }
 
-  Widget searchPriceWidget() {
+  Widget searchPriceWidget(
+      ValueNotifier<String> _labelText, ValueNotifier<double> priceQuery) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -269,7 +259,7 @@ class _SearchProductState extends State<SearchProduct>
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Text(
-                      "金額：$_labelText",
+                      "金額：${_labelText.value}",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
@@ -282,11 +272,10 @@ class _SearchProductState extends State<SearchProduct>
                   children: [
                     NeumorphicButton(
                       onPressed: () {
-                        if (priceQuery > 0) {
-                          setState(() {
-                            priceQuery = priceQuery - 1000;
-                            _labelText = '${changeToInt(priceQuery)} 円';
-                          });
+                        if (priceQuery.value > 0) {
+                          priceQuery.value = priceQuery.value - 1000;
+                          _labelText.value =
+                              '${changeToInt(priceQuery.value)} 円';
                         }
                       },
                       child: Icon(Icons.remove),
@@ -295,10 +284,8 @@ class _SearchProductState extends State<SearchProduct>
                     ),
                     NeumorphicButton(
                       onPressed: () {
-                        setState(() {
-                          priceQuery = priceQuery + 1000;
-                          _labelText = '${changeToInt(priceQuery)} 円';
-                        });
+                        priceQuery.value = priceQuery.value + 1000;
+                        _labelText.value = '${changeToInt(priceQuery.value)} 円';
                       },
                       child: Icon(Icons.add),
                       style: NeumorphicStyle(
@@ -318,17 +305,15 @@ class _SearchProductState extends State<SearchProduct>
                 boxShape:
                     NeumorphicBoxShape.roundRect(BorderRadius.circular(45))),
             child: Slider(
-              value: priceQuery,
+              value: priceQuery.value,
               min: 0,
               max: 1000000,
-              divisions: priceQuery <= 50000 ? 1000 : 100,
+              divisions: priceQuery.value <= 50000 ? 1000 : 100,
               activeColor: mainColorOfLEEWAY,
               inactiveColor: Colors.blueAccent,
               onChanged: (double value) {
-                setState(() {
-                  priceQuery = value.roundToDouble();
-                  _labelText = '${changeToInt(priceQuery)} 円';
-                });
+                priceQuery.value = value.roundToDouble();
+                _labelText.value = '${changeToInt(priceQuery.value)} 円';
               },
             ),
           ),
@@ -337,7 +322,10 @@ class _SearchProductState extends State<SearchProduct>
     );
   }
 
-  Widget searchColorWidget() {
+  Widget searchColorWidget(
+    ValueNotifier<String> selectedItem1,
+    ValueNotifier<String> colorQuery,
+  ) {
     final map = Map.fromIterables(
         color1.map((e) => e.key).toList(), color1.map((e) => e.value).toList());
 
@@ -367,7 +355,7 @@ class _SearchProductState extends State<SearchProduct>
                       text: "選択カラー：",
                     ),
                     TextSpan(
-                      text: selectedItem1,
+                      text: selectedItem1.value,
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -392,12 +380,10 @@ class _SearchProductState extends State<SearchProduct>
                 decoration: InputDecoration(border: InputBorder.none),
                 dropdownColor: bgColor,
                 isExpanded: true,
-                value: selectedItem1,
+                value: selectedItem1.value,
                 onChanged: (String newValue) {
-                  setState(() {
-                    selectedItem1 = newValue;
-                    colorQuery = newValue;
-                  });
+                  selectedItem1.value = newValue;
+                  colorQuery.value = newValue;
                 },
                 selectedItemBuilder: (context) {
                   return color1.map((item) {

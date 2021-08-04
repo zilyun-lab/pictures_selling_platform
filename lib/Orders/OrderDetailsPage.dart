@@ -1350,7 +1350,7 @@ class _ShippingDetailsState extends State<ShippingDetails> {
     );
 
     getOrderId = "";
-    Route route = MaterialPageRoute(builder: (c) => StoreHome());
+    Route route = MaterialPageRoute(builder: (c) => MainPage());
     Navigator.push(context, route);
     Fluttertoast.showToast(msg: "取引が完了しました。\n引き続きLEEWAYをお楽しみください。");
   }

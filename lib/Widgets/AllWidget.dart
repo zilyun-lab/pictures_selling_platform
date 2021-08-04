@@ -27,11 +27,13 @@ import 'package:selling_pictures_platform/Authentication/publicUserPage.dart';
 import 'package:selling_pictures_platform/Authentication/updateProfile.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Counters/Likeitemcounter.dart';
+import 'package:selling_pictures_platform/Models/AllProviders.dart';
 import 'package:selling_pictures_platform/Models/GetLikeItemsModel.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/HomeItem(provider).dart';
 import 'package:selling_pictures_platform/Models/LikeItemsList.dart';
 import 'package:selling_pictures_platform/Models/UploadItemList.dart';
+import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
 import 'package:selling_pictures_platform/Orders/TransactionPage.dart';
@@ -97,7 +99,7 @@ Widget sourceInfoForMain(ItemModel model, BuildContext context,
     onTap: () {
       Route route = MaterialPageRoute(
         builder: (c) => ProductPage(
-          id: model.id,
+          model.id,
         ),
       );
       Navigator.push(
@@ -194,7 +196,7 @@ Widget myFloatingActionButton(String title, Function func, IconData icon) {
       style: NeumorphicStyle(
         shadowLightColor: Colors.white,
         shadowDarkColor: Colors.black87,
-        color: mainColorOfLEEWAY,
+        color: bgColor,
         boxShape: NeumorphicBoxShape.circle(),
       ),
       onPressed: func,
@@ -205,14 +207,14 @@ Widget myFloatingActionButton(String title, Function func, IconData icon) {
             Text(
               title,
               style: TextStyle(
-                color: Colors.white,
+                color: mainColorOfLEEWAY,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Icon(
               icon,
               size: 45,
-              color: Colors.white,
+              color: mainColorOfLEEWAY,
             ),
           ],
         ),
@@ -255,7 +257,7 @@ Widget sourceInfoForMains(UploadItems model, BuildContext context,
         onTap: () {
           Route route = MaterialPageRoute(
             builder: (c) => ProductPage(
-              id: model.id,
+              model.id,
             ),
           );
           Navigator.pushReplacement(
@@ -560,7 +562,7 @@ Widget userLink(Map il) {
   );
 }
 
-likeButton(BuildContext context, Map il) {
+likeButton(BuildContext context, String id) {
   return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance
           .collection("users")
@@ -569,14 +571,14 @@ likeButton(BuildContext context, Map il) {
       builder: (context, snapshot) {
         return !snapshot.hasData
             ? Container()
-            : snapshot.data.data()["userLike"].contains(il["id"])
+            : snapshot.data.data()["userLike"].contains(id)
                 ? SizedBox(
                     width: 65,
                     height: 60,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           primary: Colors.transparent, elevation: 0),
-                      onPressed: () => checkItemInLike(il["id"], context),
+                      onPressed: () => checkItemInLike(id, context),
                       child: Center(
                         child: Icon(
                           Icons.favorite,
@@ -592,7 +594,7 @@ likeButton(BuildContext context, Map il) {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           primary: Colors.transparent, elevation: 0),
-                      onPressed: () => checkItemInLike(il["id"], context),
+                      onPressed: () => checkItemInLike(id, context),
                       child: Icon(
                         Icons.favorite_outline_outlined,
                         color: Colors.pinkAccent,
@@ -603,37 +605,8 @@ likeButton(BuildContext context, Map il) {
       });
 }
 
-itemEditButton(BuildContext context, Map il, String id) {
-  return Expanded(
-    child: Center(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          height: 60,
-          width: 260,
-          child: ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(primary: HexColor("2997E5")),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (c) => UpdateItemInfo(
-                          shortInfo: il["shortInfo"],
-                          id: id,
-                          longDescription: il["longDescription"],
-                          price: il["price"],
-                          attribute: il["attribute"])));
-            },
-            label: Text(
-              "編集する",
-              style: TextStyle(fontSize: 20),
-            ),
-            icon: Icon(Icons.edit),
-          ),
-        ),
-      ),
-    ),
-  );
+itemEditButton(BuildContext context, String id) {
+  return;
 }
 
 checkOutByNewUser(BuildContext context) {
@@ -701,7 +674,7 @@ Widget deleteItemButton(BuildContext context, Function func) {
   );
 }
 
-Widget checkOutItemButton(BuildContext context, Map il, String id) {
+Widget checkOutItemButton(BuildContext context, String id) {
   return Expanded(
     child: Center(
       child: Padding(
@@ -715,7 +688,6 @@ Widget checkOutItemButton(BuildContext context, Map il, String id) {
               Route route = MaterialPageRoute(
                 fullscreenDialog: true,
                 builder: (c) => CheckOutPage(
-                  il: il,
                   id: id,
                 ),
               );
@@ -1055,7 +1027,7 @@ Widget logOutWidget(BuildContext context) {
   );
 }
 
-beforeDeleteDialog(BuildContext context, Map il, String id) {
+beforeDeleteDialog(BuildContext context, String shortInfo, String id) {
   showDialog(
     context: context,
     builder: (_) {
@@ -1064,8 +1036,7 @@ beforeDeleteDialog(BuildContext context, Map il, String id) {
           "最終確認",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        content:
-            Container(child: Text("${il["shortInfo"]} を削除します。\n本当によろしいですか？")),
+        content: Container(child: Text("$shortInfo を削除します。\n本当によろしいですか？")),
         actions: <Widget>[
           ElevatedButton(
             child: Text("キャンセル"),
@@ -1109,13 +1080,13 @@ beginBuildingCart(BuildContext context, String title, String sub) {
   );
 }
 
-Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
+Widget sourceInfoForMainOfLikex2(String url, String id, BuildContext context,
     {Color background, removeCartFunction}) {
   return InkWell(
     onTap: () {
       Route route = MaterialPageRoute(
         builder: (c) => ProductPage(
-          id: model.id,
+          id,
         ),
       );
       Navigator.push(
@@ -1128,7 +1099,7 @@ Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
       padding: const EdgeInsets.all(12.0),
       child: Neumorphic(
         child: Image.network(
-          model.thumbnailUrl,
+          url,
           fit: BoxFit.cover,
           width: 100,
           height: MediaQuery.of(context).size.height * 0.15,
@@ -1138,13 +1109,13 @@ Widget sourceInfoForMainOfLikex2(LikeItems model, BuildContext context,
   );
 }
 
-Widget sourceInfoForMainOfLikex1(LikeItems model, BuildContext context,
+Widget sourceInfoForMainOfLikex1(String url, String id, BuildContext context,
     {Color background, removeCartFunction}) {
   return InkWell(
     onTap: () {
       Route route = MaterialPageRoute(
         builder: (c) => ProductPage(
-          id: model.id,
+          id,
         ),
       );
       Navigator.push(
@@ -1156,7 +1127,7 @@ Widget sourceInfoForMainOfLikex1(LikeItems model, BuildContext context,
       padding: const EdgeInsets.all(15.0),
       child: Neumorphic(
         child: Image.network(
-          model.thumbnailUrl,
+          url,
           fit: BoxFit.cover,
           width: 100,
           height: 320,
@@ -1166,13 +1137,13 @@ Widget sourceInfoForMainOfLikex1(LikeItems model, BuildContext context,
   );
 }
 
-Widget sourceInfoForMainOfLikex3(LikeItems model, BuildContext context,
+Widget sourceInfoForMainOfLikex3(String url, String id, BuildContext context,
     {Color background, removeCartFunction}) {
   return InkWell(
     onTap: () {
       Route route = MaterialPageRoute(
         builder: (c) => ProductPage(
-          id: model.id,
+          id,
         ),
       );
       Navigator.pushReplacement(
@@ -1184,7 +1155,7 @@ Widget sourceInfoForMainOfLikex3(LikeItems model, BuildContext context,
       padding: const EdgeInsets.all(15.0),
       child: Neumorphic(
         child: Image.network(
-          model.thumbnailUrl,
+          url,
           fit: BoxFit.cover,
           width: 100,
           height: 90,
@@ -1619,5 +1590,240 @@ Widget myPageList(BuildContext context) {
             : infoTile(context, Icons.login_outlined, "ログインまたは新規登録", Login()),
       ],
     ),
+  );
+}
+
+Widget mainSlider() {
+  return Container(
+    color: HexColor("#e0e5ec"),
+    child: Padding(
+      padding: const EdgeInsets.only(bottom: 15),
+      child: CarouselSlider(
+        options: CarouselOptions(
+          enlargeCenterPage: true,
+          aspectRatio: 2.0,
+          autoPlayInterval: Duration(seconds: 3),
+          height: 100,
+          autoPlay: true,
+        ),
+        items: storeItems.map(
+          (i) {
+            return Builder(
+              builder: (BuildContext context) {
+                return i.key == ""
+                    ? Container(
+                        // color: Colors.red,
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.symmetric(horizontal: 5.0),
+                        child: ClipRRect(
+                          // child: AdWidget(
+                          //   ad: BannerAd(
+                          //     adUnitId:
+                          //         "ca-app-pub-3940256099942544/2934735716",
+                          //     size: AdSize.banner,
+                          //     request: AdRequest(),
+                          //     listener: BannerAdListener(),
+                          //   )..load(),
+                          // ),
+                          borderRadius: BorderRadius.circular(
+                            15.0,
+                          ),
+                        ),
+                      )
+                    : InkWell(
+                        onTap: () {
+                          Route route = MaterialPageRoute(
+                            builder: (c) => i.value,
+                          );
+                          Navigator.push(
+                            context,
+                            route,
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: HexColor("#e0e5ec"),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFFFFFFFF),
+                                  spreadRadius: 1.0,
+                                  blurRadius: 10.0,
+                                  offset: Offset(-5, -5),
+                                ),
+                                BoxShadow(
+                                  color: HexColor("#a3b1c6"),
+                                  spreadRadius: 1.0,
+                                  blurRadius: 12.0,
+                                  offset: Offset(2, 2),
+                                ),
+                              ]),
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(horizontal: 5.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15.0),
+                            child: Image.asset(
+                              i.key,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      );
+              },
+            );
+          },
+        ).toList(),
+      ),
+    ),
+  );
+}
+
+gridItems(
+    BuildContext context, String url, String title, String price, String id) {
+  return InkWell(
+    onTap: () {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (c) => ProductPage(
+                    id,
+                  )));
+    },
+    child: Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: HexColor("#e0e5ec"),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xFFFFFFFF),
+                spreadRadius: 1.0,
+                blurRadius: 10.0,
+                offset: Offset(-5, -5),
+              ),
+              BoxShadow(
+                color: HexColor("#a3b1c6"),
+                spreadRadius: 1.0,
+                blurRadius: 12.0,
+                offset: Offset(2, 2),
+              ),
+            ]),
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: HexColor("#e0e5ec"),
+              boxShadow: [
+                BoxShadow(
+                  color: HexColor("#a3b1c6"),
+                  spreadRadius: 1.0,
+                  blurRadius: 12.0,
+                  offset: Offset(3, 3),
+                ),
+                BoxShadow(
+                  color: HexColor("#ffffff"),
+                  spreadRadius: 1.0,
+                  blurRadius: 10.0,
+                  offset: Offset(-3, -3),
+                ),
+              ]),
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Center(
+              child: Image.network(
+                url,
+                fit: BoxFit.cover,
+                height: 125,
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+stockZeroGridItems(
+    BuildContext context, String url, String title, String price, String id) {
+  return Stack(
+    children: [
+      InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (c) => ProductPage(
+                        id,
+                      )));
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: HexColor("#e0e5ec"),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0xFFFFFFFF),
+                    spreadRadius: 1.0,
+                    blurRadius: 10.0,
+                    offset: Offset(-5, -5),
+                  ),
+                  BoxShadow(
+                    color: HexColor("#a3b1c6"),
+                    spreadRadius: 1.0,
+                    blurRadius: 12.0,
+                    offset: Offset(2, 2),
+                  ),
+                ]),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: HexColor("#e0e5ec"),
+                  boxShadow: [
+                    BoxShadow(
+                      color: HexColor("#a3b1c6"),
+                      spreadRadius: 1.0,
+                      blurRadius: 12.0,
+                      offset: Offset(3, 3),
+                    ),
+                    BoxShadow(
+                      color: HexColor("#ffffff"),
+                      spreadRadius: 1.0,
+                      blurRadius: 10.0,
+                      offset: Offset(-3, -3),
+                    ),
+                  ]),
+              child: Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Center(
+                  child: Image.network(
+                    url,
+                    fit: BoxFit.cover,
+                    height: 125,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.464,
+          height: 50,
+          child: Center(
+            child: Text(
+              "SOLD OUT",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20),
+            ),
+          ),
+          color: Colors.redAccent.withOpacity(0.85),
+        ),
+      )
+    ],
   );
 }

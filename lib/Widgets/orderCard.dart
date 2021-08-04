@@ -72,8 +72,6 @@ class OrderCard extends StatelessWidget {
 
   Widget sourceOrderInfo(ItemModel model, BuildContext context,
       {Color background}) {
-    width = MediaQuery.of(context).size.width;
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Neumorphic(
@@ -198,8 +196,6 @@ class AdminOrderCard extends StatelessWidget {
 
   Widget sourceOrderInfo(ItemModel model, BuildContext context,
       {Color background}) {
-    width = MediaQuery.of(context).size.width;
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Neumorphic(

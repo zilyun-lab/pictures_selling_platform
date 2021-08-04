@@ -20,6 +20,19 @@ class Items {
     itemWidth = doc["itemWidth"];
     //finalGetProceeds = doc["finalGetProceeds"];
   }
+  Items.fromJson(Map<String, dynamic> json) {
+    shortInfo = json['shortInfo'];
+    thumbnailUrl = json['thumbnailUrl'];
+    price = json['price'];
+    longDescription = json['longDescription'];
+    attribute = json['attribute'];
+    postBy = json['postBy'];
+    Stock = json['Stock'];
+    id = json['id'];
+    shipsDate = json['shipsDate'];
+    itemHeight = json['itemHeight'];
+    itemWidth = json['itemWidth'];
+  }
 
   String itemWidth;
   String itemHeight;
