@@ -1,24 +1,21 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:page_transition/page_transition.dart';
-
 // Project imports:
 import 'package:selling_pictures_platform/Authentication/register.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
 import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
-import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/customTextField.dart';
-import '../Store/storehome.dart';
-import '../main.dart';
-import 'PasswordReset.dart';
 
-//以下、カラーコード使用時に必要なクラス
+import '../main.dart';
+import 'AuthErrorHandling.dart';
+import 'PasswordReset.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -33,186 +30,193 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    double _screenWidth = MediaQuery.of(context).size.width,
-        _screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
-      backgroundColor: HexColor("E67928"),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                //color: Colors.white.withOpacity(0.9),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Image.asset(
-                      "images/NoColor_horizontal.png",
-                      height: 75,
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(top: 60.0, left: 20, right: 20),
-                      child: Form(
-                        key: _formkey,
-                        child: Column(
-                          children: [
-                            CustomTextField(
-                              controller: _emailEditingController,
-                              data: Icons.email,
-                              hintText: "メールアドレス",
-                              isObsecure: false,
+      backgroundColor: bgColor,
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Container(
+              //color: Colors.white.withOpacity(0.9),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Image.asset(
+                    "images/isColor_Horizontal.png",
+                    height: 75,
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(top: 60.0, left: 20, right: 20),
+                    child: Form(
+                      key: _formkey,
+                      child: Column(
+                        children: [
+                          CustomTextField(
+                            controller: _emailEditingController,
+                            data: Icons.email,
+                            hintText: "メールアドレス",
+                            isObsecure: false,
+                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(
+                          //     left: 12,
+                          //     right: 12,
+                          //   ),
+                          //   child: Divider(
+                          //     thickness: 2,
+                          //     color: Colors.white,
+                          //   ),
+                          // ),
+                          SizedBox(
+                            height: 25,
+                          ),
+                          CustomTextField(
+                            controller: _passwordEditingController,
+                            data: Icons.lock,
+                            hintText: "パスワード",
+                            isObsecure: true,
+                          ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(
+                          //     left: 12,
+                          //     right: 12,
+                          //   ),
+                          //   child: Divider(
+                          //     thickness: 2,
+                          //     color: Colors.white,
+                          //   ),
+                          // ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              right: 12,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 12,
-                                right: 12,
-                              ),
-                              child: Divider(
-                                thickness: 2,
-                                color: Colors.white,
-                              ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      PageTransition(
+                                        type: PageTransitionType.fade,
+                                        child: PasswordReset(),
+                                        inheritTheme: true,
+                                        ctx: context,
+                                        duration: Duration(
+                                          milliseconds: 1000,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    "パスワードをお忘れですか？",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(
-                              height: 25,
-                            ),
-                            CustomTextField(
-                              controller: _passwordEditingController,
-                              data: Icons.lock,
-                              hintText: "パスワード",
-                              isObsecure: true,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 12,
-                                right: 12,
-                              ),
-                              child: Divider(
-                                thickness: 2,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                right: 12,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.push(
+                          ),
+                          SizedBox(
+                            height: 40,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: NeumorphicButton(
+                                    style: NeumorphicStyle(color: bgColor),
+                                    onPressed: () {
+                                      Navigator.pushReplacement(
                                         context,
                                         PageTransition(
-                                          type: PageTransitionType.fade,
-                                          child: PasswordReset(),
+                                          type: PageTransitionType
+                                              .rightToLeftWithFade,
+                                          child: Register(),
                                           inheritTheme: true,
                                           ctx: context,
                                           duration: Duration(
-                                            milliseconds: 1000,
+                                            milliseconds: 500,
                                           ),
                                         ),
                                       );
                                     },
-                                    child: Text(
-                                      "パスワードをお忘れですか？",
-                                      style: TextStyle(color: Colors.white),
+                                    child: Center(
+                                      child: Text(
+                                        "新規登録",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: mainColorOfLEEWAY),
+                                      ),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 40,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                //border: Border.all(),
-                              ),
-                              width: 175,
-                              height: 50,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.white,
                                 ),
-                                onPressed: () {
-                                  if (_emailEditingController.text.isEmpty) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (c) {
-                                        return ErrorAlertDialog(
-                                          message: "メールアドレスを入力してください。",
-                                        );
-                                      },
-                                    );
-                                  }
-                                  if (_passwordEditingController.text.isEmpty) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (c) {
-                                        return ErrorAlertDialog(
-                                          message: "パスワードを入力してください。",
-                                        );
-                                      },
-                                    );
-                                  }
-                                  _emailEditingController.text.isNotEmpty &&
-                                          _passwordEditingController
-                                              .text.isNotEmpty
-                                      ? loginUser()
-                                      : showDialog(
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: NeumorphicButton(
+                                    style: NeumorphicStyle(color: bgColor),
+                                    onPressed: () {
+                                      if (_emailEditingController
+                                          .text.isEmpty) {
+                                        showDialog(
                                           context: context,
                                           builder: (c) {
                                             return ErrorAlertDialog(
-                                              message: "未記入の項目があります。",
+                                              message: "メールアドレスを入力してください。",
                                             );
-                                          });
-                                },
-                                child: Text(
-                                  "ログイン",
-                                  style: TextStyle(
-                                      color: mainColorOfLEEWAY, fontSize: 18),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 80.0),
-                              child: SizedBox(
-                                height: 25,
-                              ),
-                            ),
-                            InkWell(
-                              onTap: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  PageTransition(
-                                    type:
-                                        PageTransitionType.rightToLeftWithFade,
-                                    child: Register(),
-                                    inheritTheme: true,
-                                    ctx: context,
-                                    duration: Duration(
-                                      milliseconds: 500,
+                                          },
+                                        );
+                                      }
+                                      if (_passwordEditingController
+                                          .text.isEmpty) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (c) {
+                                            return ErrorAlertDialog(
+                                              message: "パスワードを入力してください。",
+                                            );
+                                          },
+                                        );
+                                      }
+                                      _emailEditingController.text.isNotEmpty &&
+                                              _passwordEditingController
+                                                  .text.isNotEmpty
+                                          ? loginUser()
+                                          : showDialog(
+                                              context: context,
+                                              builder: (c) {
+                                                return ErrorAlertDialog(
+                                                  message: "未記入の項目があります。",
+                                                );
+                                              });
+                                    },
+                                    child: Center(
+                                      child: Text(
+                                        "ログイン",
+                                        style: TextStyle(
+                                            color: mainColorOfLEEWAY,
+                                            fontSize: 18),
+                                      ),
                                     ),
                                   ),
-                                );
-                              },
-                              child: Text(
-                                "新規登録",
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.white),
+                                ),
                               ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 80.0),
+                            child: SizedBox(
+                              height: 25,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -233,6 +237,10 @@ class _LoginState extends State<Login> {
       },
     );
     User firebaseUser;
+    final FirebaseAuthResultStatus result = await signIn(
+      email: _emailEditingController.text.trim(),
+      password: _passwordEditingController.text.trim(),
+    );
     await _auth
         .signInWithEmailAndPassword(
       email: _emailEditingController.text.trim(),
@@ -244,15 +252,10 @@ class _LoginState extends State<Login> {
       },
     ).catchError(
       (error) {
+        final errorMessage =
+            FirebaseAuthExceptionHandler.exceptionMessage(result);
         Navigator.pop(context);
-        showDialog(
-          context: context,
-          builder: (c) {
-            return ErrorAlertDialog(
-              message: "メールアドレスまたはパスワードに誤りがあります。",
-            );
-          },
-        );
+        _showErrorDialog(context, errorMessage);
       },
     );
     if (firebaseUser != null) {
@@ -304,5 +307,46 @@ class _LoginState extends State<Login> {
         );
       },
     );
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text(message),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.pop(dialogContext);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<FirebaseAuthResultStatus> signIn(
+      {String email, String password}) async {
+    FirebaseAuthResultStatus result;
+    try {
+      final UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      if (userCredential.user == null) {
+        // ユーザーが取得できなかったとき
+        result = FirebaseAuthResultStatus.Undefined;
+      } else {
+        // ログイン成功時
+        result = FirebaseAuthResultStatus.Successful;
+      }
+    } catch (error) {
+      // エラー時
+      result = FirebaseAuthExceptionHandler.handleException(error);
+    }
+    return result;
   }
 }

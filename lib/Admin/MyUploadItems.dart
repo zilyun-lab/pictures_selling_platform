@@ -1,22 +1,18 @@
 // Flutter imports:
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-// Package imports:
-import 'package:selling_pictures_platform/Config/config.dart';
-
-// Project imports:
-import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
-import 'package:selling_pictures_platform/Models/item.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:selling_pictures_platform/Models/AllProviders.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/customAppBar.dart';
 
-class MyUploadItems extends StatelessWidget {
+class MyUploadItems extends HookConsumerWidget {
   const MyUploadItems({Key key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final items = ref.watch(myUploadItemStreamProvider);
     return Scaffold(
       backgroundColor: bgColor,
       appBar: MyAppBar(
@@ -27,30 +23,21 @@ class MyUploadItems extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
-            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                stream: FirebaseFirestore.instance
-                    .collection("users")
-                    .doc(EcommerceApp.sharedPreferences
-                        .getString(EcommerceApp.userUID))
-                    .collection("MyUploadItems")
-                    .snapshots(),
-                builder: (c, snap) {
-                  return !snap.hasData
-                      ? Container()
-                      : GridView.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                          ),
-                          shrinkWrap: true,
-                          itemCount: snap.data.docs.length,
-                          itemBuilder: (context, index) {
-                            ItemModel model = ItemModel.fromJson(
-                                snap.data.docs[index].data());
-                            return sourceInfoForMain(model, context);
-                          },
-                        );
-                }),
+            child: items.when(
+                data: (item) {
+                  return GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    shrinkWrap: true,
+                    itemCount: item.length,
+                    itemBuilder: (context, index) {
+                      return sourceInfoForMain(item[index], context);
+                    },
+                  );
+                },
+                loading: () => const CircularProgressIndicator(),
+                error: (error, stack) => beginUpload(context)),
           ),
         ),
       ),
@@ -58,25 +45,22 @@ class MyUploadItems extends StatelessWidget {
   }
 
   beginUpload(BuildContext context) {
-    return Center(
+    return Neumorphic(
+      style: NeumorphicStyle(color: bgColor),
       child: Container(
         width: MediaQuery.of(context).size.width,
-        child: Card(
-          color: HexColor("E67928").withOpacity(0.8),
-          child: Container(
-            height: 100,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.insert_emoticon,
-                  color: Colors.black,
-                ),
-                Text("まだ出品していません"),
-                Text("何か出品してみませんか？"),
-              ],
+        height: 100,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.insert_emoticon,
+              color: Colors.black,
             ),
-          ),
+            Text("まだ出品していません"),
+            Text("何か出品してみませんか？"),
+          ],
         ),
       ),
     );

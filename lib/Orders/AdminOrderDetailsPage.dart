@@ -1,18 +1,14 @@
 // Flutter imports:
 import 'dart:async';
 
+// Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
-
-// Package imports:
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-
-// Project imports:
-import 'package:selling_pictures_platform/Admin/uploadItems.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/address.dart';
@@ -64,7 +60,7 @@ class AdminOrderDetails extends StatelessWidget {
                         width: 125,
                         height: 125,
                         child: FloatingActionButton(
-                          backgroundColor: mainColor,
+                          backgroundColor: mainColorOfLEEWAY,
                           onPressed: () {
                             Navigator.push(
                                 context,
@@ -931,7 +927,8 @@ class _ChatPageState extends State<ChatPage> {
                             ),
                             child: Container(
                               decoration: BoxDecoration(
-                                border: Border.all(color: mainColor, width: 3),
+                                border: Border.all(
+                                    color: mainColorOfLEEWAY, width: 3),
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.white,
                               ),
@@ -1202,7 +1199,8 @@ class ChatPageViewOnlyState extends State<ChatPageViewOnly> {
                             ),
                             child: Container(
                               decoration: BoxDecoration(
-                                border: Border.all(color: mainColor, width: 3),
+                                border: Border.all(
+                                    color: mainColorOfLEEWAY, width: 3),
                                 borderRadius: BorderRadius.circular(10),
                                 color: Colors.white,
                               ),

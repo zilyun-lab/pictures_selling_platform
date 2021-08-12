@@ -1,15 +1,13 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-
 // Project imports:
 import 'package:selling_pictures_platform/Address/addAddress.dart';
 import 'package:selling_pictures_platform/Admin/Copy.dart';
@@ -21,27 +19,21 @@ import 'package:selling_pictures_platform/Authentication/FAQ.dart';
 import 'package:selling_pictures_platform/Authentication/Notification.dart';
 import 'package:selling_pictures_platform/Authentication/PrivacyPolicyEtc.dart';
 import 'package:selling_pictures_platform/Authentication/ProceedsRequests.dart';
-import 'package:selling_pictures_platform/Authentication/SubmitBankAccount.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Authentication/publicUserPage.dart';
 import 'package:selling_pictures_platform/Authentication/updateProfile.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Counters/Likeitemcounter.dart';
-import 'package:selling_pictures_platform/Models/AllProviders.dart';
-import 'package:selling_pictures_platform/Models/GetLikeItemsModel.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
-import 'package:selling_pictures_platform/Models/HomeItem(provider).dart';
-import 'package:selling_pictures_platform/Models/LikeItemsList.dart';
 import 'package:selling_pictures_platform/Models/UploadItemList.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
 import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
 import 'package:selling_pictures_platform/Orders/TransactionPage.dart';
 import 'package:selling_pictures_platform/Orders/myOrders.dart';
-import 'package:selling_pictures_platform/Store/UpdateItem.dart';
-import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../main.dart';
 
 final lilBrown = HexColor("FFB47C");
@@ -50,46 +42,58 @@ final mainColorOfLEEWAY = HexColor("E67928");
 final String productID = DateTime.now().millisecondsSinceEpoch.toString();
 final bgColor = HexColor("#e0e5ec");
 
-Widget infoTiles({
-  TextEditingController controller,
-  String hintText,
-  Widget trailing,
-  String alert,
-  TextInputType keyboard,
-}) {
+Widget infoTiles(
+    {TextEditingController controller,
+    String hintText,
+    Widget trailing,
+    String alert,
+    TextInputType keyboard,
+    BuildContext context}) {
   return ListTile(
     trailing: trailing,
-    title: TextFormField(
-      maxLines: null,
-      keyboardType: keyboard,
-      validator: (val) => controller.text.isEmpty ? alert : null,
-      style: TextStyle(color: Colors.deepPurpleAccent),
-      controller: controller,
-      decoration: InputDecoration(
-        // labelStyle: TextStyle(color: mainColor),
-        border: InputBorder.none,
-        labelText: hintText,
-        hintText: hintText,
-        hintStyle: TextStyle(
-          color: Colors.grey,
+    title: Neumorphic(
+      margin: EdgeInsets.only(left: 8, right: 8, top: 2, bottom: 4),
+      style: NeumorphicStyle(
+          depth: NeumorphicTheme.embossDepth(context),
+          boxShape: NeumorphicBoxShape.stadium(),
+          color: bgColor),
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextFormField(
+            maxLines: null,
+            keyboardType: keyboard,
+            validator: (val) => controller.text.isEmpty ? alert : null,
+            style: TextStyle(color: Colors.deepPurpleAccent),
+            controller: controller,
+            decoration: InputDecoration(
+              // labelStyle: TextStyle(color: mainColor),
+              border: InputBorder.none,
+
+              hintText: hintText,
+              hintStyle: TextStyle(
+                color: Colors.grey,
+              ),
+            ),
+          ),
         ),
       ),
     ),
   );
 }
 
-Widget uploadTitle(String title, double pad) {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      SizedBox(
-        height: 20,
-      ),
-      Padding(
-        padding: EdgeInsets.all(pad),
+Widget uploadTitle(
+  String title,
+) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Neumorphic(
+      style: NeumorphicStyle(color: bgColor),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Text(title),
       ),
-    ],
+    ),
   );
 }
 
@@ -194,11 +198,11 @@ Widget myFloatingActionButton(String title, Function func, IconData icon) {
     height: 100,
     child: NeumorphicFloatingActionButton(
       style: NeumorphicStyle(
-        shadowLightColor: Colors.white,
-        shadowDarkColor: Colors.black87,
-        color: bgColor,
-        boxShape: NeumorphicBoxShape.circle(),
-      ),
+          shadowLightColor: Colors.white,
+          shadowDarkColor: Colors.black87,
+          color: bgColor,
+          boxShape: NeumorphicBoxShape.circle(),
+          shape: NeumorphicShape.convex),
       onPressed: func,
       child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -792,10 +796,13 @@ Function bottomSheetItems(
 ) {
   return () {
     showModalBottomSheet<int>(
+        backgroundColor: bgColor,
         context: context,
         builder: (BuildContext context) {
           return Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Center(
                   child: Padding(
@@ -806,46 +813,91 @@ Function bottomSheetItems(
                       color: mainColorOfLEEWAY, fontWeight: FontWeight.bold),
                 ),
               )),
-              ListTile(
-                title: Text(
-                  '原画',
-                  style: TextStyle(color: mainColorOfLEEWAY),
-                ),
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        fullscreenDialog: true,
-                        builder: (c) => OriginalUploadPage())),
-              ),
-              ListTile(
-                title: Text(
-                  '複製',
-                  style: TextStyle(color: mainColorOfLEEWAY),
-                ),
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        fullscreenDialog: true, builder: (c) => Copy())),
-              ),
-              ListTile(
-                title: Text(
-                  'ステッカー',
-                  style: TextStyle(color: mainColorOfLEEWAY),
-                ),
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        fullscreenDialog: true, builder: (c) => Sticker())),
-              ),
-              ListTile(
-                title: Text(
-                  'ポストカード',
-                  style: TextStyle(color: mainColorOfLEEWAY),
-                ),
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        fullscreenDialog: true, builder: (c) => PostCard())),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (c) => OriginalUploadPage())),
+                          child: Neumorphic(
+                            style: NeumorphicStyle(color: bgColor),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              child: Center(child: Text("原画")),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (c) => Copy())),
+                          child: Neumorphic(
+                            style: NeumorphicStyle(color: bgColor),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              child: Center(child: Text("複製")),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (c) => Sticker())),
+                          child: Neumorphic(
+                            style: NeumorphicStyle(color: bgColor),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              child: Center(child: Text("ステッカー")),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: InkWell(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (c) => PostCard())),
+                          child: Neumorphic(
+                            style: NeumorphicStyle(color: bgColor),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              child: Center(child: Text("ポストカード")),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               SizedBox(
                 height: 20,

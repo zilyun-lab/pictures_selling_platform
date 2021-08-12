@@ -1,23 +1,21 @@
 // Dart imports:
 import 'dart:io';
 
-// Flutter imports:
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+// Flutter imports:
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:image_picker/image_picker.dart';
-
 // Project imports:
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/CheckBox.dart';
-import 'package:selling_pictures_platform/Widgets/WidgetOfFirebase.dart';
+
 import '../main.dart';
 
 final mainColor = HexColor("E67928");
@@ -151,7 +149,7 @@ class _OriginalUploadPageState extends State<Copy> {
                               );
                       }),
                 ),
-                uploadTitle("作品名と作品説明", 8.0),
+                uploadTitle("作品名と作品説明"),
                 Container(
                   color: Colors.white,
                   child: Column(
@@ -170,7 +168,7 @@ class _OriginalUploadPageState extends State<Copy> {
                     ],
                   ),
                 ),
-                uploadTitle("作品情報", 8.0),
+                uploadTitle("作品情報"),
                 Container(
                   color: Colors.white,
                   child: Column(
@@ -250,7 +248,7 @@ class _OriginalUploadPageState extends State<Copy> {
                     ],
                   ),
                 ),
-                uploadTitle("作品サイズ(縦 × 横)", 8.0),
+                uploadTitle("作品サイズ(縦 × 横)"),
                 Container(
                   color: Colors.white,
                   child: Expanded(
@@ -305,7 +303,7 @@ class _OriginalUploadPageState extends State<Copy> {
                     ),
                   ),
                 ),
-                uploadTitle("印刷に関する情報", 8.0),
+                uploadTitle("印刷に関する情報"),
                 Container(
                   color: Colors.white,
                   child: Padding(
@@ -337,7 +335,7 @@ class _OriginalUploadPageState extends State<Copy> {
                     ),
                   ),
                 ),
-                uploadTitle("在庫の有無", 8.0),
+                uploadTitle("在庫の有無"),
                 Container(
                   color: Colors.white,
                   child: Padding(
@@ -382,7 +380,7 @@ class _OriginalUploadPageState extends State<Copy> {
                         ],
                       )
                     : Container(),
-                uploadTitle("額縁の有無", 8.0),
+                uploadTitle("額縁の有無"),
                 Container(
                   color: Colors.white,
                   child: Padding(
@@ -406,7 +404,7 @@ class _OriginalUploadPageState extends State<Copy> {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          uploadTitle("発送予定日", 8.0),
+                          uploadTitle("発送予定日"),
                           Container(
                             color: Colors.white,
                             child: Padding(
@@ -435,7 +433,7 @@ class _OriginalUploadPageState extends State<Copy> {
                     ? Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          uploadTitle("発送予定日(受注生産)", 8.0),
+                          uploadTitle("発送予定日(受注生産)"),
                           Container(
                             color: Colors.white,
                             child: Padding(
@@ -461,7 +459,7 @@ class _OriginalUploadPageState extends State<Copy> {
                         ],
                       )
                     : Container(),
-                uploadTitle("送料", 8.0),
+                uploadTitle("送料"),
                 Container(
                   color: Colors.white,
                   child: Padding(
@@ -481,7 +479,7 @@ class _OriginalUploadPageState extends State<Copy> {
                     ),
                   ),
                 ),
-                uploadTitle("出品金額", 8.0),
+                uploadTitle("出品金額"),
                 Container(
                   color: Colors.white,
                   child: ListTile(

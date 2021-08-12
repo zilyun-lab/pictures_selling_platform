@@ -1,29 +1,27 @@
 // Dart imports:
 import 'dart:async';
 
-// Flutter imports:
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+// Flutter imports:
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
-import 'package:selling_pictures_platform/test3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 // Project imports:
 
 import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
+import 'package:selling_pictures_platform/test3.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'Authentication/FreezedUser.dart';
 import 'Authentication/Notification.dart';
 import 'Models/HEXCOLOR.dart';
@@ -110,6 +108,14 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   displaySplash() {
+    // AnimatedSwitcher(
+    //   duration: const Duration(milliseconds: 400),
+    //   transitionBuilder: (child, animation) => FadeTransition(
+    //     child: child,
+    //     opacity: animation,
+    //   ),
+    //   child: EcommerceApp.auth.currentUser != null ? MainPage() : Login(),
+    // ),
     //todo:Timerは何秒後に何をするか
     Timer(
       Duration(
@@ -177,25 +183,32 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Container(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
+    return Stack(
+      children: [
+        Material(
+          child: Container(
+            color: bgColor,
+            child: Center(
+              child: Padding(
                 padding: const EdgeInsets.all(50.0),
-                child: FadeInImage.assetNetwork(
-                  placeholder: "images/white.png",
-                  image:
-                      "https://firebasestorage.googleapis.com/v0/b/selling-pictures.appspot.com/o/isColor_Vertical.png?alt=media&token=d7895795-7d1d-4b5e-af38-0aebebfd7634",
-                  height: 150,
+                child: Neumorphic(
+                  style: NeumorphicStyle(color: bgColor),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FadeInImage.assetNetwork(
+                      placeholder: "images/white.png",
+                      image:
+                          "https://firebasestorage.googleapis.com/v0/b/selling-pictures.appspot.com/o/isColor_Vertical.png?alt=media&token=d7895795-7d1d-4b5e-af38-0aebebfd7634",
+                      height: 100,
+                    ),
+                  ),
                 ),
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        //myBubbles(),
+      ],
     );
   }
 }
@@ -225,7 +238,7 @@ class _MainPageState extends State<MainPage> {
                 child: Image.asset("images/isColor_Horizontal.png"),
                 onTap: () {
                   Navigator.push(
-                      context, MaterialPageRoute(builder: (c) => Test3()));
+                      context, MaterialPageRoute(builder: (c) => myBubbles()));
                   EcommerceApp.sharedPreferences.setString(
                     "Registration Time",
                     "${(DateTime.now().millisecondsSinceEpoch / 1000).toInt()}",

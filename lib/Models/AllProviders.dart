@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/user.dart';
 
 import 'LikeItemsList.dart';
+import 'chat_model.dart';
 import 'item.dart';
+import 'orders_model.dart';
 
 final allMainItemsStreamProvider = StreamProvider<List<ItemModel>>((ref) {
   // users/{user.uid} ドキュメントのSnapshotを取得
@@ -166,6 +167,49 @@ final searchByColorStreamProvider =
   final stream = collection.snapshots().map(
         // CollectionのデータからItemクラスを生成する
         (e) => e.docs.map((e) => ItemModel.fromJson(e.data())).toList(),
+      );
+  return stream;
+});
+final myUploadItemStreamProvider = StreamProvider<List<ItemModel>>((ref) {
+  final collection = FirebaseFirestore.instance
+      .collection("users")
+      .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+      .collection("MyUploadItems");
+
+  final stream = collection.snapshots().map(
+        (e) => e.docs.map((e) => ItemModel.fromJson(e.data())).toList(),
+      );
+  return stream;
+});
+final orderWithIDStreamProvider =
+    StreamProvider.family<List<Orders>, String>((ref, orderID) {
+  final collection = FirebaseFirestore.instance
+      .collection("orders")
+      .where("id", isEqualTo: orderID);
+
+  final stream = collection.snapshots().map(
+        (e) => e.docs.map((e) => Orders.fromJson(e.data())).toList(),
+      );
+  return stream;
+});
+final chatStreamProvider = StreamProvider<List<Chat>>((ref) {
+  final collection = FirebaseFirestore.instance
+      .collection("users")
+      .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+      .collection("chat")
+      .orderBy("created_at", descending: true);
+
+  final stream = collection.snapshots().map(
+        (e) => e.docs.map((e) => Chat.fromJson(e.data())).toList(),
+      );
+  return stream;
+});
+
+final ordersStreamProvider = StreamProvider<List<Orders>>((ref) {
+  final collection = FirebaseFirestore.instance.collection("orders");
+
+  final stream = collection.snapshots().map(
+        (e) => e.docs.map((e) => Orders.fromJson(e.data())).toList(),
       );
   return stream;
 });

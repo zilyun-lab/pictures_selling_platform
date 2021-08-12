@@ -1,11 +1,10 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,21 +12,14 @@ import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:selling_pictures_platform/Admin/test.dart';
-import 'package:selling_pictures_platform/Models/allList.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-// Project imports:
-import 'package:selling_pictures_platform/Admin/MyUploadItems.dart';
-import 'package:selling_pictures_platform/Admin/uploadItems.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/StarRatingModel.dart';
+import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
-import 'package:selling_pictures_platform/Store/product_page.dart';
-import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
-import '../main.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PublicUserPage extends StatefulWidget {
   final String uid;
@@ -282,7 +274,7 @@ class _PublicUserPageState extends State<PublicUserPage> {
                 unselectedLabelStyle:
                     TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                 unselectedLabelColor: Colors.grey,
-                labelColor: mainColor,
+                labelColor: mainColorOfLEEWAY,
                 tabs: [
                   Tab(text: "出品作品"),
                   Tab(text: "レビュー"),

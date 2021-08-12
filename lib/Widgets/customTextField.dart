@@ -1,12 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-
-// Project imports:
-import 'package:selling_pictures_platform/Authentication/login.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
+import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -27,21 +24,28 @@ class CustomTextField extends StatelessWidget {
       padding: const EdgeInsets.only(left: 8.0, right: 8),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Container(
-          child: TextFormField(
-            autofocus: true,
-            controller: controller,
-            obscureText: isObsecure,
-            cursorColor: Colors.white,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              prefixIcon: Icon(
-                data,
-                color: Colors.white,
+        child: Neumorphic(
+          style: NeumorphicStyle(
+              depth: NeumorphicTheme.embossDepth(context),
+              boxShape: NeumorphicBoxShape.stadium(),
+              color: bgColor),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              autofocus: true,
+              controller: controller,
+              obscureText: isObsecure,
+              cursorColor: Colors.white,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                prefixIcon: Icon(
+                  data,
+                  color: mainColorOfLEEWAY,
+                ),
+                focusColor: Colors.white,
+                hintText: (hintText),
+                hintStyle: TextStyle(color: HexColor("#f8f8ff")),
               ),
-              focusColor: Colors.white,
-              hintText: (hintText),
-              hintStyle: TextStyle(color: HexColor("#f8f8ff")),
             ),
           ),
         ),

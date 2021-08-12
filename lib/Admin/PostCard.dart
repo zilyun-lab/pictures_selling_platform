@@ -142,7 +142,7 @@ class _OriginalUploadPageState extends State<PostCard> {
                               );
                       }),
                 ),
-                uploadTitle("作品名と作品説明", 8.0),
+                uploadTitle("作品名と作品説明"),
                 Container(
                   color: Colors.white,
                   child: Column(
@@ -161,7 +161,7 @@ class _OriginalUploadPageState extends State<PostCard> {
                     ],
                   ),
                 ),
-                uploadTitle("作品情報", 8.0),
+                uploadTitle("作品情報"),
                 Container(
                   color: Colors.white,
                   child: Column(
@@ -254,7 +254,7 @@ class _OriginalUploadPageState extends State<PostCard> {
                     alert: "未記入の項目があります。",
                   ),
                 ),
-                uploadTitle("発送予定日", 8.0),
+                uploadTitle("発送予定日"),
                 Container(
                   color: Colors.white,
                   child: Padding(
@@ -274,7 +274,7 @@ class _OriginalUploadPageState extends State<PostCard> {
                     ),
                   ),
                 ),
-                uploadTitle("送料", 8.0),
+                uploadTitle("送料"),
                 Container(
                   color: Colors.white,
                   child: Padding(
@@ -294,7 +294,7 @@ class _OriginalUploadPageState extends State<PostCard> {
                     ),
                   ),
                 ),
-                uploadTitle("出品金額", 8.0),
+                uploadTitle("出品金額"),
                 Container(
                   color: Colors.white,
                   child: ListTile(

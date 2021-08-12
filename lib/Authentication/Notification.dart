@@ -1,41 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:selling_pictures_platform/Admin/Copy.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
+import 'package:selling_pictures_platform/Models/AllProviders.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Orders/AdminOrderDetailsPage.dart';
 import 'package:selling_pictures_platform/Orders/OrderDetailsPage.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 
-class UserNotification extends StatefulWidget {
+class UserNotification extends HookConsumerWidget {
   const UserNotification({Key key}) : super(key: key);
 
   @override
-  _UserNotificationState createState() => _UserNotificationState();
-}
-
-class _UserNotificationState extends State<UserNotification>
-    with SingleTickerProviderStateMixin {
-  TabController _tabController;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  final db = FirebaseFirestore.instance
-      .collection("users")
-      .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
-      .collection("AllNotify")
-      .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID));
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final db = FirebaseFirestore.instance
+        .collection("users")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID))
+        .collection("AllNotify")
+        .doc(EcommerceApp.sharedPreferences.getString(EcommerceApp.userUID));
+    final _tabController = useTabController(initialLength: 3);
+    var orderIDForP = useState("");
+    final orderP = ref.watch(orderWithIDStreamProvider(orderIDForP.value));
+    final chatP = ref.watch(chatStreamProvider);
+    final ordersProvider = ref.watch(ordersStreamProvider);
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
@@ -219,350 +210,276 @@ class _UserNotificationState extends State<UserNotification>
                                           });
                                 });
                       }),
-                  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    stream: FirebaseFirestore.instance
-                        .collection("orders")
-                        .snapshots(),
-                    builder: (c, snap) {
-                      return !snap.hasData
-                          ? Container()
-                          : ListView.builder(
-                              itemCount: snap.data.docs.length,
-                              itemBuilder: (c, index) {
+                  ordersProvider.when(
+                    data: (items) {
+                      return ListView.builder(
+                          itemCount: items.length,
+                          itemBuilder: (c, index) {
+                            final item = items[index];
+                            return (() {
+                              if (item.buyerID ==
+                                  EcommerceApp.sharedPreferences
+                                      .getString(EcommerceApp.userUID)) {
+                                //todo:自分が買った時
                                 return (() {
-                                  if (snap.data.docs[index]["buyerID"] ==
-                                      EcommerceApp.sharedPreferences
-                                          .getString(EcommerceApp.userUID)) {
-                                    //todo:自分が買った時
-                                    return (() {
-                                      if (snap.data.docs[index]
-                                                  ["isBuyerDelivery"] ==
-                                              "inComplete" &&
-                                          snap.data.docs[index]["sellerID"] !=
-                                              EcommerceApp.sharedPreferences
-                                                  .getString(
-                                                      EcommerceApp.userUID)) {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
+                                  if (item.isBuyerDelivery == "inComplete" &&
+                                      item.sellerID !=
+                                          EcommerceApp.sharedPreferences
+                                              .getString(
+                                                  EcommerceApp.userUID)) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Neumorphic(
+                                          style: NeumorphicStyle(
+                                            color: bgColor,
+                                          ),
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
-                                            child: Neumorphic(
-                                              style: NeumorphicStyle(
-                                                color: bgColor,
+                                            child: ListTile(
+                                              trailing: Icon(
+                                                Icons
+                                                    .arrow_forward_ios_outlined,
+                                                color: HexColor("e67928"),
                                               ),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: ListTile(
-                                                  trailing: Icon(
-                                                    Icons
-                                                        .arrow_forward_ios_outlined,
-                                                    color: HexColor("e67928"),
-                                                  ),
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (c) =>
-                                                                OrderDetails(
-                                                                  orderID: snap
-                                                                          .data
-                                                                          .docs[
-                                                                      index]["id"],
-                                                                  totalPrice: snap
-                                                                          .data
-                                                                          .docs[index]
-                                                                      [
-                                                                      "totalPrice"],
-                                                                )));
-                                                  },
-                                                  title: Text(
-                                                      "支払いが完了しました。\n販売者の発送をお待ち下さい！"),
-                                                  leading: Image.network(
-                                                    snap.data
-                                                        .docs[index]["imageURL"]
-                                                        .toString(),
-                                                    height: 50,
-                                                    width: 75,
-                                                    fit: BoxFit.scaleDown,
-                                                  ),
-                                                ),
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (c) =>
+                                                            OrderDetails(
+                                                              orderID: item.id,
+                                                              totalPrice: item
+                                                                  .totalPrice,
+                                                            )));
+                                              },
+                                              title: Text(
+                                                  "支払いが完了しました。\n販売者の発送をお待ち下さい！"),
+                                              leading: Image.network(
+                                                item.imageURL.toString(),
+                                                height: 50,
+                                                width: 75,
+                                                fit: BoxFit.scaleDown,
                                               ),
                                             ),
                                           ),
-                                        );
-                                      } else if (snap.data.docs[index]
-                                                  ["isTransactionFinished"] ==
-                                              "inComplete" &&
-                                          snap.data.docs[index]
-                                                  ["isBuyerDelivery"] ==
-                                              "Complete") {
-                                        return Padding(
+                                        ),
+                                      ),
+                                    );
+                                  } else if (item.isTransactionFinished ==
+                                          "inComplete" &&
+                                      item.isBuyerDelivery == "Complete") {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Neumorphic(
+                                        style: NeumorphicStyle(
+                                          color: bgColor,
+                                        ),
+                                        child: Padding(
                                           padding: const EdgeInsets.all(8.0),
-                                          child: Neumorphic(
-                                            style: NeumorphicStyle(
-                                              color: bgColor,
+                                          child: ListTile(
+                                            trailing: Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: HexColor("e67928"),
                                             ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: ListTile(
-                                                trailing: Icon(
-                                                  Icons
-                                                      .arrow_forward_ios_outlined,
-                                                  color: HexColor("e67928"),
-                                                ),
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder:
-                                                              (c) =>
-                                                                  OrderDetails(
-                                                                    orderID: snap
-                                                                            .data
-                                                                            .docs[
-                                                                        index]["id"],
-                                                                    totalPrice: snap
-                                                                            .data
-                                                                            .docs[index]
-                                                                        [
-                                                                        "totalPrice"],
-                                                                  )));
-                                                },
-                                                title: Text(
-                                                    "作品が発送されました。\n作品が届きましたら販売者の評価をしましょう！"),
-                                                leading: Image.network(
-                                                  snap.data
-                                                      .docs[index]["imageURL"]
-                                                      .toString(),
-                                                  height: 50,
-                                                  width: 75,
-                                                  fit: BoxFit.scaleDown,
-                                                ),
-                                              ),
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          OrderDetails(
+                                                            orderID: item.id,
+                                                            totalPrice:
+                                                                item.totalPrice,
+                                                          )));
+                                            },
+                                            title: Text(
+                                                "作品が発送されました。\n作品が届きましたら販売者の評価をしましょう！"),
+                                            leading: Image.network(
+                                              item.imageURL.toString(),
+                                              height: 50,
+                                              width: 75,
+                                              fit: BoxFit.scaleDown,
                                             ),
                                           ),
-                                        );
-                                      } else if (snap.data.docs[index]
-                                              ["isTransactionFinished"] ==
-                                          "Complete") {
-                                        return Container();
-                                      }
-                                    })();
-                                  } else {
-                                    //todo:自分が売った時
-                                    return (() {
-                                      if (snap.data.docs[index]
-                                              ["isBuyerDelivery"] ==
-                                          "inComplete") {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Neumorphic(
-                                            style: NeumorphicStyle(
-                                              color: bgColor,
-                                            ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: ListTile(
-                                                trailing: Icon(
-                                                  Icons
-                                                      .arrow_forward_ios_outlined,
-                                                  color: HexColor("e67928"),
-                                                ),
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (c) =>
-                                                              AdminOrderDetails(
-                                                                orderID: snap
-                                                                        .data
-                                                                        .docs[
-                                                                    index]["id"],
-                                                                totalPrice: snap
-                                                                            .data
-                                                                            .docs[
-                                                                        index][
-                                                                    "totalPrice"],
-                                                              )));
-                                                },
-                                                title: Text(
-                                                    "作品が購入されました。\n商品の発送を行いましょう！"),
-                                                leading: Image.network(
-                                                  snap.data
-                                                      .docs[index]["imageURL"]
-                                                      .toString(),
-                                                  height: 50,
-                                                  width: 75,
-                                                  fit: BoxFit.scaleDown,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      } else if (snap.data.docs[index]
-                                                  ["isTransactionFinished"] ==
-                                              "inComplete" &&
-                                          snap.data.docs[index]
-                                                  ["isBuyerDelivery"] ==
-                                              "Complete") {
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Neumorphic(
-                                              style: NeumorphicStyle(
-                                                  color: bgColor),
-                                              child: ListTile(
-                                                trailing: Icon(
-                                                  Icons
-                                                      .arrow_forward_ios_outlined,
-                                                  color: HexColor("e67928"),
-                                                ),
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (c) =>
-                                                              AdminOrderDetails(
-                                                                orderID: snap
-                                                                        .data
-                                                                        .docs[
-                                                                    index]["id"],
-                                                                totalPrice: snap
-                                                                            .data
-                                                                            .docs[
-                                                                        index][
-                                                                    "totalPrice"],
-                                                              )));
-                                                },
-                                                title: Text(
-                                                    "作品を発送しました。\n購入者の評価を待ちましょう！"),
-                                                leading: Image.network(
-                                                  snap.data
-                                                      .docs[index]["imageURL"]
-                                                      .toString(),
-                                                  height: 50,
-                                                  width: 75,
-                                                  fit: BoxFit.scaleDown,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      } else if (snap.data.docs[index]
-                                              ["isTransactionFinished"] ==
-                                          "Complete") {
-                                        return Container();
-                                      }
-                                    })();
+                                        ),
+                                      ),
+                                    );
+                                  } else if (item.isTransactionFinished ==
+                                      "Complete") {
+                                    return Container();
                                   }
                                 })();
-                              });
+                              } else {
+                                //todo:自分が売った時
+                                return (() {
+                                  if (item.isBuyerDelivery == "inComplete") {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Neumorphic(
+                                        style: NeumorphicStyle(
+                                          color: bgColor,
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: ListTile(
+                                            trailing: Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: HexColor("e67928"),
+                                            ),
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          AdminOrderDetails(
+                                                            orderID: item.id,
+                                                            totalPrice:
+                                                                item.totalPrice,
+                                                          )));
+                                            },
+                                            title: Text(
+                                                "作品が購入されました。\n商品の発送を行いましょう！"),
+                                            leading: Image.network(
+                                              item.imageURL.toString(),
+                                              height: 50,
+                                              width: 75,
+                                              fit: BoxFit.scaleDown,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  } else if (item.isTransactionFinished ==
+                                          "inComplete" &&
+                                      item.isBuyerDelivery == "Complete") {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Neumorphic(
+                                          style:
+                                              NeumorphicStyle(color: bgColor),
+                                          child: ListTile(
+                                            trailing: Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: HexColor("e67928"),
+                                            ),
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (c) =>
+                                                          AdminOrderDetails(
+                                                            orderID: item.id,
+                                                            totalPrice:
+                                                                item.totalPrice,
+                                                          )));
+                                            },
+                                            title: Text(
+                                                "作品を発送しました。\n購入者の評価を待ちましょう！"),
+                                            leading: Image.network(
+                                              item.imageURL.toString(),
+                                              height: 50,
+                                              width: 75,
+                                              fit: BoxFit.scaleDown,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  } else if (item.isTransactionFinished ==
+                                      "Complete") {
+                                    return Container();
+                                  }
+                                })();
+                              }
+                            })();
+                          });
                     },
+                    loading: () => const CircularProgressIndicator(),
+                    error: (error, stack) => Text('Error: $error'),
                   ),
-                  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                      stream: FirebaseFirestore.instance
-                          .collection("users")
-                          .doc(EcommerceApp.sharedPreferences
-                              .getString(EcommerceApp.userUID))
-                          .collection("chat")
-                          .orderBy("created_at", descending: true)
-                          .snapshots(),
-                      builder: (c, snap) {
-                        return !snap.hasData
-                            ? Container()
-                            : ListView.builder(
-                                itemCount: snap.data.docs.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return !snap.hasData
-                                      ? Container()
-                                      : StreamBuilder<
-                                              DocumentSnapshot<
-                                                  Map<String, dynamic>>>(
-                                          stream: FirebaseFirestore.instance
-                                              .collection("orders")
-                                              .doc(snap.data.docs[index]
-                                                  ["orderID"])
-                                              .snapshots(),
-                                          builder: (context, ss) {
-                                            return !snap.hasData
-                                                ? Container()
-                                                : Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Neumorphic(
-                                                      style: NeumorphicStyle(
-                                                        color: bgColor,
-                                                      ),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(8.0),
-                                                        child: ListTile(
-                                                          trailing: Icon(
-                                                            Icons
-                                                                .arrow_forward_ios_outlined,
-                                                            color: HexColor(
-                                                                "e67928"),
-                                                          ),
-                                                          onTap: () {
-                                                            ss.data.data()[
-                                                                        "buyerID"] ==
-                                                                    EcommerceApp
-                                                                        .sharedPreferences
-                                                                        .getString(
-                                                                            EcommerceApp.userUID)
-                                                                ? Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                        builder: (c) => OrderDetails(
-                                                                              totalPrice: ss.data.data()["totalPrice"],
-                                                                              orderID: snap.data.docs[index]["orderID"],
-                                                                            )))
-                                                                : Navigator.push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                        builder: (c) => AdminOrderDetails(
-                                                                              totalPrice: ss.data.data()["totalPrice"],
-                                                                              orderID: snap.data.docs[index]["orderID"],
-                                                                            )));
-                                                          },
-                                                          leading:
-                                                              Image.network(
-                                                            ss.data
-                                                                .data()[
-                                                                    "imageURL"]
-                                                                .toString(),
-                                                            height: 50,
-                                                            width: 75,
-                                                            fit: BoxFit
-                                                                .scaleDown,
-                                                          ),
-                                                          title: Text(
-                                                            "${snap.data.docs[index]["user_name"]} 様より ${ss.data.data()["productIDs"]} にてメッセージが届いています。",
-                                                            style: TextStyle(
-                                                                fontSize: 15),
-                                                          ),
-                                                          subtitle: Text(DateFormat(
-                                                                  "yyyy年MM月dd日 - HH時mm分")
-                                                              .format(DateTime.fromMillisecondsSinceEpoch(
-                                                                  int.parse(snap
-                                                                          .data
-                                                                          .docs[index]
-                                                                      [
-                                                                      "created_at"])))),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                          });
-                                },
+                  chatP.when(
+                    data: (cItems) {
+                      return ListView.builder(
+                        itemCount: cItems.length,
+                        itemBuilder: (BuildContext context, int idx) {
+                          final chatItem = cItems[idx];
+                          orderIDForP.value = chatItem.orderID;
+                          return orderP.when(
+                            data: (items) {
+                              final item = items[idx];
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Neumorphic(
+                                  style: NeumorphicStyle(
+                                    color: bgColor,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ListTile(
+                                      trailing: Icon(
+                                        Icons.arrow_forward_ios_outlined,
+                                        color: HexColor("e67928"),
+                                      ),
+                                      onTap: () {
+                                        item.buyerID ==
+                                                EcommerceApp.sharedPreferences
+                                                    .getString(
+                                                        EcommerceApp.userUID)
+                                            ? Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (c) =>
+                                                        OrderDetails(
+                                                          totalPrice:
+                                                              item.totalPrice,
+                                                          orderID:
+                                                              chatItem.orderID,
+                                                        )))
+                                            : Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (c) =>
+                                                        AdminOrderDetails(
+                                                          totalPrice:
+                                                              item.totalPrice,
+                                                          orderID:
+                                                              chatItem.orderID,
+                                                        )));
+                                      },
+                                      leading: Image.network(
+                                        item.imageURL,
+                                        height: 50,
+                                        width: 75,
+                                        fit: BoxFit.scaleDown,
+                                      ),
+                                      title: Text(
+                                        "${chatItem.user_name} 様より ${item.productIDs} にてメッセージが届いています。",
+                                        style: TextStyle(fontSize: 15),
+                                      ),
+                                      subtitle: Text(DateFormat(
+                                              "yyyy年MM月dd日 - HH時mm分")
+                                          .format(DateTime
+                                              .fromMillisecondsSinceEpoch(
+                                                  int.parse(
+                                                      chatItem.created_at)))),
+                                    ),
+                                  ),
+                                ),
                               );
-                      })
+                            },
+                            loading: () => const CircularProgressIndicator(),
+                            error: (error, stack) => Text('Error: $error'),
+                          );
+                        },
+                      );
+                    },
+                    loading: () => const CircularProgressIndicator(),
+                    error: (error, stack) => Text('Error: $error'),
+                  )
                 ],
               ),
             ),
