@@ -8,14 +8,14 @@ import 'package:page_transition/page_transition.dart';
 // Project imports:
 import 'package:selling_pictures_platform/Authentication/register.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/DialogBox/errorDialog.dart';
-import 'package:selling_pictures_platform/DialogBox/loadingDialog.dart';
+import 'package:selling_pictures_platform/DialogBox/error_dialog.dart';
+import 'package:selling_pictures_platform/DialogBox/loading_dialog.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
-import 'package:selling_pictures_platform/Widgets/customTextField.dart';
+import 'package:selling_pictures_platform/Widgets/custom_text_field.dart';
 
 import '../main.dart';
-import 'AuthErrorHandling.dart';
-import 'PasswordReset.dart';
+import 'authe_error_handling.dart';
+import 'password_reset.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -35,19 +35,19 @@ class _LoginState extends State<Login> {
       body: Center(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(25.0),
+            padding: const EdgeInsets.all(25),
             child: Container(
               //color: Colors.white.withOpacity(0.9),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Image.asset(
-                    "images/isColor_Horizontal.png",
+                    'images/isColor_Horizontal.png',
                     height: 75,
                   ),
                   Padding(
                     padding:
-                        const EdgeInsets.only(top: 60.0, left: 20, right: 20),
+                        const EdgeInsets.only(top: 60, left: 20, right: 20),
                     child: Form(
                       key: _formkey,
                       child: Column(
@@ -55,7 +55,7 @@ class _LoginState extends State<Login> {
                           CustomTextField(
                             controller: _emailEditingController,
                             data: Icons.email,
-                            hintText: "メールアドレス",
+                            hintText: 'メールアドレス',
                             isObsecure: false,
                           ),
                           // Padding(
@@ -68,13 +68,13 @@ class _LoginState extends State<Login> {
                           //     color: Colors.white,
                           //   ),
                           // ),
-                          SizedBox(
+                          const SizedBox(
                             height: 25,
                           ),
                           CustomTextField(
                             controller: _passwordEditingController,
                             data: Icons.lock,
-                            hintText: "パスワード",
+                            hintText: 'パスワード',
                             isObsecure: true,
                           ),
                           // Padding(
@@ -100,31 +100,31 @@ class _LoginState extends State<Login> {
                                       context,
                                       PageTransition(
                                         type: PageTransitionType.fade,
-                                        child: PasswordReset(),
+                                        child: const PasswordReset(),
                                         inheritTheme: true,
                                         ctx: context,
-                                        duration: Duration(
+                                        duration: const Duration(
                                           milliseconds: 1000,
                                         ),
                                       ),
                                     );
                                   },
-                                  child: Text(
-                                    "パスワードをお忘れですか？",
+                                  child: const Text(
+                                    'パスワードをお忘れですか？',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 40,
                           ),
                           Row(
                             children: [
                               Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(8),
                                   child: NeumorphicButton(
                                     style: NeumorphicStyle(color: bgColor),
                                     onPressed: () {
@@ -136,7 +136,7 @@ class _LoginState extends State<Login> {
                                           child: Register(),
                                           inheritTheme: true,
                                           ctx: context,
-                                          duration: Duration(
+                                          duration: const Duration(
                                             milliseconds: 500,
                                           ),
                                         ),
@@ -144,7 +144,7 @@ class _LoginState extends State<Login> {
                                     },
                                     child: Center(
                                       child: Text(
-                                        "新規登録",
+                                        '新規登録',
                                         style: TextStyle(
                                             fontSize: 20,
                                             color: mainColorOfLEEWAY),
@@ -155,7 +155,7 @@ class _LoginState extends State<Login> {
                               ),
                               Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(8),
                                   child: NeumorphicButton(
                                     style: NeumorphicStyle(color: bgColor),
                                     onPressed: () {
@@ -164,8 +164,8 @@ class _LoginState extends State<Login> {
                                         showDialog(
                                           context: context,
                                           builder: (c) {
-                                            return ErrorAlertDialog(
-                                              message: "メールアドレスを入力してください。",
+                                            return const ErrorAlertDialog(
+                                              message: 'メールアドレスを入力してください。',
                                             );
                                           },
                                         );
@@ -175,8 +175,8 @@ class _LoginState extends State<Login> {
                                         showDialog(
                                           context: context,
                                           builder: (c) {
-                                            return ErrorAlertDialog(
-                                              message: "パスワードを入力してください。",
+                                            return const ErrorAlertDialog(
+                                              message: 'パスワードを入力してください。',
                                             );
                                           },
                                         );
@@ -188,14 +188,14 @@ class _LoginState extends State<Login> {
                                           : showDialog(
                                               context: context,
                                               builder: (c) {
-                                                return ErrorAlertDialog(
-                                                  message: "未記入の項目があります。",
+                                                return const ErrorAlertDialog(
+                                                  message: '未記入の項目があります。',
                                                 );
                                               });
                                     },
                                     child: Center(
                                       child: Text(
-                                        "ログイン",
+                                        'ログイン',
                                         style: TextStyle(
                                             color: mainColorOfLEEWAY,
                                             fontSize: 18),
@@ -206,8 +206,8 @@ class _LoginState extends State<Login> {
                               ),
                             ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 80.0),
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 80),
                             child: SizedBox(
                               height: 25,
                             ),
@@ -225,19 +225,19 @@ class _LoginState extends State<Login> {
     );
   }
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   void loginUser() async {
-    showDialog(
+    await showDialog(
       context: context,
       builder: (c) {
-        return LoadingAlertDialog(
-          message: "ログイン中です。\n少々お待ちください。",
+        return const LoadingAlertDialog(
+          message: 'ログイン中です。\n少々お待ちください。',
         );
       },
     );
     User firebaseUser;
-    final FirebaseAuthResultStatus result = await signIn(
+    final result = await signIn(
       email: _emailEditingController.text.trim(),
       password: _passwordEditingController.text.trim(),
     );
@@ -251,7 +251,7 @@ class _LoginState extends State<Login> {
         firebaseUser = authUser.user;
       },
     ).catchError(
-      (error) {
+      (dynamic error) {
         final errorMessage =
             FirebaseAuthExceptionHandler.exceptionMessage(result);
         Navigator.pop(context);
@@ -259,7 +259,7 @@ class _LoginState extends State<Login> {
       },
     );
     if (firebaseUser != null) {
-      readData(firebaseUser).then(
+      await readData(firebaseUser).then(
         (s) {
           Navigator.pop(context);
 
@@ -270,7 +270,7 @@ class _LoginState extends State<Login> {
               child: MainPage(),
               inheritTheme: true,
               ctx: context,
-              duration: Duration(
+              duration: const Duration(
                 milliseconds: 1000,
               ),
             ),
@@ -281,10 +281,10 @@ class _LoginState extends State<Login> {
   }
 
   Future readData(User fUser) async {
-    FirebaseFirestore.instance.collection("users").doc(fUser.uid).get().then(
+    await FirebaseFirestore.instance.collection('users').doc(fUser.uid).get().then(
       (dataSnapshot) async {
         await EcommerceApp.sharedPreferences.setString(
-          "uid",
+          'uid',
           dataSnapshot.data()[EcommerceApp.userUID],
         );
         await EcommerceApp.sharedPreferences.setString(
@@ -299,7 +299,7 @@ class _LoginState extends State<Login> {
           EcommerceApp.userAvatarUrl,
           dataSnapshot.data()[EcommerceApp.userAvatarUrl],
         );
-        List<String> cartList =
+        final List<String> cartList =
             dataSnapshot.data()[EcommerceApp.userCartList].cast<String>();
         await EcommerceApp.sharedPreferences.setStringList(
           EcommerceApp.userCartList,
@@ -318,10 +318,10 @@ class _LoginState extends State<Login> {
           title: Text(message),
           actions: <Widget>[
             ElevatedButton(
-              child: Text('OK'),
               onPressed: () {
                 Navigator.pop(dialogContext);
               },
+              child: const Text('OK'),
             ),
           ],
         );
@@ -333,7 +333,7 @@ class _LoginState extends State<Login> {
       {String email, String password}) async {
     FirebaseAuthResultStatus result;
     try {
-      final UserCredential userCredential = await FirebaseAuth.instance
+      final userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
       if (userCredential.user == null) {

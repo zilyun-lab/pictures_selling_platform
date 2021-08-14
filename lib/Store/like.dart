@@ -9,33 +9,33 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:selling_pictures_platform/Models/AllProviders.dart';
+import 'package:selling_pictures_platform/Models/all_providers.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class LikePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var _gridCount = useState(1);
+    final _gridCount = useState(1);
     final item = ref.watch(likeItemStreamProvider);
     return Scaffold(
       backgroundColor: bgColor,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: mySizedBox(MediaQuery.of(context).size.height * 0.04),
+            child: mySizedBox(MediaQuery.of(context).size.height * 04),
           ),
           SliverToBoxAdapter(
             child: Container(
               color: bgColor,
               child: Padding(
                 padding: const EdgeInsets.only(
-                    left: 15.0, right: 15, top: 8, bottom: 6),
+                    left: 15, right: 15, top: 8, bottom: 6),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "いいね",
+                      'いいね',
                       style: GoogleFonts.kosugi(
                           color: mainColorOfLEEWAY,
                           fontSize: 25,
@@ -45,6 +45,10 @@ class LikePage extends HookConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         InkWell(
+                          onTap: () {
+                            _gridCount.value = 1;
+                            print(_gridCount.value);
+                          },
                           child: NeumorphicIcon(
                             Icons.crop_square,
                             size: 40,
@@ -52,12 +56,12 @@ class LikePage extends HookConsumerWidget {
                               color: mainColorOfLEEWAY,
                             ),
                           ),
-                          onTap: () {
-                            _gridCount.value = 1;
-                            print(_gridCount.value);
-                          },
                         ),
                         InkWell(
+                          onTap: () {
+                            _gridCount.value = 2;
+                            print(_gridCount.value);
+                          },
                           child: NeumorphicIcon(
                             Icons.grid_view_outlined,
                             size: 40,
@@ -65,12 +69,13 @@ class LikePage extends HookConsumerWidget {
                               color: mainColorOfLEEWAY,
                             ),
                           ),
-                          onTap: () {
-                            _gridCount.value = 2;
-                            print(_gridCount.value);
-                          },
                         ),
                         InkWell(
+                          onTap: () {
+                            _gridCount.value = 3;
+
+                            print(_gridCount.value);
+                          },
                           child: NeumorphicIcon(
                             Icons.grid_3x3_outlined,
                             size: 40,
@@ -78,11 +83,6 @@ class LikePage extends HookConsumerWidget {
                               color: mainColorOfLEEWAY,
                             ),
                           ),
-                          onTap: () {
-                            _gridCount.value = 3;
-
-                            print(_gridCount.value);
-                          },
                         ),
                       ],
                     ),
@@ -99,7 +99,7 @@ class LikePage extends HookConsumerWidget {
                       delegate: SliverChildListDelegate([
                     GridView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: _gridCount.value,
                         ),
@@ -121,7 +121,7 @@ class LikePage extends HookConsumerWidget {
                       delegate: SliverChildListDelegate([
                     GridView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: _gridCount.value,
                         ),
@@ -143,7 +143,7 @@ class LikePage extends HookConsumerWidget {
                       delegate: SliverChildListDelegate([
                     GridView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: _gridCount.value,
                         ),

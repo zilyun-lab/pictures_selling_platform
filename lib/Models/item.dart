@@ -76,29 +76,29 @@ class ItemModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['shortInfo'] = this.shortInfo;
-    data['longDescription'] = this.longDescription;
-    data['price'] = this.price;
-    data['publishedDate'] = this.publishedDate;
-    data['status'] = this.status;
-    data['thumbnailUrl'] = this.thumbnailUrl;
-    data['postBy'] = this.postBy;
-    data['attribute'] = this.attribute;
-    data['Stock'] = this.Stock;
-    data['id'] = this.id;
-    data['color1'] = this.color1;
-    data['color2'] = this.color2;
-    data['postName'] = this.postName;
-    data['itemWidth'] = this.itemWidth;
-    data['itemHeight'] = this.itemHeight;
-    data['finalGetProceeds'] = this.finalGetProceeds;
-    data['shipsPayment'] = this.shipsPayment;
-    data['shipsDate'] = this.shipsDate;
-    data['paper'] = this.paper;
-    data['howToCopy'] = this.howToCopy;
-    data['isFrame'] = this.isFrame;
-    data['stockType'] = this.stockType;
+    final data = <String, dynamic>{};
+    data['shortInfo'] = shortInfo;
+    data['longDescription'] = longDescription;
+    data['price'] = price;
+    data['publishedDate'] = publishedDate;
+    data['status'] = status;
+    data['thumbnailUrl'] = thumbnailUrl;
+    data['postBy'] = postBy;
+    data['attribute'] = attribute;
+    data['Stock'] = Stock;
+    data['id'] = id;
+    data['color1'] = color1;
+    data['color2'] = color2;
+    data['postName'] = postName;
+    data['itemWidth'] = itemWidth;
+    data['itemHeight'] = itemHeight;
+    data['finalGetProceeds'] = finalGetProceeds;
+    data['shipsPayment'] = shipsPayment;
+    data['shipsDate'] = shipsDate;
+    data['paper'] = paper;
+    data['howToCopy'] = howToCopy;
+    data['isFrame'] = isFrame;
+    data['stockType'] = stockType;
     return data;
   }
 }
@@ -113,8 +113,8 @@ class PublishedDate {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['$date'] = this.date;
+    final data = <String, dynamic>{};
+    data[date] = date;
     return data;
   }
 }

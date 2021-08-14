@@ -8,12 +8,12 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Counters/changeAddresss.dart';
+import 'package:selling_pictures_platform/Counters/change_address.dart';
 import 'package:selling_pictures_platform/Models/address.dart';
-import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
+import 'package:selling_pictures_platform/Orders/check_out_page.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
-import 'package:selling_pictures_platform/Widgets/WidgetOfFirebase.dart';
-import 'package:selling_pictures_platform/Widgets/loadingWidget.dart';
+import 'package:selling_pictures_platform/Widgets/widget_of_firebase.dart';
+import 'package:selling_pictures_platform/Widgets/loading_widget.dart';
 
 class Address extends StatefulWidget {
   final double totalAmount;
@@ -32,12 +32,12 @@ class _AddressState extends State<Address> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Align(
+        const Align(
           alignment: Alignment.centerLeft,
           child: Padding(
             padding: EdgeInsets.all(8),
             child: Text(
-              "お届け先住所を選択してください",
+              'お届け先住所を選択してください',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -58,9 +58,9 @@ class _AddressState extends State<Address> {
                 builder: (context, snapshot) {
                   return !snapshot.hasData
                       ? Center(
-                          child: circularProgress(),
+                          child: circular_progress(),
                         )
-                      : snapshot.data.docs.length == 0
+                      : snapshot.data.docs.isEmpty
                           ? noAddressCard()
                           : ListView.builder(
                               itemCount: snapshot.data.docs.length,
@@ -84,7 +84,7 @@ class _AddressState extends State<Address> {
     );
   }
 
-  noAddressCard() {
+  Card noAddressCard() {
     return Card(
       color: Colors.black.withOpacity(0.3),
       child: Container(
@@ -93,12 +93,12 @@ class _AddressState extends State<Address> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.add_location,
               color: Colors.black,
             ),
-            Text("お届け先住所がありません"),
-            Text("お届け先住所を設定してください"),
+            Text('お届け先住所がありません'),
+            Text('お届け先住所を設定してください'),
           ],
         ),
       ),
@@ -111,7 +111,7 @@ class AddressCard extends StatefulWidget {
   final String addressId;
   final int currentIndex;
   final int value;
-  AddressCard(
+  const AddressCard(
       {Key key, this.model, this.addressId, this.currentIndex, this.value})
       : super(key: key);
   @override
@@ -122,7 +122,7 @@ class _AddressCardState extends State<AddressCard> {
   @override
   Widget build(BuildContext context) {
     CheckOutPage(V: widget.value);
-    double screenwidth = MediaQuery.of(context).size.width;
+    final screenWidth = MediaQuery.of(context).size.width;
     return InkWell(
       onTap: () {
         Provider.of<AddressChanger>(
@@ -131,7 +131,7 @@ class _AddressCardState extends State<AddressCard> {
         ).displayResult(widget.value);
       },
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: Neumorphic(
           style: NeumorphicStyle(
             color: Colors.white,
@@ -145,7 +145,7 @@ class _AddressCardState extends State<AddressCard> {
                   Radio(
                     value: widget.value,
                     groupValue: widget.currentIndex,
-                    onChanged: (val) {
+                    onChanged: (int val) {
                       Provider.of<AddressChanger>(
                         context,
                         listen: false,
@@ -157,21 +157,21 @@ class _AddressCardState extends State<AddressCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: EdgeInsets.all(10),
-                        width: screenwidth * 0.8,
+                        padding: const EdgeInsets.all(10),
+                        width: screenWidth * 0.8,
                         child: Table(
                           children: [
                             TableRow(
                                 children: addressText(
-                                    "氏名",
+                                    '氏名',
                                     widget.model.lastName +
                                         widget.model.firstName)),
                             TableRow(
                                 children: addressText(
-                                    "郵便番号", widget.model.postalCode)),
+                                    '郵便番号', widget.model.postalCode)),
                             TableRow(
                                 children: addressText(
-                                    "住所",
+                                    '住所',
                                     widget.model.prefectures +
                                         widget.model.city +
                                         widget.model.address +

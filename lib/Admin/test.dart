@@ -189,26 +189,24 @@ class _BubblesState extends State<Bubbles> with SingleTickerProviderStateMixin {
   List<Bubble> bubbles;
   final int numberOfBubbles = 200;
   final Color color = mainColorOfLEEWAY;
-  final double maxBubbleSize = 10.0;
+  final double maxBubbleSize = 10;
 
   @override
   void initState() {
     super.initState();
 
     // Initialize bubbles
-    bubbles = List();
-    int i = numberOfBubbles;
+    bubbles = [];
+    var i = numberOfBubbles;
     while (i > 0) {
       bubbles.add(Bubble(color, maxBubbleSize));
       i--;
     }
 
     // Init animation controller
-    _controller = new AnimationController(
+    _controller = AnimationController(
         duration: const Duration(seconds: 1000), vsync: this);
-    _controller.addListener(() {
-      updateBubblePosition();
-    });
+    _controller.addListener(updateBubblePosition);
     _controller.forward();
   }
 
@@ -261,9 +259,9 @@ class Bubble {
 
   Bubble(Color colour, double maxBubbleSize) {
     this.colour = colour.withOpacity(Random().nextDouble());
-    this.direction = Random().nextDouble() * 360;
-    this.speed = 1;
-    this.radius = Random().nextDouble() * maxBubbleSize;
+    direction = Random().nextDouble() * 360;
+    speed = 1;
+    radius = Random().nextDouble() * maxBubbleSize;
   }
 
   draw(Canvas canvas, Size canvasSize) {
@@ -280,17 +278,13 @@ class Bubble {
   }
 
   void assignRandomPositionIfUninitialized(Size canvasSize) {
-    if (x == null) {
-      this.x = Random().nextDouble() * canvasSize.width;
-    }
+    x ??= Random().nextDouble() * canvasSize.width;
 
-    if (y == null) {
-      this.y = Random().nextDouble() * canvasSize.height;
-    }
+    y ??= Random().nextDouble() * canvasSize.height;
   }
 
-  updatePosition() {
-    var a = 180 - (direction + 90);
+  dynamic updatePosition() {
+    final a = 180 - (direction + 90);
     direction > 0 && direction < 180
         ? x += speed * sin(direction) / sin(speed)
         : x -= speed * sin(direction) / sin(speed);
@@ -299,7 +293,7 @@ class Bubble {
         : y -= speed * sin(a) / sin(speed);
   }
 
-  randomlyChangeDirectionIfEdgeReached(Size canvasSize) {
+  dynamic randomlyChangeDirectionIfEdgeReached(Size canvasSize) {
     if (x > canvasSize.width || x < 0 || y > canvasSize.height || y < 0) {
       direction = Random().nextDouble() * 360;
     }

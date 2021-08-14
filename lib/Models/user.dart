@@ -6,13 +6,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
   User(DocumentSnapshot doc) {
-    uid = doc["uid"];
+    uid = doc['uid'];
     name = doc['name'];
-    FaceBookURL = doc["FaceBookURL"];
-    InstagramURL = doc["InstagramURL"];
-    TwitterURL = doc["TwitterURL"];
-    description = doc["description"];
-    url = doc["url"];
+    FaceBookURL = doc['FaceBookURL'];
+    InstagramURL = doc['InstagramURL'];
+    TwitterURL = doc['TwitterURL'];
+    description = doc['description'];
+    url = doc['url'];
   }
 
   User.fromJson(Map<String, dynamic> json) {

@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 // Project imports:
-import 'package:selling_pictures_platform/Authentication/MyPage.dart';
-import 'package:selling_pictures_platform/Authentication/Notification.dart';
+import 'package:selling_pictures_platform/Authentication/my_page.dart';
+import 'package:selling_pictures_platform/Authentication/notification.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Store/BSTransaction.dart';
+import 'package:selling_pictures_platform/Store/bs_transaction.dart';
 import 'package:selling_pictures_platform/Store/like.dart';
 import 'package:selling_pictures_platform/Store/storehome.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
-import '../LEEWAY.dart';
+import '../leeway.dart';
 import '../main.dart';
 import 'bottom_navigation.dart';
 

@@ -11,23 +11,23 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Models/AllProviders.dart';
+import 'package:selling_pictures_platform/Models/all_providers.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import 'UpdateItem.dart';
+import 'update_item.dart';
 
 class ProductPage extends HookConsumerWidget {
   final String id;
-  ProductPage(
+  const ProductPage(
     this.id,
   );
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue item = ref.watch(specificIDItemsStreamProvider(id));
-    final AsyncValue itemImages =
+    final item = ref.watch(specificIDItemsStreamProvider(id));
+    final itemImages =
         ref.watch(specificIDItemsImageStreamProvider(id));
     final specificItem = item.data?.value;
     final specificItemImage = itemImages.data?.value;
@@ -35,29 +35,29 @@ class ProductPage extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: bgColor,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70.0),
+        preferredSize: const Size.fromHeight(70),
         child: AppBar(
           backgroundColor: bgColor,
           elevation: 0,
           title: Text(
             specificItem.first.shortInfo.toString(),
             style: TextStyle(
-                color: HexColor("#E67928"), fontWeight: FontWeight.w800),
+                color: HexColor('#E67928'), fontWeight: FontWeight.w800),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
           leading: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: NeumorphicButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              style: NeumorphicStyle(
+              style: const NeumorphicStyle(
                 shape: NeumorphicShape.flat,
                 boxShape: NeumorphicBoxShape.circle(),
               ),
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(
+              padding: const EdgeInsets.all(8),
+              child: const Icon(
                 Icons.arrow_back,
               ),
             ),
@@ -71,9 +71,9 @@ class ProductPage extends HookConsumerWidget {
             Center(
                 child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
                     stream: FirebaseFirestore.instance
-                        .collection("items")
+                        .collection('items')
                         .doc(id)
-                        .collection("itemImages")
+                        .collection('itemImages')
                         .doc(id)
                         .snapshots(),
                     builder: (context,
@@ -87,60 +87,60 @@ class ProductPage extends HookConsumerWidget {
                                 enlargeCenterPage: true,
                                 enableInfiniteScroll: false,
                               ),
-                              itemCount: snapshot.data.data()["images"].length,
+                              itemCount: snapshot.data.data()['images'].length,
                               itemBuilder: (BuildContext context, int index,
                                   int realIndex) {
                                 return Stack(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(8),
                                       child: Center(
                                         child: Container(
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(8),
-                                              color: HexColor("#e0e5ec"),
+                                              color: HexColor('#e0e5ec'),
                                               boxShadow: [
-                                                BoxShadow(
+                                                const BoxShadow(
                                                   color: Color(0xFFFFFFFF),
-                                                  spreadRadius: 1.0,
-                                                  blurRadius: 10.0,
+                                                  spreadRadius: 1,
+                                                  blurRadius: 10,
                                                   offset: Offset(-5, -5),
                                                 ),
                                                 BoxShadow(
-                                                  color: HexColor("#a3b1c6"),
-                                                  spreadRadius: 1.0,
-                                                  blurRadius: 12.0,
-                                                  offset: Offset(2, 2),
+                                                  color: HexColor('#a3b1c6'),
+                                                  spreadRadius: 1,
+                                                  blurRadius: 12,
+                                                  offset: const Offset(2, 2),
                                                 ),
                                               ]),
                                           child: Container(
                                               decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(8),
-                                                  color: HexColor("#e0e5ec"),
+                                                  color: HexColor('#e0e5ec'),
                                                   boxShadow: [
                                                     BoxShadow(
                                                       color:
-                                                          HexColor("#a3b1c6"),
-                                                      spreadRadius: 1.0,
-                                                      blurRadius: 12.0,
-                                                      offset: Offset(3, 3),
+                                                          HexColor('#a3b1c6'),
+                                                      spreadRadius: 1,
+                                                      blurRadius: 12,
+                                                      offset: const Offset(3, 3),
                                                     ),
                                                     BoxShadow(
                                                       color:
-                                                          HexColor("#ffffff"),
-                                                      spreadRadius: 1.0,
-                                                      blurRadius: 10.0,
-                                                      offset: Offset(-3, -3),
+                                                          HexColor('#ffffff'),
+                                                      spreadRadius: 1,
+                                                      blurRadius: 10,
+                                                      offset: const Offset(-3, -3),
                                                     ),
                                                   ]),
                                               child: Padding(
                                                 padding:
-                                                    const EdgeInsets.all(30.0),
+                                                    const EdgeInsets.all(30),
                                                 child: Image.network(
                                                   snapshot.data
-                                                      .data()["images"][index]
+                                                      .data()['images'][index]
                                                       .toString(),
                                                 ),
                                               )),
@@ -149,7 +149,7 @@ class ProductPage extends HookConsumerWidget {
                                     ),
                                     Center(
                                       child: Text(
-                                        "LEEWAY",
+                                        'LEEWAY',
                                         style: GoogleFonts.notoSerif(
                                             fontWeight: FontWeight.w100,
                                             color: Colors.grey.withOpacity(0.6),
@@ -163,7 +163,7 @@ class ProductPage extends HookConsumerWidget {
                     })),
             mySizedBox(20),
             Neumorphic(
-              margin: EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 1),
+              margin: const EdgeInsets.only(left: 10, right: 10, top: 2, bottom: 1),
               style: NeumorphicStyle(
                 shadowDarkColorEmboss: Colors.black.withOpacity(0.6),
                 shadowLightColorEmboss: Colors.black.withOpacity(0.4),
@@ -173,9 +173,9 @@ class ProductPage extends HookConsumerWidget {
                 boxShape:
                     NeumorphicBoxShape.roundRect(BorderRadius.circular(8)),
               ),
-              padding: EdgeInsets.symmetric(vertical: 2, horizontal: 18),
+              padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 18),
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.all(15),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +184,7 @@ class ProductPage extends HookConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          specificItem.first.shortInfo ?? "",
+                          specificItem.first.shortInfo ?? '',
                           style: largeTextStyle,
                         ),
                         specificItem.first.Stock == 0
@@ -193,38 +193,38 @@ class ProductPage extends HookConsumerWidget {
                       ],
                     ),
                     Text(
-                      specificItem.first.longDescription ?? "",
+                      specificItem.first.longDescription ?? '',
                       style: boldTextStyle,
                     ),
                     (() {
-                      if (specificItem.first.attribute == "Original") {
-                        return Text(
-                          "こちらは原画の為、１点限りとなります。",
+                      if (specificItem.first.attribute == 'Original') {
+                        return const Text(
+                          'こちらは原画の為、１点限りとなります。',
                           style: boldTextStyle,
                         );
-                      } else if (specificItem.first.attribute == "Sticker") {
-                        return Text(
-                          "ステッカー",
+                      } else if (specificItem.first.attribute == 'Sticker') {
+                        return const Text(
+                          'ステッカー',
                           style: boldTextStyle,
                         );
-                      } else if (specificItem.first.attribute == "PostCard") {
-                        return Text(
-                          "ポストカード",
+                      } else if (specificItem.first.attribute == 'PostCard') {
+                        return const Text(
+                          'ポストカード',
                           style: boldTextStyle,
                         );
                       } else {
-                        return Text(
-                          "複製画",
+                        return const Text(
+                          '複製画',
                           style: boldTextStyle,
                         );
                       }
                     }()),
-                    specificItem.first.attribute != "PostCard"
+                    specificItem.first.attribute != 'PostCard'
                         ? Row(
                             children: [
                               RichText(
                                 text: TextSpan(
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
@@ -232,23 +232,23 @@ class ProductPage extends HookConsumerWidget {
                                   children: [
                                     TextSpan(
                                       text: specificItem.first.itemHeight,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.black, fontSize: 20),
                                     ),
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'mm',
                                     ),
                                   ],
                                 ),
                               ),
-                              Text(" x ",
+                              const Text(' x ',
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15)),
                               RichText(
                                 text: TextSpan(
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
@@ -256,10 +256,10 @@ class ProductPage extends HookConsumerWidget {
                                   children: [
                                     TextSpan(
                                       text: specificItem.first.itemWidth,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.black, fontSize: 20),
                                     ),
-                                    TextSpan(
+                                    const TextSpan(
                                       text: 'mm',
                                     ),
                                   ],
@@ -269,9 +269,9 @@ class ProductPage extends HookConsumerWidget {
                           )
                         : Row(
                             children: [
-                              Text("郵便ハガキサイズ(", style: boldTextStyle),
+                              const Text('郵便ハガキサイズ(', style: boldTextStyle),
                               RichText(
-                                text: TextSpan(
+                                text: const TextSpan(
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
@@ -279,7 +279,7 @@ class ProductPage extends HookConsumerWidget {
                                   ),
                                   children: [
                                     TextSpan(
-                                      text: "148",
+                                      text: '148',
                                       style: boldTextStyle,
                                     ),
                                     TextSpan(
@@ -288,9 +288,9 @@ class ProductPage extends HookConsumerWidget {
                                   ],
                                 ),
                               ),
-                              Text(" x ", style: boldTextStyle),
+                              const Text(' x ', style: boldTextStyle),
                               RichText(
-                                text: TextSpan(
+                                text: const TextSpan(
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
@@ -298,7 +298,7 @@ class ProductPage extends HookConsumerWidget {
                                   ),
                                   children: [
                                     TextSpan(
-                                      text: "100",
+                                      text: '100',
                                       style: boldTextStyle,
                                     ),
                                     TextSpan(
@@ -307,20 +307,20 @@ class ProductPage extends HookConsumerWidget {
                                   ],
                                 ),
                               ),
-                              Text(")", style: boldTextStyle),
+                              const Text(')', style: boldTextStyle),
                             ],
                           ),
                     () {
                       if (specificItem.first.Stock == null) {
-                        return Text(
-                          "こちらの商品は受注生産でございます。",
+                        return const Text(
+                          'こちらの商品は受注生産でございます。',
                           style: boldTextStyle,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 10,
                         );
                       } else if (specificItem.first.Stock <= 0) {
-                        return Text(
-                          "SOLD OUT",
+                        return const Text(
+                          'SOLD OUT',
                           style: boldTextStyle,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 10,
@@ -335,8 +335,8 @@ class ProductPage extends HookConsumerWidget {
                               TextSpan(
                                 text: specificItem.first.Stock.toString(),
                               ),
-                              TextSpan(
-                                text: " 点",
+                              const TextSpan(
+                                text: ' 点',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -349,14 +349,14 @@ class ProductPage extends HookConsumerWidget {
                       }
                     }(),
                     Text(
-                      "${specificItem.first.shipsDate}",
+                      specificItem.first.shipsDate,
                       style: boldTextStyle,
                     ),
                     Text(
-                      specificItem.first.shipsPayment ?? "",
+                      specificItem.first.shipsPayment ?? '',
                       style: boldTextStyle,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     RichText(
@@ -368,8 +368,8 @@ class ProductPage extends HookConsumerWidget {
                           TextSpan(
                             text: specificItem.first.price.toString(),
                           ),
-                          TextSpan(
-                            text: "円",
+                          const TextSpan(
+                            text: '円',
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
@@ -381,11 +381,12 @@ class ProductPage extends HookConsumerWidget {
                     ),
                     // userLink(),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                           stream: FirebaseFirestore.instance
                               .collection(
-                                "items",
+                                'items',
                               )
                               .snapshots(),
                           builder: (context, snapshot) {
@@ -410,7 +411,6 @@ class ProductPage extends HookConsumerWidget {
                               })
                             : Container()
                       ],
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     ),
                   ],
                 ),
@@ -425,20 +425,20 @@ class ProductPage extends HookConsumerWidget {
 
 class ItemEditButton extends HookConsumerWidget {
   final String id;
-  ItemEditButton(this.id);
+  const ItemEditButton(this.id);
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final AsyncValue item = ref.watch(specificIDItemsStreamProvider(id));
+    final item = ref.watch(specificIDItemsStreamProvider(id));
     final specificItem = item.data?.value;
     return Expanded(
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: SizedBox(
             height: 60,
             width: 260,
             child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(primary: HexColor("2997E5")),
+              style: ElevatedButton.styleFrom(primary: HexColor('2997E5')),
               onPressed: () {
                 Navigator.push(
                     context,
@@ -450,11 +450,11 @@ class ItemEditButton extends HookConsumerWidget {
                             price: specificItem.first.price,
                             attribute: specificItem.first.attribute)));
               },
-              label: Text(
-                "編集する",
+              label: const Text(
+                '編集する',
                 style: TextStyle(fontSize: 20),
               ),
-              icon: Icon(Icons.edit),
+              icon: const Icon(Icons.edit),
             ),
           ),
         ),
@@ -465,14 +465,14 @@ class ItemEditButton extends HookConsumerWidget {
 
 class ReportButton extends HookWidget {
   final String id;
-  ReportButton(
+  const ReportButton(
     this.id,
   );
   @override
   Widget build(BuildContext context) {
-    final _verticalGroupValue = useState("");
+    final _verticalGroupValue = useState('');
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: NeumorphicButton(
           onPressed: () {
             showDialog(
@@ -481,9 +481,9 @@ class ReportButton extends HookWidget {
                   return Container(
                     height: 200,
                     child: AlertDialog(
-                      title: Center(
+                      title: const Center(
                         child: Text(
-                          "通報",
+                          '通報',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -500,74 +500,74 @@ class ReportButton extends HookWidget {
                       ),
                       actions: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(8),
                                 child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: Text("キャンセル"),
                                   style: ElevatedButton.styleFrom(
                                       primary: Colors.transparent),
+                                  child: const Text('キャンセル'),
                                 ),
                               ),
                             ),
-                            _verticalGroupValue.value == ""
+                            _verticalGroupValue.value == ''
                                 ? Expanded(
                                     child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(8),
                                       child: ElevatedButton(
                                         onPressed: () {},
-                                        child: Text(
-                                          "送信する",
-                                          style: TextStyle(color: Colors.grey),
-                                        ),
                                         style: ElevatedButton.styleFrom(
                                             primary: Colors.transparent),
+                                        child: const Text(
+                                          '送信する',
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
                                       ),
                                     ),
                                   )
                                 : Expanded(
                                     child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(8),
                                       child: ElevatedButton(
                                         onPressed: () {
                                           FirebaseFirestore.instance
-                                              .collection("report")
+                                              .collection('report')
                                               .doc()
                                               .set({
-                                            "reportFrom": EcommerceApp
+                                            'reportFrom': EcommerceApp
                                                 .sharedPreferences
                                                 .getString(
                                                     EcommerceApp.userUID),
-                                            "date": DateTime.now(),
-                                            "reportTo": id,
-                                            "why": _verticalGroupValue,
-                                            "Tag": "ItemReport"
+                                            'date': DateTime.now(),
+                                            'reportTo': id,
+                                            'why': _verticalGroupValue,
+                                            'Tag': 'ItemReport'
                                           });
                                         },
-                                        child: Text(
-                                          "送信",
+                                        child: const Text(
+                                          '送信',
                                           style: TextStyle(color: Colors.white),
                                         ),
                                       ),
                                     ),
                                   ),
                           ],
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         ),
                       ],
                     ),
                   );
                 });
           },
-          style: NeumorphicStyle(
+          style: const NeumorphicStyle(
             shape: NeumorphicShape.flat,
             boxShape: NeumorphicBoxShape.circle(),
           ),
-          child: Icon(
+          child: const Icon(
             Icons.more_horiz,
             color: Colors.grey,
             size: 30,
@@ -587,7 +587,7 @@ class ReportButton extends HookWidget {
 // }
 //
 // class _ProductPageState extends State<ProductPage> {
-//   String _verticalGroupValue = "";
+//   String _verticalGroupValue = '';
 //
 //   _ProductPageState();
 //   @override
@@ -601,7 +601,7 @@ class ReportButton extends HookWidget {
 //
 //   void getItemData() async {
 //     final snapshot = await FirebaseFirestore.instance
-//         .collection("items")
+//         .collection('items')
 //         .doc(widget.id)
 //         .get();
 //
@@ -615,19 +615,19 @@ class ReportButton extends HookWidget {
 //     return Scaffold(
 //       backgroundColor: bgColor,
 //       appBar: PreferredSize(
-//         preferredSize: Size.fromHeight(70.0),
+//         preferredSize: Size.fromHeight(70),
 //         child: AppBar(
 //           backgroundColor: bgColor,
 //           elevation: 0,
 //           title: Text(
-//             il["shortInfo"] ?? "",
+//             il['shortInfo'] ?? '',
 //             style: TextStyle(
-//                 color: HexColor("#E67928"), fontWeight: FontWeight.w800),
+//                 color: HexColor('#E67928'), fontWeight: FontWeight.w800),
 //             overflow: TextOverflow.ellipsis,
 //             maxLines: 1,
 //           ),
 //           leading: Padding(
-//             padding: const EdgeInsets.all(8.0),
+//             padding: const EdgeInsets.all(8),
 //             child: NeumorphicButton(
 //               onPressed: () {
 //                 Navigator.pop(context);
@@ -636,7 +636,7 @@ class ReportButton extends HookWidget {
 //                 shape: NeumorphicShape.flat,
 //                 boxShape: NeumorphicBoxShape.circle(),
 //               ),
-//               padding: const EdgeInsets.all(8.0),
+//               padding: const EdgeInsets.all(8),
 //               child: Icon(
 //                 Icons.arrow_back,
 //               ),
@@ -651,9 +651,9 @@ class ReportButton extends HookWidget {
 //             Center(
 //                 child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
 //                     stream: FirebaseFirestore.instance
-//                         .collection("items")
+//                         .collection('items')
 //                         .doc(widget.id)
-//                         .collection("itemImages")
+//                         .collection('itemImages')
 //                         .doc(widget.id)
 //                         .snapshots(),
 //                     builder: (context,
@@ -667,30 +667,30 @@ class ReportButton extends HookWidget {
 //                                 enlargeCenterPage: true,
 //                                 enableInfiniteScroll: false,
 //                               ),
-//                               itemCount: snapshot.data.data()["images"].length,
+//                               itemCount: snapshot.data.data()['images'].length,
 //                               itemBuilder: (BuildContext context, int index,
 //                                   int realIndex) {
 //                                 return Stack(
 //                                   children: [
 //                                     Padding(
-//                                       padding: const EdgeInsets.all(8.0),
+//                                       padding: const EdgeInsets.all(8),
 //                                       child: Center(
 //                                         child: Container(
 //                                           decoration: BoxDecoration(
 //                                               borderRadius:
 //                                                   BorderRadius.circular(8),
-//                                               color: HexColor("#e0e5ec"),
+//                                               color: HexColor('#e0e5ec'),
 //                                               boxShadow: [
 //                                                 BoxShadow(
 //                                                   color: Color(0xFFFFFFFF),
-//                                                   spreadRadius: 1.0,
-//                                                   blurRadius: 10.0,
+//                                                   spreadRadius: 1,
+//                                                   blurRadius: 10,
 //                                                   offset: Offset(-5, -5),
 //                                                 ),
 //                                                 BoxShadow(
-//                                                   color: HexColor("#a3b1c6"),
-//                                                   spreadRadius: 1.0,
-//                                                   blurRadius: 12.0,
+//                                                   color: HexColor('#a3b1c6'),
+//                                                   spreadRadius: 1,
+//                                                   blurRadius: 12,
 //                                                   offset: Offset(2, 2),
 //                                                 ),
 //                                               ]),
@@ -698,29 +698,29 @@ class ReportButton extends HookWidget {
 //                                               decoration: BoxDecoration(
 //                                                   borderRadius:
 //                                                       BorderRadius.circular(8),
-//                                                   color: HexColor("#e0e5ec"),
+//                                                   color: HexColor('#e0e5ec'),
 //                                                   boxShadow: [
 //                                                     BoxShadow(
 //                                                       color:
-//                                                           HexColor("#a3b1c6"),
-//                                                       spreadRadius: 1.0,
-//                                                       blurRadius: 12.0,
+//                                                           HexColor('#a3b1c6'),
+//                                                       spreadRadius: 1,
+//                                                       blurRadius: 12,
 //                                                       offset: Offset(3, 3),
 //                                                     ),
 //                                                     BoxShadow(
 //                                                       color:
-//                                                           HexColor("#ffffff"),
-//                                                       spreadRadius: 1.0,
-//                                                       blurRadius: 10.0,
+//                                                           HexColor('#ffffff'),
+//                                                       spreadRadius: 1,
+//                                                       blurRadius: 10,
 //                                                       offset: Offset(-3, -3),
 //                                                     ),
 //                                                   ]),
 //                                               child: Padding(
 //                                                 padding:
-//                                                     const EdgeInsets.all(30.0),
+//                                                     const EdgeInsets.all(30),
 //                                                 child: Image.network(
 //                                                   snapshot.data
-//                                                       .data()["images"][index]
+//                                                       .data()['images'][index]
 //                                                       .toString(),
 //                                                 ),
 //                                               )),
@@ -729,7 +729,7 @@ class ReportButton extends HookWidget {
 //                                     ),
 //                                     Center(
 //                                       child: Text(
-//                                         "LEEWAY",
+//                                         'LEEWAY',
 //                                         style: GoogleFonts.notoSerif(
 //                                             fontWeight: FontWeight.w100,
 //                                             color: Colors.grey.withOpacity(0.6),
@@ -755,7 +755,7 @@ class ReportButton extends HookWidget {
 //               ),
 //               padding: EdgeInsets.symmetric(vertical: 2, horizontal: 18),
 //               child: Padding(
-//                 padding: const EdgeInsets.all(15.0),
+//                 padding: const EdgeInsets.all(15),
 //                 child: Column(
 //                   mainAxisAlignment: MainAxisAlignment.start,
 //                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -764,40 +764,40 @@ class ReportButton extends HookWidget {
 //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                       children: [
 //                         Text(
-//                           il["shortInfo"] ?? "",
+//                           il['shortInfo'] ?? '',
 //                           style: largeTextStyle,
 //                         ),
-//                         il["Stock"] == 0 ? Container() : likeButton(context, il)
+//                         il['Stock'] == 0 ? Container() : likeButton(context, il)
 //                       ],
 //                     ),
 //                     Text(
-//                       il["longDescription"] ?? "",
+//                       il['longDescription'] ?? '',
 //                       style: boldTextStyle,
 //                     ),
 //                     (() {
-//                       if (il["attribute"] == "Original") {
+//                       if (il['attribute'] == 'Original') {
 //                         return Text(
-//                           "こちらは原画の為、１点限りとなります。",
+//                           'こちらは原画の為、１点限りとなります。',
 //                           style: boldTextStyle,
 //                         );
-//                       } else if (il["attribute"] == "Sticker") {
+//                       } else if (il['attribute'] == 'Sticker') {
 //                         return Text(
-//                           "ステッカー",
+//                           'ステッカー',
 //                           style: boldTextStyle,
 //                         );
-//                       } else if (il["attribute"] == "PostCard") {
+//                       } else if (il['attribute'] == 'PostCard') {
 //                         return Text(
-//                           "ポストカード",
+//                           'ポストカード',
 //                           style: boldTextStyle,
 //                         );
 //                       } else {
 //                         return Text(
-//                           "複製画",
+//                           '複製画',
 //                           style: boldTextStyle,
 //                         );
 //                       }
 //                     }()),
-//                     il["attribute"] != "PostCard"
+//                     il['attribute'] != 'PostCard'
 //                         ? Row(
 //                             children: [
 //                               RichText(
@@ -809,7 +809,7 @@ class ReportButton extends HookWidget {
 //                                   ),
 //                                   children: [
 //                                     TextSpan(
-//                                       text: il["itemHeight"],
+//                                       text: il['itemHeight'],
 //                                       style: TextStyle(
 //                                           color: Colors.black, fontSize: 20),
 //                                     ),
@@ -819,7 +819,7 @@ class ReportButton extends HookWidget {
 //                                   ],
 //                                 ),
 //                               ),
-//                               Text(" x ",
+//                               Text(' x ',
 //                                   style: TextStyle(
 //                                       color: Colors.black,
 //                                       fontWeight: FontWeight.bold,
@@ -833,7 +833,7 @@ class ReportButton extends HookWidget {
 //                                   ),
 //                                   children: [
 //                                     TextSpan(
-//                                       text: il["itemWidth"],
+//                                       text: il['itemWidth'],
 //                                       style: TextStyle(
 //                                           color: Colors.black, fontSize: 20),
 //                                     ),
@@ -847,7 +847,7 @@ class ReportButton extends HookWidget {
 //                           )
 //                         : Row(
 //                             children: [
-//                               Text("郵便ハガキサイズ(", style: boldTextStyle),
+//                               Text('郵便ハガキサイズ(', style: boldTextStyle),
 //                               RichText(
 //                                 text: TextSpan(
 //                                   style: TextStyle(
@@ -857,7 +857,7 @@ class ReportButton extends HookWidget {
 //                                   ),
 //                                   children: [
 //                                     TextSpan(
-//                                       text: "148",
+//                                       text: '148',
 //                                       style: boldTextStyle,
 //                                     ),
 //                                     TextSpan(
@@ -866,7 +866,7 @@ class ReportButton extends HookWidget {
 //                                   ],
 //                                 ),
 //                               ),
-//                               Text(" x ", style: boldTextStyle),
+//                               Text(' x ', style: boldTextStyle),
 //                               RichText(
 //                                 text: TextSpan(
 //                                   style: TextStyle(
@@ -876,7 +876,7 @@ class ReportButton extends HookWidget {
 //                                   ),
 //                                   children: [
 //                                     TextSpan(
-//                                       text: "100",
+//                                       text: '100',
 //                                       style: boldTextStyle,
 //                                     ),
 //                                     TextSpan(
@@ -885,20 +885,20 @@ class ReportButton extends HookWidget {
 //                                   ],
 //                                 ),
 //                               ),
-//                               Text(")", style: boldTextStyle),
+//                               Text(')', style: boldTextStyle),
 //                             ],
 //                           ),
 //                     () {
-//                       if (il["Stock"] == null) {
+//                       if (il['Stock'] == null) {
 //                         return Text(
-//                           "こちらの商品は受注生産でございます。",
+//                           'こちらの商品は受注生産でございます。',
 //                           style: boldTextStyle,
 //                           overflow: TextOverflow.ellipsis,
 //                           maxLines: 10,
 //                         );
-//                       } else if (il["Stock"] <= 0) {
+//                       } else if (il['Stock'] <= 0) {
 //                         return Text(
-//                           "SOLD OUT",
+//                           'SOLD OUT',
 //                           style: boldTextStyle,
 //                           overflow: TextOverflow.ellipsis,
 //                           maxLines: 10,
@@ -911,10 +911,10 @@ class ReportButton extends HookWidget {
 //                             style: boldTextStyle,
 //                             children: [
 //                               TextSpan(
-//                                 text: il["Stock"].toString(),
+//                                 text: il['Stock'].toString(),
 //                               ),
 //                               TextSpan(
-//                                 text: " 点",
+//                                 text: ' 点',
 //                                 style: TextStyle(
 //                                   fontSize: 12,
 //                                   fontWeight: FontWeight.bold,
@@ -927,11 +927,11 @@ class ReportButton extends HookWidget {
 //                       }
 //                     }(),
 //                     Text(
-//                       "${il["shipsDate"]}",
+//                       '${il['shipsDate']}',
 //                       style: boldTextStyle,
 //                     ),
 //                     Text(
-//                       il["shipsPayment"] ?? "",
+//                       il['shipsPayment'] ?? '',
 //                       style: boldTextStyle,
 //                     ),
 //                     SizedBox(
@@ -944,10 +944,10 @@ class ReportButton extends HookWidget {
 //                         style: boldTextStyle,
 //                         children: [
 //                           TextSpan(
-//                             text: il["price"].toString(),
+//                             text: il['price'].toString(),
 //                           ),
 //                           TextSpan(
-//                             text: "円",
+//                             text: '円',
 //                             style: TextStyle(
 //                               fontSize: 12,
 //                               fontWeight: FontWeight.bold,
@@ -963,24 +963,24 @@ class ReportButton extends HookWidget {
 //                         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
 //                           stream: FirebaseFirestore.instance
 //                               .collection(
-//                                 "items",
+//                                 'items',
 //                               )
 //                               .snapshots(),
 //                           builder: (context, snapshot) {
 //                             return !snapshot.hasData
 //                                 ? Container()
-//                                 : il["postBy"] ==
+//                                 : il['postBy'] ==
 //                                         EcommerceApp.sharedPreferences
 //                                             .getString(EcommerceApp.userUID)
 //                                     ? itemEditButton(context, il, widget.id)
 //                                     //todo　後で直す
-//                                     : il["Stock"] <= 0
+//                                     : il['Stock'] <= 0
 //                                         ? soldOutButton(context)
 //                                         : checkOutItemButton(
 //                                             context, il, widget.id);
 //                           },
 //                         ),
-//                         il["postBy"] ==
+//                         il['postBy'] ==
 //                                 EcommerceApp.sharedPreferences
 //                                     .getString(EcommerceApp.userUID)
 //                             ? deleteItemButton(context, () {

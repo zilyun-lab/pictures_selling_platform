@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-import 'package:selling_pictures_platform/Models/AllProviders.dart';
+import 'package:selling_pictures_platform/Models/all_providers.dart';
 // Project imports:
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
 import 'package:selling_pictures_platform/Widgets/AllWidget.dart';
-import 'package:selling_pictures_platform/Widgets/searchBox.dart';
+import 'package:selling_pictures_platform/Widgets/search_box.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -28,9 +28,9 @@ class StoreHome extends HookConsumerWidget {
     return Scaffold(
       //key: //_scaffoldKey,
       // backgroundColor: mainColor,
-      backgroundColor: HexColor("#e0e5ec"),
+      backgroundColor: HexColor('#e0e5ec'),
       body: Container(
-        color: HexColor("#e0e5ec"),
+        color: HexColor('#e0e5ec'),
         child: CustomScrollView(
           slivers: <Widget>[
             SliverPersistentHeader(
@@ -40,7 +40,7 @@ class StoreHome extends HookConsumerWidget {
             SliverToBoxAdapter(
               child: mainSlider(),
             ),
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
               child: SizedBox(
                 height: 10,
               ),
@@ -52,17 +52,17 @@ class StoreHome extends HookConsumerWidget {
                   isScrollable: true,
                   enableFeedback: false,
                   labelStyle:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   unselectedLabelStyle:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                      const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   unselectedLabelColor: Colors.grey,
                   labelColor: mainColorOfLEEWAY,
                   tabs: <Widget>[
-                    Tab(text: "すべて"),
-                    Tab(text: "原画作品"),
-                    Tab(text: "複製作品"),
-                    Tab(text: "ステッカー"),
-                    Tab(text: "ポストカード"),
+                    const Tab(text: 'すべて'),
+                    const Tab(text: '原画作品'),
+                    const Tab(text: '複製作品'),
+                    const Tab(text: 'ステッカー'),
+                    const Tab(text: 'ポストカード'),
                   ],
                   controller: _controller,
                 ),
@@ -70,7 +70,7 @@ class StoreHome extends HookConsumerWidget {
             ),
             SliverFillRemaining(
               child: Container(
-                color: HexColor("#e0e5ec"),
+                color: HexColor('#e0e5ec'),
                 child: TabBarView(
                   controller: _controller,
                   children: [
@@ -78,7 +78,7 @@ class StoreHome extends HookConsumerWidget {
                       data: (items) {
                         return GridView.builder(
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                             ),
                             itemCount: items.length,
@@ -106,7 +106,7 @@ class StoreHome extends HookConsumerWidget {
                       data: (items) {
                         return GridView.builder(
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                             ),
                             itemCount: items.length,
@@ -134,7 +134,7 @@ class StoreHome extends HookConsumerWidget {
                       data: (items) {
                         return GridView.builder(
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                             ),
                             itemCount: items.length,
@@ -162,7 +162,7 @@ class StoreHome extends HookConsumerWidget {
                       data: (items) {
                         return GridView.builder(
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                             ),
                             itemCount: items.length,
@@ -190,7 +190,7 @@ class StoreHome extends HookConsumerWidget {
                       data: (items) {
                         return GridView.builder(
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                             ),
                             itemCount: items.length,

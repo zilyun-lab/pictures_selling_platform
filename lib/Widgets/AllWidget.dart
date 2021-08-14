@@ -9,28 +9,28 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 // Project imports:
-import 'package:selling_pictures_platform/Address/addAddress.dart';
-import 'package:selling_pictures_platform/Admin/Copy.dart';
-import 'package:selling_pictures_platform/Admin/MyUploadItems.dart';
-import 'package:selling_pictures_platform/Admin/PostCard.dart';
-import 'package:selling_pictures_platform/Admin/Sticker.dart';
-import 'package:selling_pictures_platform/Admin/uploadItems.dart';
-import 'package:selling_pictures_platform/Authentication/FAQ.dart';
-import 'package:selling_pictures_platform/Authentication/Notification.dart';
-import 'package:selling_pictures_platform/Authentication/PrivacyPolicyEtc.dart';
-import 'package:selling_pictures_platform/Authentication/ProceedsRequests.dart';
+import 'package:selling_pictures_platform/Address/add_address.dart';
+import 'package:selling_pictures_platform/Admin/copy.dart';
+import 'package:selling_pictures_platform/Admin/my_uproad_items.dart';
+import 'package:selling_pictures_platform/Admin/post_card.dart';
+import 'package:selling_pictures_platform/Admin/sticker.dart';
+import 'package:selling_pictures_platform/Admin/upload_items.dart';
+import 'package:selling_pictures_platform/Authentication/faq.dart';
+import 'package:selling_pictures_platform/Authentication/notification.dart';
+import 'package:selling_pictures_platform/Authentication/privacy_policy_etc.dart';
+import 'package:selling_pictures_platform/Authentication/proceeds_requests.dart';
 import 'package:selling_pictures_platform/Authentication/login.dart';
-import 'package:selling_pictures_platform/Authentication/publicUserPage.dart';
-import 'package:selling_pictures_platform/Authentication/updateProfile.dart';
+import 'package:selling_pictures_platform/Authentication/public_user_page.dart';
+import 'package:selling_pictures_platform/Authentication/update_profile.dart';
 import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/Counters/Likeitemcounter.dart';
+import 'package:selling_pictures_platform/Counters/like_item_counter.dart';
 import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
-import 'package:selling_pictures_platform/Models/UploadItemList.dart';
+import 'package:selling_pictures_platform/Models/upload_item_list.dart';
 import 'package:selling_pictures_platform/Models/allList.dart';
 import 'package:selling_pictures_platform/Models/item.dart';
-import 'package:selling_pictures_platform/Orders/CheckOutPage.dart';
-import 'package:selling_pictures_platform/Orders/TransactionPage.dart';
-import 'package:selling_pictures_platform/Orders/myOrders.dart';
+import 'package:selling_pictures_platform/Orders/check_out_page.dart';
+import 'package:selling_pictures_platform/Orders/transaction_page.dart';
+import 'package:selling_pictures_platform/Orders/my_oeders.dart';
 import 'package:selling_pictures_platform/Store/product_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -866,7 +866,7 @@ Function bottomSheetItems(
                               context,
                               MaterialPageRoute(
                                   fullscreenDialog: true,
-                                  builder: (c) => Sticker())),
+                                  builder: (c) => sticker())),
                           child: Neumorphic(
                             style: NeumorphicStyle(color: bgColor),
                             child: Container(
@@ -884,7 +884,7 @@ Function bottomSheetItems(
                               context,
                               MaterialPageRoute(
                                   fullscreenDialog: true,
-                                  builder: (c) => PostCard())),
+                                  builder: (c) => postcard())),
                           child: Neumorphic(
                             style: NeumorphicStyle(color: bgColor),
                             child: Container(

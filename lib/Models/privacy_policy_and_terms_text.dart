@@ -1,238 +1,5 @@
-// Dart imports:
-import 'dart:io';
-
-// Flutter imports:
-import 'package:dropdown_date_picker/dropdown_date_picker.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-
-// Package imports:
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:page_transition/page_transition.dart';
-
-// Project imports:
-import 'package:selling_pictures_platform/Authentication/new_user_splash_screen.dart';
-import 'package:selling_pictures_platform/Config/config.dart';
-import 'package:selling_pictures_platform/DialogBox/error_dialog.dart';
-import 'package:selling_pictures_platform/DialogBox/loading_dialog.dart';
-import 'package:selling_pictures_platform/Models/HEXCOLOR.dart';
-import 'package:selling_pictures_platform/PushNotifications/permissions.dart';
-import 'package:selling_pictures_platform/Widgets/custom_text_field.dart';
-import 'login.dart';
-
-class Register extends StatefulWidget {
-  @override
-  _RegisterState createState() => _RegisterState();
-}
-
-class _RegisterState extends State<Register> {
-  final TextEditingController _nameEditingController = TextEditingController();
-  final TextEditingController _emailEditingController = TextEditingController();
-  final TextEditingController _passwordEditingController =
-      TextEditingController();
-  final TextEditingController _cPasswordEditingController =
-      TextEditingController();
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  String userImageUrl = '';
-  File _imageFile;
-  bool isChecked = false;
-  bool _requested = false;
-  bool _fetching = false;
-  NotificationSettings _settings;
-  String _token;
-  Stream<String> _tokenStream;
-
-  void setToken(String token) {
-    print('FCM Token: $token');
-
-    setState(() {
-      _token = token;
-    });
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    FirebaseMessaging.instance.getToken().then(setToken);
-
-    _tokenStream = FirebaseMessaging.instance.onTokenRefresh;
-    _tokenStream.listen(setToken);
-  }
-
-  Future<void> requestPermissions() async {
-    setState(() {
-      _fetching = true;
-    });
-
-    final settings = await FirebaseMessaging.instance.requestPermission(
-      announcement: true,
-      carPlay: true,
-      criticalAlert: true,
-    );
-
-    setState(() {
-      _requested = true;
-      _fetching = false;
-      _settings = settings;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    double _screenWidth = MediaQuery.of(context).size.width,
-        _screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: Stack(children: [
-        Container(
-          color: HexColor('E67928'),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(15),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        requestPermissions();
-                      },
-                      child: Image.asset(
-                        'images/NoColor_horizontal.png',
-                        height: 75,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: _selectAndPickImage,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 15,
-                        ),
-                        child: Container(
-                          // decoration: BoxDecoration(
-                          //   borderRadius: BorderRadius.circular(10),
-                          //   color: Colors.white,
-                          // ),
-                          child: CircleAvatar(
-                            radius: _screenWidth * 0.15,
-                            backgroundColor: Colors.white,
-                            backgroundImage: _imageFile == null
-                                ? null
-                                : FileImage(_imageFile),
-                            child: _imageFile == null
-                                ? Icon(
-                                    Icons.add_a_photo_outlined,
-                                    size: _screenWidth * 0.15,
-                                    color: Colors.grey,
-                                  )
-                                : null,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(top: 20, left: 20, right: 20),
-                      child: Form(
-                        key: _formkey,
-                        child: Column(
-                          children: [
-                            CustomTextField(
-                              controller: _nameEditingController,
-                              data: Icons.person,
-                              hintText: 'ユーザーネーム',
-                              isObsecure: false,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(
-                                left: 12,
-                                right: 12,
-                              ),
-                              child: Divider(
-                                thickness: 2,
-                                color: Colors.white,
-                              ),
-                            ),
-                            CustomTextField(
-                              controller: _emailEditingController,
-                              data: Icons.email,
-                              hintText: 'メールアドレス',
-                              isObsecure: false,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(
-                                left: 12,
-                                right: 12,
-                              ),
-                              child: Divider(
-                                thickness: 2,
-                                color: Colors.white,
-                              ),
-                            ),
-                            CustomTextField(
-                              controller: _passwordEditingController,
-                              data: FontAwesomeIcons.userLock,
-                              hintText: 'パスワード',
-                              isObsecure: true,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(
-                                left: 12,
-                                right: 12,
-                              ),
-                              child: Divider(
-                                thickness: 2,
-                                color: Colors.white,
-                              ),
-                            ),
-                            CustomTextField(
-                              controller: _cPasswordEditingController,
-                              data: FontAwesomeIcons.userLock,
-                              hintText: 'パスワード(確認用)',
-                              isObsecure: true,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(
-                                left: 12,
-                                right: 12,
-                              ),
-                              child: Divider(
-                                thickness: 2,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(
-                        left: 12,
-                        right: 12,
-                      ),
-                      child: ExpansionTile(
-                        iconColor: Colors.white,
-                        title: Text(
-                          '会員登録の規約について',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        children: [
-                          Text('''
-                            利用規約
+const String termsText = '''
+利用規約
 LEEWAY(以下、当アプリケーション)では以下のように利用規約を定めています。当アプリケーションを利用するにはこの利用規約について同意する必要があります。
  
 第1条 用語の定義
@@ -464,347 +231,84 @@ LEEWAY(以下、当アプリケーション)では以下のように利用規約
  
 制定
 令和3年　7月15日
- 
+                            ''';
+const String specifiedCommercialTransactionLaw = '''
+特定商取引法に基づく表記
+
+アプリ名 LEEWAY
+
+販売事業者名 武澤淳哉
+
+所在地
+〒062-0934
+北海道豊平区平岸4条7丁目6－18フェアリー平岸201号室　　
+　
+お問い合わせ
+こちら(contact@leewayjp.net）からお問い合わせください。
 
 
-                            '''),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 12,
-                        right: 12,
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.only(top: 5, bottom: 5),
-                        child: CheckboxListTile(
-                          tileColor: Colors.white,
-                          value: isChecked,
-                          title: const Text(
-                            '規約を読んだ上で同意しますか？',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          controlAffinity: ListTileControlAffinity.leading,
-                          // チェックボックスを押下すると以下の処理が実行される
-                          onChanged: (bool value) {
-                            setState(() {
-                              isChecked = value;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    isChecked
-                        ? ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.white,
-                            ),
-                            onPressed: () {
-                              uploadAndSaveImage();
-                            },
-                            child: Text(
-                              '登録する',
-                              style: TextStyle(
-                                color: HexColor('E67928'),
-                              ),
-                            ),
-                          )
-                        : ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.grey,
-                            ),
-                            onPressed: () {},
-                            child: Text(
-                              '登録する',
-                              style: TextStyle(
-                                color: HexColor('E67928'),
-                              ),
-                            ),
-                          ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 45, right: 45),
-                      child: Divider(
-                        color: Colors.white,
-                        thickness: 2,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.leftToRightWithFade,
-                            child: Login(),
-                            inheritTheme: true,
-                            ctx: context,
-                            duration: const Duration(
-                              milliseconds: 500,
-                            ),
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        'ログイン',
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ]),
-    );
-  }
+<販売価格>
+購入手続きの際に画面に表示されます。
+消費税は内税として表示しております。
+販売価格以外でお客様に発生する金銭
+当サイトのページの閲覧、コンテンツ購入、ソフトウェアのダウンロード等に必要となるインターネット接続料金、通信料金、送料はお客様のご負担となります。
+お支払方法
 
-  //todo:!?
-  Future<void> _selectAndPickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.getImage(
-      source: ImageSource.gallery,
-    );
 
-    setState(
-      () {
-        _imageFile = File(pickedFile.path);
-      },
-    );
-  }
+<各種クレジットカード>
+・動作環境
+アプリケーションによって利用環境・対応機種が異なります。各アプリケーションのダウンロードの前に、必ず各アプリケーションの詳細ページで利用環境・対応機種をご確認ください。
 
-  Future<void> uploadAndSaveImage() async {
-    if (_nameEditingController.text.isEmpty) {
-      await showDialog(
-        context: context,
-        builder: (c) {
-          return const ErrorAlertDialog(
-            message: '名前を入力してください。',
-          );
-        },
-      );
-    }
-    if (_emailEditingController.text.isEmpty) {
-      await showDialog(
-        context: context,
-        builder: (c) {
-          return const ErrorAlertDialog(
-            message: 'メールアドレスを入力してください。',
-          );
-        },
-      );
-    }
-    if (_passwordEditingController.text.isEmpty) {
-      await showDialog(
-        context: context,
-        builder: (c) {
-          return const ErrorAlertDialog(
-            message: 'パスワードを入力してください。',
-          );
-        },
-      );
-    }
-    if (_imageFile == null) {
-      await showDialog(
-        context: context,
-        builder: (c) {
-          return const ErrorAlertDialog(
-            message: '画像を選択してください。',
-          );
-        },
-      );
-    } else {
-      _passwordEditingController.text == _cPasswordEditingController.text
-          ? _emailEditingController.text.isNotEmpty &&
-                  _passwordEditingController.text.isNotEmpty &&
-                  _cPasswordEditingController.text.isNotEmpty &&
-                  _nameEditingController.text.isNotEmpty
-              ? uploadToStorage()
-              : displayDialog('未記入の項目があります。')
-          : displayDialog('入力されたパスワードが正しくありません。');
-    }
-  }
+・返品・キャンセル
+返品返金は取引完了前に販売者、購入者の双方での同意を得た上で行って下さい。
+取引完了後の場合は弊社メールアドレスにお問い合わせいただき、状況を確認した上で対応させていただきます。
+取引完了後はお客様都合でのキャンセルは受け付けておりません。
 
-  displayDialog(String msg) {
-    showDialog(
-      context: context,
-      builder: (c) {
-        return ErrorAlertDialog(
-          message: msg,
-        );
-      },
-    );
-  }
+・支払時期
+商品注文時にお支払いが確定します。
+商品等の引き渡し時期
+購入手続き完了後1週間程度で発送。
 
-  uploadToStorage() async {
-    showDialog(
-      context: context,
-      builder: (c) {
-        return LoadingAlertDialog(
-          message: '登録中です。\n少々お待ちください。',
-        );
-      },
-    );
-    final imageFileName = DateTime.now().millisecondsSinceEpoch.toString();
-    final storage = FirebaseStorage.instance;
-    final storageReference = storage.ref().child(imageFileName);
-    final storageUploadTask = storageReference.putFile(_imageFile);
-    final taskSnapshot = await storageUploadTask;
-    await taskSnapshot.ref.getDownloadURL().then(
-      (urlImage) {
-        userImageUrl = urlImage;
-        _registerUser();
-      },
-    );
-  }
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  void _registerUser() async {
-    User firebaseUser;
-    await _auth
-        .createUserWithEmailAndPassword(
-      email: _emailEditingController.text.trim(),
-      password: _passwordEditingController.text.trim(),
-    )
-        .then(
-      (auth) {
-        firebaseUser = auth.user;
-      },
-    ).catchError(
-      (dynamic error) {
-        Navigator.pop(context);
-        showDialog(
-          context: context,
-          builder: (c) {
-            return const ErrorAlertDialog(
-              message: '記入に誤りがあります。',
-            );
-          },
-        );
-      },
-    );
-    if (firebaseUser != null) {
-      await saveUserInfoToFirestore(firebaseUser).then(
-        (
-          value,
-        ) {
-          Navigator.pop(context);
-          final Route route =
-              MaterialPageRoute(builder: (c) => const NewUserSplashScreen());
-          Navigator.pushReplacement(context, route);
-        },
-      );
-    }
-  }
+<特別条件>
+・クーリングオフについて
+特定商取引法に規定されているクーリングオフが適用されるサービスではありません。
+電話番号 080-4509-2862
+※電話でのお問い合わせは受け付けておりません。
+お問合せの際は上記メールアドレスへお願いいたします。
 
-  Future saveUserInfoToFirestore(User fUser) async {
-    await FirebaseFirestore.instance.collection('users').doc(fUser.uid).set(
-      {
-        'iOSToken': _token,
-        'isFreeze': false,
-        'uid': fUser.uid,
-        'email': fUser.email,
-        'name': _nameEditingController.text.trim(),
-        'url': userImageUrl,
-        'description': '',
-        'TwitterURL': '',
-        'InstagramURL': '',
-        'FaceBookURL': '',
-        EcommerceApp.userCartList: ['garbageValue'],
-        EcommerceApp.userLikeList: ['garbageValue'],
-      },
-    );
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(fUser.uid)
-        .collection('MyProceeds')
-        .doc(fUser.uid)
-        .set(
-      {
-        'Proceeds': 0,
-      },
-    );
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(fUser.uid)
-        .collection('Followers')
-        .doc()
-        .set(
-      {},
-    );
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(fUser.uid)
-        .collection('AllNotify')
-        .doc(fUser.uid)
-        .set(
-      {},
-    );
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(fUser.uid)
-        .collection('BankAccount')
-        .doc()
-        .set(
-      {'Submit': 'false'},
-    );
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(fUser.uid)
-        .collection('AllNotify')
-        .doc(fUser.uid)
-        .collection('From Admin')
-        .doc()
-        .set(
-      {'message': '会員登録ありがとうございます。', 'date': DateTime.now(), 'Tag': 'Admin'},
-    );
+''';
+const String personalInformationProtectionLaw = '''
+個人情報保護方針（個人情報保護ポリシー）
 
-    await EcommerceApp.sharedPreferences.setString(
-      'uid',
-      fUser.uid,
-    );
-    await EcommerceApp.sharedPreferences.setString(
-      EcommerceApp.userEmail,
-      fUser.email,
-    );
-    await EcommerceApp.sharedPreferences.setString(
-      EcommerceApp.userName,
-      _nameEditingController.text,
-    );
-    await EcommerceApp.sharedPreferences.setString(
-      EcommerceApp.userAvatarUrl,
-      userImageUrl,
-    );
-    await EcommerceApp.sharedPreferences.setString(
-      'description',
-      '',
-    );
-    await EcommerceApp.sharedPreferences.setString(
-      'TwitterURL',
-      '',
-    );
-    await EcommerceApp.sharedPreferences.setString(
-      'InstagramURL',
-      '',
-    );
-    await EcommerceApp.sharedPreferences.setString(
-      'FaceBookURL',
-      '',
-    );
+個人情報の管理
+当運営者は、お客さまの個人情報を正確かつ最新の状態に保ち、個人情報への不正アクセス・紛失・破損・改ざん・漏洩などを防止するため、セキュリティシステムの維持・管理体制の整備・社員教育の徹底等の必要な措置を講じ、安全対策を実施し個人情報の厳重な管理を行ないます。
 
-    await EcommerceApp.sharedPreferences.setStringList(
-      EcommerceApp.userLikeList,
-      ['garbageValue'],
-    );
-    await EcommerceApp.sharedPreferences.setString(
-      'Registration Time',
-      '${DateTime.now().millisecondsSinceEpoch ~/ 1000}',
-    );
-  }
-}
+個人情報の利用目的
+本アプリケーションでは、お客様からのお問い合わせ時に、お名前、e-mailアドレス等の個人情報をご登録いただく場合がございますが、これらの個人情報はご提供いただく際の目的以外では利用いたしません。
+お客さまからお預かりした個人情報は、当運営者からのご連絡や業務のご案内やご質問に対する回答として、電子メールや資料のご送付に利用いたします。
+
+個人情報の第三者への開示・提供の禁止
+当運営者は、お客さまよりお預かりした個人情報を適切に管理し、次のいずれかに該当する場合を除き、個人情報を第三者に開示いたしません。
+・お客さまの同意がある場合
+・お客さまが希望されるサービスを行なうために当運営者が業務を委託する業者に対して開示する場合
+・法令に基づき開示することが必要である場合
+
+個人情報の安全対策
+当運営者は、個人情報の正確性及び安全性確保のために、セキュリティに万全の対策を講じています。
+
+ご本人の照会
+お客さまがご本人の個人情報の照会・修正・削除などをご希望される場合には、ご本人であることを確認の上、対応させていただきます。
+
+プライバシーポリシーの変更
+本方針の内容は，法令その他本方針に別段の定めのある事項を除いて、ユーザーに通知することなく，変更することができるものとします。
+当社が別途定める場合を除いて、変更後の個人情報保護方針は，本アプリケーションに掲載したときから効力を生じるものとします。
+
+
+法令、規範の遵守と見直し
+当運営者は、保有する個人情報に関して適用される日本の法令、その他規範を遵守するとともに、本ポリシーの内容を適宜見直し、その改善に努めます。
+
+お問い合せ
+当運営者の個人情報の取扱に関するお問い合せは下記までご連絡ください。
+Email: contact@leewayjp.net
+    ''';

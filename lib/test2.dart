@@ -9,7 +9,7 @@ class NeumoTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: HexColor("#e0e5ec"),
+      backgroundColor: HexColor('#e0e5ec'),
       //backgroundColor: Colors.grey,
       body: Center(
         child: Column(
@@ -20,42 +20,42 @@ class NeumoTest extends StatelessWidget {
               width: 100,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
-                  color: HexColor("#e0e5ec"),
+                  color: HexColor('#e0e5ec'),
                   boxShadow: [
-                    BoxShadow(
+                    const BoxShadow(
                       color: Color(0xFFFFFFFF),
-                      spreadRadius: 1.0,
-                      blurRadius: 10.0,
+                      spreadRadius: 1,
+                      blurRadius: 10,
                       offset: Offset(-5, -5),
                     ),
                     BoxShadow(
-                      color: HexColor("#a3b1c6"),
-                      spreadRadius: 1.0,
-                      blurRadius: 12.0,
-                      offset: Offset(2, 2),
+                      color: HexColor('#a3b1c6'),
+                      spreadRadius: 1,
+                      blurRadius: 12,
+                      offset: const Offset(2, 2),
                     ),
                   ]),
               child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
-                      color: HexColor("#e0e5ec"),
+                      color: HexColor('#e0e5ec'),
                       boxShadow: [
                         BoxShadow(
-                          color: HexColor("#a3b1c6"),
-                          spreadRadius: 1.0,
-                          blurRadius: 12.0,
-                          offset: Offset(3, 3),
+                          color: HexColor('#a3b1c6'),
+                          spreadRadius: 1,
+                          blurRadius: 12,
+                          offset: const Offset(3, 3),
                         ),
                         BoxShadow(
-                          color: HexColor("#ffffff"),
-                          spreadRadius: 1.0,
-                          blurRadius: 10.0,
-                          offset: Offset(-3, -3),
+                          color: HexColor('#ffffff'),
+                          spreadRadius: 1,
+                          blurRadius: 10,
+                          offset: const Offset(-3, -3),
                         ),
                       ]),
                   child: Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: Image.asset("images/NoColor_Vertical.png"),
+                    padding: const EdgeInsets.all(30),
+                    child: Image.asset('images/NoColor_Vertical.png'),
                   )),
             ),
 
@@ -64,42 +64,42 @@ class NeumoTest extends StatelessWidget {
             //   width: 100,
             //   decoration: BoxDecoration(
             //       borderRadius: BorderRadius.circular(8),
-            //       color: HexColor("#e0e5ec"),
+            //       color: HexColor('#e0e5ec'),
             //       boxShadow: [
             //         BoxShadow(
             //           color: Color(0xFFFFFFFF),
-            //           spreadRadius: 1.0,
-            //           blurRadius: 10.0,
+            //           spreadRadius: 1,
+            //           blurRadius: 10,
             //           offset: Offset(-5, -5),
             //         ),
             //         BoxShadow(
-            //           color: HexColor("#a3b1c6"),
-            //           spreadRadius: 1.0,
-            //           blurRadius: 12.0,
+            //           color: HexColor('#a3b1c6'),
+            //           spreadRadius: 1,
+            //           blurRadius: 12,
             //           offset: Offset(2, 2),
             //         ),
             //       ]),
             //   child: Container(
             //       decoration: BoxDecoration(
             //           borderRadius: BorderRadius.circular(8),
-            //           color: HexColor("#e0e5ec"),
+            //           color: HexColor('#e0e5ec'),
             //           boxShadow: [
             //             BoxShadow(
-            //               color: HexColor("#a3b1c6"),
-            //               spreadRadius: 1.0,
-            //               blurRadius: 12.0,
+            //               color: HexColor('#a3b1c6'),
+            //               spreadRadius: 1,
+            //               blurRadius: 12,
             //               offset: Offset(3, 3),
             //             ),
             //             BoxShadow(
-            //               color: HexColor("#ffffff"),
-            //               spreadRadius: 1.0,
-            //               blurRadius: 10.0,
+            //               color: HexColor('#ffffff'),
+            //               spreadRadius: 1,
+            //               blurRadius: 10,
             //               offset: Offset(-3, -3),
             //             ),
             //           ]),
             //       child: Padding(
-            //         padding: const EdgeInsets.all(30.0),
-            //         child: Image.asset("images/isColor_Vertical.png"),
+            //         padding: const EdgeInsets.all(30),
+            //         child: Image.asset('images/isColor_Vertical.png'),
             //       )),
             // ),
           ],
