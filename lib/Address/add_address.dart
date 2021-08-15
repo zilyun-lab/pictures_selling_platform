@@ -144,11 +144,12 @@ class _AddAddressState extends State<AddAddress> {
 }
 
 class MyTextField extends StatelessWidget {
+
+  const MyTextField({Key key, this.hint, this.label, this.controller})
+      : super(key: key);
   final String hint;
   final String label;
   final TextEditingController controller;
-  const MyTextField({Key key, this.hint, this.label, this.controller})
-      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -264,7 +265,7 @@ Widget textField(TextEditingController controller, String label, String hint,
     int length, BuildContext context) {
   return Padding(
     padding: const EdgeInsets.all(8),
-    child: Container(
+    child: SizedBox(
       height: 60,
       child: Neumorphic(
         style: NeumorphicStyle(
